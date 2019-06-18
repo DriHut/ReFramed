@@ -30,22 +30,25 @@ public class SlopeTestRenderer extends BlockEntityRenderer<SlopeTestEntity> {
 		renderManager.textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 		BlockState state = getWorld().getBlockState(be.getPos());
 		Direction dir = state.get(Properties.HORIZONTAL_FACING);
+		Sprite sprite;
 		if (be.getRenderedBlock() != Blocks.AIR) {
 			BlockState blockDefaultState = be.getRenderedBlock().getDefaultState();
 			BakedModel model = minecraft.getBlockRenderManager().getModel(blockDefaultState);
-			Sprite sprite = model.getSprite();
-			if (sprite != null) {
-				buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR);
-				drawSlope(dir, sprite, buffer);
-				drawLeftSide(dir, sprite, buffer);
-				drawRightSide(dir, sprite, buffer);
-				drawBack(dir, sprite, buffer);
-				drawBottom(sprite, buffer);
-				GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-				tessellator.draw();
-				GlStateManager.disableBlend();
-				GlStateManager.enableAlphaTest();
-			}
+			sprite = model.getSprite();
+		} else {
+			sprite = minecraft.getSpriteAtlas().getSprite("minecraft:block/scaffolding_top");
+		}
+		if (sprite != null) {
+			buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR);
+			drawSlope(dir, sprite, buffer);
+			drawLeftSide(dir, sprite, buffer);
+			drawRightSide(dir, sprite, buffer);
+			drawBack(dir, sprite, buffer);
+			drawBottom(sprite, buffer);
+			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+			tessellator.draw();
+			GlStateManager.disableBlend();
+			GlStateManager.enableAlphaTest();
 		}
 		buffer.setOffset(0.0d, 0.0d, 0.0d);
 		super.render(be, x, y, z, partialTicks, destroyStage);
