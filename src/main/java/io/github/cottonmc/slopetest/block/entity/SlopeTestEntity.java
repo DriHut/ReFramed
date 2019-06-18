@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class SlopeTestEntity extends BlockEntity implements BlockEntityClientSerializable {
-	private Block renderedBlock = Blocks.OAK_PLANKS;
+	private Block renderedBlock = Blocks.DIAMOND_ORE;
 
 	public SlopeTestEntity() {
 		super(SlopeTest.SLOPE_ENTITY);

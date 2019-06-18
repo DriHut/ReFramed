@@ -60,22 +60,22 @@ public class SlopeTestRenderer extends BlockEntityRenderer<SlopeTestEntity> {
 				buffer.vertex(1f, 1f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case SOUTH:
-				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 1f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 1f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 1f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 1f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case EAST:
-				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 0f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 1f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 1f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 1f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 1f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case WEST:
-				buffer.vertex(0f, 1f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 1f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 1f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 1f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
 			default:
 				break;
 		}
@@ -84,28 +84,28 @@ public class SlopeTestRenderer extends BlockEntityRenderer<SlopeTestEntity> {
 	public static void drawLeftSide(Direction dir, Sprite sprite, BufferBuilder buffer) {
 		switch(dir) {
 			case NORTH:
-				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
 				buffer.vertex(0f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 1f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 1f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case SOUTH:
-				buffer.vertex(1f, 0f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 1f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 1f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case EAST:
-				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 1f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 1f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case WEST:
-				buffer.vertex(0f, 0f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
 				buffer.vertex(1f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 1f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 1f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
 			default:
 				break;
 		}
@@ -114,10 +114,10 @@ public class SlopeTestRenderer extends BlockEntityRenderer<SlopeTestEntity> {
 	public static void drawRightSide(Direction dir, Sprite sprite, BufferBuilder buffer) {
 		switch(dir) {
 			case NORTH:
-				buffer.vertex(1f, 0f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 1f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 1f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case SOUTH:
 				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
@@ -132,10 +132,10 @@ public class SlopeTestRenderer extends BlockEntityRenderer<SlopeTestEntity> {
 				buffer.vertex(1f, 1f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case WEST:
-				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 1f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 1f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
 			default:
 				break;
 		}
@@ -150,10 +150,10 @@ public class SlopeTestRenderer extends BlockEntityRenderer<SlopeTestEntity> {
 				buffer.vertex(1f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case SOUTH:
-				buffer.vertex(0f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 0f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(1f, 1f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 1f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(1f, 1f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 1f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case EAST:
 				buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
@@ -162,19 +162,19 @@ public class SlopeTestRenderer extends BlockEntityRenderer<SlopeTestEntity> {
 				buffer.vertex(1f, 0f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
 				break;
 			case WEST:
-				buffer.vertex(0f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 0f, 1f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 1f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-				buffer.vertex(0f, 1f, 0f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 1f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+				buffer.vertex(0f, 1f, 0f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
 			default:
 				break;
 		}
 	}
 
 	public static void drawBottom(Sprite sprite, BufferBuilder buffer) {
-		buffer.vertex(0f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-		buffer.vertex(1f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
-		buffer.vertex(1f, 0f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
-		buffer.vertex(0f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+		buffer.vertex(0f, 0f, 0f).texture(sprite.getMinU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+		buffer.vertex(1f, 0f, 0f).texture(sprite.getMaxU(), sprite.getMaxV()).color(1f, 1f, 1f, 1f).next();
+		buffer.vertex(1f, 0f, 1f).texture(sprite.getMaxU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
+		buffer.vertex(0f, 0f, 1f).texture(sprite.getMinU(), sprite.getMinV()).color(1f, 1f, 1f, 1f).next();
 	}
 }
