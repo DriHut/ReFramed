@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "slopetest",
+  "version": "$version",
+
+  "name": "Slope Test",
+  "icon": "assets/libcd/icon.png",
+  "description": "Various tweaks to make data packs even more useful!",
+  "licence": "MIT",
+  "contact": {
+    "sources": "https://github.com/CottonMC/LibCD"
+  },
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.cottonmc.slopetest.SlopeTest"
+    ],
+    "client": [
+      "io.github.cottonmc.slopetest.SlopeTestClient"
+    ]
+  },
+  "requires": {
+    "fabricloader": ">=0.4.0"
+  }
+}
