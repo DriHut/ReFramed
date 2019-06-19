@@ -18,7 +18,7 @@ public class BlockStateUtil {
 		BlockState state = factory.getDefaultState();
 		for (String key : properties.getKeys()) {
 			Property<?> prop = factory.getProperty(key);
-			if (prop != null) parseProperty(state, prop, properties.getString(key));
+			if (prop != null) state = parseProperty(state, prop, properties.getString(key));
 		}
 		return state;
 	}
@@ -34,13 +34,11 @@ public class BlockStateUtil {
 		return tag;
 	}
 
-	public static <T extends Comparable<T>> void parseProperty(BlockState state, Property<T> property, String value) {
-		System.out.println(value);
+	public static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property, String value) {
 		Optional<T> optional = property.getValue(value);
 		if (optional.isPresent()) {
-			System.out.println(optional.get());
-			state.with(property, optional.get());
-			System.out.println(state.get(property));
+			state = state.with(property, optional.get());
 		}
+		return state;
 	}
 }
