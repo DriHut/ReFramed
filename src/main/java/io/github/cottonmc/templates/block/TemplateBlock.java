@@ -1,8 +1,8 @@
-package io.github.cottonmc.slopetest.block;
+package io.github.cottonmc.templates.block;
 
-import io.github.cottonmc.slopetest.SlopeTest;
-import io.github.cottonmc.slopetest.block.entity.TemplateBlockEntity;
-import io.github.cottonmc.slopetest.util.StateContainer;
+import io.github.cottonmc.templates.Templates;
+import io.github.cottonmc.templates.block.entity.TemplateBlockEntity;
+import io.github.cottonmc.templates.util.StateContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -67,7 +67,7 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 
 	@Override
 	public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean bool) {
-		if (newState.getBlock() == SlopeTest.SLOPE) return;
+		if (newState.getBlock() == Templates.SLOPE) return;
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof TemplateBlockEntity) {
 			TemplateBlockEntity template = (TemplateBlockEntity)be;

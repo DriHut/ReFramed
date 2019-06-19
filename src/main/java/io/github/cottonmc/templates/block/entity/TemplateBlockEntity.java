@@ -1,6 +1,6 @@
-package io.github.cottonmc.slopetest.block.entity;
+package io.github.cottonmc.templates.block.entity;
 
-import io.github.cottonmc.slopetest.util.BlockStateUtil;
+import io.github.cottonmc.templates.util.BlockStateUtil;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.server.PlayerStream;

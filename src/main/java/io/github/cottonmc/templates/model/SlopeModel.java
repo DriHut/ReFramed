@@ -1,11 +1,11 @@
-package io.github.cottonmc.slopetest.model;
+package io.github.cottonmc.templates.model;
 
 import java.util.Random;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ObjectUtils;
 
-import io.github.cottonmc.slopetest.util.SpriteSet;
+import io.github.cottonmc.templates.util.SpriteSet;
 import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -30,11 +30,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ExtendedBlockView;
 
-public class SlopeTestModel extends SimpleModel {
+public class SlopeModel extends SimpleModel {
 
     private static final ThreadLocal<Transformer> TRANSFORMERS = ThreadLocal.withInitial(Transformer::new);
     
-    public SlopeTestModel(BlockState blockState) {
+    public SlopeModel(BlockState blockState) {
         super(baseMesh(blockState), TRANSFORMERS::get, MissingSprite.getMissingSprite(), ModelHelper.MODEL_TRANSFORM_BLOCK);
     }
 

@@ -1,4 +1,4 @@
-package io.github.cottonmc.slopetest.model;
+package io.github.cottonmc.templates.model;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -12,18 +12,18 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.registry.Registry;
 
-public class SlopeModelVariantProvider implements ModelVariantProvider {
+public class TemplateModelVariantProvider implements ModelVariantProvider {
 
     private final HashMap<ModelIdentifier, UnbakedModel> variants = new HashMap<>();
     
-    public SlopeModelVariantProvider() { }
+    public TemplateModelVariantProvider() { }
     
     @Override
     public UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException {
         return variants.get(modelId);
     }
 
-    public void registerTemplateBlock(Block block, BlockState itemState, Function<BlockState, SimpleModel> model) {
+    public void registerTemplateModels(Block block, BlockState itemState, Function<BlockState, SimpleModel> model) {
         for (BlockState state : block.getStateFactory().getStates()) {
             variants.put(BlockModels.getModelId(state), (SimpleUnbakedModel)() -> model.apply(state));
         }

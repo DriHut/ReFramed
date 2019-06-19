@@ -1,25 +1,26 @@
 {
   "schemaVersion": 1,
-  "id": "slopetest",
+  "id": "templates",
   "version": "$version",
 
-  "name": "Slope Test",
-  "icon": "assets/libcd/icon.png",
-  "description": "Various tweaks to make data packs even more useful!",
+  "name": "Templates",
+  "icon": "assets/templates/icon.png",
+  "description": "An API for templated blocks",
   "licence": "MIT",
   "contact": {
-    "sources": "https://github.com/CottonMC/LibCD"
+    "sources": "https://github.com/CottonMC/Templates"
   },
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.cottonmc.slopetest.SlopeTest"
+      "io.github.cottonmc.templates.Templates"
     ],
     "client": [
-      "io.github.cottonmc.slopetest.SlopeTestClient"
+      "io.github.cottonmc.templates.TemplatesClient"
     ]
   },
   "requires": {
-    "fabricloader": ">=0.4.0"
+    "fabricloader": ">=0.4.0",
+    "fabric-renderer-indigo": "*"
   }
 }

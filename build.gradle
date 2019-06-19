@@ -28,12 +28,12 @@ if(rootProject.file('private.gradle').exists()) { //Publishing details
 	apply from: 'private.gradle'
 }
 
-archivesBaseName = "slopetest"
+archivesBaseName = "templates"
 group = "io.github.cottonmc"
-version = "1.1.0+1.14.2"
+version = "1.0.0+1.14.2"
 
 minecraft {
-	refmapName = 'mixins.slopetest.refmap.json'
+	refmapName = 'mixins.templates.refmap.json'
 }
 
 repositories {

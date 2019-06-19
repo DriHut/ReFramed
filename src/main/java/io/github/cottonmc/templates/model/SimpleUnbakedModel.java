@@ -1,4 +1,4 @@
-package io.github.cottonmc.slopetest.model;
+package io.github.cottonmc.templates.model;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package io.github.cottonmc.slopetest.util;
+package io.github.cottonmc.templates.util;
 
 import java.util.List;
 import java.util.Random;
