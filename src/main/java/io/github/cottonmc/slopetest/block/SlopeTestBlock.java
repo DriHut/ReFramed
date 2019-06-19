@@ -62,11 +62,12 @@ public class SlopeTestBlock extends Block implements BlockEntityProvider {
 		ItemStack stack = player.getStackInHand(hand);
 		if (stack.getItem() instanceof BlockItem) {
 			Block block = ((BlockItem)stack.getItem()).getBlock();
-			if (block.getDefaultState().getOutlineShape(world, pos) == VoxelShapes.fullCube() && !(block instanceof BlockEntityProvider)) {
+			ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
+			BlockState placementState = block.getPlacementState(ctx);
+			if (placementState.getOutlineShape(world, pos) == VoxelShapes.fullCube() && !(block instanceof BlockEntityProvider)) {
 				SlopeTestEntity be = (SlopeTestEntity) world.getBlockEntity(pos);
 				if (be.getRenderedState().getBlock() == Blocks.AIR) {
-					ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
-					be.setRenderedState(block.getPlacementState(ctx));
+					be.setRenderedState(placementState);
 					if (!player.abilities.creativeMode) stack.decrement(1);
 				}
 			}
