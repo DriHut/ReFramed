@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -58,13 +59,15 @@ public class SlopeTestBlock extends Block implements BlockEntityProvider {
 	@Override
 	public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (world.isClient || !(world.getBlockEntity(pos) instanceof SlopeTestEntity)) return true;
-		if (player.getStackInHand(hand).getItem() instanceof BlockItem) {
-			Block block = ((BlockItem)player.getStackInHand(hand).getItem()).getBlock();
-			if (block.getDefaultState().isSimpleFullBlock(world, pos)) {
+		ItemStack stack = player.getStackInHand(hand);
+		if (stack.getItem() instanceof BlockItem) {
+			Block block = ((BlockItem)stack.getItem()).getBlock();
+			if (block.getDefaultState().getOutlineShape(world, pos) == VoxelShapes.fullCube() && !(block instanceof BlockEntityProvider)) {
 				SlopeTestEntity be = (SlopeTestEntity) world.getBlockEntity(pos);
-				if (be.getRenderedBlock() == Blocks.AIR) {
-					be.setRenderedBlock(block);
-					if (!player.abilities.creativeMode) player.getStackInHand(hand).decrement(1);
+				if (be.getRenderedState().getBlock() == Blocks.AIR) {
+					ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
+					be.setRenderedState(block.getPlacementState(ctx));
+					if (!player.abilities.creativeMode) stack.decrement(1);
 				}
 			}
 		}
@@ -91,8 +94,8 @@ public class SlopeTestBlock extends Block implements BlockEntityProvider {
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof SlopeTestEntity) {
 			SlopeTestEntity slope = (SlopeTestEntity)be;
-			if (slope.getRenderedBlock() != Blocks.AIR) {
-				ItemStack stack = new ItemStack(slope.getRenderedBlock());
+			if (slope.getRenderedState().getBlock() != Blocks.AIR) {
+				ItemStack stack = new ItemStack(slope.getRenderedState().getBlock());
 				ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
 				world.spawnEntity(entity);
 			}

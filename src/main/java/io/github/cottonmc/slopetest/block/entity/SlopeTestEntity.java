@@ -1,9 +1,10 @@
 package io.github.cottonmc.slopetest.block.entity;
 
 import io.github.cottonmc.slopetest.SlopeTest;
+import io.github.cottonmc.slopetest.util.BlockStateUtil;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.server.PlayerStream;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -12,31 +13,31 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class SlopeTestEntity extends BlockEntity implements BlockEntityClientSerializable {
-	private Block renderedBlock = Blocks.AIR;
+	private BlockState renderedState = Blocks.AIR.getDefaultState();
 
 	public SlopeTestEntity() {
 		super(SlopeTest.SLOPE_ENTITY);
 	}
 
-	public Block getRenderedBlock() {
-		return renderedBlock;
+	public BlockState getRenderedState() {
+		return renderedState;
 	}
 
-	public void setRenderedBlock(Block block) {
-		this.renderedBlock = block;
+	public void setRenderedState(BlockState state) {
+		this.renderedState = state;
 		markDirty();
 	}
 
 	@Override
 	public void fromTag(CompoundTag tag) {
 		super.fromTag(tag);
-		renderedBlock = Registry.BLOCK.get(new Identifier(tag.getString("Block")));
+		renderedState = BlockStateUtil.fromTag(tag);
 	}
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
 		super.toTag(tag);
-		tag.putString("Block", Registry.BLOCK.getId(renderedBlock).toString());
+		BlockStateUtil.toTag(tag, renderedState);
 		return tag;
 	}
 

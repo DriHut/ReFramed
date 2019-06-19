@@ -1,7 +1,7 @@
 package io.github.cottonmc.slopetest.block.entity.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import io.github.cottonmc.slopetest.SpriteSet;
+import io.github.cottonmc.slopetest.util.SpriteSet;
 import io.github.cottonmc.slopetest.block.entity.SlopeTestEntity;
 import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
 import net.minecraft.block.BlockState;
@@ -35,13 +35,13 @@ public class SlopeTestRenderer extends BlockEntityRenderer<SlopeTestEntity> {
 		Direction dir = state.get(Properties.HORIZONTAL_FACING);
 		SpriteSet sprites;
 		int color = 0xffffff;
-		if (be.getRenderedBlock() != Blocks.AIR) {
-			BlockState blockDefaultState = be.getRenderedBlock().getDefaultState();
-			BakedModel model = minecraft.getBlockRenderManager().getModel(blockDefaultState);
+		if (be.getRenderedState().getBlock() != Blocks.AIR) {
+			BlockState renderedState = be.getRenderedState();
+			BakedModel model = minecraft.getBlockRenderManager().getModel(renderedState);
 			sprites = new SpriteSet(model);
-			BlockColorProvider blockColor = ColorProviderRegistry.BLOCK.get(be.getRenderedBlock());
+			BlockColorProvider blockColor = ColorProviderRegistry.BLOCK.get(be.getRenderedState().getBlock());
 			if (blockColor != null) {
-				color = blockColor.getColor(blockDefaultState, be.getWorld(), be.getPos(), 1);
+				color = blockColor.getColor(renderedState, be.getWorld(), be.getPos(), 1);
 			}
 		} else {
 			sprites = new SpriteSet(minecraft.getSpriteAtlas().getSprite("minecraft:block/scaffolding_top"), false);
