@@ -15,7 +15,8 @@ public class SlopeTest implements ModInitializer {
 	public static final String MODID = "slopetest";
 
 	public static final Block SLOPE = register("slope", new SlopeTestBlock(), ItemGroup.DECORATIONS);
-	public static final BlockEntityType<SlopeTestEntity> SLOPE_ENTITY = register("slope", SlopeTestEntity::new, SLOPE);
+	@SuppressWarnings("unchecked")
+    public static final BlockEntityType<SlopeTestEntity> SLOPE_ENTITY = register("slope", SlopeTestEntity::new, SLOPE);
 
 	@Override
 	public void onInitialize() {
@@ -29,7 +30,8 @@ public class SlopeTest implements ModInitializer {
 		return block;
 	}
 
-	public static BlockEntityType register(String name, Supplier<BlockEntity> be, Block...blocks) {
+	@SuppressWarnings("rawtypes")
+    public static BlockEntityType register(String name, Supplier<BlockEntity> be, Block...blocks) {
 		return Registry.register(Registry.BLOCK_ENTITY, new Identifier(MODID, name), BlockEntityType.Builder.create(be, blocks).build(null));
 	}
 
