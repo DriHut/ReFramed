@@ -84,10 +84,10 @@ public class SlopeTestBlock extends Block implements BlockEntityProvider {
 		return false;
 	}
 
-	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.INVISIBLE;
-	}
+//	@Override
+//	public BlockRenderType getRenderType(BlockState state) {
+//		return BlockRenderType.INVISIBLE;
+//	}
 
 	@Override
 	public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean boolean_1) {
