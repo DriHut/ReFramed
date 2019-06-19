@@ -2,6 +2,7 @@ package io.github.cottonmc.slopetest;
 
 import io.github.cottonmc.slopetest.block.SlopeTestBlock;
 import io.github.cottonmc.slopetest.block.entity.SlopeTestEntity;
+import io.github.cottonmc.slopetest.model.SlopeModelVariantProvider;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
@@ -13,6 +14,8 @@ import java.util.function.Supplier;
 
 public class SlopeTest implements ModInitializer {
 	public static final String MODID = "slopetest";
+	//define/create here so that it always exists when called in a client initializer, regardless of load order
+	public static SlopeModelVariantProvider provider = new SlopeModelVariantProvider();
 
 	public static final Block SLOPE = register("slope", new SlopeTestBlock(), ItemGroup.DECORATIONS);
 	@SuppressWarnings("unchecked")
