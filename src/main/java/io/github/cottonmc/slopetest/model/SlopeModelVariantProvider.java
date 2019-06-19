@@ -3,6 +3,7 @@ package io.github.cottonmc.slopetest.model;
 import java.util.HashMap;
 
 import io.github.cottonmc.slopetest.SlopeTest;
+import io.github.cottonmc.slopetest.block.SlopeTestBlock;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
@@ -10,6 +11,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 public class SlopeModelVariantProvider implements ModelVariantProvider {
@@ -25,7 +28,7 @@ public class SlopeModelVariantProvider implements ModelVariantProvider {
             variants.put(BlockModels.getModelId(state), (SimpleUnbakedModel)() -> new SlopeTestModel(state));
         }
         
-        variants.put(new ModelIdentifier(Registry.ITEM.getId(SlopeTest.SLOPE.asItem()), "inventory"), (SimpleUnbakedModel)() -> new SlopeTestModel(SlopeTest.SLOPE.getDefaultState()));
+        variants.put(new ModelIdentifier(Registry.ITEM.getId(SlopeTest.SLOPE.asItem()), "inventory"), (SimpleUnbakedModel)() -> new SlopeTestModel(SlopeTest.SLOPE.getDefaultState().with(SlopeTestBlock.FACING, Direction.SOUTH)));
     }
     
     @Override

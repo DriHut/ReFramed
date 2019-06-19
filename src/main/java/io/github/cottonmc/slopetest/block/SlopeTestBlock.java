@@ -5,27 +5,19 @@ import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityContext;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.*;
 import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class SlopeTestBlock extends Block implements BlockEntityProvider {
+public class SlopeTestBlock extends TemplateBlock {
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
 	public static final VoxelShape BASE = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1f);
@@ -36,12 +28,12 @@ public class SlopeTestBlock extends Block implements BlockEntityProvider {
 
 	public SlopeTestBlock() {
 		super(FabricBlockSettings.of(Material.WOOD).build());
-		this.setDefaultState(this.getStateFactory().getDefaultState().with(FACING, Direction.NORTH));
+		this.setDefaultState(this.getStateFactory().getDefaultState().with(FACING, Direction.NORTH).with(LIGHT, 0).with(REDSTONE, false));
 	}
 
 	@Override
 	protected void appendProperties(StateFactory.Builder<Block, BlockState> builder) {
-		builder.add(FACING);
+		builder.add(FACING, LIGHT, REDSTONE);
 	}
 
 	@Nullable
@@ -54,54 +46,6 @@ public class SlopeTestBlock extends Block implements BlockEntityProvider {
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
 		return getDefaultState().with(FACING, ctx.getPlayerFacing());
-	}
-
-	@Override
-	public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (world.isClient || !(world.getBlockEntity(pos) instanceof SlopeTestEntity)) return true;
-		ItemStack stack = player.getStackInHand(hand);
-		if (stack.getItem() instanceof BlockItem) {
-			Block block = ((BlockItem)stack.getItem()).getBlock();
-			ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
-			BlockState placementState = block.getPlacementState(ctx);
-			if (placementState.getOutlineShape(world, pos) == VoxelShapes.fullCube() && !(block instanceof BlockEntityProvider)) {
-				SlopeTestEntity be = (SlopeTestEntity) world.getBlockEntity(pos);
-				if (be.getRenderedState().getBlock() == Blocks.AIR) {
-					be.setRenderedState(placementState);
-					if (!player.abilities.creativeMode) stack.decrement(1);
-				}
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public boolean isOpaque(BlockState state) {
-		return false;
-	}
-
-	@Override
-	public boolean isSimpleFullBlock(BlockState state, BlockView view, BlockPos pos) {
-		return false;
-	}
-
-//	@Override
-//	public BlockRenderType getRenderType(BlockState state) {
-//		return BlockRenderType.INVISIBLE;
-//	}
-
-	@Override
-	public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean boolean_1) {
-		BlockEntity be = world.getBlockEntity(pos);
-		if (be instanceof SlopeTestEntity) {
-			SlopeTestEntity slope = (SlopeTestEntity)be;
-			if (slope.getRenderedState().getBlock() != Blocks.AIR) {
-				ItemStack stack = new ItemStack(slope.getRenderedState().getBlock());
-				ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-				world.spawnEntity(entity);
-			}
-		}
-		super.onBlockRemoved(state, world, pos, newState, boolean_1);
 	}
 
 	@Override
