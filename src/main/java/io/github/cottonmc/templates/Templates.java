@@ -2,7 +2,6 @@ package io.github.cottonmc.templates;
 
 import io.github.cottonmc.templates.block.SlopeBlock;
 import io.github.cottonmc.templates.block.entity.SlopeEntity;
-import io.github.cottonmc.templates.model.TemplateModelVariantProvider;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
@@ -14,8 +13,6 @@ import java.util.function.Supplier;
 
 public class Templates implements ModInitializer {
 	public static final String MODID = "templates";
-	//define/create here so that it always exists when called in a client initializer, regardless of load order
-	public static TemplateModelVariantProvider provider = new TemplateModelVariantProvider();
 
 	public static final Block SLOPE = register("slope", new SlopeBlock(), ItemGroup.DECORATIONS);
 	@SuppressWarnings("unchecked")

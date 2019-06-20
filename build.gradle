@@ -30,7 +30,7 @@ if(rootProject.file('private.gradle').exists()) { //Publishing details
 
 archivesBaseName = "templates"
 group = "io.github.cottonmc"
-version = "1.0.1+1.14.2"
+version = "1.0.2+1.14.2"
 
 minecraft {
 	refmapName = 'mixins.templates.refmap.json'
