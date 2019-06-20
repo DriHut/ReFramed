@@ -13,13 +13,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
 
-public abstract class TemplateBlockEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity {
+public abstract class TemplateEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity {
 	protected BlockState renderedState = Blocks.AIR.getDefaultState();
 	protected boolean glowstone = false;
 	protected boolean redstone = false;
 	private Block baseBlock;
 
-	public TemplateBlockEntity(BlockEntityType<?> type, Block baseBlock) {
+	public TemplateEntity(BlockEntityType<?> type, Block baseBlock) {
 		super(type);
 		this.baseBlock = baseBlock;
 	}

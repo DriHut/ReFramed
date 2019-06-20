@@ -1,7 +1,7 @@
 package io.github.cottonmc.templates.block;
 
 import io.github.cottonmc.templates.Templates;
-import io.github.cottonmc.templates.block.entity.TemplateBlockEntity;
+import io.github.cottonmc.templates.block.entity.TemplateEntity;
 import io.github.cottonmc.templates.util.StateContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -31,8 +31,8 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 
 	@Override
 	public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (world.isClient || !(world.getBlockEntity(pos) instanceof TemplateBlockEntity)) return true;
-		TemplateBlockEntity be = (TemplateBlockEntity) world.getBlockEntity(pos);
+		if (world.isClient || !(world.getBlockEntity(pos) instanceof TemplateEntity)) return true;
+		TemplateEntity be = (TemplateEntity) world.getBlockEntity(pos);
 		ItemStack stack = player.getStackInHand(hand);
 		if (stack.getItem() instanceof BlockItem) {
 			Block block = ((BlockItem)stack.getItem()).getBlock();
@@ -69,8 +69,8 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean bool) {
 		if (newState.getBlock() == Templates.SLOPE) return;
 		BlockEntity be = world.getBlockEntity(pos);
-		if (be instanceof TemplateBlockEntity) {
-			TemplateBlockEntity template = (TemplateBlockEntity)be;
+		if (be instanceof TemplateEntity) {
+			TemplateEntity template = (TemplateEntity)be;
 			if (template.getRenderedState().getBlock() != Blocks.AIR) {
 				ItemStack stack = new ItemStack(template.getRenderedState().getBlock());
 				ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
@@ -93,8 +93,8 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	@Override
 	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos posFrom, boolean bool) {
 		BlockEntity be = world.getBlockEntity(pos);
-		if (be instanceof TemplateBlockEntity) {
-			TemplateBlockEntity template = (TemplateBlockEntity)be;
+		if (be instanceof TemplateEntity) {
+			TemplateEntity template = (TemplateEntity)be;
 			BlockState beState = template.getRenderedState();
 			world.setBlockState(pos, state.with(LIGHT, template.hasGlowstone()? 15 : beState.getLuminance()).with(REDSTONE, template.hasRedstone() || beState.emitsRedstonePower()));
 		}
@@ -113,8 +113,8 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	@Override
 	public int getWeakRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
 		BlockEntity be = view.getBlockEntity(pos);
-		if (be instanceof TemplateBlockEntity) {
-			TemplateBlockEntity template = (TemplateBlockEntity)be;
+		if (be instanceof TemplateEntity) {
+			TemplateEntity template = (TemplateEntity)be;
 			if (template.hasRedstone()) return 15;
 			BlockState beState = template.getRenderedState();
 			return beState.getWeakRedstonePower(view, pos, dir);
@@ -125,8 +125,8 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	@Override
 	public int getStrongRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
 		BlockEntity be = view.getBlockEntity(pos);
-		if (be instanceof TemplateBlockEntity) {
-			TemplateBlockEntity template = (TemplateBlockEntity)be;
+		if (be instanceof TemplateEntity) {
+			TemplateEntity template = (TemplateEntity)be;
 			if (template.hasRedstone()) return 15;
 			BlockState beState = template.getRenderedState();
 			return beState.getStrongRedstonePower(view, pos, dir);
@@ -137,7 +137,13 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	@Override
 	public BlockState getContainedState(World world, BlockPos pos) {
 		BlockEntity be = world.getBlockEntity(pos);
-		if (be instanceof TemplateBlockEntity) return ((TemplateBlockEntity)be).getRenderedState();
+		if (be instanceof TemplateEntity) return ((TemplateEntity)be).getRenderedState();
 		return Blocks.AIR.getDefaultState();
+	}
+
+	@Override
+	public void setContainedState(World world, BlockPos pos, BlockState state) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof TemplateEntity) ((TemplateEntity)be).setRenderedState(state);
 	}
 }

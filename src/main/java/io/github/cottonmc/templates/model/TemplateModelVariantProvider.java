@@ -23,7 +23,7 @@ public class TemplateModelVariantProvider implements ModelVariantProvider {
         return variants.get(modelId);
     }
 
-    public void registerTemplateModels(Block block, BlockState itemState, Function<BlockState, SimpleModel> model) {
+    public void registerTemplateModels(Block block, BlockState itemState, Function<BlockState, AbstractModel> model) {
         for (BlockState state : block.getStateFactory().getStates()) {
             variants.put(BlockModels.getModelId(state), (SimpleUnbakedModel)() -> model.apply(state));
         }
