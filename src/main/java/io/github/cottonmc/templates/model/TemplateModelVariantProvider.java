@@ -20,9 +20,7 @@ public class TemplateModelVariantProvider implements ModelVariantProvider {
     
     @Override
     public UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException {
-        UnbakedModel variant = variants.get(modelId);
-        if (variant == null) throw new ModelProviderException("Couldn't find model for ID " + modelId);
-        return variant;
+        return variants.get(modelId);
     }
 
     public void registerTemplateModels(Block block, BlockState itemState, Function<BlockState, AbstractModel> model) {
