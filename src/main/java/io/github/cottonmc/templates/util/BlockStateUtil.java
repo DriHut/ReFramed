@@ -10,6 +10,10 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.Optional;
 
+/**
+ * use {@link net.minecraft.util.TagHelper}, which I should have been using from the start oops
+ */
+@Deprecated
 public class BlockStateUtil {
 	public static BlockState fromTag(CompoundTag tag) {
 		Block block = Registry.BLOCK.get(new Identifier(tag.getString("Block")));
