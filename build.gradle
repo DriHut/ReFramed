@@ -41,10 +41,10 @@ repositories {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.14.2"
-	mappings "net.fabricmc:yarn:1.14.2+build.7"
-	modApi "net.fabricmc:fabric-loader:0.4.8+build.154"
-	modApi "net.fabricmc.fabric-api:fabric-api:0.3.0+build.185"
+	minecraft "com.mojang:minecraft:1.14.3"
+	mappings "net.fabricmc:yarn:1.14.3+build.7"
+	modApi "net.fabricmc:fabric-loader:0.4.8+build.155"
+	modApi "net.fabricmc.fabric-api:fabric-api:0.3.0+build.191"
 
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
 }

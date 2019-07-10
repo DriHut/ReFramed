@@ -47,6 +47,9 @@ public class SpriteSet {
 	}
 
 	public boolean hasColor(Direction dir) {
-	    return isDefault ? false : ObjectUtils.defaultIfNull(quads.get(dir).hasColor(), false);
+    	if (isDefault) return false;
+    	BakedQuad quad = quads.get(dir);
+    	if (quad == null) return false;
+	    return quad.hasColor();
 	}
 }
