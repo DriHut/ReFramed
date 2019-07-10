@@ -42,7 +42,7 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 			}
 			ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
 			BlockState placementState = block.getPlacementState(ctx);
-			if (placementState.getOutlineShape(world, pos) == VoxelShapes.fullCube() && !(block instanceof BlockEntityProvider)) {
+			if (Block.isShapeFullCube(placementState.getCollisionShape(world, pos)) && !(block instanceof BlockEntityProvider)) {
 				if (be.getRenderedState().getBlock() == Blocks.AIR) {
 					be.setRenderedState(placementState);
 					if (!player.abilities.creativeMode) stack.decrement(1);
