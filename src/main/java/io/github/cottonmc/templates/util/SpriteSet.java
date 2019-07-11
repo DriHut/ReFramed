@@ -3,6 +3,7 @@ package io.github.cottonmc.templates.util;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.client.texture.MissingSprite;
 import org.apache.commons.lang3.ObjectUtils;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -17,7 +18,8 @@ import net.minecraft.util.math.Direction;
 public class SpriteSet {
 	private Object2ObjectOpenHashMap<Direction, BakedQuad> quads = new Object2ObjectOpenHashMap<>();
 	private boolean isDefault = true;
-	public static final Sprite FALLBACK = MinecraftClient.getInstance().getSpriteAtlas().getSprite(new Identifier("minecraft:block/scaffolding_top"));
+	public static final Sprite DEFAULT = MinecraftClient.getInstance().getSpriteAtlas().getSprite(new Identifier("minecraft:block/scaffolding_top"));
+	public static final Sprite FALLBACK = MissingSprite.getMissingSprite();
 
 	public SpriteSet() {
 	    clear();
@@ -43,7 +45,10 @@ public class SpriteSet {
     }
 
 	public Sprite getSprite(Direction dir) {
-		return isDefault ? FALLBACK : ObjectUtils.defaultIfNull(quads.get(dir).getSprite(), FALLBACK);
+    	if (isDefault) return DEFAULT;
+		BakedQuad quad = quads.get(dir);
+		if (quad == null) return FALLBACK;
+		return quad.getSprite();
 	}
 
 	public boolean hasColor(Direction dir) {
