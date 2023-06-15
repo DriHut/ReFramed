@@ -1,10 +1,8 @@
 package io.github.cottonmc.templates.block.entity;
 
-import io.github.cottonmc.templates.util.BlockStateUtil;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.server.PlayerStream;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -39,8 +37,7 @@ public abstract class TemplateEntity extends BlockEntity implements BlockEntityC
 	@Override
 	public void fromTag(CompoundTag tag) {
 		super.fromTag(tag);
-		if (tag.contains("BlockState", NbtType.COMPOUND)) renderedState = NbtHelper.toBlockState(tag.getCompound("BlockState"));
-		else renderedState = BlockStateUtil.fromTag(tag);
+		renderedState = NbtHelper.toBlockState(tag.getCompound("BlockState"));
 		glowstone = tag.getBoolean("Glowstone");
 		redstone = tag.getBoolean("Redstone");
 		if (world != null && world.isClient) {
