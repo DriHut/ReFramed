@@ -1,26 +1,25 @@
 {
-  "schemaVersion": 1,
-  "id": "templates",
-  "version": "$version",
-
-  "name": "Templates",
-  "icon": "assets/templates/icon.png",
-  "description": "An API for templated blocks",
-  "licence": "MIT",
-  "contact": {
-    "sources": "https://github.com/CottonMC/Templates"
-  },
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "io.github.cottonmc.templates.Templates"
-    ],
-    "client": [
-      "io.github.cottonmc.templates.TemplatesClient"
-    ]
-  },
-  "depends": {
-    "fabricloader": ">=0.4.0",
-    "fabric-renderer-indigo": "*"
-  }
+	"schemaVersion": 1,
+	"id": "templates",
+	"version": "$version",
+	"name": "Templates",
+	"icon": "assets/templates/icon.png",
+	"description": "An API for templated blocks",
+	"licence": "MIT",
+	"contact": {
+		"sources": "https://github.com/CottonMC/Templates"
+	},
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"io.github.cottonmc.templates.Templates"
+		],
+		"client": [
+			"io.github.cottonmc.templates.TemplatesClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.4.0",
+		"fabric-renderer-indigo": "*"
+	}
 }

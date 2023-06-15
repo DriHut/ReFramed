@@ -6,5 +6,6 @@ import net.minecraft.world.World;
 
 public interface StateContainer {
 	BlockState getContainedState(World world, BlockPos pos);
+	
 	void setContainedState(World world, BlockPos pos, BlockState state);
 }

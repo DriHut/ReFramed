@@ -9,9 +9,10 @@ import net.minecraft.util.math.Direction;
 
 public class TemplatesClient implements ClientModInitializer {
 	public static TemplateModelVariantProvider provider = new TemplateModelVariantProvider();
+	
 	@Override
 	public void onInitializeClient() {
-	    ModelLoadingRegistry.INSTANCE.registerVariantProvider(rm -> provider);
-	    provider.registerTemplateModels(Templates.SLOPE, Templates.SLOPE.getDefaultState().with(SlopeBlock.FACING, Direction.SOUTH), SlopeModel::new);
+		ModelLoadingRegistry.INSTANCE.registerVariantProvider(rm -> provider);
+		provider.registerTemplateModels(Templates.SLOPE, Templates.SLOPE.getDefaultState().with(SlopeBlock.FACING, Direction.SOUTH), SlopeModel::new);
 	}
 }

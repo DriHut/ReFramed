@@ -19,35 +19,35 @@ public abstract class TemplateEntity extends BlockEntity implements BlockEntityC
 	protected boolean glowstone = false;
 	protected boolean redstone = false;
 	private final Block baseBlock;
-
+	
 	public TemplateEntity(BlockEntityType<?> type, Block baseBlock) {
 		super(type);
 		this.baseBlock = baseBlock;
 	}
-
+	
 	public BlockState getRenderedState() {
 		return renderedState;
 	}
-
+	
 	public void setRenderedState(BlockState state) {
 		this.renderedState = state;
 		markDirty();
 	}
-
+	
 	@Override
 	public void fromTag(CompoundTag tag) {
 		super.fromTag(tag);
 		renderedState = NbtHelper.toBlockState(tag.getCompound("BlockState"));
 		glowstone = tag.getBoolean("Glowstone");
 		redstone = tag.getBoolean("Redstone");
-		if (world != null && world.isClient) {
+		if(world != null && world.isClient) {
 			//TODO probably unsafe, i think the method was removed in 1.14.4 or something though
 			// i cant find any relevant method that takes only 1 blockpos argument
-			((ClientWorld)world).scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ());
+			((ClientWorld) world).scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ());
 			//world.scheduleBlockRender(pos);
 		}
 	}
-
+	
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
 		super.toTag(tag);
@@ -56,21 +56,21 @@ public abstract class TemplateEntity extends BlockEntity implements BlockEntityC
 		tag.putBoolean("Redstone", redstone);
 		return tag;
 	}
-
+	
 	@Override
 	public void fromClientTag(CompoundTag tag) {
 		fromTag(tag);
 	}
-
+	
 	@Override
 	public CompoundTag toClientTag(CompoundTag tag) {
 		return toTag(tag);
 	}
-
+	
 	@Override
 	public void markDirty() {
 		super.markDirty();
-		if (world != null && !world.isClient) {
+		if(world != null && !world.isClient) {
 			for(ServerPlayerEntity player : PlayerLookup.tracking(this)) {
 				player.networkHandler.sendPacket(this.toUpdatePacket());
 			}
@@ -79,25 +79,25 @@ public abstract class TemplateEntity extends BlockEntity implements BlockEntityC
 			world.updateListeners(pos, state, state, 1);
 		}
 	}
-
+	
 	@Override
 	public BlockState getRenderAttachmentData() {
 		return renderedState;
 	}
-
+	
 	public boolean hasGlowstone() {
 		return glowstone;
 	}
-
+	
 	public void addGlowstone() {
 		glowstone = true;
 		markDirty();
 	}
-
+	
 	public boolean hasRedstone() {
 		return redstone;
 	}
-
+	
 	public void addRedstone() {
 		redstone = true;
 		markDirty();

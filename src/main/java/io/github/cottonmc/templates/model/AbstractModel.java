@@ -8,40 +8,40 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 
 public abstract class AbstractModel implements BakedModel, FabricBakedModel {
-    protected static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
-    
-    protected final Sprite modelSprite;
-    protected final ModelTransformation transformation;
-    
-    protected AbstractModel(
-            Sprite sprite, 
-            ModelTransformation transformation) {
-        this.modelSprite = sprite;
-        this.transformation = transformation;
-    }
-    
-    @Override
-    public boolean useAmbientOcclusion() {
-        return true;
-    }
-
-    @Override
-    public boolean hasDepth() {
-        return true;
-    }
-
-    @Override
-    public boolean isBuiltin() {
-        return false;
-    }
-
-    @Override
-    public Sprite getSprite() {
-        return modelSprite;
-    }
-
-    @Override
-    public ModelTransformation getTransformation() {
-        return transformation;
-    }
+	protected static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
+	
+	protected final Sprite modelSprite;
+	protected final ModelTransformation transformation;
+	
+	protected AbstractModel(
+		Sprite sprite,
+		ModelTransformation transformation) {
+		this.modelSprite = sprite;
+		this.transformation = transformation;
+	}
+	
+	@Override
+	public boolean useAmbientOcclusion() {
+		return true;
+	}
+	
+	@Override
+	public boolean hasDepth() {
+		return true;
+	}
+	
+	@Override
+	public boolean isBuiltin() {
+		return false;
+	}
+	
+	@Override
+	public Sprite getSprite() {
+		return modelSprite;
+	}
+	
+	@Override
+	public ModelTransformation getTransformation() {
+		return transformation;
+	}
 }
