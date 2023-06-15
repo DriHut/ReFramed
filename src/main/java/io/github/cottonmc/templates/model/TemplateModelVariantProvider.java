@@ -8,7 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -28,6 +28,6 @@ public class TemplateModelVariantProvider implements ModelVariantProvider {
 		for(BlockState state : block.getStateManager().getStates()) {
 			variants.put(BlockModels.getModelId(state), (SimpleUnbakedModel) () -> model.apply(state));
 		}
-		variants.put(new ModelIdentifier(Registry.ITEM.getId(block.asItem()), "inventory"), (SimpleUnbakedModel) () -> model.apply(itemState));
+		variants.put(new ModelIdentifier(Registries.ITEM.getId(block.asItem()), "inventory"), (SimpleUnbakedModel) () -> model.apply(itemState));
 	}
 }

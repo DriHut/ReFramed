@@ -1,13 +1,13 @@
 package io.github.cottonmc.templates.block;
 
-import io.github.cottonmc.templates.block.entity.SlopeEntity;
+import io.github.cottonmc.templates.Templates;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.EntityContext;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -29,7 +29,9 @@ public class SlopeBlock extends TemplateBlock {
 	public static final VoxelShape WEST = VoxelShapes.cuboid(0f, 0.5f, 0f, 0.5f, 1f, 1f);
 	
 	public SlopeBlock() {
-		super(FabricBlockSettings.of(Material.WOOD));
+		super(TemplateBlock.configureSettings(Settings.create())
+			.sounds(BlockSoundGroup.WOOD)
+			.hardness(0.2f)); //TODO: Material.WOOD
 		this.setDefaultState(this.getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(LIGHT, 0).with(REDSTONE, false));
 	}
 	
@@ -38,20 +40,19 @@ public class SlopeBlock extends TemplateBlock {
 		builder.add(FACING, LIGHT, REDSTONE);
 	}
 	
-	@Nullable
 	@Override
-	public BlockEntity createBlockEntity(BlockView blockView) {
-		return new SlopeEntity();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return Templates.SLOPE_ENTITY.instantiate(pos, state);
 	}
 	
 	@Nullable
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return getDefaultState().with(FACING, ctx.getPlayerFacing());
+		return getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing());
 	}
 	
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, EntityContext ctx) {
+	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
 		Direction dir = state.get(FACING);
 		switch(dir) {
 			case NORTH:
@@ -68,7 +69,7 @@ public class SlopeBlock extends TemplateBlock {
 	}
 	
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, EntityContext ctx) {
+	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
 		return getCollisionShape(state, view, pos, ctx);
 	}
 }

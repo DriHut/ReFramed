@@ -1,7 +1,9 @@
 package io.github.cottonmc.templates.model;
 
 import io.github.cottonmc.templates.util.SpriteSet;
-import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -10,12 +12,14 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
@@ -23,10 +27,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 import org.apache.commons.lang3.ObjectUtils;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 public class SlopeModel extends SimpleModel {
@@ -34,18 +38,23 @@ public class SlopeModel extends SimpleModel {
 	private static final ThreadLocal<Transformer> TRANSFORMERS = ThreadLocal.withInitial(Transformer::new);
 	
 	public SlopeModel(BlockState blockState) {
-		super(baseMesh(blockState), TRANSFORMERS::get, MissingSprite.getMissingSprite(), ModelHelper.MODEL_TRANSFORM_BLOCK);
+		super(
+			baseMesh(blockState),
+			TRANSFORMERS::get,
+			SpriteSet.FALLBACK,
+			ModelHelper.MODEL_TRANSFORM_BLOCK
+		);
 	}
 	
 	private static Mesh baseMesh(BlockState state) {
 		final MeshBuilder builder = RENDERER.meshBuilder();
 		final QuadEmitter quad = builder.getEmitter();
 		final Direction dir = state.get(Properties.HORIZONTAL_FACING);
-		drawSlope(quad.spriteColor(0, -1, -1, -1, -1), dir);
-		drawLeftSide(quad.spriteColor(0, -1, -1, -1, -1), dir);
-		drawRightSide(quad.spriteColor(0, -1, -1, -1, -1), dir);
-		drawBack(quad.spriteColor(0, -1, -1, -1, -1), dir);
-		drawBottom(quad.spriteColor(0, -1, -1, -1, -1));
+		drawSlope(quad.color(-1, -1, -1, -1), dir);
+		drawLeftSide(quad.color(-1, -1, -1, -1), dir);
+		drawRightSide(quad.color(-1, -1, -1, -1), dir);
+		drawBack(quad.color(-1, -1, -1, -1), dir);
+		drawBottom(quad.color(-1, -1, -1, -1));
 		return builder.build();
 	}
 	
@@ -150,9 +159,14 @@ public class SlopeModel extends SimpleModel {
 			
 			if(block == Blocks.AIR) {
 				sprites.clear();
-				material = finder.clear().blendMode(0, RenderLayer.CUTOUT).find();
+				material = finder.clear().blendMode(BlendMode.CUTOUT).find();
 			} else {
-				material = finder.clear().disableDiffuse(0, false).disableAo(0, false).blendMode(0, block.getRenderLayer()).find();
+				material = finder.clear()
+					.disableDiffuse(false)
+					.ambientOcclusion(TriState.FALSE)
+					.blendMode(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state)))
+					.find();
+				
 				BakedModel model = minecraft.getBlockRenderManager().getModel(template);
 				sprites.prepare(model, randomSupplier.get());
 				BlockColorProvider blockColor = ColorProviderRegistry.BLOCK.get(block);
@@ -181,7 +195,7 @@ public class SlopeModel extends SimpleModel {
 				
 				case TAG_SLOPE:
 					if(sprites.hasColor(Direction.UP)) {
-						quad.spriteColor(0, color, color, color, color);
+						quad.color(color, color, color, color);
 					}
 					paintSlope(quad, dir, sprites.getSprite(Direction.UP));
 					break;
@@ -190,7 +204,7 @@ public class SlopeModel extends SimpleModel {
 				case TAG_LEFT:
 					final Direction leftDir = this.dir.rotateYCounterclockwise();
 					if(sprites.hasColor(leftDir)) {
-						quad.spriteColor(0, color, color, color, color);
+						quad.color(color, color, color, color);
 					}
 					paintLeftSide(quad, dir, sprites.getSprite(leftDir));
 					break;
@@ -199,7 +213,7 @@ public class SlopeModel extends SimpleModel {
 				case TAG_RIGHT: {
 					final Direction rightDir = this.dir.rotateYClockwise();
 					if(sprites.hasColor(rightDir)) {
-						quad.spriteColor(0, color, color, color, color);
+						quad.color(color, color, color, color);
 					}
 					paintRightSide(quad, dir, sprites.getSprite(rightDir));
 					break;
@@ -207,7 +221,7 @@ public class SlopeModel extends SimpleModel {
 				
 				case TAG_BACK: {
 					if(sprites.hasColor(dir)) {
-						quad.spriteColor(0, color, color, color, color);
+						quad.color(color, color, color, color);
 					}
 					paintBack(quad, dir, sprites.getSprite(dir));
 					break;
@@ -215,7 +229,7 @@ public class SlopeModel extends SimpleModel {
 				
 				case TAG_BOTTOM: {
 					if(sprites.hasColor(Direction.DOWN)) {
-						quad.spriteColor(0, color, color, color, color);
+						quad.color(color, color, color, color);
 					}
 					paintBottom(quad, sprites.getSprite(Direction.DOWN));
 					break;
@@ -229,28 +243,28 @@ public class SlopeModel extends SimpleModel {
 		private static void paintSlope(MutableQuadView quad, Direction dir, Sprite sprite) {
 			switch(dir) {
 				case NORTH:
-					quad.sprite(0, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(1, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(2, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(3, 0, sprite.getMaxU(), sprite.getMinV());
+					quad.uv(0, sprite.getMinU(), sprite.getMinV())
+						.uv(1, sprite.getMinU(), sprite.getMaxV())
+						.uv(2, sprite.getMaxU(), sprite.getMaxV())
+						.uv(3, sprite.getMaxU(), sprite.getMinV());
 					break;
 				case SOUTH:
-					quad.sprite(0, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(2, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMaxV());
+					quad.uv(0, sprite.getMaxU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMinV())
+						.uv(2, sprite.getMinU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMaxV());
 					break;
 				case EAST:
-					quad.sprite(0, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(2, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMinV());
+					quad.uv(0, sprite.getMinU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMaxV())
+						.uv(2, sprite.getMaxU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMinV());
 					break;
 				case WEST:
-					quad.sprite(0, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(1, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(2, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(3, 0, sprite.getMaxU(), sprite.getMaxV());
+					quad.uv(0, sprite.getMaxU(), sprite.getMinV())
+						.uv(1, sprite.getMinU(), sprite.getMinV())
+						.uv(2, sprite.getMinU(), sprite.getMaxV())
+						.uv(3, sprite.getMaxU(), sprite.getMaxV());
 				default:
 					break;
 			}
@@ -259,28 +273,28 @@ public class SlopeModel extends SimpleModel {
 		private static void paintLeftSide(MutableQuadView quad, Direction dir, Sprite sprite) {
 			switch(dir) {
 				case NORTH:
-					quad.sprite(0, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(2, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMinV());
+					quad.uv(0, sprite.getMinU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMaxV())
+						.uv(2, sprite.getMaxU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMinV());
 					break;
 				case SOUTH:
-					quad.sprite(0, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(1, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(2, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(3, 0, sprite.getMaxU(), sprite.getMaxV());
+					quad.uv(0, sprite.getMaxU(), sprite.getMinV())
+						.uv(1, sprite.getMinU(), sprite.getMinV())
+						.uv(2, sprite.getMinU(), sprite.getMaxV())
+						.uv(3, sprite.getMaxU(), sprite.getMaxV());
 					break;
 				case EAST:
-					quad.sprite(0, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(2, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMinV());
+					quad.uv(0, sprite.getMinU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMaxV())
+						.uv(2, sprite.getMaxU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMinV());
 					break;
 				case WEST:
-					quad.sprite(0, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(2, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMinV());
+					quad.uv(0, sprite.getMinU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMaxV())
+						.uv(2, sprite.getMaxU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMinV());
 				default:
 					break;
 			}
@@ -289,28 +303,28 @@ public class SlopeModel extends SimpleModel {
 		private static void paintRightSide(MutableQuadView quad, Direction dir, Sprite sprite) {
 			switch(dir) {
 				case NORTH:
-					quad.sprite(0, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(2, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMaxV());
+					quad.uv(0, sprite.getMaxU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMinV())
+						.uv(2, sprite.getMinU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMaxV());
 					break;
 				case SOUTH:
-					quad.sprite(0, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(1, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(2, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(3, 0, sprite.getMaxU(), sprite.getMinV());
+					quad.uv(0, sprite.getMinU(), sprite.getMinV())
+						.uv(1, sprite.getMinU(), sprite.getMaxV())
+						.uv(2, sprite.getMaxU(), sprite.getMaxV())
+						.uv(3, sprite.getMaxU(), sprite.getMinV());
 					break;
 				case EAST:
-					quad.sprite(0, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(1, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(2, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(3, 0, sprite.getMaxU(), sprite.getMinV());
+					quad.uv(0, sprite.getMinU(), sprite.getMinV())
+						.uv(1, sprite.getMinU(), sprite.getMaxV())
+						.uv(2, sprite.getMaxU(), sprite.getMaxV())
+						.uv(3, sprite.getMaxU(), sprite.getMinV());
 					break;
 				case WEST:
-					quad.sprite(0, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(2, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMaxV());
+					quad.uv(0, sprite.getMaxU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMinV())
+						.uv(2, sprite.getMinU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMaxV());
 				default:
 					break;
 			}
@@ -319,38 +333,38 @@ public class SlopeModel extends SimpleModel {
 		private static void paintBack(MutableQuadView quad, Direction dir, Sprite sprite) {
 			switch(dir) {
 				case NORTH:
-					quad.sprite(0, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(2, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMaxV());
+					quad.uv(0, sprite.getMaxU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMinV())
+						.uv(2, sprite.getMinU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMaxV());
 					break;
 				case SOUTH:
-					quad.sprite(0, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(2, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMinV());
+					quad.uv(0, sprite.getMinU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMaxV())
+						.uv(2, sprite.getMaxU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMinV());
 					break;
 				case EAST:
-					quad.sprite(0, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(2, 0, sprite.getMinU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMaxV());
+					quad.uv(0, sprite.getMaxU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMinV())
+						.uv(2, sprite.getMinU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMaxV());
 					break;
 				case WEST:
-					quad.sprite(0, 0, sprite.getMinU(), sprite.getMaxV())
-						.sprite(1, 0, sprite.getMaxU(), sprite.getMaxV())
-						.sprite(2, 0, sprite.getMaxU(), sprite.getMinV())
-						.sprite(3, 0, sprite.getMinU(), sprite.getMinV());
+					quad.uv(0, sprite.getMinU(), sprite.getMaxV())
+						.uv(1, sprite.getMaxU(), sprite.getMaxV())
+						.uv(2, sprite.getMaxU(), sprite.getMinV())
+						.uv(3, sprite.getMinU(), sprite.getMinV());
 				default:
 					break;
 			}
 		}
 		
 		private static void paintBottom(MutableQuadView quad, Sprite sprite) {
-			quad.sprite(0, 0, sprite.getMinU(), sprite.getMaxV())
-				.sprite(1, 0, sprite.getMaxU(), sprite.getMaxV())
-				.sprite(2, 0, sprite.getMaxU(), sprite.getMinV())
-				.sprite(3, 0, sprite.getMinU(), sprite.getMinV());
+			quad.uv(0, sprite.getMinU(), sprite.getMaxV())
+				.uv(1, sprite.getMaxU(), sprite.getMaxV())
+				.uv(2, sprite.getMaxU(), sprite.getMinV())
+				.uv(3, sprite.getMinU(), sprite.getMinV());
 		}
 	}
 }

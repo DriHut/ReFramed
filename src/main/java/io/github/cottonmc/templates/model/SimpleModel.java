@@ -5,22 +5,18 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelItemPropertyOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.World;
 
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Supplier;
 
 /**
@@ -30,13 +26,9 @@ public class SimpleModel extends AbstractModel {
 	protected final Mesh mesh;
 	protected final Supplier<MeshTransformer> transformerFactory;
 	protected WeakReference<List<BakedQuad>[]> quadLists = null;
-	protected final ItemProxy itemProxy = new ItemProxy();
+	//protected final ItemProxy itemProxy = new ItemProxy();
 	
-	public SimpleModel(
-		Mesh mesh,
-		Supplier<MeshTransformer> transformerFactory,
-		Sprite sprite,
-		ModelTransformation transformation) {
+	public SimpleModel(Mesh mesh, Supplier<MeshTransformer> transformerFactory, Sprite sprite, ModelTransformation transformation) {
 		super(sprite, transformation);
 		this.mesh = mesh;
 		this.transformerFactory = transformerFactory;
@@ -73,21 +65,22 @@ public class SimpleModel extends AbstractModel {
 	}
 	
 	@Override
-	public ModelItemPropertyOverrideList getItemPropertyOverrides() {
-		return itemProxy;
+	public ModelOverrideList getOverrides() {
+		return ModelOverrideList.EMPTY;
 	}
 	
-	protected class ItemProxy extends ModelItemPropertyOverrideList {
-		public ItemProxy() {
-			super(null, null, null, Collections.emptyList());
-		}
-		
-		@Override
-		public BakedModel apply(BakedModel bakedModel_1, ItemStack itemStack_1, World world_1, LivingEntity livingEntity_1) {
-			return SimpleModel.this;
-		}
-	}
-	
+	//	@Override
+//	public ModelItemPropertyOverrideList getItemPropertyOverrides() {
+//		return itemProxy;
+//	}
+//	
+//	protected class ItemProxy extends ModelOverrideList {
+//		@Override
+//		public BakedModel apply(BakedModel bakedModel_1, ItemStack itemStack_1, World world_1, LivingEntity livingEntity_1) {
+//			return SimpleModel.this;
+//		}
+//	}
+
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
 		final MeshTransformer transform = transformerFactory == null ? null : transformerFactory.get().prepare(stack, randomSupplier);

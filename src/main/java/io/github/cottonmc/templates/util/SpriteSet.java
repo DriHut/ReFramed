@@ -7,17 +7,24 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 
 import java.util.List;
-import java.util.Random;
 
 public class SpriteSet {
 	private Object2ObjectOpenHashMap<Direction, BakedQuad> quads = new Object2ObjectOpenHashMap<>();
 	private boolean isDefault = true;
-	public static final Sprite DEFAULT = MinecraftClient.getInstance().getSpriteAtlas().getSprite(new Identifier("minecraft:block/scaffolding_top"));
-	public static final Sprite FALLBACK = MissingSprite.getMissingSprite();
+	public static final Sprite DEFAULT = findSprite(new Identifier("minecraft:block/scaffolding_top"));
+	public static final Sprite FALLBACK = findSprite(MissingSprite.getMissingSpriteId());
+	
+	private static Sprite findSprite(Identifier id) {
+		Sprite s = MinecraftClient.getInstance().getBakedModelManager().getAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).getSprite(id);
+		if(false) throw new IllegalStateException("null sprite " + id);
+		else return s;
+	}
 	
 	public SpriteSet() {
 		clear();
@@ -43,16 +50,26 @@ public class SpriteSet {
 	}
 	
 	public Sprite getSprite(Direction dir) {
+		//TODO
+		if(true) return MinecraftClient.getInstance().getBakedModelManager().getMissingModel().getParticleSprite();
+		
 		if(isDefault) return DEFAULT;
+		
 		BakedQuad quad = quads.get(dir);
 		if(quad == null) return FALLBACK;
-		return quad.getSprite();
+		
+		Sprite sprite = quad.getSprite();
+		if(sprite == null) return FALLBACK;
+		
+		return sprite;
 	}
 	
 	public boolean hasColor(Direction dir) {
 		if(isDefault) return false;
+		
 		BakedQuad quad = quads.get(dir);
 		if(quad == null) return false;
+		
 		return quad.hasColor();
 	}
 }
