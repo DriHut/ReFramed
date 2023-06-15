@@ -1,78 +1,60 @@
 buildscript {
 	repositories {
-		jcenter()
 		maven {
-			name = 'Fabric'
-			url = 'http://maven.modmuss50.me/'
+			name = "Fabric"
+			url = "https://maven.fabricmc.net/"
+			content {
+				includeGroup "net.fabricmc"
+				includeGroup "fabric-loom"
+			}
 		}
+		mavenCentral()
 	}
 	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.2.4-SNAPSHOT"
+		classpath "fabric-loom:fabric-loom.gradle.plugin:1.1.14"
 	}
 }
 
 plugins {
-	id 'java'
-	id 'eclipse'
-	id 'idea'
-	id 'maven-publish'
 	id "com.jfrog.artifactory" version "4.9.0"
 }
 
-apply plugin: net.fabricmc.loom.LoomGradlePlugin
+apply plugin: "fabric-loom"
+apply plugin: "maven-publish"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+}
+java.withSourcesJar()
 
-if(rootProject.file('private.gradle').exists()) { //Publishing details
-	apply from: 'private.gradle'
+if(rootProject.file("private.gradle").exists()) { //Publishing details
+	apply from: "private.gradle"
 }
 
 archivesBaseName = "templates"
 group = "io.github.cottonmc"
-version = "1.0.6+1.14.3"
-
-minecraft {
-	refmapName = 'mixins.templates.refmap.json'
-}
+version = "1.0.7+1.14.4"
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.14.3"
-	mappings "net.fabricmc:yarn:1.14.3+build.7"
-	modApi "net.fabricmc:fabric-loader:0.4.8+build.155"
-	modApi "net.fabricmc.fabric-api:fabric-api:0.3.0+build.191"
+	minecraft "com.mojang:minecraft:1.14.4"
+	mappings "net.fabricmc:yarn:1.14.4+build.18"
+	modApi "net.fabricmc:fabric-loader:0.14.21"
+	modApi "net.fabricmc.fabric-api:fabric-api:0.28.5+1.14"
 
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
 }
 
 processResources {
 	inputs.property "version", project.version
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand version: project.version
+	filesMatching("**/fabric.mod.json") {
+		expand "version": project.version
 	}
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
-	}
-}
-
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
-}
-
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
 }
 
 jar {
@@ -80,6 +62,7 @@ jar {
 }
 
 // configure the maven publication
+// TODO: i'm far from a maven guru, this is probably broken & idk how to fix it -quat
 publishing {
 	publications {
 		maven(MavenPublication) {
