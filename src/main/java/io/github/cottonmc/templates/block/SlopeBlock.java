@@ -6,7 +6,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.item.*;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
@@ -28,11 +28,11 @@ public class SlopeBlock extends TemplateBlock {
 
 	public SlopeBlock() {
 		super(FabricBlockSettings.of(Material.WOOD).build());
-		this.setDefaultState(this.getStateFactory().getDefaultState().with(FACING, Direction.NORTH).with(LIGHT, 0).with(REDSTONE, false));
+		this.setDefaultState(this.getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(LIGHT, 0).with(REDSTONE, false));
 	}
 
 	@Override
-	protected void appendProperties(StateFactory.Builder<Block, BlockState> builder) {
+	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		builder.add(FACING, LIGHT, REDSTONE);
 	}
 

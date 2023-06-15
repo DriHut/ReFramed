@@ -10,9 +10,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.TagHelper;
 import net.minecraft.util.math.Direction;
 
 public abstract class TemplateEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity {
@@ -38,19 +39,22 @@ public abstract class TemplateEntity extends BlockEntity implements BlockEntityC
 	@Override
 	public void fromTag(CompoundTag tag) {
 		super.fromTag(tag);
-		if (tag.containsKey("BlockState", NbtType.COMPOUND)) renderedState = TagHelper.deserializeBlockState(tag.getCompound("BlockState"));
+		if (tag.contains("BlockState", NbtType.COMPOUND)) renderedState = NbtHelper.toBlockState(tag.getCompound("BlockState"));
 		else renderedState = BlockStateUtil.fromTag(tag);
 		glowstone = tag.getBoolean("Glowstone");
 		redstone = tag.getBoolean("Redstone");
 		if (world != null && world.isClient) {
-			world.scheduleBlockRender(pos);
+			//TODO probably unsafe, i think the method was removed in 1.14.4 or something though
+			// i cant find any relevant method that takes only 1 blockpos argument
+			((ClientWorld)world).scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ());
+			//world.scheduleBlockRender(pos);
 		}
 	}
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
 		super.toTag(tag);
-		tag.put("BlockState", TagHelper.serializeBlockState(renderedState));
+		tag.put("BlockState", NbtHelper.fromBlockState(renderedState));
 		tag.putBoolean("Glowstone", glowstone);
 		tag.putBoolean("Redstone", redstone);
 		return tag;

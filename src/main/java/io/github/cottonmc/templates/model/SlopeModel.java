@@ -3,6 +3,8 @@ package io.github.cottonmc.templates.model;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.world.BlockRenderView;
 import org.apache.commons.lang3.ObjectUtils;
 
 import io.github.cottonmc.templates.util.SpriteSet;
@@ -16,7 +18,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -28,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.ExtendedBlockView;
 
 public class SlopeModel extends SimpleModel {
 
@@ -143,7 +143,7 @@ public class SlopeModel extends SimpleModel {
         private RenderMaterial material;
         
         @Override
-        public MeshTransformer prepare(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier) {
+        public MeshTransformer prepare(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier) {
             dir = state.get(Properties.HORIZONTAL_FACING);
             color = 0xffffff;
             final BlockState template =  ObjectUtils.defaultIfNull((BlockState) ((RenderAttachedBlockView)blockView).getBlockEntityRenderAttachment(pos), Blocks.AIR.getDefaultState());
@@ -151,7 +151,7 @@ public class SlopeModel extends SimpleModel {
             
             if(block == Blocks.AIR) {
                 sprites.clear();
-                material = finder.clear().blendMode(0, BlockRenderLayer.CUTOUT).find();
+                material = finder.clear().blendMode(0, RenderLayer.CUTOUT).find();
             } else {
                 material = finder.clear().disableDiffuse(0, false).disableAo(0, false).blendMode(0, block.getRenderLayer()).find();
                 BakedModel model = minecraft.getBlockRenderManager().getModel(template);

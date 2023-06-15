@@ -26,7 +26,7 @@ public abstract class AbstractModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean hasDepthInGui() {
+    public boolean hasDepth() {
         return true;
     }
 
