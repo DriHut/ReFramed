@@ -16,7 +16,7 @@ public class Templates implements ModInitializer {
 
 	public static final Block SLOPE = register("slope", new SlopeBlock(), ItemGroup.DECORATIONS);
 	@SuppressWarnings("unchecked")
-    public static final BlockEntityType<SlopeEntity> SLOPE_ENTITY = register("slope", SlopeEntity::new, SLOPE);
+	public static final BlockEntityType<SlopeEntity> SLOPE_ENTITY = register("slope", SlopeEntity::new, SLOPE);
 
 	@Override
 	public void onInitialize() {
@@ -31,7 +31,7 @@ public class Templates implements ModInitializer {
 	}
 
 	@SuppressWarnings("rawtypes")
-    public static BlockEntityType register(String name, Supplier<BlockEntity> be, Block...blocks) {
+	public static BlockEntityType register(String name, Supplier<BlockEntity> be, Block...blocks) {
 		return Registry.register(Registry.BLOCK_ENTITY, new Identifier(MODID, name), BlockEntityType.Builder.create(be, blocks).build(null));
 	}
 
@@ -39,5 +39,4 @@ public class Templates implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier(MODID, name), item);
 		return item;
 	}
-
 }

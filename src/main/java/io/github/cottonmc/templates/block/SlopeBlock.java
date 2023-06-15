@@ -1,7 +1,7 @@
 package io.github.cottonmc.templates.block;
 
 import io.github.cottonmc.templates.block.entity.SlopeEntity;
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityContext;
@@ -27,7 +27,7 @@ public class SlopeBlock extends TemplateBlock {
 	public static final VoxelShape WEST = VoxelShapes.cuboid(0f, 0.5f, 0f, 0.5f, 1f, 1f);
 
 	public SlopeBlock() {
-		super(FabricBlockSettings.of(Material.WOOD).build());
+		super(FabricBlockSettings.of(Material.WOOD));
 		this.setDefaultState(this.getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(LIGHT, 0).with(REDSTONE, false));
 	}
 

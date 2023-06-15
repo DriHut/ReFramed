@@ -1,8 +1,8 @@
 package io.github.cottonmc.templates.block.entity;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -18,7 +18,7 @@ public abstract class TemplateEntity extends BlockEntity implements BlockEntityC
 	protected BlockState renderedState = Blocks.AIR.getDefaultState();
 	protected boolean glowstone = false;
 	protected boolean redstone = false;
-	private Block baseBlock;
+	private final Block baseBlock;
 
 	public TemplateEntity(BlockEntityType<?> type, Block baseBlock) {
 		super(type);
@@ -71,8 +71,7 @@ public abstract class TemplateEntity extends BlockEntity implements BlockEntityC
 	public void markDirty() {
 		super.markDirty();
 		if (world != null && !world.isClient) {
-			for (Object obj : PlayerStream.watching(this).toArray()) {
-				ServerPlayerEntity player = (ServerPlayerEntity) obj;
+			for(ServerPlayerEntity player : PlayerLookup.tracking(this)) {
 				player.networkHandler.sendPacket(this.toUpdatePacket());
 			}
 			world.updateNeighborsAlways(pos.offset(Direction.UP), baseBlock);
