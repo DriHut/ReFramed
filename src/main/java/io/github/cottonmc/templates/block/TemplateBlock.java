@@ -3,7 +3,6 @@ package io.github.cottonmc.templates.block;
 import io.github.cottonmc.templates.Templates;
 import io.github.cottonmc.templates.block.entity.TemplateEntity;
 import io.github.cottonmc.templates.util.StateContainer;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -35,7 +34,9 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	}
 	
 	public static Settings configureSettings(Settings s) {
-		return s.luminance(state -> ((TemplateBlock) state.getBlock()).luminance(state));
+		return s
+			.luminance(state -> ((TemplateBlock) state.getBlock()).luminance(state))
+			.nonOpaque();
 	}
 	
 	@Override
@@ -46,7 +47,7 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 		if(stack.getItem() instanceof BlockItem) {
 			Block block = ((BlockItem) stack.getItem()).getBlock();
 			if(block == Blocks.REDSTONE_TORCH) {
-				be.addRedstone();
+				be.setRedstone(true);
 				if(!player.isCreative()) stack.decrement(1);
 			}
 			ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
@@ -60,7 +61,7 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 				if(!player.isCreative()) stack.decrement(1);
 			}
 		} else if(stack.getItem() == Items.GLOWSTONE_DUST) {
-			be.addGlowstone();
+			be.setGlowstone(true);
 			if(!player.isCreative()) stack.decrement(1);
 		}
 		return ActionResult.SUCCESS;

@@ -10,10 +10,14 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public abstract class TemplateEntity extends BlockEntity implements RenderAttachmentBlockEntity {
 	protected BlockState renderedState = Blocks.AIR.getDefaultState();
@@ -24,15 +28,6 @@ public abstract class TemplateEntity extends BlockEntity implements RenderAttach
 	public TemplateEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, Block baseBlock) {
 		super(type, pos, state);
 		this.baseBlock = baseBlock;
-	}
-	
-	public BlockState getRenderedState() {
-		return renderedState;
-	}
-	
-	public void setRenderedState(BlockState state) {
-		this.renderedState = state;
-		markDirty();
 	}
 	
 	@Override
@@ -57,17 +52,15 @@ public abstract class TemplateEntity extends BlockEntity implements RenderAttach
 		tag.putBoolean("Redstone", redstone);
 	}
 	
+	@Nullable
 	@Override
-	public void markDirty() {
-		super.markDirty();
-		if(world != null && !world.isClient) {
-			for(ServerPlayerEntity player : PlayerLookup.tracking(this)) {
-				player.networkHandler.sendPacket(this.toUpdatePacket());
-			}
-			world.updateNeighborsAlways(pos.offset(Direction.UP), baseBlock);
-			BlockState state = world.getBlockState(pos);
-			world.updateListeners(pos, state, state, 1);
-		}
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
+	}
+	
+	@Override
+	public NbtCompound toInitialChunkDataNbt() {
+		return createNbt();
 	}
 	
 	@Override
@@ -75,21 +68,44 @@ public abstract class TemplateEntity extends BlockEntity implements RenderAttach
 		return renderedState;
 	}
 	
+	public void change() {
+		markDirty();
+		if(world != null && !world.isClient) {
+			//for(ServerPlayerEntity player : PlayerLookup.tracking(this)) player.networkHandler.sendPacket(this.toUpdatePacket());
+			
+			//TODO is this needed
+			//world.updateNeighborsAlways(pos.offset(Direction.UP), baseBlock);
+			world.updateListeners(pos, getCachedState(), getCachedState(), 3);
+		}
+	}
+	
+	public BlockState getRenderedState() {
+		return renderedState;
+	}
+	
+	public void setRenderedState(BlockState newState) {
+		BlockState lastState = renderedState;
+		renderedState = newState;
+		if(!Objects.equals(lastState, newState)) change();
+	}
+	
 	public boolean hasGlowstone() {
 		return glowstone;
 	}
 	
-	public void addGlowstone() {
-		glowstone = true;
-		markDirty();
+	public void setGlowstone(boolean newGlowstone) {
+		boolean lastGlowstone = glowstone;
+		glowstone = newGlowstone;
+		if(lastGlowstone != newGlowstone) change();
 	}
 	
 	public boolean hasRedstone() {
 		return redstone;
 	}
 	
-	public void addRedstone() {
-		redstone = true;
-		markDirty();
+	public void setRedstone(boolean newRedstone) {
+		boolean lastRedstone = redstone;
+		redstone = newRedstone;
+		if(lastRedstone != newRedstone) change();
 	}
 }
