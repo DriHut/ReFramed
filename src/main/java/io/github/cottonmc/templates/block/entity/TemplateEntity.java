@@ -1,46 +1,45 @@
 package io.github.cottonmc.templates.block.entity;
 
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import io.github.cottonmc.templates.Templates;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public abstract class TemplateEntity extends BlockEntity implements RenderAttachmentBlockEntity {
+public class TemplateEntity extends BlockEntity implements RenderAttachmentBlockEntity {
 	protected BlockState renderedState = Blocks.AIR.getDefaultState();
 	protected boolean glowstone = false;
 	protected boolean redstone = false;
-	private final Block baseBlock;
 	
-	public TemplateEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, Block baseBlock) {
+	public TemplateEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		this.baseBlock = baseBlock;
 	}
 	
 	@Override
 	public void readNbt(NbtCompound tag) {
 		super.readNbt(tag);
+		
+		BlockState lastRenderedState = renderedState;
+		
 		renderedState = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound("BlockState"));
 		glowstone = tag.getBoolean("Glowstone");
 		redstone = tag.getBoolean("Redstone");
-		if(world != null && world.isClient) {
-			//TODO probably unsafe, i think the method was removed in 1.14.4 or something though
-			// i cant find any relevant method that takes only 1 blockpos argument
-			((ClientWorld) world).scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ());
-			//world.scheduleBlockRender(pos);
+		
+		//Force a chunk remesh on the client, if the displayed blockstate has changed
+		if(world != null && world.isClient && !Objects.equals(lastRenderedState, renderedState)) {
+			Templates.chunkRerenderProxy.accept(world, pos);
 		}
 	}
 	
@@ -70,13 +69,7 @@ public abstract class TemplateEntity extends BlockEntity implements RenderAttach
 	
 	public void change() {
 		markDirty();
-		if(world != null && !world.isClient) {
-			//for(ServerPlayerEntity player : PlayerLookup.tracking(this)) player.networkHandler.sendPacket(this.toUpdatePacket());
-			
-			//TODO is this needed
-			//world.updateNeighborsAlways(pos.offset(Direction.UP), baseBlock);
-			world.updateListeners(pos, getCachedState(), getCachedState(), 3);
-		}
+		if(world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos); //dispatch to clients
 	}
 	
 	public BlockState getRenderedState() {
@@ -106,6 +99,9 @@ public abstract class TemplateEntity extends BlockEntity implements RenderAttach
 	public void setRedstone(boolean newRedstone) {
 		boolean lastRedstone = redstone;
 		redstone = newRedstone;
-		if(lastRedstone != newRedstone) change();
+		if(lastRedstone != newRedstone) {
+			world.updateNeighbors(pos, getCachedState().getBlock());
+			change();
+		}
 	}
 }

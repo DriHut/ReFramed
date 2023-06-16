@@ -14,7 +14,6 @@ Template blocks can be placed in the world, then right-clicked with a full-size 
 
 # quat was here - TODO
 
-* Schedule chunk rerenders when a player edits a template block :sweat_smile:
 * Re-generalize the model system (I removed a layer of indirection while rewriting it, so it's just slopes now)
 * See what I can do about using the vanilla rotation system (`ModelBakeSettings.getRotation`) instead of manually rotating the `Mesh`
   * A simplification of the mesh system would *definitely* reduce the friction of adding new meshes
