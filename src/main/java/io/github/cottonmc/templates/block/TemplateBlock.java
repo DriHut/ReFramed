@@ -2,7 +2,6 @@ package io.github.cottonmc.templates.block;
 
 import io.github.cottonmc.templates.Templates;
 import io.github.cottonmc.templates.block.entity.TemplateEntity;
-import io.github.cottonmc.templates.util.StateContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -25,7 +24,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public abstract class TemplateBlock extends Block implements BlockEntityProvider, StateContainer {
+public abstract class TemplateBlock extends Block implements BlockEntityProvider {
 	public static final IntProperty LIGHT = IntProperty.of("light", 0, 15);
 	public static final BooleanProperty REDSTONE = BooleanProperty.of("redstone");
 	
@@ -129,19 +128,6 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 			return beState.getStrongRedstonePower(view, pos, dir);
 		}
 		return 0;
-	}
-	
-	@Override
-	public BlockState getContainedState(World world, BlockPos pos) {
-		BlockEntity be = world.getBlockEntity(pos);
-		if(be instanceof TemplateEntity) return ((TemplateEntity) be).getRenderedState();
-		return Blocks.AIR.getDefaultState();
-	}
-	
-	@Override
-	public void setContainedState(World world, BlockPos pos, BlockState state) {
-		BlockEntity be = world.getBlockEntity(pos);
-		if(be instanceof TemplateEntity) ((TemplateEntity) be).setRenderedState(state);
 	}
 	
 	//TODO: pass to Block.Settings

@@ -1,4 +1,4 @@
-package io.github.cottonmc.templates.util;
+package io.github.cottonmc.templates.model;
 
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
