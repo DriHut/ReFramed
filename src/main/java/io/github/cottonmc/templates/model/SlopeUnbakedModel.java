@@ -28,7 +28,7 @@ public record SlopeUnbakedModel(BlockState slopeState) implements UnbakedModel {
 	
 	@Override
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> function, ModelBakeSettings modelBakeSettings, Identifier identifier) {
-		//TODO: weird, should use my own model instead of STONE
+		//TODO: weird, should use my own model instead
 		BakedModel baseModel = baker.bake(BlockModels.getModelId(Blocks.SANDSTONE_STAIRS.getDefaultState()), modelBakeSettings);
 		
 		return new SlopeBakedModel(baseModel, slopeState, function);

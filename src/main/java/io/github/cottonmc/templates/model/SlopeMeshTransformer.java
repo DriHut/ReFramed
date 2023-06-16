@@ -61,7 +61,7 @@ public class SlopeMeshTransformer implements MeshTransformer {
 				.find();
 			
 			BakedModel model = minecraft.getBlockRenderManager().getModel(template);
-			sprites.prepare(model, randomSupplier.get());
+			sprites.inspect(model, randomSupplier.get());
 			BlockColorProvider blockColor = ColorProviderRegistry.BLOCK.get(block);
 			if(blockColor != null) color = 0xff000000 | blockColor.getColor(template, blockView, pos, 1);
 		}

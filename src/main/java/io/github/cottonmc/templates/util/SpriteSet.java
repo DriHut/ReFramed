@@ -11,6 +11,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 
@@ -33,7 +34,9 @@ public class SpriteSet {
 	private final Sprite defaultSprite;
 	private final Sprite missingSprite;
 	
-	private final EnumMap<Direction, BakedQuad> quads = new EnumMap<>(Direction.class);
+	private final EnumMap<Direction, Sprite> sprites = new EnumMap<>(Direction.class);
+	private final EnumSet<Direction> hasColor = EnumSet.noneOf(Direction.class);
+	
 	private boolean isDefault = true;
 	
 	/** Allow re-use of instances to avoid allocation in render loop */
@@ -43,34 +46,34 @@ public class SpriteSet {
 	
 	/** Allow re-use of instances to avoid allocation in render loop */
 	//TODO: pass in block state?
-	public void prepare(BakedModel model, Random rand) {
-		this.quads.clear();
+	public void inspect(BakedModel model, Random rand) {
+		sprites.clear();
+		hasColor.clear();
 		isDefault = false;
 		
 		for(Direction dir : DIRECTIONS) {
-			List<BakedQuad> quads = model.getQuads(null, dir, rand);
-			if(!quads.isEmpty()) this.quads.put(dir, quads.get(0));
+			List<BakedQuad> sideQuads = model.getQuads(null, dir, rand);
+			if(sideQuads.isEmpty()) continue;
+			
+			BakedQuad arbitraryQuad = sideQuads.get(0); //maybe pick a largest quad instead?
+			if(arbitraryQuad == null) continue;
+			
+			if(arbitraryQuad.hasColor()) hasColor.add(dir);
+			
+			Sprite sprite = arbitraryQuad.getSprite();
+			if(sprite == null) continue;
+			
+			sprites.put(dir, sprite);
 		}
 	}
 	
 	public Sprite getSprite(Direction dir) {
 		if(isDefault) return defaultSprite;
-		
-		BakedQuad quad = quads.get(dir);
-		if(quad == null) return missingSprite;
-		
-		Sprite sprite = quad.getSprite();
-		if(sprite == null) return missingSprite;
-		
-		return sprite;
+		else return sprites.getOrDefault(dir, missingSprite);
 	}
 	
 	public boolean hasColor(Direction dir) {
 		if(isDefault) return false;
-		
-		BakedQuad quad = quads.get(dir);
-		if(quad == null) return false;
-		
-		return quad.hasColor();
+		else return hasColor.contains(dir);
 	}
 }

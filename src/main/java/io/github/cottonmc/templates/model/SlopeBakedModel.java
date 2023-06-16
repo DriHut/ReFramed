@@ -19,14 +19,12 @@ public final class SlopeBakedModel extends ForwardingBakedModel {
 	public SlopeBakedModel(BakedModel baseModel, BlockState slopeState, Function<SpriteIdentifier, Sprite> spriteLookup) {
 		this.wrapped = baseModel;
 		this.slopeState = slopeState;
-		this.spriteLookup = spriteLookup;
 		
 		this.xform = new SlopeMeshTransformer(spriteLookup);
 		this.baseMesh = SlopeBaseMesh.make(slopeState);
 	}
 	
 	public final BlockState slopeState;
-	public final Function<SpriteIdentifier, Sprite> spriteLookup;
 	
 	private final MeshTransformer xform;
 	private final Mesh baseMesh;
