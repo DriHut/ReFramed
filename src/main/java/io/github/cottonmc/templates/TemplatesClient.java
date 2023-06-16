@@ -51,7 +51,7 @@ public class TemplatesClient implements ClientModInitializer {
 			//block
 			Templates.SLOPE,
 			//the blockstate you'd like the item model to show
-			Templates.SLOPE.getDefaultState().with(SlopeBlock.FACING, Direction.SOUTH),
+			Templates.SLOPE.getDefaultState().with(SlopeBlock.FACING, Direction.EAST),
 			//Function<BlockState, UnbakedModel> that creates your model
 			SlopeUnbakedModel::new
 		);
