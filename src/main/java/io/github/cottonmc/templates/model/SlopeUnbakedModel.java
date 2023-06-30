@@ -1,6 +1,5 @@
 package io.github.cottonmc.templates.model;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.BakedModel;
@@ -15,7 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
-public record SlopeUnbakedModel(BlockState slopeState) implements UnbakedModel {
+public class SlopeUnbakedModel implements UnbakedModel {
 	@Override
 	public Collection<Identifier> getModelDependencies() {
 		return Collections.emptyList();
@@ -28,10 +27,9 @@ public record SlopeUnbakedModel(BlockState slopeState) implements UnbakedModel {
 	
 	@Override
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> function, ModelBakeSettings modelBakeSettings, Identifier identifier) {
-		//TODO: weird, should use my own model instead
+		//TODO: this is weird, should use my own model instead
 		BakedModel baseModel = baker.bake(BlockModels.getModelId(Blocks.SANDSTONE_STAIRS.getDefaultState()), modelBakeSettings);
 		
-		//TODO: ModelBakeSettings.getRotation is always the identity transform atm
-		return new SlopeBakedModel(baseModel, slopeState, modelBakeSettings.getRotation(), function);
+		return new SlopeBakedModel(baseModel, function, modelBakeSettings.getRotation());
 	}
 }

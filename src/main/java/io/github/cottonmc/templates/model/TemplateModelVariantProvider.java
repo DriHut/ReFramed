@@ -2,34 +2,29 @@ package io.github.cottonmc.templates.model;
 
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
-import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.block.BlockModels;
+import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class TemplateModelVariantProvider implements ModelVariantProvider {
-	private final Map<ModelIdentifier, Supplier<UnbakedModel>> factories = new HashMap<>();
-	private final Map<ModelIdentifier, UnbakedModel> cache = new HashMap<>();
+public class TemplateModelVariantProvider implements ModelResourceProvider {
+	private final Map<Identifier, Supplier<UnbakedModel>> factories = new HashMap<>();
+	private final Map<Identifier, UnbakedModel> cache = new HashMap<>();
 	
 	@Override
-	public @Nullable UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException {
-		UnbakedModel cacheResult = cache.get(modelId);
+	public @Nullable UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException {
+		UnbakedModel cacheResult = cache.get(resourceId);
 		if(cacheResult != null) return cacheResult;
 		
 		//Either we have a factory for this model (just haven't cached its output yet),
-		Supplier<UnbakedModel> factory = factories.get(modelId);
+		Supplier<UnbakedModel> factory = factories.get(resourceId);
 		if(factory != null) {
 			UnbakedModel freshModel = factory.get();
-			cache.put(modelId, freshModel);
+			cache.put(resourceId, freshModel);
 			return freshModel;
 		}
 		
@@ -37,9 +32,8 @@ public class TemplateModelVariantProvider implements ModelVariantProvider {
 		return null;
 	}
 	
-	public void registerTemplateModels(Block block, BlockState itemState, Function<BlockState, UnbakedModel> model) {
-		for(BlockState state : block.getStateManager().getStates()) factories.put(BlockModels.getModelId(state), () -> model.apply(state));
-		factories.put(new ModelIdentifier(Registries.ITEM.getId(block.asItem()), "inventory"), () -> model.apply(itemState));
+	public void addTemplateModel(Identifier id, Supplier<UnbakedModel> modelFactory) {
+		factories.put(id, modelFactory);
 	}
 	
 	public void dumpCache() {

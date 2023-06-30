@@ -1,6 +1,5 @@
 package io.github.cottonmc.templates;
 
-import io.github.cottonmc.templates.block.SlopeBlock;
 import io.github.cottonmc.templates.model.SlopeUnbakedModel;
 import io.github.cottonmc.templates.model.TemplateModelVariantProvider;
 import net.fabricmc.api.ClientModInitializer;
@@ -14,7 +13,6 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.util.math.Direction;
 
 public class TemplatesClient implements ClientModInitializer {
 	public static TemplateModelVariantProvider provider = new TemplateModelVariantProvider();
@@ -43,17 +41,10 @@ public class TemplatesClient implements ClientModInitializer {
 			}
 		});
 		
-		ModelLoadingRegistry.INSTANCE.registerVariantProvider(rm -> provider);
+		ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> provider);
+		
 		BlockRenderLayerMap.INSTANCE.putBlock(Templates.SLOPE, RenderLayer.getCutout());
 		
-		//ADDON DEVELOEPRS: do this!
-		provider.registerTemplateModels(
-			//block
-			Templates.SLOPE,
-			//the blockstate you'd like the item model to show
-			Templates.SLOPE.getDefaultState().with(SlopeBlock.FACING, Direction.EAST),
-			//Function<BlockState, UnbakedModel> that creates your model
-			SlopeUnbakedModel::new
-		);
+		provider.addTemplateModel(Templates.id("slope_special"), SlopeUnbakedModel::new);
 	}
 }

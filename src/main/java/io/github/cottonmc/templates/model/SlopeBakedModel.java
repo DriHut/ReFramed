@@ -17,12 +17,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class SlopeBakedModel extends ForwardingBakedModel {
-	public SlopeBakedModel(BakedModel baseModel, BlockState slopeState, AffineTransformation aff, Function<SpriteIdentifier, Sprite> spriteLookup) {
+	public SlopeBakedModel(BakedModel baseModel, Function<SpriteIdentifier, Sprite> spriteLookup, AffineTransformation aff) {
 		this.wrapped = baseModel;
 		
 		this.preparer = new SlopeMeshTransformPreparer(spriteLookup);
 		this.affineTransformer = new AffineQuadTransformer(aff);
-		this.baseMesh = SlopeBaseMesh.make(slopeState.getBlock().getDefaultState()); //TODO
+		this.baseMesh = SlopeBaseMesh.make();
 	}
 	
 	private final TemplateQuadTransformPreparer preparer;

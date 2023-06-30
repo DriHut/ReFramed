@@ -1,0 +1,19 @@
+{
+	"variants": {
+		"facing=east": {
+			"model": "templates:slope_special",
+			"y": 270
+		},
+		"facing=north": {
+			"model": "templates:slope_special",
+			"y": 180
+		},
+		"facing=south": {
+			"model": "templates:slope_special"
+		},
+		"facing=west": {
+			"model": "templates:slope_special",
+			"y": 90
+		}
+	}
+}
