@@ -1,6 +1,7 @@
 package io.github.cottonmc.templates.model;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
@@ -30,11 +31,14 @@ import java.util.function.Supplier;
 public class SlopeMeshTransformer implements MeshTransformer {
 	public SlopeMeshTransformer(Function<SpriteIdentifier, Sprite> spriteLookup) {
 		this.sprites = new SpriteSet(spriteLookup);
+		
+		Renderer r = RendererAccess.INSTANCE.getRenderer();
+		if(r == null) throw new IllegalStateException("A Fabric Rendering API implementation is required");
+		this.finder = r.materialFinder();
 	}
 	
-	private final MinecraftClient minecraft = MinecraftClient.getInstance();
 	private final SpriteSet sprites;
-	private final MaterialFinder finder = RendererAccess.INSTANCE.getRenderer().materialFinder();
+	private final MaterialFinder finder;
 	
 	private int color;
 	private Direction dir;
@@ -59,11 +63,12 @@ public class SlopeMeshTransformer implements MeshTransformer {
 				.blendMode(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state)))
 				.find();
 			
-			BakedModel model = minecraft.getBlockRenderManager().getModel(template);
+			BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(template);
 			sprites.inspect(model, randomSupplier.get());
 			BlockColorProvider blockColor = ColorProviderRegistry.BLOCK.get(block);
 			if(blockColor != null) color = 0xff000000 | blockColor.getColor(template, blockView, pos, 1);
 		}
+		
 		return this;
 	}
 	
@@ -73,6 +78,7 @@ public class SlopeMeshTransformer implements MeshTransformer {
 		color = 0xffffff;
 		sprites.clear();
 		material = finder.clear().find();
+		
 		return this;
 	}
 	
