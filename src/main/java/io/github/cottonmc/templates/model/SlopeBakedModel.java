@@ -18,15 +18,12 @@ import java.util.function.Supplier;
 public final class SlopeBakedModel extends ForwardingBakedModel {
 	public SlopeBakedModel(BakedModel baseModel, BlockState slopeState, Function<SpriteIdentifier, Sprite> spriteLookup) {
 		this.wrapped = baseModel;
-		this.slopeState = slopeState;
 		
-		this.xform = new SlopeMeshTransformer(spriteLookup);
+		this.preparer = new SlopeMeshTransformPreparer(spriteLookup);
 		this.baseMesh = SlopeBaseMesh.make(slopeState);
 	}
 	
-	public final BlockState slopeState;
-	
-	private final MeshTransformer xform;
+	private final TemplateQuadTransformPreparer preparer;
 	private final Mesh baseMesh;
 	
 	@Override
@@ -36,27 +33,15 @@ public final class SlopeBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		MeshTransformer xform2 = xform.prepare(blockView, state, pos, randomSupplier);
-		
-		if(xform2 != null) {
-			context.pushTransform(xform2);
-			context.meshConsumer().accept(baseMesh);
-			context.popTransform();
-		} else {
-			context.meshConsumer().accept(baseMesh);
-		}
+		context.pushTransform(preparer.blockTransformer(blockView, state, pos, randomSupplier));
+		context.meshConsumer().accept(baseMesh);
+		context.popTransform();
 	}
 	
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		MeshTransformer xform2 = xform.prepare(stack, randomSupplier);
-		
-		if(xform2 != null) {
-			context.pushTransform(xform2);
-			context.meshConsumer().accept(baseMesh);
-			context.popTransform();
-		} else {
-			context.meshConsumer().accept(baseMesh);
-		}
+		context.pushTransform(preparer.itemTransformer(stack, randomSupplier));
+		context.meshConsumer().accept(baseMesh);
+		context.popTransform();
 	}
 }

@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Block;
@@ -28,8 +29,8 @@ import net.minecraft.world.BlockRenderView;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class SlopeMeshTransformer implements MeshTransformer {
-	public SlopeMeshTransformer(Function<SpriteIdentifier, Sprite> spriteLookup) {
+public class SlopeMeshTransformPreparer implements TemplateQuadTransformPreparer, RenderContext.QuadTransform {
+	public SlopeMeshTransformPreparer(Function<SpriteIdentifier, Sprite> spriteLookup) {
 		this.sprites = new SpriteSet(spriteLookup);
 		
 		Renderer r = RendererAccess.INSTANCE.getRenderer();
@@ -45,7 +46,7 @@ public class SlopeMeshTransformer implements MeshTransformer {
 	private RenderMaterial material;
 	
 	@Override
-	public MeshTransformer prepare(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier) {
+	public RenderContext.QuadTransform blockTransformer(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier) {
 		dir = state.get(Properties.HORIZONTAL_FACING);
 		color = 0xffffff;
 		
@@ -73,7 +74,7 @@ public class SlopeMeshTransformer implements MeshTransformer {
 	}
 	
 	@Override
-	public MeshTransformer prepare(ItemStack stack, Supplier<Random> randomSupplier) {
+	public RenderContext.QuadTransform itemTransformer(ItemStack stack, Supplier<Random> randomSupplier) {
 		dir = Direction.NORTH;
 		color = 0xffffff;
 		sprites.clear();

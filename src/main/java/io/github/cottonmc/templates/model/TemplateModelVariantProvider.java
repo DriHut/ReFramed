@@ -21,7 +21,7 @@ public class TemplateModelVariantProvider implements ModelVariantProvider {
 	private final Map<ModelIdentifier, UnbakedModel> cache = new HashMap<>();
 	
 	@Override
-	public UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException {
+	public @Nullable UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException {
 		UnbakedModel cacheResult = cache.get(modelId);
 		if(cacheResult != null) return cacheResult;
 		
