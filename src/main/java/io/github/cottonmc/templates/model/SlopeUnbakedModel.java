@@ -31,6 +31,7 @@ public record SlopeUnbakedModel(BlockState slopeState) implements UnbakedModel {
 		//TODO: weird, should use my own model instead
 		BakedModel baseModel = baker.bake(BlockModels.getModelId(Blocks.SANDSTONE_STAIRS.getDefaultState()), modelBakeSettings);
 		
-		return new SlopeBakedModel(baseModel, slopeState, function);
+		//TODO: ModelBakeSettings.getRotation is always the identity transform atm
+		return new SlopeBakedModel(baseModel, slopeState, modelBakeSettings.getRotation(), function);
 	}
 }
