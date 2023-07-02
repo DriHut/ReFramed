@@ -1,5 +1,6 @@
 package io.github.cottonmc.templates.model;
 
+import io.github.cottonmc.templates.TemplatesClient;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -18,8 +19,7 @@ public class SlopeBaseMesh {
 	public static final int TAG_BOTTOM = Direction.DOWN.ordinal();
 	
 	public static Mesh make() {
-		Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-		if(renderer == null) throw new IllegalStateException("RenderAccess.INSTANCE not populated - no Fabric Renderer API?");
+		Renderer renderer = TemplatesClient.getFabricRenderer();
 		
 		MeshBuilder builder = renderer.meshBuilder();
 		QuadEmitter qu = builder.getEmitter();
