@@ -64,112 +64,50 @@ public class SlopeQuadTransformFactory implements TemplateQuadTransformFactory {
 			else globalTint = 0xFFFFFF;
 		}
 		
-		return new Transformer(dir, appearance, material, globalTint);
+		return new Transformer(appearance, material, globalTint);
 	}
 	
 	@Override
 	public @NotNull RenderContext.QuadTransform itemTransformer(ItemStack stack, Supplier<Random> randomSupplier) {
-		return new Transformer(Direction.EAST, tam.getDefaultAppearance(), r.materialFinder().clear().find(), 0xFFFFFF);
+		return new Transformer(tam.getDefaultAppearance(), r.materialFinder().clear().find(), 0xFFFFFF);
 	}
 	
-	private static record Transformer(Direction dir, TemplateAppearance appearance, RenderMaterial material, int color) implements RenderContext.QuadTransform {
+	private static record Transformer(TemplateAppearance appearance, RenderMaterial material, int color) implements RenderContext.QuadTransform {
 		@Override
 		public boolean transform(MutableQuadView quad) {
 			quad.material(material);
 			
+			Sprite sprite = null;
+			
+			//TODO: this newly-simplified direction passing in hasColor is almost certainly incorrect
+			
 			switch(quad.tag()) {
 				case SlopeBaseMesh.TAG_SLOPE -> {
 					if(appearance.hasColor(Direction.UP)) quad.color(color, color, color, color);
-					paintSlope(quad, appearance.getSprite(Direction.UP));
+					sprite = appearance.getSprite(Direction.UP);
 				}
 				case SlopeBaseMesh.TAG_LEFT -> {
-					final Direction leftDir = this.dir.rotateYCounterclockwise();
-					if(appearance.hasColor(leftDir)) quad.color(color, color, color, color);
-					paintLeftSide(quad, appearance.getSprite(leftDir));
+					if(appearance.hasColor(Direction.EAST)) quad.color(color, color, color, color);
+					sprite = appearance.getSprite(Direction.EAST);
 				}
 				case SlopeBaseMesh.TAG_RIGHT -> {
-					final Direction rightDir = this.dir.rotateYClockwise();
-					if(appearance.hasColor(rightDir)) quad.color(color, color, color, color);
-					paintRightSide(quad, appearance.getSprite(rightDir));
+					if(appearance.hasColor(Direction.WEST)) quad.color(color, color, color, color);
+					sprite = appearance.getSprite(Direction.WEST);
 				}
 				case SlopeBaseMesh.TAG_BACK -> {
-					if(appearance.hasColor(dir)) quad.color(color, color, color, color);
-					paintBack(quad, appearance.getSprite(dir));
+					if(appearance.hasColor(Direction.SOUTH)) quad.color(color, color, color, color);
+					sprite = appearance.getSprite(Direction.SOUTH);
 				}
 				case SlopeBaseMesh.TAG_BOTTOM -> {
 					if(appearance.hasColor(Direction.DOWN)) quad.color(color, color, color, color);
-					paintBottom(quad, appearance.getSprite(Direction.DOWN));
+					sprite = appearance.getSprite(Direction.DOWN);
 				}
 			}
 			
+			if(sprite == null) return false; //remove this quad
+			
+			quad.spriteBake(sprite, MutableQuadView.BAKE_NORMALIZED);
 			return true;
-		}
-		
-		private void paintSlope(MutableQuadView quad, Sprite sprite) {
-			switch(dir) {
-				case NORTH -> quad.uv(0, sprite.getMinU(), sprite.getMinV())
-					.uv(1, sprite.getMinU(), sprite.getMaxV())
-					.uv(2, sprite.getMaxU(), sprite.getMaxV())
-					.uv(3, sprite.getMaxU(), sprite.getMinV());
-				case SOUTH -> quad.uv(0, sprite.getMaxU(), sprite.getMaxV())
-					.uv(1, sprite.getMaxU(), sprite.getMinV())
-					.uv(2, sprite.getMinU(), sprite.getMinV())
-					.uv(3, sprite.getMinU(), sprite.getMaxV());
-				case EAST -> quad.uv(0, sprite.getMinU(), sprite.getMaxV())
-					.uv(1, sprite.getMaxU(), sprite.getMaxV())
-					.uv(2, sprite.getMaxU(), sprite.getMinV())
-					.uv(3, sprite.getMinU(), sprite.getMinV());
-				case WEST -> quad.uv(0, sprite.getMaxU(), sprite.getMinV())
-					.uv(1, sprite.getMinU(), sprite.getMinV())
-					.uv(2, sprite.getMinU(), sprite.getMaxV())
-					.uv(3, sprite.getMaxU(), sprite.getMaxV());
-			}
-		}
-		
-		private void paintLeftSide(MutableQuadView quad, Sprite sprite) {
-			switch(dir) {
-				case NORTH, EAST, WEST -> quad.uv(0, sprite.getMinU(), sprite.getMaxV())
-					.uv(1, sprite.getMaxU(), sprite.getMaxV())
-					.uv(2, sprite.getMaxU(), sprite.getMinV())
-					.uv(3, sprite.getMinU(), sprite.getMinV());
-				case SOUTH -> quad.uv(0, sprite.getMaxU(), sprite.getMinV())
-					.uv(1, sprite.getMinU(), sprite.getMinV())
-					.uv(2, sprite.getMinU(), sprite.getMaxV())
-					.uv(3, sprite.getMaxU(), sprite.getMaxV());
-			}
-		}
-		
-		private void paintRightSide(MutableQuadView quad, Sprite sprite) {
-			switch(dir) {
-				case NORTH, WEST -> quad.uv(0, sprite.getMaxU(), sprite.getMaxV())
-					.uv(1, sprite.getMaxU(), sprite.getMinV())
-					.uv(2, sprite.getMinU(), sprite.getMinV())
-					.uv(3, sprite.getMinU(), sprite.getMaxV());
-				case SOUTH, EAST -> quad.uv(0, sprite.getMinU(), sprite.getMinV())
-					.uv(1, sprite.getMinU(), sprite.getMaxV())
-					.uv(2, sprite.getMaxU(), sprite.getMaxV())
-					.uv(3, sprite.getMaxU(), sprite.getMinV());
-			}
-		}
-		
-		private void paintBack(MutableQuadView quad, Sprite sprite) {
-			switch(dir) {
-				case NORTH, EAST -> quad.uv(0, sprite.getMaxU(), sprite.getMaxV())
-					.uv(1, sprite.getMaxU(), sprite.getMinV())
-					.uv(2, sprite.getMinU(), sprite.getMinV())
-					.uv(3, sprite.getMinU(), sprite.getMaxV());
-				case SOUTH, WEST -> quad.uv(0, sprite.getMinU(), sprite.getMaxV())
-					.uv(1, sprite.getMaxU(), sprite.getMaxV())
-					.uv(2, sprite.getMaxU(), sprite.getMinV())
-					.uv(3, sprite.getMinU(), sprite.getMinV());
-			}
-		}
-		
-		private void paintBottom(MutableQuadView quad, Sprite sprite) {
-			quad.uv(0, sprite.getMinU(), sprite.getMaxV())
-				.uv(1, sprite.getMaxU(), sprite.getMaxV())
-				.uv(2, sprite.getMaxU(), sprite.getMinV())
-				.uv(3, sprite.getMinU(), sprite.getMinV());
 		}
 	}
 }
