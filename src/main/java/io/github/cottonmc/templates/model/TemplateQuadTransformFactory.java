@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 /**
- * You're allowed (and encouraged) to also implement `QuadTransform` and return `this` from both of these methods.
+ * Please keep thread-safety in mind - `getQuads`/`emitBlockQuads` can be called concurrently from multiple worker threads.
  */
-public interface TemplateQuadTransformPreparer {
+public interface TemplateQuadTransformFactory {
 	@NotNull RenderContext.QuadTransform blockTransformer(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier);
 	@NotNull RenderContext.QuadTransform itemTransformer(ItemStack stack, Supplier<Random> randomSupplier);
 }

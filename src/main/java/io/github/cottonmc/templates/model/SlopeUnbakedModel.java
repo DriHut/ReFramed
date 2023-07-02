@@ -26,10 +26,13 @@ public class SlopeUnbakedModel implements UnbakedModel {
 	}
 	
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> function, ModelBakeSettings modelBakeSettings, Identifier identifier) {
+	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> spriteLookup, ModelBakeSettings modelBakeSettings, Identifier identifier) {
 		//TODO: this is weird, should use my own model instead
 		BakedModel baseModel = baker.bake(BlockModels.getModelId(Blocks.SANDSTONE_STAIRS.getDefaultState()), modelBakeSettings);
 		
-		return new SlopeBakedModel(baseModel, function, modelBakeSettings.getRotation());
+		//TODO: push this up (it's just a cache of data sourced from blockmodels, and can be cached until resource-reload)
+		TemplateAppearanceManager tam = new TemplateAppearanceManager(spriteLookup);
+		
+		return new SlopeBakedModel(baseModel, tam, modelBakeSettings.getRotation());
 	}
 }

@@ -19,11 +19,27 @@ public class SlopeBaseMesh {
 		
 		MeshBuilder builder = renderer.meshBuilder();
 		QuadEmitter qu = builder.getEmitter();
-		qu.color(-1, -1, -1, -1).tag(TAG_SLOPE) .pos(0, 0f, 0f, 0f).pos(1, 0f, 1f, 1f).pos(2, 1f, 1f, 1f).pos(3, 1f, 0f, 0f).emit()
-			.color(-1, -1, -1, -1).tag(TAG_LEFT)  .pos(0, 1f, 0f, 0f).pos(1, 1f, 1f, 1f).pos(2, 1f, 0f, 1f).pos(3, 1f, 0f, 1f).emit()
-			.color(-1, -1, -1, -1).tag(TAG_RIGHT) .pos(0, 0f, 0f, 0f).pos(1, 0f, 0f, 0f).pos(2, 0f, 0f, 1f).pos(3, 0f, 1f, 1f).emit()
-			.color(-1, -1, -1, -1).tag(TAG_BACK)  .pos(0, 0f, 0f, 1f).pos(1, 1f, 0f, 1f).pos(2, 1f, 1f, 1f).pos(3, 0f, 1f, 1f).emit()
-			.color(-1, -1, -1, -1).tag(TAG_BOTTOM).pos(0, 0f, 0f, 0f).pos(1, 1f, 0f, 0f).pos(2, 1f, 0f, 1f).pos(3, 0f, 0f, 1f).emit();
+		
+		qu.tag(TAG_SLOPE)
+			.pos(0, 0f, 0f, 0f).pos(1, 0f, 1f, 1f).pos(2, 1f, 1f, 1f).pos(3, 1f, 0f, 0f)
+			.color(-1, -1, -1, -1)
+			.emit()
+			.tag(TAG_LEFT)
+			.pos(0, 1f, 0f, 0f).pos(1, 1f, 1f, 1f).pos(2, 1f, 0f, 1f).pos(3, 1f, 0f, 1f)
+			.color(-1, -1, -1, -1)
+			.emit()
+			.tag(TAG_RIGHT)
+			.pos(0, 0f, 0f, 0f).pos(1, 0f, 0f, 0f).pos(2, 0f, 0f, 1f).pos(3, 0f, 1f, 1f)
+			.color(-1, -1, -1, -1)
+			.emit()
+			.tag(TAG_BACK)
+			.pos(0, 0f, 0f, 1f).pos(1, 1f, 0f, 1f).pos(2, 1f, 1f, 1f).pos(3, 0f, 1f, 1f)
+			.color(-1, -1, -1, -1)
+			.emit()
+			.tag(TAG_BOTTOM)
+			.pos(0, 0f, 0f, 0f).pos(1, 1f, 0f, 0f).pos(2, 1f, 0f, 1f).pos(3, 0f, 0f, 1f)
+			.color(-1, -1, -1, -1)
+			.emit();
 		return builder.build();
 	}
 }

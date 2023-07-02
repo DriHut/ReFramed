@@ -16,6 +16,7 @@ Template blocks can be placed in the world, then right-clicked with a full-size 
 
 ## Todo
 
+* The conceit used in SlopeBakedModel (update mutable state, then bake the mesh) might be inherently flawed - it's not threadsafe
 * Fix the item model lol, broke it with the new system (might need a ModelLoadingRegistry registerVariantProvider as a last resort)
 * Re-generalize the model system (I removed a layer of indirection while rewriting it, so it's just slopes now)
 * Upside-down slopes would be nice...
