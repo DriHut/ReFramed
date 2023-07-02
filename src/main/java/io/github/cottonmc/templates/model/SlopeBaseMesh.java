@@ -5,13 +5,17 @@ import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.minecraft.util.math.Direction;
 
 public class SlopeBaseMesh {
-	public static final int TAG_SLOPE = 0;
-	public static final int TAG_LEFT = 1;
-	public static final int TAG_RIGHT = 2;
-	public static final int TAG_BACK = 3;
-	public static final int TAG_BOTTOM = 4;
+	/**
+	 * @see SlopeQuadTransformFactory.Transformer for why these values were chosen
+	 */
+	public static final int TAG_SLOPE = Direction.UP.ordinal();
+	public static final int TAG_LEFT = Direction.EAST.ordinal();
+	public static final int TAG_RIGHT = Direction.WEST.ordinal();
+	public static final int TAG_BACK = Direction.SOUTH.ordinal();
+	public static final int TAG_BOTTOM = Direction.DOWN.ordinal();
 	
 	public static Mesh make() {
 		Renderer renderer = RendererAccess.INSTANCE.getRenderer();

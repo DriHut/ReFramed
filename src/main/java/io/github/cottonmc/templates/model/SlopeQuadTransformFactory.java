@@ -16,7 +16,6 @@ import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -37,8 +36,6 @@ public class SlopeQuadTransformFactory implements TemplateQuadTransformFactory {
 	
 	@Override
 	public @NotNull RenderContext.QuadTransform blockTransformer(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier) {
-		Direction dir = state.get(Properties.HORIZONTAL_FACING);
-		
 		Object renderAttach = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
 		BlockState template = (renderAttach instanceof BlockState s) ? s : Blocks.AIR.getDefaultState();
 		Block block = template.getBlock();
@@ -47,7 +44,7 @@ public class SlopeQuadTransformFactory implements TemplateQuadTransformFactory {
 		RenderMaterial material;
 		int globalTint;
 		
-		if(block == null || block == Blocks.AIR) {
+		if(block == Blocks.AIR) {
 			appearance = tam.getDefaultAppearance();
 			material = r.materialFinder().clear().blendMode(BlendMode.CUTOUT).find();
 			globalTint = 0xFFFFFF;
@@ -72,39 +69,20 @@ public class SlopeQuadTransformFactory implements TemplateQuadTransformFactory {
 		return new Transformer(tam.getDefaultAppearance(), r.materialFinder().clear().find(), 0xFFFFFF);
 	}
 	
-	private static record Transformer(TemplateAppearance appearance, RenderMaterial material, int color) implements RenderContext.QuadTransform {
+	public static record Transformer(TemplateAppearance appearance, RenderMaterial material, int color) implements RenderContext.QuadTransform {
+		private static final Direction[] DIRECTIONS = Direction.values();
+		
 		@Override
 		public boolean transform(MutableQuadView quad) {
 			quad.material(material);
 			
-			Sprite sprite = null;
+			//The quad tag numbers were selected so this magic trick works:
+			Direction dir = DIRECTIONS[quad.tag()];
 			
-			//TODO: this newly-simplified direction passing in hasColor is almost certainly incorrect
-			
-			switch(quad.tag()) {
-				case SlopeBaseMesh.TAG_SLOPE -> {
-					if(appearance.hasColor(Direction.UP)) quad.color(color, color, color, color);
-					sprite = appearance.getSprite(Direction.UP);
-				}
-				case SlopeBaseMesh.TAG_LEFT -> {
-					if(appearance.hasColor(Direction.EAST)) quad.color(color, color, color, color);
-					sprite = appearance.getSprite(Direction.EAST);
-				}
-				case SlopeBaseMesh.TAG_RIGHT -> {
-					if(appearance.hasColor(Direction.WEST)) quad.color(color, color, color, color);
-					sprite = appearance.getSprite(Direction.WEST);
-				}
-				case SlopeBaseMesh.TAG_BACK -> {
-					if(appearance.hasColor(Direction.SOUTH)) quad.color(color, color, color, color);
-					sprite = appearance.getSprite(Direction.SOUTH);
-				}
-				case SlopeBaseMesh.TAG_BOTTOM -> {
-					if(appearance.hasColor(Direction.DOWN)) quad.color(color, color, color, color);
-					sprite = appearance.getSprite(Direction.DOWN);
-				}
-			}
-			
-			if(sprite == null) return false; //remove this quad
+			//TODO: this newly-simplified direction passing to hasColor is almost certainly incorrect
+			// I think hasColor was kinda incorrect in the first place tho
+			if(appearance.hasColor(dir)) quad.color(color, color, color, color);
+			Sprite sprite = appearance.getSprite(dir);
 			
 			quad.spriteBake(sprite, MutableQuadView.BAKE_NORMALIZED);
 			return true;
