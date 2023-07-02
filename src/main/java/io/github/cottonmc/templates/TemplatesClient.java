@@ -41,10 +41,12 @@ public class TemplatesClient implements ClientModInitializer {
 			}
 		});
 		
-		ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> provider);
+		ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> provider); //block models
+		ModelLoadingRegistry.INSTANCE.registerVariantProvider(rm -> provider); //item models
 		
 		BlockRenderLayerMap.INSTANCE.putBlock(Templates.SLOPE, RenderLayer.getCutout());
 		
 		provider.addTemplateModel(Templates.id("slope_special"), SlopeUnbakedModel::new);
+		provider.assignItemModel(Templates.id("slope_special"), Templates.SLOPE);
 	}
 }

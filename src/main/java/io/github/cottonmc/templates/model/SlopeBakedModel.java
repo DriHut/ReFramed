@@ -1,6 +1,5 @@
 package io.github.cottonmc.templates.model;
 
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -19,12 +18,14 @@ public final class SlopeBakedModel extends ForwardingBakedModel {
 		this.wrapped = baseModel;
 		
 		this.preparer = new SlopeQuadTransformFactory(tam);
-		this.affineTransformer = new AffineQuadTransformer(aff);
+		this.blockAffineTransformer = new AffineQuadTransformer(aff);
+		this.itemAffineTransformer = AffineQuadTransformer.EAST; //Makes items point the same way as stairs. Kinda clunky
 		this.baseMesh = SlopeBaseMesh.make();
 	}
 	
 	private final TemplateQuadTransformFactory preparer;
-	private final RenderContext.QuadTransform affineTransformer;
+	private final AffineQuadTransformer blockAffineTransformer;
+	private final AffineQuadTransformer itemAffineTransformer;
 	private final Mesh baseMesh;
 	
 	@Override
@@ -34,7 +35,7 @@ public final class SlopeBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		context.pushTransform(affineTransformer);
+		context.pushTransform(blockAffineTransformer);
 		context.pushTransform(preparer.blockTransformer(blockView, state, pos, randomSupplier));
 		context.meshConsumer().accept(baseMesh);
 		context.popTransform();
@@ -43,7 +44,7 @@ public final class SlopeBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		context.pushTransform(affineTransformer);
+		context.pushTransform(itemAffineTransformer);
 		context.pushTransform(preparer.itemTransformer(stack, randomSupplier));
 		context.meshConsumer().accept(baseMesh);
 		context.popTransform();
