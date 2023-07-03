@@ -1,11 +1,15 @@
 package io.github.cottonmc.templates;
 
+import io.github.cottonmc.templates.model.TemplateAppearance;
+import io.github.cottonmc.templates.model.TemplateAppearanceManager;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -13,6 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class TemplatesModelProvider implements ModelResourceProvider, ModelVariantProvider {
@@ -20,6 +26,9 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 	private final Map<ModelIdentifier, Identifier> itemAssignments = new HashMap<>();
 	
 	private final Map<Identifier, UnbakedModel> cache = new HashMap<>();
+	private volatile TemplateAppearanceManager appearanceManager;
+	
+	/// model loading
 	
 	@Override
 	public @Nullable UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException {
@@ -50,7 +59,38 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 		return customModelId == null ? null : loadModelResource(customModelId, context);
 	}
 	
-	// "public api"
+	/// template appearance manager cache, & other cache stuff
+	
+	public TemplateAppearanceManager getOrCreateTemplateApperanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
+		//This is kind of needlessly fancy using the volatile "double checked locking" pattern.
+		//I'd like all the template models to use the same TemplateApperanceManager, despite the model
+		//making process happening concurrently on several threads.
+		
+		//Volatile field read:
+		TemplateAppearanceManager read = appearanceManager;
+		
+		if(read == null) {
+			//Acquire a lock:
+			synchronized(this) {
+				//There's a chance another thread just initialized the object and released the lock
+				//while we were waiting for it, so we do another volatile field read (the "double check"):
+				read = appearanceManager;
+				if(read == null) {
+					//If no-one has initialized it still, I guess we should do it
+					read = appearanceManager = new TemplateAppearanceManager(spriteLookup);
+				}
+			}
+		}
+		
+		return Objects.requireNonNull(read);
+	}
+	
+	public void dumpCache() {
+		cache.clear();
+		appearanceManager = null;
+	}
+	
+	/// "public api"
 	
 	public void addTemplateModel(Identifier id, Supplier<UnbakedModel> modelFactory) {
 		factories.put(id, modelFactory);
@@ -66,9 +106,5 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 	
 	public void assignItemModel(Identifier templateModelId, ItemConvertible... itemConvs) {
 		for(ItemConvertible itemConv : itemConvs) assignItemModel(templateModelId, Registries.ITEM.getId(itemConv.asItem()));
-	}
-	
-	public void dumpCache() {
-		cache.clear();
 	}
 }
