@@ -1,4 +1,4 @@
-package io.github.cottonmc.templates.model;
+package io.github.cottonmc.templates;
 
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class TemplateModelVariantProvider implements ModelResourceProvider, ModelVariantProvider {
+public class TemplatesModelProvider implements ModelResourceProvider, ModelVariantProvider {
 	private final Map<Identifier, Supplier<UnbakedModel>> factories = new HashMap<>();
 	private final Map<ModelIdentifier, Identifier> itemAssignments = new HashMap<>();
 	

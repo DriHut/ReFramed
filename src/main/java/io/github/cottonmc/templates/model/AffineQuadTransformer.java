@@ -3,8 +3,6 @@ package io.github.cottonmc.templates.model;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.util.math.AffineTransformation;
-import net.minecraft.util.math.AffineTransformations;
-import net.minecraft.util.math.Direction;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -13,8 +11,6 @@ public record AffineQuadTransformer(Matrix4f affineMatrix) implements RenderCont
 	public AffineQuadTransformer(AffineTransformation aff) {
 		this(aff.getMatrix());
 	}
-	
-	public static final AffineQuadTransformer EAST = new AffineQuadTransformer(AffineTransformations.DIRECTION_ROTATIONS.get(Direction.EAST));
 	
 	@Override
 	public boolean transform(MutableQuadView quad) {

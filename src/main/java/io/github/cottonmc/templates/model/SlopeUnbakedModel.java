@@ -27,12 +27,14 @@ public class SlopeUnbakedModel implements UnbakedModel {
 	
 	@Override
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> spriteLookup, ModelBakeSettings modelBakeSettings, Identifier identifier) {
-		//TODO: this is weird, should use my own model instead
-		BakedModel baseModel = baker.bake(BlockModels.getModelId(Blocks.SANDSTONE_STAIRS.getDefaultState()), modelBakeSettings);
+		//TODO: this is weird, should use my own model instead.
+		// I should also adjust the item frame/first-person rotations (previously I used SANDSTONE_STAIRS, which has models/block/stairs.json as a parent,
+		// and that one brings some extra custom rotations along for the ride
+		BakedModel baseModel = baker.bake(BlockModels.getModelId(Blocks.SANDSTONE.getDefaultState()), modelBakeSettings);
 		
-		//TODO: push this up (it's just a cache of data sourced from blockmodels, and can be cached until resource-reload)
+		//TODO: push this up (it's just a cache of data sourced from blockmodels, and can be shared among *all* templates/cached until resource-reload)
 		TemplateAppearanceManager tam = new TemplateAppearanceManager(spriteLookup);
 		
-		return new SlopeBakedModel(baseModel, tam, modelBakeSettings.getRotation());
+		return new TemplateBakedModel(baseModel, tam, modelBakeSettings.getRotation(), SlopeBaseMesh.make());
 	}
 }

@@ -2,7 +2,6 @@ package io.github.cottonmc.templates.model;
 
 import io.github.cottonmc.templates.TemplatesClient;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -10,7 +9,7 @@ import net.minecraft.util.math.Direction;
 
 public class SlopeBaseMesh {
 	/**
-	 * @see SlopeQuadTransformFactory.Transformer for why these values were chosen
+	 * @see TemplateBakedModel.RetexturingTransformer for why these values were chosen
 	 */
 	public static final int TAG_SLOPE = Direction.UP.ordinal();
 	public static final int TAG_LEFT = Direction.EAST.ordinal();

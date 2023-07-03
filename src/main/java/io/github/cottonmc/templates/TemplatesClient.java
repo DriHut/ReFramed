@@ -1,7 +1,6 @@
 package io.github.cottonmc.templates;
 
 import io.github.cottonmc.templates.model.SlopeUnbakedModel;
-import io.github.cottonmc.templates.model.TemplateModelVariantProvider;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class TemplatesClient implements ClientModInitializer {
-	public static TemplateModelVariantProvider provider = new TemplateModelVariantProvider();
+	public static TemplatesModelProvider provider = new TemplatesModelProvider();
 	
 	public static @NotNull Renderer getFabricRenderer() {
 		return Objects.requireNonNull(RendererAccess.INSTANCE.getRenderer(), "A Fabric Rendering API implementation is required to use Templates!");
