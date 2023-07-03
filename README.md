@@ -16,12 +16,8 @@ Template blocks can be placed in the world, then right-clicked with a full-size 
 
 ## Todo
 
-* Re-generalize the model system (I removed a layer of indirection while rewriting it, so it's just slopes now)
 * Upside-down slopes would be nice...
-* "Counterrotate" blockstates
-  * In the old system, the north/south/east/west faces were constructed individually, so it'd look at the north side of the theme model when computing the north face, the east side of the theme model when computing the east face, etc
-  * In the current system, there is only one (south-facing) slope model, and I move its vertices around with a quad transformer to obtain other rotations. (built off the vanilla `AffineTransformation`)
-  * But this means... when i'm building the "left" side of the slope, what side of the block should i look at? I have to undo this affine transformation
+* More templates !!
 
 ## Notes for addon developers
 
