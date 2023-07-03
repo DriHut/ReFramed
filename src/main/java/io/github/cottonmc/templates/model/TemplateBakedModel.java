@@ -31,8 +31,7 @@ public final class TemplateBakedModel extends ForwardingBakedModel {
 		this.wrapped = baseModel;
 		
 		this.tam = tam;
-		this.affineTransformer = new AffineQuadTransformer(aff);
-		this.baseMesh = baseMesh;
+		this.baseMesh = MatrixMeshTransformer.transformAroundCenter(aff, baseMesh);
 		
 		//Hard to explain what this is for...
 		//Basically, the previous incarnation of this mod assembled the north/south/east/west faces all individually.
@@ -50,7 +49,6 @@ public final class TemplateBakedModel extends ForwardingBakedModel {
 	}
 	
 	private final TemplateAppearanceManager tam;
-	private final AffineQuadTransformer affineTransformer;
 	private final Mesh baseMesh;
 	
 	private final Map<Direction, Direction> facePermutation = new EnumMap<>(Direction.class);
@@ -62,19 +60,15 @@ public final class TemplateBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		context.pushTransform(affineTransformer);
 		context.pushTransform(retexturingBlockTransformer(blockView, state, pos, randomSupplier));
 		context.meshConsumer().accept(baseMesh);
-		context.popTransform();
 		context.popTransform();
 	}
 	
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		context.pushTransform(affineTransformer);
 		context.pushTransform(retexturingItemTransformer(stack, randomSupplier));
 		context.meshConsumer().accept(baseMesh);
-		context.popTransform();
 		context.popTransform();
 	}
 	
