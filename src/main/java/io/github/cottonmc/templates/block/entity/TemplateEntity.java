@@ -20,8 +20,14 @@ import java.util.Objects;
 
 public class TemplateEntity extends BlockEntity implements RenderAttachmentBlockEntity {
 	protected BlockState renderedState = Blocks.AIR.getDefaultState();
-	protected boolean glowstone = false;
-	protected boolean redstone = false;
+	
+	//Whether the player has manually spent a redstone/glowstone item to upgrade the template.
+	//It's possible to get templates that, e.g. glow, without manually spending a glowstone on them
+	//(put a froglight in a template!) Same for redstone activation. We need to separately store
+	//whether a redstone/glowstone should be refunded when the player breaks the template, and wasting a
+	//blockstate for it is a little silly, so, here you go.
+	protected boolean spentGlowstoneDust = false;
+	protected boolean spentRedstoneTorch = false;
 	
 	public TemplateEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -34,10 +40,10 @@ public class TemplateEntity extends BlockEntity implements RenderAttachmentBlock
 		BlockState lastRenderedState = renderedState;
 		
 		renderedState = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound("BlockState"));
-		glowstone = tag.getBoolean("Glowstone");
-		redstone = tag.getBoolean("Redstone");
+		spentGlowstoneDust = tag.getBoolean("Glowstone");
+		spentRedstoneTorch = tag.getBoolean("Redstone");
 		
-		//Force a chunk remesh on the client, if the displayed blockstate has changed
+		//Force a chunk remesh on the client if the displayed blockstate has changed
 		if(world != null && world.isClient && !Objects.equals(lastRenderedState, renderedState)) {
 			Templates.chunkRerenderProxy.accept(world, pos);
 		}
@@ -47,8 +53,8 @@ public class TemplateEntity extends BlockEntity implements RenderAttachmentBlock
 	public void writeNbt(NbtCompound tag) {
 		super.writeNbt(tag);
 		tag.put("BlockState", NbtHelper.fromBlockState(renderedState));
-		tag.putBoolean("Glowstone", glowstone);
-		tag.putBoolean("Redstone", redstone);
+		tag.putBoolean("Glowstone", spentGlowstoneDust);
+		tag.putBoolean("Redstone", spentRedstoneTorch);
 	}
 	
 	@Nullable
@@ -59,6 +65,7 @@ public class TemplateEntity extends BlockEntity implements RenderAttachmentBlock
 	
 	@Override
 	public NbtCompound toInitialChunkDataNbt() {
+		//TERRIBLE yarn name, this is "getUpdateTag", it's the nbt that will be sent to clients
 		return createNbt();
 	}
 	
@@ -67,41 +74,33 @@ public class TemplateEntity extends BlockEntity implements RenderAttachmentBlock
 		return renderedState;
 	}
 	
-	public void change() {
-		markDirty();
-		if(world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos); //dispatch to clients
-	}
-	
 	public BlockState getRenderedState() {
 		return renderedState;
 	}
 	
 	public void setRenderedState(BlockState newState) {
-		BlockState lastState = renderedState;
-		renderedState = newState;
-		if(!Objects.equals(lastState, newState)) change();
-	}
-	
-	public boolean hasGlowstone() {
-		return glowstone;
-	}
-	
-	public void setGlowstone(boolean newGlowstone) {
-		boolean lastGlowstone = glowstone;
-		glowstone = newGlowstone;
-		if(lastGlowstone != newGlowstone) change();
-	}
-	
-	public boolean hasRedstone() {
-		return redstone;
-	}
-	
-	public void setRedstone(boolean newRedstone) {
-		boolean lastRedstone = redstone;
-		redstone = newRedstone;
-		if(lastRedstone != newRedstone) {
-			world.updateNeighbors(pos, getCachedState().getBlock());
-			change();
+		if(!Objects.equals(renderedState, newState)) {
+			renderedState = newState;
+			markDirty();
+			if(world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos); //dispatch to clients
 		}
+	}
+	
+	public boolean hasSpentGlowstoneDust() {
+		return spentGlowstoneDust;
+	}
+	
+	public void spentGlowstoneDust() {
+		spentGlowstoneDust = true;
+		markDirty();
+	}
+	
+	public boolean hasSpentRedstoneTorch() {
+		return spentRedstoneTorch;
+	}
+	
+	public void spentRedstoneTorch() {
+		spentRedstoneTorch = true;
+		markDirty();
 	}
 }

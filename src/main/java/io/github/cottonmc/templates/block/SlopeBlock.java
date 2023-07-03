@@ -32,12 +32,12 @@ public class SlopeBlock extends TemplateBlock {
 		super(TemplateBlock.configureSettings(Settings.create())
 			.sounds(BlockSoundGroup.WOOD)
 			.hardness(0.2f)); //TODO: Material.WOOD
-		this.setDefaultState(this.getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(LIGHT, 0).with(REDSTONE, false));
+		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 	
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(FACING, LIGHT, REDSTONE);
+		super.appendProperties(builder.add(FACING));
 	}
 	
 	@Override

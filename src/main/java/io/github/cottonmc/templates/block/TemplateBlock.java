@@ -1,23 +1,25 @@
 package io.github.cottonmc.templates.block;
 
-import io.github.cottonmc.templates.Templates;
 import io.github.cottonmc.templates.block.entity.TemplateEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -30,6 +32,8 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	
 	public TemplateBlock(Settings settings) {
 		super(settings);
+		
+		setDefaultState(getDefaultState().with(LIGHT, 0).with(REDSTONE, false));
 	}
 	
 	public static Settings configureSettings(Settings s) {
@@ -39,66 +43,72 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	}
 	
 	@Override
+	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+		super.appendProperties(builder.add(LIGHT, REDSTONE));
+	}
+	
+	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if(world.isClient || !(world.getBlockEntity(pos) instanceof TemplateEntity be)) return ActionResult.SUCCESS;
+		if(!state.isOf(this) || !(world.getBlockEntity(pos) instanceof TemplateEntity be)) return ActionResult.PASS; //shouldn't happen
+		if(!player.canModifyBlocks() || !world.canPlayerModifyAt(player, pos)) return ActionResult.PASS;
 		
-		ItemStack stack = player.getStackInHand(hand);
-		if(stack.getItem() instanceof BlockItem) {
-			Block block = ((BlockItem) stack.getItem()).getBlock();
-			if(block == Blocks.REDSTONE_TORCH) {
-				be.setRedstone(true);
-				if(!player.isCreative()) stack.decrement(1);
-			}
+		ItemStack held = player.getStackInHand(hand);
+		
+		//Glowstone
+		if(held.getItem() == Items.GLOWSTONE_DUST && state.get(LIGHT) != 15 && !be.hasSpentGlowstoneDust()) {
+			world.setBlockState(pos, state.with(LIGHT, 15));
+			be.spentGlowstoneDust();
+			
+			if(!player.isCreative()) held.decrement(1);
+			world.playSound(player, pos, SoundEvents.BLOCK_GLASS_HIT, SoundCategory.BLOCKS, 1f, 1f);
+			return ActionResult.SUCCESS;
+		}
+		
+		//Redstone
+		if(held.getItem() == Blocks.REDSTONE_TORCH.asItem() && !state.get(REDSTONE) && !be.hasSpentRedstoneTorch()) {
+			world.setBlockState(pos, state.with(REDSTONE, true));
+			be.spentRedstoneTorch();
+			
+			if(!player.isCreative()) held.decrement(1);
+			world.playSound(player, pos, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 1f, 1f);
+			return ActionResult.SUCCESS;
+		}
+		
+		//Changing the theme
+		if(held.getItem() instanceof BlockItem bi && be.getRenderedState().getBlock() == Blocks.AIR) {
+			Block block = bi.getBlock();
 			ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
 			BlockState placementState = block.getPlacementState(ctx);
-			if(placementState != null &&
-				Block.isShapeFullCube(placementState.getCollisionShape(world, pos)) &&
-				!(block instanceof BlockEntityProvider) &&
-				be.getRenderedState().getBlock() == Blocks.AIR)
-			{
-				be.setRenderedState(placementState);
-				if(!player.isCreative()) stack.decrement(1);
+			if(placementState != null && Block.isShapeFullCube(placementState.getCollisionShape(world, pos)) && !(block instanceof BlockEntityProvider)) {
+				if(!world.isClient) be.setRenderedState(placementState);
+				
+				//Even if the block does not glow, this'll do a block update when adding a redstoney block
+				int newLuminance = be.hasSpentGlowstoneDust() ? 15 : placementState.getLuminance();
+				world.setBlockState(pos, state.with(LIGHT, newLuminance));
+				
+				if(!player.isCreative()) held.decrement(1);
+				world.playSound(player, pos, state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1f, 1f);
+				return ActionResult.SUCCESS;
 			}
-		} else if(stack.getItem() == Items.GLOWSTONE_DUST) {
-			be.setGlowstone(true);
-			if(!player.isCreative()) stack.decrement(1);
 		}
-		return ActionResult.SUCCESS;
+		
+		return ActionResult.PASS;
 	}
 	
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		if(newState.getBlock() == Templates.SLOPE) return;
-		BlockEntity be = world.getBlockEntity(pos);
-		if(be instanceof TemplateEntity) {
-			TemplateEntity template = (TemplateEntity) be;
-			if(template.getRenderedState().getBlock() != Blocks.AIR) {
-				ItemStack stack = new ItemStack(template.getRenderedState().getBlock());
-				ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-				world.spawnEntity(entity);
-			}
-			if(template.hasRedstone()) {
-				ItemStack stack = new ItemStack(Items.REDSTONE_TORCH);
-				ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-				world.spawnEntity(entity);
-			}
-			if(template.hasGlowstone()) {
-				ItemStack stack = new ItemStack(Items.GLOWSTONE_DUST);
-				ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-				world.spawnEntity(entity);
-			}
+		if(!state.isOf(newState.getBlock()) && world.getBlockEntity(pos) instanceof TemplateEntity template) {
+			DefaultedList<ItemStack> drops = DefaultedList.of();
+			
+			Block theme = template.getRenderedState().getBlock();
+			if(theme != Blocks.AIR) drops.add(new ItemStack(theme));
+			if(template.hasSpentRedstoneTorch()) drops.add(new ItemStack(Items.REDSTONE_TORCH));
+			if(template.hasSpentGlowstoneDust()) drops.add(new ItemStack(Items.GLOWSTONE_DUST));
+			
+			ItemScatterer.spawn(world, pos, drops);
 		}
+		
 		super.onStateReplaced(state, world, pos, newState, moved);
-	}
-	
-	@Override
-	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos posFrom, boolean bool) {
-		BlockEntity be = world.getBlockEntity(pos);
-		if(be instanceof TemplateEntity) {
-			TemplateEntity template = (TemplateEntity) be;
-			BlockState beState = template.getRenderedState();
-			world.setBlockState(pos, state.with(LIGHT, template.hasGlowstone() ? 15 : beState.getLuminance()).with(REDSTONE, template.hasRedstone() || beState.emitsRedstonePower()));
-		}
 	}
 	
 	@Override
@@ -108,30 +118,18 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	
 	@Override
 	public int getWeakRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
-		BlockEntity be = view.getBlockEntity(pos);
-		if(be instanceof TemplateEntity) {
-			TemplateEntity template = (TemplateEntity) be;
-			if(template.hasRedstone()) return 15;
-			BlockState beState = template.getRenderedState();
-			return beState.getWeakRedstonePower(view, pos, dir);
-		}
-		return 0;
+		if(state.get(REDSTONE)) return 15;
+		else if(view.getBlockEntity(pos) instanceof TemplateEntity template) return template.getRenderedState().getWeakRedstonePower(view, pos, dir);
+		else return 0;
 	}
 	
 	@Override
 	public int getStrongRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
-		BlockEntity be = view.getBlockEntity(pos);
-		if(be instanceof TemplateEntity) {
-			TemplateEntity template = (TemplateEntity) be;
-			if(template.hasRedstone()) return 15;
-			BlockState beState = template.getRenderedState();
-			return beState.getStrongRedstonePower(view, pos, dir);
-		}
-		return 0;
+		if(state.get(REDSTONE)) return 15;
+		else if(view.getBlockEntity(pos) instanceof TemplateEntity template) return template.getRenderedState().getStrongRedstonePower(view, pos, dir);
+		else return 0;
 	}
 	
-	//TODO: pass to Block.Settings
-	// "Cannot reference 'TemplateBlock.luminance' before supertype constructor has been called"
 	public int luminance(BlockState state) {
 		return state.get(LIGHT);
 	}
