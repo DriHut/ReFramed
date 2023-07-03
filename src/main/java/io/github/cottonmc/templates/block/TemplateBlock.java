@@ -5,12 +5,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
@@ -25,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class TemplateBlock extends Block implements BlockEntityProvider {
 	public static final IntProperty LIGHT = IntProperty.of("light", 0, 15);
@@ -109,6 +113,18 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 		}
 		
 		super.onStateReplaced(state, world, pos, newState, moved);
+	}
+	
+	@Override
+	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+		//Load the BlockEntityTag clientside, which fixes the template briefly showing its default state when placing it.
+		//I'm surprised this doesn't happen by default; the BlockEntityTag stuff is only done serverside.
+		if(world.isClient && world.getBlockEntity(pos) instanceof TemplateEntity be) {
+			NbtCompound tag = BlockItem.getBlockEntityNbt(stack);
+			if(tag != null) be.readNbt(tag);
+		}
+		
+		super.onPlaced(world, pos, state, placer, stack);
 	}
 	
 	@Override

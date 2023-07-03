@@ -4,12 +4,15 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -28,28 +31,24 @@ public class SlopeQuadTransformFactory implements TemplateQuadTransformFactory {
 	
 	@Override
 	public @NotNull RenderContext.QuadTransform blockTransformer(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier) {
-		Object renderAttach = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
-		BlockState template = (renderAttach instanceof BlockState s) ? s : Blocks.AIR.getDefaultState();
-		Block block = template.getBlock();
+		BlockState template = (((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos) instanceof BlockState s) ? s : null;
+		if(template == null || template.isAir()) return new Transformer(tam.getDefaultAppearance(), 0xFFFFFFFF);
 		
-		TemplateAppearance appearance;
-		int globalTint = 0xFFFFFF;
-		
-		if(block == Blocks.AIR) {
-			appearance = tam.getDefaultAppearance();
-		} else {
-			appearance = tam.getAppearance(template);
-			
-			BlockColorProvider tint = ColorProviderRegistry.BLOCK.get(block);
-			if(tint != null) globalTint = 0xFF000000 | tint.getColor(template, blockView, pos, 1);
-		}
-		
-		return new Transformer(appearance, globalTint);
+		BlockColorProvider prov = ColorProviderRegistry.BLOCK.get(template.getBlock());
+		int globalTint = prov != null ? prov.getColor(state, blockView, pos, 1) : 0xFFFFFFFF;
+		return new Transformer(tam.getAppearance(template), globalTint);
 	}
 	
 	@Override
 	public @NotNull RenderContext.QuadTransform itemTransformer(ItemStack stack, Supplier<Random> randomSupplier) {
-		return new Transformer(tam.getDefaultAppearance(), 0xFFFFFF);
+		//cheeky: if the item has NBT data, pluck out the blockstate from it
+		NbtCompound tag = BlockItem.getBlockEntityNbt(stack);
+		if(tag != null && tag.contains("BlockState")) {
+			BlockState state = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound("BlockState"));
+			if(!state.isAir()) return new Transformer(tam.getAppearance(state), 0xFFFFFFFF);
+		}
+		
+		return new Transformer(tam.getDefaultAppearance(), 0xFFFFFFFF);
 	}
 	
 	public static record Transformer(TemplateAppearance appearance, int color) implements RenderContext.QuadTransform {
