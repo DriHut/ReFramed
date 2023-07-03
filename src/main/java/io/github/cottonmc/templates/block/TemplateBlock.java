@@ -82,9 +82,9 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 			if(placementState != null && Block.isShapeFullCube(placementState.getCollisionShape(world, pos)) && !(block instanceof BlockEntityProvider)) {
 				if(!world.isClient) be.setRenderedState(placementState);
 				
-				//Even if the block does not glow, this'll do a block update when adding a redstoney block
-				int newLuminance = be.hasSpentGlowstoneDust() ? 15 : placementState.getLuminance();
-				world.setBlockState(pos, state.with(LIGHT, newLuminance));
+				world.setBlockState(pos, state
+					.with(LIGHT, be.hasSpentGlowstoneDust() ? 15 : placementState.getLuminance())
+					.with(REDSTONE, be.hasSpentRedstoneTorch() || placementState.getWeakRedstonePower(world, pos, Direction.NORTH) != 0));
 				
 				if(!player.isCreative()) held.decrement(1);
 				world.playSound(player, pos, state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1f, 1f);
@@ -118,16 +118,12 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 	
 	@Override
 	public int getWeakRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
-		if(state.get(REDSTONE)) return 15;
-		else if(view.getBlockEntity(pos) instanceof TemplateEntity template) return template.getRenderedState().getWeakRedstonePower(view, pos, dir);
-		else return 0;
+		return state.get(REDSTONE) ? 15 : 0;
 	}
 	
 	@Override
 	public int getStrongRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
-		if(state.get(REDSTONE)) return 15;
-		else if(view.getBlockEntity(pos) instanceof TemplateEntity template) return template.getRenderedState().getStrongRedstonePower(view, pos, dir);
-		else return 0;
+		return state.get(REDSTONE) ? 15 : 0;
 	}
 	
 	public int luminance(BlockState state) {
