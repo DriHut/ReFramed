@@ -1,6 +1,8 @@
 package io.github.cottonmc.templates.model;
 
 import io.github.cottonmc.templates.TemplatesClient;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -16,10 +18,16 @@ import java.util.function.Function;
 
 public class RetexturedJsonModelUnbakedModel implements UnbakedModel {
 	public RetexturedJsonModelUnbakedModel(Identifier parent) {
+		this(parent, Blocks.AIR.getDefaultState());
+	}
+	
+	public RetexturedJsonModelUnbakedModel(Identifier parent, BlockState itemModelState) {
 		this.parent = parent;
+		this.itemModelState = itemModelState;
 	}
 	
 	protected final Identifier parent;
+	protected final BlockState itemModelState;
 	
 	@Override
 	public Collection<Identifier> getModelDependencies() {
@@ -37,7 +45,8 @@ public class RetexturedJsonModelUnbakedModel implements UnbakedModel {
 		return new RetexturedJsonModelBakedModel(
 			baker.bake(parent, modelBakeSettings),
 			TemplatesClient.provider.getOrCreateTemplateApperanceManager(spriteLookup),
-			spriteLookup
+			spriteLookup,
+			itemModelState
 		);
 	}
 }

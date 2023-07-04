@@ -5,7 +5,7 @@
 	"name": "Templates",
 	"icon": "assets/templates/icon.png",
 	"description": "An API for templated blocks",
-	"licence": "MIT",
+	"license": "MIT",
 	"contact": {
 		"sources": "https://github.com/CottonMC/Templates"
 	},

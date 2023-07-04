@@ -17,7 +17,11 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -31,9 +35,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
-	public RetexturedJsonModelBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, Function<SpriteIdentifier, Sprite> spriteLookup) {
+	public RetexturedJsonModelBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, Function<SpriteIdentifier, Sprite> spriteLookup, BlockState itemModelState) {
 		this.wrapped = baseModel;
 		this.tam = tam;
+		this.itemModelState = itemModelState;
 		
 		for(int i = 0; i < DIRECTIONS.length; i++) {
 			SpriteIdentifier id = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Templates.id("templates_special/" + DIRECTIONS[i].getName()));
@@ -41,11 +46,13 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 		}
 	}
 	
+	//TODO: Check that TemplateAppearance equals() behavior is what i want, and also that it's fast
 	private record CacheKey(BlockState state, TemplateAppearance appearance) {}
 	
 	private final TemplateAppearanceManager tam;
 	private final ConcurrentHashMap<CacheKey, Mesh> meshCache = new ConcurrentHashMap<>();
 	private final Sprite[] specialSprites = new Sprite[DIRECTIONS.length];
+	private final BlockState itemModelState;
 	
 	@Override
 	public boolean isVanillaAdapter() {
@@ -54,8 +61,8 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		BlockState template = (((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos) instanceof BlockState s) ? s : null;
-		TemplateAppearance ta = template == null || template.isAir() ? tam.getDefaultAppearance() : tam.getAppearance(template);
+		BlockState theme = (((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos) instanceof BlockState s) ? s : null;
+		TemplateAppearance ta = theme == null || theme.isAir() ? tam.getDefaultAppearance() : tam.getAppearance(theme);
 		
 		CacheKey key = new CacheKey(state, ta);
 		context.meshConsumer().accept(meshCache.computeIfAbsent(key, this::makeMesh));
@@ -63,7 +70,17 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		super.emitItemQuads(stack, randomSupplier, context);
+		TemplateAppearance nbtAppearance = null;
+		
+		//cheeky: if the item has NBT data, pluck out the blockstate from it
+		NbtCompound tag = BlockItem.getBlockEntityNbt(stack);
+		if(tag != null && tag.contains("BlockState")) {
+			BlockState theme = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound("BlockState"));
+			if(!theme.isAir()) nbtAppearance = tam.getAppearance(theme);
+		}
+		
+		CacheKey key = new CacheKey(itemModelState, nbtAppearance == null ? tam.getDefaultAppearance() : nbtAppearance);
+		context.meshConsumer().accept(meshCache.computeIfAbsent(key, this::makeMesh));
 	}
 	
 	protected Mesh makeMesh(CacheKey key) {

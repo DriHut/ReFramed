@@ -1,13 +1,11 @@
 package io.github.cottonmc.templates.block;
 
 import io.github.cottonmc.templates.Templates;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -19,7 +17,7 @@ import net.minecraft.world.BlockView;
 
 import javax.annotation.Nullable;
 
-public class SlopeBlock extends TemplateBlock {
+public class TemplateSlopeBlock extends TemplateBlock {
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 	
 	public static final VoxelShape BASE = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1f);
@@ -28,10 +26,8 @@ public class SlopeBlock extends TemplateBlock {
 	public static final VoxelShape EAST = VoxelShapes.cuboid(0.5f, 0.5f, 0f, 1f, 1f, 1f);
 	public static final VoxelShape WEST = VoxelShapes.cuboid(0f, 0.5f, 0f, 0.5f, 1f, 1f);
 	
-	public SlopeBlock() {
-		super(TemplateBlock.configureSettings(Settings.create())
-			.sounds(BlockSoundGroup.WOOD)
-			.hardness(0.2f)); //TODO: Material.WOOD
+	public TemplateSlopeBlock(Settings settings) {
+		super(settings);
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 	

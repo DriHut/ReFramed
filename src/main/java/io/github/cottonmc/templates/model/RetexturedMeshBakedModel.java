@@ -57,12 +57,12 @@ public final class RetexturedMeshBakedModel extends ForwardingBakedModel {
 	}
 	
 	public @NotNull RenderContext.QuadTransform retexturingBlockTransformer(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier) {
-		BlockState template = (((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos) instanceof BlockState s) ? s : null;
-		if(template == null || template.isAir()) return new RetexturingTransformer(tam.getDefaultAppearance(), 0xFFFFFFFF, facePermutation);
+		BlockState theme = (((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos) instanceof BlockState s) ? s : null;
+		if(theme == null || theme.isAir()) return new RetexturingTransformer(tam.getDefaultAppearance(), 0xFFFFFFFF, facePermutation);
 		
-		BlockColorProvider prov = ColorProviderRegistry.BLOCK.get(template.getBlock());
+		BlockColorProvider prov = ColorProviderRegistry.BLOCK.get(theme.getBlock());
 		int globalTint = prov != null ? prov.getColor(state, blockView, pos, 1) : 0xFFFFFFFF;
-		return new RetexturingTransformer(tam.getAppearance(template), globalTint, facePermutation);
+		return new RetexturingTransformer(tam.getAppearance(theme), globalTint, facePermutation);
 	}
 	
 	public @NotNull RenderContext.QuadTransform retexturingItemTransformer(ItemStack stack, Supplier<Random> randomSupplier) {

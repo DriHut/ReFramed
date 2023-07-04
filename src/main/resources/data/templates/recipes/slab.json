@@ -1,8 +1,7 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-		"I  ",
-		"I~ ",
+		" ~ ",
 		"III"
 	],
 	"key": {
@@ -14,8 +13,8 @@
 		}
 	},
 	"result": {
-		"item": "templates:slope",
-		"count": 4
+		"item": "templates:slab",
+		"count": 6
 	},
 	"group": "templates"
 }

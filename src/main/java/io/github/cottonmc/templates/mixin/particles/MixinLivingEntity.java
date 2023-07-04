@@ -2,7 +2,6 @@ package io.github.cottonmc.templates.mixin.particles;
 
 import io.github.cottonmc.templates.api.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;

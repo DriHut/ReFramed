@@ -1,7 +1,8 @@
 package io.github.cottonmc.templates;
 
-import io.github.cottonmc.templates.block.SlopeBlock;
+import io.github.cottonmc.templates.api.TemplateInteractionUtil;
 import io.github.cottonmc.templates.block.TemplateSlabBlock;
+import io.github.cottonmc.templates.block.TemplateSlopeBlock;
 import io.github.cottonmc.templates.block.entity.TemplateEntity;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -21,13 +22,13 @@ import java.util.function.BiConsumer;
 public class Templates implements ModInitializer {
 	public static final String MODID = "templates";
 	
-	public static final Block SLOPE = Registry.register(Registries.BLOCK, id("slope"), new SlopeBlock());
+	public static final Block SLOPE = Registry.register(Registries.BLOCK, id("slope"), new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
 	public static final BlockEntityType<TemplateEntity> SLOPE_ENTITY = Registry.register(
 		Registries.BLOCK_ENTITY_TYPE, id("slope"),
 		FabricBlockEntityTypeBuilder.create(Templates::makeSlopeEntity, SLOPE).build(null)
 	);
 	
-	public static final Block SLAB = Registry.register(Registries.BLOCK, id("slab"), new TemplateSlabBlock());
+	public static final Block SLAB = Registry.register(Registries.BLOCK, id("slab"), new TemplateSlabBlock(TemplateInteractionUtil.makeSettings()));
 	public static final BlockEntityType<TemplateEntity> SLAB_ENTITY = Registry.register(
 		Registries.BLOCK_ENTITY_TYPE, id("slab"),
 		FabricBlockEntityTypeBuilder.create(Templates::makeSlabEntity, SLAB).build(null)
