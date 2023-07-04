@@ -30,7 +30,7 @@ You may create your block any way you like, just make sure it has a block entity
 
 ## `Mesh`-based models
 
-We will construct a `RetexturedMeshTemplateUnbakedModel`. You need two things - the ID of a parent model, and a `Supplier<Mesh>` to retexture.
+We will construct a `RetexturedMeshUnbakedModel`. You need two things - the ID of a parent model, and a `Supplier<Mesh>` to retexture.
 
 Fill in the parent model field with the ID of any model. Ideally, this model should have a parent of `block/block`, or at least define *some* non-default rotations (smokey the bear voice *Only You Can Prevent Weirdly Rotated First-Person Models*), set `"gui_light": "front"` (lest the item model look weird), and define a particle texture.
 
@@ -38,7 +38,7 @@ When building the `Mesh`, if you want a face to be dynamically retextured, `.tag
 
 (TODO: implement a system for baking unchanging `Sprite`s onto the mesh, potentially by "registering" more tags; the problem is you don't have access to sprite uvs at mesh building time. Or just provide a way to get sprite UVs at mesh building time...?)
 
-That's all you need in order to construct a `RetexturedMeshTemplateUnbakedModel`, so to finish things off:
+That's all you need in order to construct a `RetexturedMeshUnbakedModel`, so to finish things off:
 
 * Come up with an ID for it
 * Register it using `TemplatesClient.provider.addTemplateModel` (a thin wrapper around Fabric's `ModelResourceProvider`)

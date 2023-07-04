@@ -9,7 +9,7 @@ import net.minecraft.util.math.Direction;
 
 public class SlopeBaseMesh {
 	/**
-	 * @see TemplateBakedModel.RetexturingTransformer for why these values were chosen
+	 * @see RetexturedMeshBakedModel.RetexturingTransformer for why these values were chosen
 	 */
 	public static final int TAG_SLOPE = Direction.UP.ordinal() + 1;
 	public static final int TAG_LEFT = Direction.EAST.ordinal() + 1;

@@ -1,6 +1,7 @@
 package io.github.cottonmc.templates;
 
 import io.github.cottonmc.templates.block.SlopeBlock;
+import io.github.cottonmc.templates.block.TemplateSlabBlock;
 import io.github.cottonmc.templates.block.entity.TemplateEntity;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -26,20 +27,31 @@ public class Templates implements ModInitializer {
 		FabricBlockEntityTypeBuilder.create(Templates::makeSlopeEntity, SLOPE).build(null)
 	);
 	
+	public static final Block SLAB = Registry.register(Registries.BLOCK, id("slab"), new TemplateSlabBlock());
+	public static final BlockEntityType<TemplateEntity> SLAB_ENTITY = Registry.register(
+		Registries.BLOCK_ENTITY_TYPE, id("slab"),
+		FabricBlockEntityTypeBuilder.create(Templates::makeSlabEntity, SLAB).build(null)
+	);
+	
 	//Overridden in TemplatesClient
 	public static BiConsumer<World, BlockPos> chunkRerenderProxy = (world, pos) -> {};
 	
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, id("slope"), (Item) new BlockItem(SLOPE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("slope"), new BlockItem(SLOPE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("slab"), new BlockItem(SLAB, new Item.Settings()));
 	}
 	
 	public static Identifier id(String path) {
 		return new Identifier(MODID, path);
 	}
 	
-	//simply for breaking the circular reference in the SLOPE_ENTITY constructor call
+	//simply for breaking circular references in the registration calls
 	private static TemplateEntity makeSlopeEntity(BlockPos pos, BlockState state) {
 		return new TemplateEntity(SLOPE_ENTITY, pos, state);
+	}
+	
+	private static TemplateEntity makeSlabEntity(BlockPos pos, BlockState state) {
+		return new TemplateEntity(SLAB_ENTITY, pos, state);
 	}
 }

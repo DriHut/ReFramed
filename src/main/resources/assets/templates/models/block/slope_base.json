@@ -1,8 +1,8 @@
 {
-	"parent": "block/block",
+	"parent": "minecraft:block/block",
 	"gui_light": "front",
 	"textures": {
-		"particle": "block/scaffolding_top"
+		"particle": "minecraft:block/scaffolding_top"
 	},
 	"display": {
 		"firstperson_righthand": {

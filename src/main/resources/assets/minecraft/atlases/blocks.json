@@ -1,0 +1,9 @@
+{
+	"sources": [
+		{
+			"type": "directory",
+			"source": "templates_special",
+			"prefix": "templates_special/"
+		}
+	]
+}

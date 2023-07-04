@@ -1,6 +1,7 @@
 package io.github.cottonmc.templates;
 
-import io.github.cottonmc.templates.model.RetexturedMeshTemplateUnbakedModel;
+import io.github.cottonmc.templates.model.RetexturedJsonModelUnbakedModel;
+import io.github.cottonmc.templates.model.RetexturedMeshUnbakedModel;
 import io.github.cottonmc.templates.model.SlopeBaseMesh;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -53,9 +54,14 @@ public class TemplatesClient implements ClientModInitializer {
 		ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> provider); //block models
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(rm -> provider); //item models
 		
-		BlockRenderLayerMap.INSTANCE.putBlock(Templates.SLOPE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), Templates.SLOPE, Templates.SLAB);
 		
-		provider.addTemplateModel(Templates.id("slope_special"), () -> new RetexturedMeshTemplateUnbakedModel(Templates.id("block/slope_base"), SlopeBaseMesh::make));
+		provider.addTemplateModel(Templates.id("slope_special"), () -> new RetexturedMeshUnbakedModel(Templates.id("block/slope_base"), SlopeBaseMesh::make));
 		provider.assignItemModel(Templates.id("slope_special"), Templates.SLOPE);
+		
+		provider.addTemplateModel(Templates.id("cube_special"), () -> new RetexturedJsonModelUnbakedModel(Templates.id("block/cube")));
+		provider.addTemplateModel(Templates.id("slab_bottom_special"), () -> new RetexturedJsonModelUnbakedModel(Templates.id("block/slab_bottom")));
+		provider.addTemplateModel(Templates.id("slab_top_special"), () -> new RetexturedJsonModelUnbakedModel(Templates.id("block/slab_top")));
+		provider.assignItemModel(Templates.id("slab_bottom_special"), Templates.SLAB);
 	}
 }

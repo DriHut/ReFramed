@@ -22,36 +22,20 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public final class TemplateBakedModel extends ForwardingBakedModel {
-	public TemplateBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, AffineTransformation aff, Mesh baseMesh) {
+public final class RetexturedMeshBakedModel extends ForwardingBakedModel {
+	public RetexturedMeshBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, AffineTransformation aff, Mesh baseMesh) {
 		this.wrapped = baseModel;
-		
 		this.tam = tam;
-		this.baseMesh = MatrixMeshTransformer.transformAroundCenter(aff, baseMesh);
-		
-		//Hard to explain what this is for...
-		//Basically, the previous incarnation of this mod assembled the north/south/east/west faces all individually.
-		//This means it was easy to get the orientation of the block correct - to popular the north face of the slope, look at
-		//the north texture of the theme block. In this version, there is only *one* slope model that is dynamically rotated
-		//to form the other possible orientations. If I populate the north face of the model using the north face of the theme,
-		//that model will then be rotated so it's no longer facing the right way.
-		//
-		//This seems to work, but I'm kinda surprised I don't need to invert the transformation here, which is a clue that
-		//I don't really understand all the math, loool
-		for(Direction input : Direction.values()) {
-			Direction output = Direction.transform(aff.getMatrix(), input);
-			facePermutation.put(input, output);
-		}
+		this.baseMesh = MatrixTransformer.meshAroundCenter(aff, baseMesh);
+		this.facePermutation = MatrixTransformer.facePermutation(aff);
 	}
 	
 	private final TemplateAppearanceManager tam;
 	private final Mesh baseMesh;
-	
-	private final Map<Direction, Direction> facePermutation = new EnumMap<>(Direction.class);
+	private final Map<Direction, Direction> facePermutation;
 	
 	@Override
 	public boolean isVanillaAdapter() {
