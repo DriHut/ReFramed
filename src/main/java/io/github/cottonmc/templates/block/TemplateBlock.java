@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -79,7 +78,7 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 		}
 		
 		//Changing the theme
-		if(held.getItem() instanceof BlockItem bi && be.getRenderedState().getBlock() == Blocks.AIR) {
+		if(held.getItem() instanceof BlockItem bi && be.getThemeState().getBlock() == Blocks.AIR) {
 			Block block = bi.getBlock();
 			ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
 			BlockState placementState = block.getPlacementState(ctx);
@@ -104,8 +103,10 @@ public abstract class TemplateBlock extends Block implements BlockEntityProvider
 		if(!state.isOf(newState.getBlock()) && world.getBlockEntity(pos) instanceof TemplateEntity template) {
 			DefaultedList<ItemStack> drops = DefaultedList.of();
 			
-			Block theme = template.getRenderedState().getBlock();
+			//TODO: remember the specific ItemStack
+			Block theme = template.getThemeState().getBlock();
 			if(theme != Blocks.AIR) drops.add(new ItemStack(theme));
+			
 			if(template.hasSpentRedstoneTorch()) drops.add(new ItemStack(Items.REDSTONE_TORCH));
 			if(template.hasSpentGlowstoneDust()) drops.add(new ItemStack(Items.GLOWSTONE_DUST));
 			

@@ -9,6 +9,9 @@
 	"contact": {
 		"sources": "https://github.com/CottonMC/Templates"
 	},
+	"mixins": [
+		"templates.mixins.json"
+	],
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -21,7 +24,6 @@
 	"depends": {
 		"minecraft": ">=1.20.1",
 		"fabricloader": "*",
-		"fabric-api": "*",
-		"fabric-renderer-indigo": "*"
+		"fabric-api": "*"
 	}
 }

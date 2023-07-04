@@ -1,6 +1,9 @@
 {
 	"parent": "block/block",
 	"gui_light": "front",
+	"textures": {
+		"particle": "block/scaffolding_top"
+	},
 	"display": {
 		"firstperson_righthand": {
 			"rotation": [ 0, 135, 0 ],

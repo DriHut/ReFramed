@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "io.github.cottonmc.templates.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"particles.MixinEntity",
+		"particles.MixinLivingEntity"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"refmap": "packages.refmap.json"
+}
