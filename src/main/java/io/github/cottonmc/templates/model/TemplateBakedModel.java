@@ -72,12 +72,6 @@ public final class TemplateBakedModel extends ForwardingBakedModel {
 		context.popTransform();
 	}
 	
-	@Override
-	public boolean isSideLit() {
-		//Makes item models look less bad. TODO: possibly a weird spot to put this. corresponds to `gui_light: front` in the json
-		return false;
-	}
-	
 	public @NotNull RenderContext.QuadTransform retexturingBlockTransformer(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier) {
 		BlockState template = (((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos) instanceof BlockState s) ? s : null;
 		if(template == null || template.isAir()) return new RetexturingTransformer(tam.getDefaultAppearance(), 0xFFFFFFFF, facePermutation);

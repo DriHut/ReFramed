@@ -1,6 +1,7 @@
 package io.github.cottonmc.templates;
 
-import io.github.cottonmc.templates.model.SlopeUnbakedModel;
+import io.github.cottonmc.templates.model.RetexturedMeshTemplateModel;
+import io.github.cottonmc.templates.model.SlopeBaseMesh;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
@@ -54,7 +55,7 @@ public class TemplatesClient implements ClientModInitializer {
 		
 		BlockRenderLayerMap.INSTANCE.putBlock(Templates.SLOPE, RenderLayer.getCutout());
 		
-		provider.addTemplateModel(Templates.id("slope_special"), SlopeUnbakedModel::new);
+		provider.addTemplateModel(Templates.id("slope_special"), () -> new RetexturedMeshTemplateModel(Templates.id("block/slope_base"), SlopeBaseMesh::make));
 		provider.assignItemModel(Templates.id("slope_special"), Templates.SLOPE);
 	}
 }
