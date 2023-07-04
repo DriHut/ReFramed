@@ -16,8 +16,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @SuppressWarnings("ClassCanBeRecord")
-public class RetexturedMeshTemplateModel implements UnbakedModel {
-	public RetexturedMeshTemplateModel(Identifier parent, Supplier<Mesh> baseMeshFactory) {
+public class RetexturedMeshTemplateUnbakedModel implements UnbakedModel {
+	public RetexturedMeshTemplateUnbakedModel(Identifier parent, Supplier<Mesh> baseMeshFactory) {
 		this.parent = parent;
 		this.baseMeshFactory = baseMeshFactory;
 	}

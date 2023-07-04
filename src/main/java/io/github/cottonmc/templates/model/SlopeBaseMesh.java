@@ -11,11 +11,11 @@ public class SlopeBaseMesh {
 	/**
 	 * @see TemplateBakedModel.RetexturingTransformer for why these values were chosen
 	 */
-	public static final int TAG_SLOPE = Direction.UP.ordinal();
-	public static final int TAG_LEFT = Direction.EAST.ordinal();
-	public static final int TAG_RIGHT = Direction.WEST.ordinal();
-	public static final int TAG_BACK = Direction.SOUTH.ordinal();
-	public static final int TAG_BOTTOM = Direction.DOWN.ordinal();
+	public static final int TAG_SLOPE = Direction.UP.ordinal() + 1;
+	public static final int TAG_LEFT = Direction.EAST.ordinal() + 1;
+	public static final int TAG_RIGHT = Direction.WEST.ordinal() + 1;
+	public static final int TAG_BACK = Direction.SOUTH.ordinal() + 1;
+	public static final int TAG_BOTTOM = Direction.DOWN.ordinal() + 1;
 	
 	public static Mesh make() {
 		Renderer renderer = TemplatesClient.getFabricRenderer();

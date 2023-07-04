@@ -2,7 +2,6 @@ package io.github.cottonmc.templates.block.entity;
 
 import io.github.cottonmc.templates.Templates;
 import io.github.cottonmc.templates.api.ThemeableBlockEntity;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -19,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class TemplateEntity extends BlockEntity implements RenderAttachmentBlockEntity, ThemeableBlockEntity {
+public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity {
 	protected BlockState renderedState = Blocks.AIR.getDefaultState();
 	
 	//Whether the player has manually spent a redstone/glowstone item to upgrade the template.
@@ -72,11 +71,6 @@ public class TemplateEntity extends BlockEntity implements RenderAttachmentBlock
 	
 	@Override
 	public BlockState getRenderAttachmentData() {
-		return renderedState;
-	}
-	
-	@Override
-	public BlockState getThemeState() {
 		return renderedState;
 	}
 	

@@ -100,7 +100,7 @@ public final class TemplateBakedModel extends ForwardingBakedModel {
 			quad.material(appearance.getRenderMaterial());
 			
 			//The quad tag numbers were selected so this magic trick works:
-			Direction dir = facePermutation.get(DIRECTIONS[quad.tag()]);
+			Direction dir = facePermutation.get(DIRECTIONS[quad.tag() - 1]);
 			
 			//TODO: this newly-simplified direction passing to hasColor is almost certainly incorrect
 			// I think hasColor was kinda incorrect in the first place tho
