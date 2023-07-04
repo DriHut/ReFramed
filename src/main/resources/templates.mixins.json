@@ -6,6 +6,11 @@
 		"particles.MixinEntity",
 		"particles.MixinLivingEntity"
 	],
+	"client": [
+		"particles.AccessorParticle",
+		"particles.AccessorSpriteBillboardParticle",
+		"particles.MixinBlockDustParticle"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	},

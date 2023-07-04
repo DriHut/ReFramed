@@ -17,15 +17,14 @@ public abstract class MixinEntity {
 	
 	@ModifyArg(
 		method = "spawnSprintingParticles",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/particle/BlockStateParticleEffect;<init>(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)V"),
-		require = 0
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/particle/BlockStateParticleEffect;<init>(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)V")
 	)
 	private BlockState templates$spawnSprintingParticles$modifyParticleState(BlockState origState) {
 		World world = ((Entity) (Object) this).getWorld();
 		
 		if(world.getBlockEntity(getLandingPos()) instanceof ThemeableBlockEntity themeable) {
 			BlockState theme = themeable.getThemeState();
-			if(theme.getBlock() != Blocks.AIR) return theme;
+			if(!theme.isAir()) return theme;
 		}
 		
 		return origState;

@@ -25,15 +25,14 @@ public class MixinLivingEntity {
 	
 	@ModifyArg(
 		method = "fall",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/particle/BlockStateParticleEffect;<init>(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)V"),
-		require = 0
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/particle/BlockStateParticleEffect;<init>(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)V")
 	)
 	private BlockState templates$fall$modifyParticleState(BlockState origState) {
 		World world = ((Entity) (Object) this).getWorld();
 		
 		if(lastFallCheckPos != null && world.getBlockEntity(lastFallCheckPos) instanceof ThemeableBlockEntity themeable) {
 			BlockState theme = themeable.getThemeState();
-			if(theme.getBlock() != Blocks.AIR) return theme;
+			if(!theme.isAir()) return theme;
 		}
 		
 		return origState;
