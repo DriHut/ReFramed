@@ -90,7 +90,7 @@ public class TemplateInteractionUtil {
 					.with(REDSTONE, be.hasSpentRedstoneTorch() || placementState.getWeakRedstonePower(world, pos, Direction.NORTH) != 0));
 				
 				if(!player.isCreative()) held.decrement(1);
-				world.playSound(player, pos, state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1f, 1f);
+				world.playSound(player, pos, placementState.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1f, 1.1f);
 				return ActionResult.SUCCESS;
 			}
 		}

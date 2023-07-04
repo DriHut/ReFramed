@@ -83,6 +83,11 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 		context.meshConsumer().accept(meshCache.computeIfAbsent(key, this::makeMesh));
 	}
 	
+	@Override
+	public Sprite getParticleSprite() {
+		return tam.getDefaultAppearance().getParticleSprite();
+	}
+	
 	protected Mesh makeMesh(CacheKey key) {
 		Renderer r = TemplatesClient.getFabricRenderer();
 		MeshBuilder builder = r.meshBuilder();

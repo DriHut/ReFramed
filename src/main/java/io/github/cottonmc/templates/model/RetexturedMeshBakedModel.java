@@ -56,6 +56,11 @@ public final class RetexturedMeshBakedModel extends ForwardingBakedModel {
 		context.popTransform();
 	}
 	
+	@Override
+	public Sprite getParticleSprite() {
+		return tam.getDefaultAppearance().getParticleSprite();
+	}
+	
 	public @NotNull RenderContext.QuadTransform retexturingBlockTransformer(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier) {
 		BlockState theme = (((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos) instanceof BlockState s) ? s : null;
 		if(theme == null || theme.isAir()) return new RetexturingTransformer(tam.getDefaultAppearance(), 0xFFFFFFFF, facePermutation);

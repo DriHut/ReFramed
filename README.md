@@ -51,9 +51,7 @@ If possible, I don't recommend making a wholly *new* json model. If you have an 
 		"north": "templates:templates_special/north",
 		"south": "templates:templates_special/south",
 		"west": "templates:templates_special/west",
-		"east": "templates:templates_special/east",
-		
-		"particle": "minecraft:block/scaffolding_top"
+		"east": "templates:templates_special/east"
 	}
 }
 ```
@@ -70,7 +68,7 @@ If you have a shape in mind that can't be represented with a json model (like a 
 
 We will construct a `RetexturedMeshUnbakedModel`. You need two things - the ID of a parent model, and a `Supplier<>` of a `Mesh` to retexture.
 
-Ideally, the parent model should have a parent of `block/block`, or at least define *some* non-default rotations (smokey the bear voice *Only You Can Prevent Weirdly Rotated First-Person Models*), set `"gui_light": "front"` (lest the item model look weird), and define a particle texture. You should use a json model for this, but keep in mind that no quads will be read from the json model - it's only used to source all the miscellaneous `BakedModel` options.
+Ideally, the parent model should have a parent of `block/block`, or at least define *some* non-default rotations (smokey the bear voice *Only You Can Prevent Weirdly Rotated First-Person Models*) and set `"gui_light": "front"` (lest the item model look weird). You should use a json model for this, but keep in mind that no quads will be read from the json model - it's only used to source all the miscellaneous `BakedModel` options.
 
 When building the `Mesh`, if you want a face to be dynamically retextured, `.tag()` it with the `.ordinal() + 1` of the `Direction` it corresponds to, and give the face UV coordinates ranging from 0 to 1. (For example, if you tag a face with `3` (`Direction.NORTH.ordinal() + 1`), it will be retextured to the north side of the template's theme.)
 

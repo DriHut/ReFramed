@@ -25,19 +25,17 @@ import java.util.function.Function;
 
 public class TemplateAppearanceManager {
 	public TemplateAppearanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
-		SpriteIdentifier defaultSpriteId = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:block/scaffolding_top"));
-		Sprite defaultSprite = spriteLookup.apply(defaultSpriteId);
-		if(defaultSprite == null) throw new IllegalStateException("Couldn't locate " + defaultSpriteId + " !");
-		
 		MaterialFinder finder = TemplatesClient.getFabricRenderer().materialFinder();
-		
 		for(BlendMode blend : BlendMode.values()) {
 			blockMaterials.put(blend, finder.clear().disableDiffuse(false).ambientOcclusion(TriState.FALSE).blendMode(blend).find());
 		}
 		
+		Sprite defaultSprite = spriteLookup.apply(DEFAULT_SPRITE_ID);
+		if(defaultSprite == null) throw new IllegalStateException("Couldn't locate " + DEFAULT_SPRITE_ID + " !");
 		this.defaultAppearance = new SingleSpriteAppearance(defaultSprite, blockMaterials.get(BlendMode.CUTOUT));
 	}
 	
+	public static final SpriteIdentifier DEFAULT_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:block/scaffolding_top"));
 	private final TemplateAppearance defaultAppearance;
 	
 	//Mutable, append-only cache:

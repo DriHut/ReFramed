@@ -6,7 +6,6 @@
 		"north": "templates:templates_special/north",
 		"south": "templates:templates_special/south",
 		"west": "templates:templates_special/west",
-		"east": "templates:templates_special/east",
-		"particle": "minecraft:block/scaffolding_top"
+		"east": "templates:templates_special/east"
 	}
 }
