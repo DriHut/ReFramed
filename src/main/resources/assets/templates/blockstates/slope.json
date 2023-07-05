@@ -1,19 +1,38 @@
 {
 	"variants": {
-		"facing=east": {
+		"facing=east,half=bottom": {
 			"model": "templates:slope_special",
 			"y": 270
 		},
-		"facing=north": {
+		"facing=north,half=bottom": {
 			"model": "templates:slope_special",
 			"y": 180
 		},
-		"facing=south": {
+		"facing=south,half=bottom": {
 			"model": "templates:slope_special"
 		},
-		"facing=west": {
+		"facing=west,half=bottom": {
 			"model": "templates:slope_special",
 			"y": 90
+		},
+		"facing=east,half=top": {
+			"model": "templates:slope_special",
+			"x": 180,
+			"y": 90
+		},
+		"facing=north,half=top": {
+			"model": "templates:slope_special",
+			"x": 180
+		},
+		"facing=south,half=top": {
+			"model": "templates:slope_special",
+			"x": 180,
+			"y": 180
+		},
+		"facing=west,half=top": {
+			"model": "templates:slope_special",
+			"x": 180,
+			"y": 270
 		}
 	}
 }
