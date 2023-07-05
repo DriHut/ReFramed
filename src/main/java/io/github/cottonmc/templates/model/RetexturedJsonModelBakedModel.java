@@ -46,13 +46,13 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 		}
 	}
 	
-	//TODO: Check that TemplateAppearance equals() behavior is what i want, and also that it's fast
-	private record CacheKey(BlockState state, TemplateAppearance appearance) {}
-	
 	private final TemplateAppearanceManager tam;
-	private final ConcurrentHashMap<CacheKey, Mesh> meshCache = new ConcurrentHashMap<>();
 	private final Sprite[] specialSprites = new Sprite[DIRECTIONS.length];
 	private final BlockState itemModelState;
+	
+	//TODO: Check that TemplateAppearance equals() behavior is what i want, and also that it's fast
+	private record CacheKey(BlockState state, TemplateAppearance appearance) {}
+	private final ConcurrentHashMap<CacheKey, Mesh> meshCache = new ConcurrentHashMap<>();
 	
 	@Override
 	public boolean isVanillaAdapter() {
