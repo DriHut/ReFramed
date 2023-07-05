@@ -18,32 +18,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class TemplatesModelProvider implements ModelResourceProvider, ModelVariantProvider {
-	private final Map<Identifier, Supplier<UnbakedModel>> factories = new HashMap<>();
+	private final Map<Identifier, UnbakedModel> models = new HashMap<>();
 	private final Map<ModelIdentifier, Identifier> itemAssignments = new HashMap<>();
 	
-	private final Map<Identifier, UnbakedModel> cache = new HashMap<>();
 	private volatile TemplateAppearanceManager appearanceManager;
 	
-	/// model loading
+	/// fabric model provider api
 	
 	@Override
-	public @Nullable UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException {
-		UnbakedModel cacheResult = cache.get(resourceId);
-		if(cacheResult != null) return cacheResult;
-		
-		//Either we have a factory for this model (just haven't cached its output yet),
-		Supplier<UnbakedModel> factory = factories.get(resourceId);
-		if(factory != null) {
-			UnbakedModel freshModel = factory.get();
-			cache.put(resourceId, freshModel);
-			return freshModel;
-		}
-		
-		//or we don't cover this model at all.
-		return null;
+	public @Nullable UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) {
+		return models.get(resourceId);
 	}
 	
 	//For blocks, you can point the game directly at the custom model in the blockstate json file.
@@ -51,19 +37,19 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 	//You *would* be able to create a model json for it and set the "parent" field to the custom model,
 	//but json models are never allowed to have non-json models as a parent, and template unbaked models are not json models. Ah well.
 	//So, instead, we use a ModelVariantProvider to clunkily redirect the item:id#inventory model to the blockmodel.
-	//Not my favorite solution (for one, it precludes setting custom rotations in the item model) but we'll live.
+	//Not my favorite solution but we'll live.
 	@Override
-	public @Nullable UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException {
+	public @Nullable UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) {
 		Identifier customModelId = itemAssignments.get(modelId);
 		return customModelId == null ? null : loadModelResource(customModelId, context);
 	}
 	
-	/// template appearance manager cache, & other cache stuff
+	/// template appearance manager cache
 	
 	public TemplateAppearanceManager getOrCreateTemplateApperanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
-		//This is kind of needlessly fancy using the volatile "double checked locking" pattern.
-		//I'd like all the template models to use the same TemplateApperanceManager, despite the model
-		//making process happening concurrently on several threads.
+		//This is kind of needlessly fancy using the "volatile double checked locking" pattern.
+		//I'd like all template models to use the same TemplateApperanceManager, despite the model
+		//baking process happening concurrently on several threads.
 		
 		//Volatile field read:
 		TemplateAppearanceManager read = appearanceManager;
@@ -85,14 +71,13 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 	}
 	
 	public void dumpCache() {
-		cache.clear();
 		appearanceManager = null;
 	}
 	
 	/// "public api"
 	
-	public void addTemplateModel(Identifier id, Supplier<UnbakedModel> modelFactory) {
-		factories.put(id, modelFactory);
+	public void addTemplateModel(Identifier id, UnbakedModel modelFactory) {
+		models.put(id, modelFactory);
 	}
 	
 	public void assignItemModel(Identifier templateModelId, ModelIdentifier... modelIds) {

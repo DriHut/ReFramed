@@ -16,7 +16,6 @@ Template blocks can be placed in the world, then right-clicked with a full-size 
 
 ## Todo
 
-* Evaluate whether I need to keep the `Supplier` in TemplatesModelProvider, or whether I can reuse my `UnbakedModel`s indefinitely
 * `templates:block/slope_base` needs a suspicious amount of custom rotations. Maybe the model is pointing the wrong way.
 * `uvlock` in a blockstate will not work for `RetexturedMeshTemplateUnbakedModel`s. Can it be fixed?
 * Upside-down slopes would be nice...
