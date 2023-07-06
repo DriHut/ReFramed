@@ -54,7 +54,14 @@ public class TemplatesClient implements ClientModInitializer {
 		ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> provider); //block models
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(rm -> provider); //item models
 		
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), Templates.CUBE, Templates.FENCE, Templates.SLAB, Templates.SLOPE, Templates.WALL);
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
+			Templates.CUBE,
+			Templates.FENCE,
+			Templates.POST,
+			Templates.SLAB,
+			Templates.SLOPE,
+			Templates.WALL
+		);
 		
 		provider.addTemplateModel(Templates.id("cube_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/cube")));
 		provider.addTemplateModel(Templates.id("fence_post_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/fence_post")));
@@ -70,6 +77,7 @@ public class TemplatesClient implements ClientModInitializer {
 		
 		provider.assignItemModel(Templates.id("cube_special"), Templates.CUBE);
 		provider.assignItemModel(Templates.id("fence_inventory_special"), Templates.FENCE);
+		provider.assignItemModel(Templates.id("fence_post_special"), Templates.POST);
 		provider.assignItemModel(Templates.id("slope_special"), Templates.SLOPE);
 		provider.assignItemModel(Templates.id("slab_bottom_special"), Templates.SLAB);
 		provider.assignItemModel(Templates.id("wall_inventory_special"), Templates.WALL);

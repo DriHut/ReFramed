@@ -4,6 +4,7 @@
 		"recipes": [
 			"templates:cube",
 			"templates:fence",
+			"templates:post",
 			"templates:slab",
 			"templates:slope",
 			"templates:wall"
