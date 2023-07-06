@@ -1,6 +1,8 @@
 package io.github.cottonmc.templates.block;
 
+import com.google.common.base.MoreObjects;
 import io.github.cottonmc.templates.Templates;
+import io.github.cottonmc.templates.api.TemplateInteractionUtil;
 import io.github.cottonmc.templates.util.StairShapeMaker;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -67,11 +69,11 @@ public class TemplateSlopeBlock extends TemplateBlock {
 	
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-		return shapes[shapeIndex(state.get(FACING), state.get(HALF))];
+		return MoreObjects.firstNonNull(super.getCollisionShape(state, view, pos, ctx), shapes[shapeIndex(state.get(FACING), state.get(HALF))]);
 	}
 	
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-		return getCollisionShape(state, view, pos, ctx);
+		return shapes[shapeIndex(state.get(FACING), state.get(HALF))];
 	}
 }

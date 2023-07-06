@@ -27,16 +27,19 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class TemplateInteractionUtil {
-	public static final IntProperty LIGHT = IntProperty.of("light", 0, 15);
-	public static final BooleanProperty REDSTONE = BooleanProperty.of("redstone");
+	public static final IntProperty LIGHT = IntProperty.of("templates_light", 0, 15);
+	public static final BooleanProperty REDSTONE = BooleanProperty.of("templates_redstone");
+	public static final BooleanProperty SOLID = BooleanProperty.of("templates_solid");
 	
 	public static StateManager.Builder<Block, BlockState> appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		return builder.add(LIGHT, REDSTONE);
+		return builder.add(LIGHT, REDSTONE, SOLID);
 	}
 	
 	public static AbstractBlock.Settings makeSettings() {
@@ -48,7 +51,7 @@ public class TemplateInteractionUtil {
 	}
 	
 	public static BlockState setDefaultStates(BlockState in) {
-		return in.with(LIGHT, 0).with(REDSTONE, false);
+		return in.with(LIGHT, 0).with(REDSTONE, false).with(SOLID, true);
 	}
 	
 	public static ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
@@ -74,6 +77,16 @@ public class TemplateInteractionUtil {
 			
 			if(!player.isCreative()) held.decrement(1);
 			world.playSound(player, pos, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 1f, 1f);
+			return ActionResult.SUCCESS;
+		}
+		
+		//Popped chorus fruit
+		if(state.contains(SOLID) && held.getItem() == Items.POPPED_CHORUS_FRUIT && state.get(SOLID) && !be.hasSpentPoppedChorus()) {
+			world.setBlockState(pos, state.with(SOLID, false));
+			be.spentPoppedChorus();
+			
+			if(!player.isCreative()) held.decrement(1);
+			world.playSound(player, pos, SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.BLOCKS, 1f, 1f);
 			return ActionResult.SUCCESS;
 		}
 		
@@ -108,6 +121,7 @@ public class TemplateInteractionUtil {
 			
 			if(template.hasSpentRedstoneTorch()) drops.add(new ItemStack(Items.REDSTONE_TORCH));
 			if(template.hasSpentGlowstoneDust()) drops.add(new ItemStack(Items.GLOWSTONE_DUST));
+			if(template.hasSpentPoppedChorus()) drops.add(new ItemStack(Items.POPPED_CHORUS_FRUIT));
 			
 			ItemScatterer.spawn(world, pos, drops);
 		}
@@ -120,6 +134,10 @@ public class TemplateInteractionUtil {
 			NbtCompound tag = BlockItem.getBlockEntityNbt(stack);
 			if(tag != null) be.readNbt(tag);
 		}
+	}
+	
+	public static @Nullable VoxelShape getCollisionShape(BlockState state) {
+		return state.contains(SOLID) && !state.get(SOLID) ? VoxelShapes.empty() : null;
 	}
 	
 	public static boolean emitsRedstonePower(BlockState state) {

@@ -1,10 +1,12 @@
 package io.github.cottonmc.templates.block;
 
+import com.google.common.base.MoreObjects;
 import io.github.cottonmc.templates.Templates;
 import io.github.cottonmc.templates.api.TemplateInteractionUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -16,6 +18,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -51,6 +54,11 @@ public class TemplateSlabBlock extends SlabBlock implements BlockEntityProvider 
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		TemplateInteractionUtil.onPlaced(world, pos, state, placer, stack);
+	}
+	
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
+		return MoreObjects.firstNonNull(TemplateInteractionUtil.getCollisionShape(state), super.getCollisionShape(state, view, pos, ctx));
 	}
 	
 	@Override

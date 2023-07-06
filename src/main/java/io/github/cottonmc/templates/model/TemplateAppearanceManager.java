@@ -1,6 +1,7 @@
 package io.github.cottonmc.templates.model;
 
 import io.github.cottonmc.templates.TemplatesClient;
+import io.github.cottonmc.templates.util.TattletaleRandom;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -17,7 +18,6 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +60,7 @@ public class TemplateAppearanceManager {
 	//The results are going to be the same, apart from their serialNumbers differing (= their equals & hashCode differing).
 	//Tiny amount of wasted space in some caches if TemplateAppearances are used as a map key, then. IMO it's not a critical issue.
 	private TemplateAppearance computeAppearance(BlockState state) {
-		Random rand = Random.create();
+		TattletaleRandom rand = new TattletaleRandom(Random.create());
 		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 		
 		//Only for parsing vanilla quads:
@@ -126,6 +126,10 @@ public class TemplateAppearanceManager {
 		//Fill out any missing values in the sprites array, since failure to pick textures shouldn't lead to NPEs later on
 		for(int i = 0; i < sprites.length; i++) {
 			if(sprites[i] == null) sprites[i] = defaultAppearance.getParticleSprite();
+		}
+		
+		if(rand.wasUsed) {
+			//System.err.println("State " + state + " makes use of a randomized model");
 		}
 		
 		return new ComputedApperance(

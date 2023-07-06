@@ -28,6 +28,7 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 	//blockstate for it is a little silly, so, here you go.
 	protected boolean spentGlowstoneDust = false;
 	protected boolean spentRedstoneTorch = false;
+	protected boolean spentPoppedChorus = false;
 	
 	public TemplateEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -42,6 +43,7 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		renderedState = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound("BlockState"));
 		spentGlowstoneDust = tag.getBoolean("Glowstone");
 		spentRedstoneTorch = tag.getBoolean("Redstone");
+		spentPoppedChorus = tag.getBoolean("Chorus");
 		
 		//Force a chunk remesh on the client if the displayed blockstate has changed
 		if(world != null && world.isClient && !Objects.equals(lastRenderedState, renderedState)) {
@@ -55,6 +57,7 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		tag.put("BlockState", NbtHelper.fromBlockState(renderedState));
 		tag.putBoolean("Glowstone", spentGlowstoneDust);
 		tag.putBoolean("Redstone", spentRedstoneTorch);
+		tag.putBoolean("Chorus", spentPoppedChorus);
 	}
 	
 	@Nullable
@@ -97,6 +100,15 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 	
 	public void spentRedstoneTorch() {
 		spentRedstoneTorch = true;
+		markDirty();
+	}
+	
+	public boolean hasSpentPoppedChorus() {
+		return spentPoppedChorus;
+	}
+	
+	public void spentPoppedChorus() {
+		spentPoppedChorus = true;
 		markDirty();
 	}
 }
