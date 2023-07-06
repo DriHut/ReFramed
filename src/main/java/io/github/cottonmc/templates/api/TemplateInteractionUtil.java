@@ -19,7 +19,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
@@ -34,7 +33,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class TemplateInteractionUtil {
-	public static final IntProperty LIGHT = IntProperty.of("templates_light", 0, 15);
+	public static final BooleanProperty LIGHT = BooleanProperty.of("templates_light");
 	public static final BooleanProperty REDSTONE = BooleanProperty.of("templates_redstone");
 	public static final BooleanProperty SOLID = BooleanProperty.of("templates_solid");
 	
@@ -51,7 +50,7 @@ public class TemplateInteractionUtil {
 	}
 	
 	public static BlockState setDefaultStates(BlockState in) {
-		return in.with(LIGHT, 0).with(REDSTONE, false).with(SOLID, true);
+		return in.with(LIGHT, false).with(REDSTONE, false).with(SOLID, true);
 	}
 	
 	public static ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
@@ -61,8 +60,8 @@ public class TemplateInteractionUtil {
 		ItemStack held = player.getStackInHand(hand);
 		
 		//Glowstone
-		if(state.contains(LIGHT) && held.getItem() == Items.GLOWSTONE_DUST && state.get(LIGHT) != 15 && !be.hasSpentGlowstoneDust()) {
-			world.setBlockState(pos, state.with(LIGHT, 15));
+		if(state.contains(LIGHT) && held.getItem() == Items.GLOWSTONE_DUST && !state.get(LIGHT) && !be.hasSpentGlowstoneDust()) {
+			world.setBlockState(pos, state.with(LIGHT, true));
 			be.spentGlowstoneDust();
 			
 			if(!player.isCreative()) held.decrement(1);
@@ -99,7 +98,7 @@ public class TemplateInteractionUtil {
 				if(!world.isClient) be.setRenderedState(placementState);
 				
 				world.setBlockState(pos, state
-					.with(LIGHT, be.hasSpentGlowstoneDust() ? 15 : placementState.getLuminance())
+					.with(LIGHT, be.hasSpentGlowstoneDust() || (placementState.getLuminance() != 0))
 					.with(REDSTONE, be.hasSpentRedstoneTorch() || placementState.getWeakRedstonePower(world, pos, Direction.NORTH) != 0));
 				
 				if(!player.isCreative()) held.decrement(1);
@@ -153,6 +152,6 @@ public class TemplateInteractionUtil {
 	}
 	
 	public static int luminance(BlockState state) {
-		return state.contains(LIGHT) ? state.get(LIGHT) : 0;
+		return state.contains(LIGHT) && state.get(LIGHT) ? 15 : 0;
 	}
 }
