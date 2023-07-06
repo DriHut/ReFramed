@@ -1,0 +1,37 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"down": "templates:templates_special/down",
+		"up": "templates:templates_special/up",
+		"north": "templates:templates_special/north",
+		"south": "templates:templates_special/south",
+		"west": "templates:templates_special/west",
+		"east": "templates:templates_special/east"
+	},
+	"elements": [
+		{
+			"from": [5, 0, 0],
+			"to": [11, 14, 8],
+			"faces": {
+				"down": {
+					"texture": "#down",
+					"cullface": "down"
+				},
+				"up": {
+					"texture": "#up"
+				},
+				"north": {
+					"texture": "#north",
+					"cullface": "north"
+				},
+				"west": {
+					"texture": "#west"
+				},
+				"east": {
+					"texture": "#east"
+				}
+			},
+			"__comment": "wall"
+		}
+	]
+}

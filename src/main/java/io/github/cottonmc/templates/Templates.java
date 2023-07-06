@@ -2,9 +2,11 @@ package io.github.cottonmc.templates;
 
 import io.github.cottonmc.templates.api.TemplateInteractionUtil;
 import io.github.cottonmc.templates.block.TemplateBlock;
+import io.github.cottonmc.templates.block.TemplateFenceBlock;
 import io.github.cottonmc.templates.block.TemplateSlabBlock;
 import io.github.cottonmc.templates.block.TemplateSlopeBlock;
 import io.github.cottonmc.templates.block.TemplateEntity;
+import io.github.cottonmc.templates.block.TemplateWallBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -28,13 +30,15 @@ public class Templates implements ModInitializer {
 	public static final String MODID = "templates";
 	
 	public static final Block CUBE = Registry.register(Registries.BLOCK, id("cube"), new TemplateBlock(TemplateInteractionUtil.makeSettings()));
-	public static final Block SLOPE = Registry.register(Registries.BLOCK, id("slope"), new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
+	public static final Block FENCE = Registry.register(Registries.BLOCK, id("fence"), new TemplateFenceBlock(TemplateInteractionUtil.makeSettings()));
 	public static final Block SLAB = Registry.register(Registries.BLOCK, id("slab"), new TemplateSlabBlock(TemplateInteractionUtil.makeSettings()));
+	public static final Block SLOPE = Registry.register(Registries.BLOCK, id("slope"), new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
+	public static final Block WALL = Registry.register(Registries.BLOCK, id("wall"), new TemplateWallBlock(TemplateInteractionUtil.makeSettings()));
 	
 	//N.B. it's fine to make your own block entity type instead of gluing additional blocks to this one
 	public static final BlockEntityType<TemplateEntity> TEMPLATE_BLOCK_ENTITY = Registry.register(
 		Registries.BLOCK_ENTITY_TYPE, id("slope"),
-		FabricBlockEntityTypeBuilder.create(Templates::makeTemplateBlockEntity, CUBE, SLOPE, SLAB).build(null)
+		FabricBlockEntityTypeBuilder.create(Templates::makeTemplateBlockEntity, CUBE, FENCE, SLAB, SLOPE, WALL).build(null)
 	);
 	
 	@SuppressWarnings("unused")
@@ -53,8 +57,10 @@ public class Templates implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, id("cube"), new BlockItem(CUBE, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("slope"), new BlockItem(SLOPE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("fence"), new BlockItem(FENCE, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("slab"), new BlockItem(SLAB, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("slope"), new BlockItem(SLOPE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("wall"), new BlockItem(WALL, new Item.Settings()));
 	}
 	
 	public static Identifier id(String path) {
@@ -68,7 +74,9 @@ public class Templates implements ModInitializer {
 	
 	private static void fillItemGroup(ItemGroup.DisplayContext ctx, ItemGroup.Entries ent) {
 		ent.add(CUBE);
-		ent.add(SLOPE);
+		ent.add(FENCE);
 		ent.add(SLAB);
+		ent.add(SLOPE);
+		ent.add(WALL);
 	}
 }

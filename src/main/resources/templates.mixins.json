@@ -3,6 +3,7 @@
 	"package": "io.github.cottonmc.templates.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
+		"WallBlockAccessor",
 		"particles.MixinEntity",
 		"particles.MixinLivingEntity"
 	],

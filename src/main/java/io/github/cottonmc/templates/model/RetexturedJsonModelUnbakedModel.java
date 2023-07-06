@@ -45,6 +45,7 @@ public class RetexturedJsonModelUnbakedModel implements UnbakedModel {
 		return new RetexturedJsonModelBakedModel(
 			baker.bake(parent, modelBakeSettings),
 			TemplatesClient.provider.getOrCreateTemplateApperanceManager(spriteLookup),
+			modelBakeSettings,
 			spriteLookup,
 			itemModelState
 		);

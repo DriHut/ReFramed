@@ -2,6 +2,8 @@
 	"itemGroup.templates.tab": "Templates",
 	
 	"block.templates.cube": "Cube Template",
+	"block.templates.fence": "Fence Template",
 	"block.templates.slope": "Slope Template",
-	"block.templates.slab": "Slab Template"
+	"block.templates.slab": "Slab Template",
+	"block.templates.wall": "Wall Template"
 }

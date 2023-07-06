@@ -3,8 +3,10 @@
 	"rewards": {
 		"recipes": [
 			"templates:cube",
+			"templates:fence",
 			"templates:slab",
-			"templates:slope"
+			"templates:slope",
+			"templates:wall"
 		]
 	},
 	"criteria": {

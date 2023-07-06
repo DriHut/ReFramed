@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.BlockItem;
@@ -29,15 +30,17 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
-	public RetexturedJsonModelBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, Function<SpriteIdentifier, Sprite> spriteLookup, BlockState itemModelState) {
+	public RetexturedJsonModelBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, Function<SpriteIdentifier, Sprite> spriteLookup, BlockState itemModelState) {
 		this.wrapped = baseModel;
 		this.tam = tam;
+		this.facePermutation = MeshTransformUtil.facePermutation(settings);
 		this.itemModelState = itemModelState;
 		
 		for(int i = 0; i < DIRECTIONS.length; i++) {
@@ -47,6 +50,7 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 	}
 	
 	private final TemplateAppearanceManager tam;
+	private final Map<Direction, Direction> facePermutation;
 	private final Sprite[] specialSprites = new Sprite[DIRECTIONS.length];
 	private final BlockState itemModelState;
 	
@@ -105,8 +109,8 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 						bounds.remap(
 							emitter,
 							specialSprites[i],
-							key.appearance().getSprite(DIRECTIONS[i]),
-							key.appearance().getBakeFlags(DIRECTIONS[i])
+							key.appearance().getSprite(facePermutation.get(DIRECTIONS[i])),
+							key.appearance().getBakeFlags(facePermutation.get(DIRECTIONS[i]))
 						);
 						break;
 					}

@@ -1,0 +1,90 @@
+{
+	"multipart": [
+		{
+			"apply": {
+				"model": "templates:wall_post_special"
+			},
+			"when": {
+				"up": "true"
+			}
+		},
+		{
+			"apply": {
+				"model": "templates:wall_side_special",
+				"uvlock": true
+			},
+			"when": {
+				"north": "low"
+			}
+		},
+		{
+			"apply": {
+				"model": "templates:wall_side_special",
+				"uvlock": true,
+				"y": 90
+			},
+			"when": {
+				"east": "low"
+			}
+		},
+		{
+			"apply": {
+				"model": "templates:wall_side_special",
+				"uvlock": true,
+				"y": 180
+			},
+			"when": {
+				"south": "low"
+			}
+		},
+		{
+			"apply": {
+				"model": "templates:wall_side_special",
+				"uvlock": true,
+				"y": 270
+			},
+			"when": {
+				"west": "low"
+			}
+		},
+		{
+			"apply": {
+				"model": "templates:wall_side_tall_special",
+				"uvlock": true
+			},
+			"when": {
+				"north": "tall"
+			}
+		},
+		{
+			"apply": {
+				"model": "templates:wall_side_tall_special",
+				"uvlock": true,
+				"y": 90
+			},
+			"when": {
+				"east": "tall"
+			}
+		},
+		{
+			"apply": {
+				"model": "templates:wall_side_tall_special",
+				"uvlock": true,
+				"y": 180
+			},
+			"when": {
+				"south": "tall"
+			}
+		},
+		{
+			"apply": {
+				"model": "templates:wall_side_tall_special",
+				"uvlock": true,
+				"y": 270
+			},
+			"when": {
+				"west": "tall"
+			}
+		}
+	]
+}
