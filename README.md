@@ -10,7 +10,7 @@
 
 Template blocks can be placed in the world, then right-clicked with a full-size block to set the textures for the template. Template blocks will inherit light and redstone values from the blocks they're given, or they can have light or redstone output added to any given block by right-clicking the template with glowstone dust or a redstone torch, respectively.
 
-While Templates itself adds a handful of common shapes, it's not too hard for other mods to interface with Templates and add their own templatable blocks.
+While Templates itself adds a handful of common shapes, it's also not too hard for other mods to interface with Templates and add their own templatable blocks.
 
 # quat was here
 
@@ -18,7 +18,6 @@ Todo move this into the main readme section
 
 ## Todo
 
-* `uvlock` in a blockstate will not work for `RetexturedMeshTemplateUnbakedModel`s. Can it be fixed?
 * More templates !!
 
 # For addon developers
@@ -81,6 +80,6 @@ That's all you need in order to construct a `RetexturedMeshUnbakedModel`, so to 
    * If your base model lives at `yourmod:block/awesome_template`, something like `yourmod:awesome_template_special` would do.
 2. Register it using `TemplatesClient.provider.addTemplateModel`.
 3. Create a blockstate json for your block, and point it at the ID you decided for your special model in 1).
-   * You may rotate the blockmodel with the `x` and `y` properties.
+   * You may rotate the blockmodel with the `x` and `y` properties. You can also toggle `uvlock`. Things should work as expected.
 
 You may create a regular item model, or use ours by calling `TemplatesClient.provider.assignItemModel`, passing the ID of the special model & the items you want to assign it to. (The reason you have to do this instead of simply creating a regular item model and setting its `parent`, is that `JsonUnbakedModel`s can't have non-`JsonUnbakedModel`s as their `parent`, and even a trivial item model with only the `parent` field set counts as a `JsonUnbakedModel`. This isn't a problem for block models because blockstates are a layer of indirection before model loading.)

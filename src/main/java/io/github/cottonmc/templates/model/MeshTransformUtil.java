@@ -5,6 +5,8 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.util.math.AffineTransformation;
 import net.minecraft.util.math.Direction;
 import org.joml.Matrix4f;
@@ -14,16 +16,14 @@ import org.joml.Vector4f;
 import java.util.EnumMap;
 import java.util.Map;
 
-/**
- * Transforms the position of each vertex in a `Mesh`.
- * The transformation's origin is bumped to (0.5, 0.5, 0.5) just because it's more convenient for me lol.
- */
-public class MatrixTransformer {
-	public static Mesh meshAroundCenter(AffineTransformation aff, Mesh oldMesh) {
-		return meshAroundCenter(aff.getMatrix(), oldMesh);
+public class MeshTransformUtil {
+	public static Mesh aroundCenter(Mesh oldMesh, ModelBakeSettings settings) {
+		return aroundCenter(oldMesh, settings.getRotation().getMatrix());
 	}
 	
-	public static Mesh meshAroundCenter(Matrix4f mat, Mesh oldMesh) {
+	public static Mesh aroundCenter(Mesh oldMesh, Matrix4f mat) {
+		Map<Direction, Direction> facePermutation = facePermutation(mat);
+		
 		Renderer r = TemplatesClient.getFabricRenderer();
 		MeshBuilder newMesh = r.meshBuilder();
 		QuadEmitter emitter = newMesh.getEmitter();
@@ -52,6 +52,11 @@ public class MatrixTransformer {
 				emitter.pos(i, pos4.x + 0.5f, pos4.y + 0.5f, pos4.z + 0.5f);
 			}
 			
+			emitter.nominalFace(facePermutation.get(emitter.lightFace()));
+			
+			Direction cull = emitter.cullFace();
+			if(cull != null) emitter.cullFace(facePermutation.get(cull));
+			
 			//Output the quad
 			emitter.emit();
 		});
@@ -68,12 +73,28 @@ public class MatrixTransformer {
 	//
 	//This seems to work, but I'm kinda surprised I don't need to invert the transformation here, which is a clue that
 	//I don't really understand all the math, loool
-	public static Map<Direction, Direction> facePermutation(AffineTransformation aff) {
+	public static Map<Direction, Direction> facePermutation(ModelBakeSettings aff) {
+		return facePermutation(aff.getRotation().getMatrix());
+	}
+	
+	public static Map<Direction, Direction> facePermutation(Matrix4f mat) {
 		Map<Direction, Direction> facePermutation = new EnumMap<>(Direction.class);
 		for(Direction input : Direction.values()) {
-			Direction output = Direction.transform(aff.getMatrix(), input);
+			Direction output = Direction.transform(mat, input);
 			facePermutation.put(input, output);
 		}
 		return facePermutation;
+	}
+	
+	public static Mesh pretransformMesh(Mesh mesh, RenderContext.QuadTransform transform) {
+		MeshBuilder builder = TemplatesClient.getFabricRenderer().meshBuilder();
+		QuadEmitter emitter = builder.getEmitter();
+		
+		mesh.forEach(quad -> {
+			emitter.copyFrom(quad);
+			if(transform.transform(emitter)) emitter.emit();
+		});
+		
+		return builder.build();
 	}
 }

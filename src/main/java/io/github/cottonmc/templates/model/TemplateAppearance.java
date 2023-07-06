@@ -10,5 +10,6 @@ public interface TemplateAppearance {
 	
 	@NotNull RenderMaterial getRenderMaterial();
 	@NotNull Sprite getSprite(Direction dir);
+	int getBakeFlags(Direction dir);
 	boolean hasColor(Direction dir);
 }

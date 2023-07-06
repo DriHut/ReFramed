@@ -40,7 +40,7 @@ public class RetexturedMeshUnbakedModel implements UnbakedModel {
 		return new RetexturedMeshBakedModel(
 			baker.bake(parent, modelBakeSettings),
 			TemplatesClient.provider.getOrCreateTemplateApperanceManager(spriteLookup),
-			modelBakeSettings.getRotation(),
+			modelBakeSettings,
 			baseMeshFactory.get()
 		);
 	}

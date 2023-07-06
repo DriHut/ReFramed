@@ -1,24 +1,21 @@
 package io.github.cottonmc.templates.model;
 
-import io.github.cottonmc.templates.TemplatesClient;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.math.AffineTransformation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -29,18 +26,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class RetexturedMeshBakedModel extends ForwardingBakedModel {
-	public RetexturedMeshBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, AffineTransformation aff, Mesh baseMesh) {
+	public RetexturedMeshBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, Mesh baseMesh) {
 		this.wrapped = baseModel;
 		this.tam = tam;
-		this.baseMesh = MatrixTransformer.meshAroundCenter(aff, baseMesh);
-		this.facePermutation = MatrixTransformer.facePermutation(aff);
+		this.baseMesh = MeshTransformUtil.aroundCenter(baseMesh, settings);
+		this.facePermutation = MeshTransformUtil.facePermutation(settings);
+		this.uvLock = settings.isUvLocked();
 	}
 	
 	private final TemplateAppearanceManager tam;
 	private final Mesh baseMesh;
 	private final Map<Direction, Direction> facePermutation;
+	private final boolean uvLock;
 	
-	//TODO: Check that TemplateAppearance equals() behavior is what i want, and also that it's fast
 	private final ConcurrentHashMap<TemplateAppearance, Mesh> meshCache = new ConcurrentHashMap<>();
 	
 	@Override
@@ -69,7 +67,7 @@ public class RetexturedMeshBakedModel extends ForwardingBakedModel {
 			//is likely unnecessary and will fill the cache with a ton of single-use meshes with only slighly different colors.
 			//We'd also have to percolate that tint color into the cache key, which is an allocation, blah blah blah.
 			//Let's fall back to a quad transform. In practice this is still nice and quick.
-			context.pushTransform(new RetexturingTransformer(ta, tint, facePermutation));
+			context.pushTransform(new RetexturingTransformer(ta, tint, facePermutation, uvLock));
 			context.meshConsumer().accept(baseMesh);
 			context.popTransform();
 		}
@@ -99,10 +97,10 @@ public class RetexturedMeshBakedModel extends ForwardingBakedModel {
 	}
 	
 	protected Mesh makeUntintedMesh(TemplateAppearance appearance) {
-		return new RetexturingTransformer(appearance, 0xFFFFFF, facePermutation).applyTo(baseMesh);
+		return MeshTransformUtil.pretransformMesh(baseMesh, new RetexturingTransformer(appearance, 0xFFFFFFFF, facePermutation, uvLock));
 	}
 	
-	public static record RetexturingTransformer(TemplateAppearance appearance, int color, Map<Direction, Direction> facePermutation) implements RenderContext.QuadTransform {
+	public static record RetexturingTransformer(TemplateAppearance appearance, int color, Map<Direction, Direction> facePermutation, boolean uvLock) implements RenderContext.QuadTransform {
 		private static final Direction[] DIRECTIONS = Direction.values();
 		
 		@Override
@@ -116,22 +114,14 @@ public class RetexturedMeshBakedModel extends ForwardingBakedModel {
 			if(appearance.hasColor(dir)) quad.color(color, color, color, color);
 			
 			Sprite sprite = appearance.getSprite(dir);
-			quad.spriteBake(sprite, MutableQuadView.BAKE_NORMALIZED);
+			
+			int flags = MutableQuadView.BAKE_NORMALIZED;
+			flags |= appearance.getBakeFlags(dir);
+			if(uvLock) flags |= MutableQuadView.BAKE_LOCK_UV;
+			
+			quad.spriteBake(sprite, flags);
 			
 			return true;
-		}
-		
-		//Pass a Mesh through a QuadTransform all at once, instead of at render time
-		private Mesh applyTo(Mesh original) {
-			MeshBuilder builder = TemplatesClient.getFabricRenderer().meshBuilder();
-			QuadEmitter emitter = builder.getEmitter();
-			
-			original.forEach(quad -> {
-				emitter.copyFrom(quad);
-				if(transform(emitter)) emitter.emit();
-			});
-			
-			return builder.build();
 		}
 	}
 }

@@ -4,6 +4,8 @@ import io.github.cottonmc.templates.TemplatesClient;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -15,6 +17,7 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +63,12 @@ public class TemplateAppearanceManager {
 		Random rand = Random.create();
 		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 		
+		//Only for parsing vanilla quads:
+		QuadEmitter emitter = TemplatesClient.getFabricRenderer().meshBuilder().getEmitter();
+		RenderMaterial defaultMat = TemplatesClient.getFabricRenderer().materialFinder().clear().find();
+		
 		Sprite[] sprites = new Sprite[7];
+		int[] bakeFlags = new int[6];
 		byte hasColorMask = 0b000000;
 		
 		//Read quads off the model by their `cullface`
@@ -75,8 +83,41 @@ public class TemplateAppearanceManager {
 			
 			Sprite sprite = arbitraryQuad.getSprite();
 			if(sprite == null) continue;
-			
 			sprites[dir.ordinal()] = sprite;
+			
+			//GOAL: Reconstruct the `"rotation": 90` stuff that a json model might provide, so we can bake our texture on the same way
+			emitter.fromVanilla(arbitraryQuad, defaultMat, dir);
+			int lowHighSignature = 0;
+			for(int i = 0; i < 4; i++) {
+				//For some reason the uvs stored on the Sprite have less ?precision? than the ones retrieved from the QuadEmitter.
+				// [STDOUT]: emitter u 0.14065552, sprite min u 0.140625
+				//?precision? in question marks cause it could be float noise. It's way higher than the epsilon in MathHelper.approximatelyEquals.
+				//So im gonna guesstimate using "is it closer to the sprite's min or max u", rather than doing an approximately-equals check
+				
+				float diffMinU = Math.abs(emitter.u(i) - sprite.getMinU());
+				float diffMaxU = Math.abs(emitter.u(i) - sprite.getMaxU());
+				boolean minU = diffMinU < diffMaxU;
+				
+				float diffMinV = Math.abs(emitter.v(i) - sprite.getMinV());
+				float diffMaxV = Math.abs(emitter.v(i) - sprite.getMaxV());
+				boolean minV = diffMinV < diffMaxV;
+				
+				lowHighSignature <<= 2;
+				lowHighSignature |= (minU ? 2 : 0) | (minV ? 1 : 0);
+			}
+			
+			if(lowHighSignature == 0b11100001) {
+				bakeFlags[dir.ordinal()] = 0;
+			} else if(lowHighSignature == 0b10000111) {
+				bakeFlags[dir.ordinal()] = MutableQuadView.BAKE_ROTATE_90;
+			} else if(lowHighSignature == 0b00011110) {
+				bakeFlags[dir.ordinal()] = MutableQuadView.BAKE_ROTATE_180;
+			} else if(lowHighSignature == 0b01111000) {
+				bakeFlags[dir.ordinal()] = MutableQuadView.BAKE_ROTATE_270;
+			} else {
+				//Its not critical error or anything, the texture will show rotated or flipped
+				//System.out.println("unknown sig " + Integer.toString(lowHighSignature, 2) + ", state: " + state + ", sprite: " + sprite.getContents().getId() + ", side: " + dir);
+			}
 		}
 		
 		//Just for space-usage purposes, we store the particle in sprites[6] instead of using another field.
@@ -89,6 +130,7 @@ public class TemplateAppearanceManager {
 		
 		return new ComputedApperance(
 			sprites,
+			bakeFlags,
 			hasColorMask,
 			blockMaterials.get(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state))),
 			serialNumber.getAndIncrement()
@@ -98,12 +140,14 @@ public class TemplateAppearanceManager {
 	@SuppressWarnings("ClassCanBeRecord")
 	private static final class ComputedApperance implements TemplateAppearance {
 		private final Sprite @NotNull[] sprites;
+		private final int @NotNull[] bakeFlags;
 		private final byte hasColorMask;
 		private final RenderMaterial mat;
 		private final int id;
 		
-		private ComputedApperance(@NotNull Sprite @NotNull[] sprites, byte hasColorMask, RenderMaterial mat, int id) {
+		private ComputedApperance(@NotNull Sprite @NotNull[] sprites, int @NotNull[] bakeFlags, byte hasColorMask, RenderMaterial mat, int id) {
 			this.sprites = sprites;
+			this.bakeFlags = bakeFlags;
 			this.hasColorMask = hasColorMask;
 			this.mat = mat;
 			this.id = id;
@@ -122,6 +166,11 @@ public class TemplateAppearanceManager {
 		@Override
 		public @NotNull Sprite getSprite(Direction dir) {
 			return sprites[dir.ordinal()];
+		}
+		
+		@Override
+		public int getBakeFlags(Direction dir) {
+			return bakeFlags[dir.ordinal()];
 		}
 		
 		@Override
@@ -144,7 +193,7 @@ public class TemplateAppearanceManager {
 		
 		@Override
 		public String toString() {
-			return "ComputedApperance[sprites=%s, hasColorMask=%s, mat=%s, id=%d]".formatted(Arrays.toString(sprites), hasColorMask, mat, id);
+			return "ComputedApperance{sprites=%s, bakeFlags=%s, hasColorMask=%s, mat=%s, id=%d}".formatted(Arrays.toString(sprites), Arrays.toString(bakeFlags), hasColorMask, mat, id);
 		}
 	}
 	
@@ -173,6 +222,11 @@ public class TemplateAppearanceManager {
 		@Override
 		public @NotNull Sprite getSprite(Direction dir) {
 			return defaultSprite;
+		}
+		
+		@Override
+		public int getBakeFlags(Direction dir) {
+			return 0;
 		}
 		
 		@Override

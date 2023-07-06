@@ -50,7 +50,6 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 	private final Sprite[] specialSprites = new Sprite[DIRECTIONS.length];
 	private final BlockState itemModelState;
 	
-	//TODO: Check that TemplateAppearance equals() behavior is what i want, and also that it's fast
 	private record CacheKey(BlockState state, TemplateAppearance appearance) {}
 	private final ConcurrentHashMap<CacheKey, Mesh> meshCache = new ConcurrentHashMap<>();
 	
@@ -103,7 +102,12 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 				QuadUvBounds bounds = QuadUvBounds.read(emitter);
 				for(int i = 0; i < specialSprites.length; i++) {
 					if(bounds.displaysSprite(specialSprites[i])) {
-						bounds.remap(emitter, specialSprites[i], key.appearance().getSprite(DIRECTIONS[i]));
+						bounds.remap(
+							emitter,
+							specialSprites[i],
+							key.appearance().getSprite(DIRECTIONS[i]),
+							key.appearance().getBakeFlags(DIRECTIONS[i])
+						);
 						break;
 					}
 				}
@@ -131,22 +135,31 @@ public class RetexturedJsonModelBakedModel extends ForwardingBakedModel {
 			return sprite.getMinU() <= minU && sprite.getMaxU() >= maxU && sprite.getMinV() <= minV && sprite.getMaxV() >= maxV;
 		}
 		
-		void remap(MutableQuadView quad, Sprite specialSprite, Sprite newSprite) {
-			float remappedMinU = rangeRemap(minU, specialSprite.getMinU(), specialSprite.getMaxU(), newSprite.getMinU(), newSprite.getMaxU());
-			float remappedMaxU = rangeRemap(maxU, specialSprite.getMinU(), specialSprite.getMaxU(), newSprite.getMinU(), newSprite.getMaxU());
-			float remappedMinV = rangeRemap(minV, specialSprite.getMinV(), specialSprite.getMaxV(), newSprite.getMinV(), newSprite.getMaxV());
-			float remappedMaxV = rangeRemap(maxV, specialSprite.getMinV(), specialSprite.getMaxV(), newSprite.getMinV(), newSprite.getMaxV());
-			
+		void remap(MutableQuadView quad, Sprite specialSprite, Sprite newSprite, int bakeFlags) {
+			//move the UVs into 0..1 range
+			float remappedMinU = norm(minU, specialSprite.getMinU(), specialSprite.getMaxU());
+			float remappedMaxU = norm(maxU, specialSprite.getMinU(), specialSprite.getMaxU());
+			float remappedMinV = norm(minV, specialSprite.getMinV(), specialSprite.getMaxV());
+			float remappedMaxV = norm(maxV, specialSprite.getMinV(), specialSprite.getMaxV());
 			quad.uv(0, MathHelper.approximatelyEquals(quad.u(0), minU) ? remappedMinU : remappedMaxU, MathHelper.approximatelyEquals(quad.v(0), minV) ? remappedMinV : remappedMaxV);
 			quad.uv(1, MathHelper.approximatelyEquals(quad.u(1), minU) ? remappedMinU : remappedMaxU, MathHelper.approximatelyEquals(quad.v(1), minV) ? remappedMinV : remappedMaxV);
 			quad.uv(2, MathHelper.approximatelyEquals(quad.u(2), minU) ? remappedMinU : remappedMaxU, MathHelper.approximatelyEquals(quad.v(2), minV) ? remappedMinV : remappedMaxV);
 			quad.uv(3, MathHelper.approximatelyEquals(quad.u(3), minU) ? remappedMinU : remappedMaxU, MathHelper.approximatelyEquals(quad.v(3), minV) ? remappedMinV : remappedMaxV);
+			
+			//call spriteBake
+			//done this way (instead of directly setting UV coordinates to their final values) so that I can use the convenient bakeFlags option
+			quad.spriteBake(newSprite, MutableQuadView.BAKE_NORMALIZED | bakeFlags);
 		}
 		
-		static float rangeRemap(float value, float low1, float high1, float low2, float high2) {
-			float value2 = MathHelper.clamp(value, low1, high1);
-			return low2 + (value2 - low1) * (high2 - low2) / (high1 - low1);
+		static float norm(float value, float low, float high) {
+			float value2 = MathHelper.clamp(value, low, high);
+			return (value2 - low) / (high - low);
 		}
+		
+		//static float rangeRemap(float value, float low1, float high1, float low2, float high2) {
+		//	float value2 = MathHelper.clamp(value, low1, high1);
+		//	return low2 + (value2 - low1) * (high2 - low2) / (high1 - low1);
+		//}
 	}
 	
 	private static final Direction[] DIRECTIONS = Direction.values();
