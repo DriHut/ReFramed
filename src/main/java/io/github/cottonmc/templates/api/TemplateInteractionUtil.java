@@ -50,7 +50,10 @@ public class TemplateInteractionUtil {
 	}
 	
 	public static BlockState setDefaultStates(BlockState in) {
-		return in.with(LIGHT, false).with(REDSTONE, false).with(SOLID, true);
+		if(in.contains(LIGHT)) in = in.with(LIGHT, false);
+		if(in.contains(REDSTONE)) in = in.with(REDSTONE, false);
+		if(in.contains(SOLID)) in = in.with(SOLID, true);
+		return in;
 	}
 	
 	public static ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {

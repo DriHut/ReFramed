@@ -21,7 +21,7 @@ import net.minecraft.world.BlockView;
 
 import javax.annotation.Nullable;
 
-public class TemplateSlopeBlock extends TemplateBlock {
+public class TemplateSlopeBlock extends WaterloggableTemplateBlock {
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 	public static final EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
 	
@@ -51,15 +51,16 @@ public class TemplateSlopeBlock extends TemplateBlock {
 	@Nullable
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		BlockHalf half = switch(ctx.getSide()) {
-			case UP -> BlockHalf.BOTTOM;
-			case DOWN -> BlockHalf.TOP;
-			default -> (ctx.getHitPos().getY() - (double) ctx.getBlockPos().getY() < 0.5) ? BlockHalf.BOTTOM : BlockHalf.TOP;
-		};
-		
-		return getDefaultState()
+		BlockState sup = super.getPlacementState(ctx);
+		if(sup != null) sup = sup
 			.with(FACING, ctx.getHorizontalPlayerFacing())
-			.with(HALF, half);
+			.with(HALF, switch(ctx.getSide()) {
+				case UP -> BlockHalf.BOTTOM;
+				case DOWN -> BlockHalf.TOP;
+				default -> (ctx.getHitPos().getY() - (double) ctx.getBlockPos().getY() < 0.5) ? BlockHalf.BOTTOM : BlockHalf.TOP;
+			});
+		
+		return sup;
 	}
 	
 	@Override
