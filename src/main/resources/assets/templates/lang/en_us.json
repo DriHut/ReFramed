@@ -1,4 +1,7 @@
 {
+	"itemGroup.templates.tab": "Templates",
+	
+	"block.templates.cube": "Cube Template",
 	"block.templates.slope": "Slope Template",
 	"block.templates.slab": "Slab Template"
 }

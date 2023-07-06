@@ -1,6 +1,6 @@
 package io.github.cottonmc.templates.api;
 
-import io.github.cottonmc.templates.block.entity.TemplateEntity;
+import io.github.cottonmc.templates.block.TemplateEntity;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;

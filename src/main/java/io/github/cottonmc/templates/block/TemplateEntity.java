@@ -1,4 +1,4 @@
-package io.github.cottonmc.templates.block.entity;
+package io.github.cottonmc.templates.block;
 
 import io.github.cottonmc.templates.Templates;
 import io.github.cottonmc.templates.api.ThemeableBlockEntity;

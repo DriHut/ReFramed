@@ -1,6 +1,7 @@
 package io.github.cottonmc.templates.block;
 
 import com.google.common.base.MoreObjects;
+import io.github.cottonmc.templates.Templates;
 import io.github.cottonmc.templates.api.TemplateInteractionUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -21,14 +22,16 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class TemplateBlock extends Block implements BlockEntityProvider {
+public class TemplateBlock extends Block implements BlockEntityProvider {
 	public TemplateBlock(Settings settings) {
 		super(settings);
 		setDefaultState(TemplateInteractionUtil.setDefaultStates(getDefaultState()));
 	}
 	
 	@Override
-	public abstract @Nullable BlockEntity createBlockEntity(BlockPos blockPos, BlockState blockState);
+	public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return Templates.TEMPLATE_BLOCK_ENTITY.instantiate(pos, state);
+	}
 	
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

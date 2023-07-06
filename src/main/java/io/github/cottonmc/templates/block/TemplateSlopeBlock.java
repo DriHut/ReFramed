@@ -48,11 +48,6 @@ public class TemplateSlopeBlock extends TemplateBlock {
 		super.appendProperties(builder.add(FACING, HALF));
 	}
 	
-	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		return Templates.SLOPE_ENTITY.instantiate(pos, state);
-	}
-	
 	@Nullable
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {

@@ -32,7 +32,7 @@ public class TemplateSlabBlock extends SlabBlock implements BlockEntityProvider 
 	@Nullable
 	@Override
 	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		return Templates.SLAB_ENTITY.instantiate(pos, state);
+		return Templates.TEMPLATE_BLOCK_ENTITY.instantiate(pos, state);
 	}
 	
 	@Override

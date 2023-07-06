@@ -2,8 +2,9 @@
 	"parent": "minecraft:recipes/root",
 	"rewards": {
 		"recipes": [
-			"templates:slope",
-			"templates:slab"
+			"templates:cube",
+			"templates:slab",
+			"templates:slope"
 		]
 	},
 	"criteria": {

@@ -54,14 +54,15 @@ public class TemplatesClient implements ClientModInitializer {
 		ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> provider); //block models
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(rm -> provider); //item models
 		
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), Templates.SLOPE, Templates.SLAB);
-		
-		provider.addTemplateModel(Templates.id("slope_special"), new RetexturedMeshUnbakedModel(Templates.id("block/slope_base"), SlopeBaseMesh::make));
-		provider.assignItemModel(Templates.id("slope_special"), Templates.SLOPE);
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), Templates.CUBE, Templates.SLOPE, Templates.SLAB);
 		
 		provider.addTemplateModel(Templates.id("cube_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/cube")));
 		provider.addTemplateModel(Templates.id("slab_bottom_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/slab_bottom")));
 		provider.addTemplateModel(Templates.id("slab_top_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/slab_top")));
+		provider.addTemplateModel(Templates.id("slope_special"), new RetexturedMeshUnbakedModel(Templates.id("block/slope_base"), SlopeBaseMesh::make));
+		
+		provider.assignItemModel(Templates.id("cube_special"), Templates.CUBE);
+		provider.assignItemModel(Templates.id("slope_special"), Templates.SLOPE);
 		provider.assignItemModel(Templates.id("slab_bottom_special"), Templates.SLAB);
 	}
 }
