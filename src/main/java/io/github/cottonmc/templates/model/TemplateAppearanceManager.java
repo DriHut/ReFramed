@@ -55,6 +55,10 @@ public class TemplateAppearanceManager {
 		return appearanceCache.computeIfAbsent(state, this::computeAppearance);
 	}
 	
+	public RenderMaterial getCachedMaterial(BlockState state) {
+		return blockMaterials.get(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state)));
+	}
+	
 	//I'm pretty sure ConcurrentHashMap semantics allow for this function to be called multiple times on the same key, on different threads.
 	//The computeIfAbsent map update will work without corrupting the map, but there will be some "wasted effort" computing the value twice.
 	//The results are going to be the same, apart from their serialNumbers differing (= their equals & hashCode differing).
@@ -136,7 +140,7 @@ public class TemplateAppearanceManager {
 			sprites,
 			bakeFlags,
 			hasColorMask,
-			blockMaterials.get(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state))),
+			getCachedMaterial(state),
 			serialNumber.getAndIncrement()
 		);
 	}

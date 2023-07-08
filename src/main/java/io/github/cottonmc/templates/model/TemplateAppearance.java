@@ -6,7 +6,7 @@ import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 
 public interface TemplateAppearance {
-	@NotNull Sprite getParticleSprite(); //TODO: plug this in
+	@NotNull Sprite getParticleSprite(); //TODO: plug this in (particle mixins don't use it atm)
 	
 	@NotNull RenderMaterial getRenderMaterial();
 	@NotNull Sprite getSprite(Direction dir);

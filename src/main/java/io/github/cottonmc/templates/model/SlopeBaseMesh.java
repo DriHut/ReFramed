@@ -5,11 +5,15 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.math.Direction;
+
+import java.util.function.Function;
 
 public class SlopeBaseMesh {
 	/**
-	 * @see RetexturedMeshBakedModel.RetexturingTransformer for why these values were chosen
+	 * @see RetexturingBakedModel for why these values were chosen
 	 */
 	public static final int TAG_SLOPE = Direction.UP.ordinal() + 1;
 	public static final int TAG_LEFT = Direction.EAST.ordinal() + 1;

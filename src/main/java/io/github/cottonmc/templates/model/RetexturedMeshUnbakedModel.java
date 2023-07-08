@@ -2,6 +2,8 @@ package io.github.cottonmc.templates.model;
 
 import io.github.cottonmc.templates.TemplatesClient;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -15,15 +17,18 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class RetexturedMeshUnbakedModel implements UnbakedModel {
 	public RetexturedMeshUnbakedModel(Identifier parent, Supplier<Mesh> baseMeshFactory) {
+		this(parent, __ -> baseMeshFactory.get());
+	}
+	
+	public RetexturedMeshUnbakedModel(Identifier parent, Function<Function<SpriteIdentifier, Sprite>, Mesh> baseMeshFactory) {
 		this.parent = parent;
 		this.baseMeshFactory = baseMeshFactory;
 	}
 	
 	protected final Identifier parent;
-	protected final Supplier<Mesh> baseMeshFactory;
+	protected final Function<Function<SpriteIdentifier, Sprite>, Mesh> baseMeshFactory;
 	
 	@Override
 	public Collection<Identifier> getModelDependencies() {
@@ -32,16 +37,23 @@ public class RetexturedMeshUnbakedModel implements UnbakedModel {
 	
 	@Override
 	public void setParents(Function<Identifier, UnbakedModel> function) {
-		function.apply(parent).setParents(function); //Still not sure what this function does lol
+		function.apply(parent).setParents(function);
 	}
 	
 	@Override
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> spriteLookup, ModelBakeSettings modelBakeSettings, Identifier identifier) {
-		return new RetexturedMeshBakedModel(
+		Mesh transformedBaseMesh = MeshTransformUtil.pretransformMesh(baseMeshFactory.apply(spriteLookup), MeshTransformUtil.applyAffine(modelBakeSettings));
+		
+		return new RetexturingBakedModel(
 			baker.bake(parent, modelBakeSettings),
 			TemplatesClient.provider.getOrCreateTemplateApperanceManager(spriteLookup),
 			modelBakeSettings,
-			baseMeshFactory.get()
-		);
+			Blocks.AIR.getDefaultState()
+		) {
+			@Override
+			protected Mesh getBaseMesh(BlockState state) {
+				return transformedBaseMesh;
+			}
+		};
 	}
 }
