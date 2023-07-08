@@ -1,0 +1,10 @@
+{
+	"variants": {
+		"powered=false": {
+			"model": "templates:pressure_plate_up_special"
+		},
+		"powered=true": {
+			"model": "templates:pressure_plate_down_special"
+		}
+	}
+}

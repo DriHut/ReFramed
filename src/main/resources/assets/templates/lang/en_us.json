@@ -1,9 +1,14 @@
 {
 	"itemGroup.templates.tab": "Templates",
 	
+	"block.templates.button": "Button Template",
+	"block.templates.carpet": "Carpet Template",
 	"block.templates.cube": "Cube Template",
 	"block.templates.fence": "Fence Template",
+	"block.templates.fence_gate": "Fence Gate Template",
+	"block.templates.lever": "Lever Template",
 	"block.templates.post": "Post Template",
+	"block.templates.pressure_plate": "Pressure Plate Template",
 	"block.templates.slope": "Slope Template",
 	"block.templates.slab": "Slab Template",
 	"block.templates.wall": "Wall Template"

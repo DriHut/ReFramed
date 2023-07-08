@@ -2,8 +2,11 @@
 	"parent": "minecraft:recipes/root",
 	"rewards": {
 		"recipes": [
+			"templates:button",
+			"templates:carpet",
 			"templates:cube",
 			"templates:fence",
+			"templates:fence_gate",
 			"templates:post",
 			"templates:slab",
 			"templates:slope",
