@@ -44,8 +44,9 @@ public class TemplateInteractionUtil {
 		return configureSettings(AbstractBlock.Settings.create());
 	}
 	
+	private static final AbstractBlock.ContextPredicate NOPE = (blah, blahdey, blahh) -> false;
 	public static AbstractBlock.Settings configureSettings(AbstractBlock.Settings s) {
-		return s.luminance(TemplateInteractionUtil::luminance).nonOpaque().sounds(BlockSoundGroup.WOOD).hardness(0.2f);
+		return s.luminance(TemplateInteractionUtil::luminance).nonOpaque().sounds(BlockSoundGroup.WOOD).hardness(0.2f).suffocates(NOPE).blockVision(NOPE);
 	}
 	
 	public static BlockState setDefaultStates(BlockState in) {
