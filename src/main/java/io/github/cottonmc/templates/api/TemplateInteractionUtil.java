@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -34,11 +35,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TemplateInteractionUtil {
 	public static final BooleanProperty LIGHT = BooleanProperty.of("templates_light");
-	public static final BooleanProperty REDSTONE = BooleanProperty.of("templates_redstone");
-	public static final BooleanProperty SOLID = BooleanProperty.of("templates_solid");
 	
 	public static StateManager.Builder<Block, BlockState> appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		return builder.add(LIGHT, REDSTONE, SOLID);
+		return builder.add(LIGHT);
 	}
 	
 	public static AbstractBlock.Settings makeSettings() {
@@ -51,8 +50,6 @@ public class TemplateInteractionUtil {
 	
 	public static BlockState setDefaultStates(BlockState in) {
 		if(in.contains(LIGHT)) in = in.with(LIGHT, false);
-		if(in.contains(REDSTONE)) in = in.with(REDSTONE, false);
-		if(in.contains(SOLID)) in = in.with(SOLID, true);
 		return in;
 	}
 	
@@ -73,8 +70,8 @@ public class TemplateInteractionUtil {
 		}
 		
 		//Redstone
-		if(state.contains(REDSTONE) && held.getItem() == Blocks.REDSTONE_TORCH.asItem() && !state.get(REDSTONE) && !be.hasSpentRedstoneTorch()) {
-			world.setBlockState(pos, state.with(REDSTONE, true));
+		if(held.getItem() == Blocks.REDSTONE_TORCH.asItem() && !be.emitsRedstone() && !be.hasSpentRedstoneTorch()) {
+			be.setEmitsRedstone(true);
 			be.spentRedstoneTorch();
 			
 			if(!player.isCreative()) held.decrement(1);
@@ -83,8 +80,8 @@ public class TemplateInteractionUtil {
 		}
 		
 		//Popped chorus fruit
-		if(state.contains(SOLID) && held.getItem() == Items.POPPED_CHORUS_FRUIT && state.get(SOLID) && !be.hasSpentPoppedChorus()) {
-			world.setBlockState(pos, state.with(SOLID, false));
+		if(held.getItem() == Items.POPPED_CHORUS_FRUIT && be.isSolid() && !be.hasSpentPoppedChorus()) {
+			be.setSolidity(false);
 			be.spentPoppedChorus();
 			
 			if(!player.isCreative()) held.decrement(1);
@@ -100,9 +97,8 @@ public class TemplateInteractionUtil {
 			if(placementState != null && Block.isShapeFullCube(placementState.getCollisionShape(world, pos)) && !(block instanceof BlockEntityProvider)) {
 				if(!world.isClient) be.setRenderedState(placementState);
 				
-				world.setBlockState(pos, state
-					.with(LIGHT, be.hasSpentGlowstoneDust() || (placementState.getLuminance() != 0))
-					.with(REDSTONE, be.hasSpentRedstoneTorch() || placementState.getWeakRedstonePower(world, pos, Direction.NORTH) != 0));
+				world.setBlockState(pos, state.with(LIGHT, be.hasSpentGlowstoneDust() || (placementState.getLuminance() != 0)));
+				be.setEmitsRedstone(be.hasSpentRedstoneTorch() || placementState.getWeakRedstonePower(world, pos, Direction.NORTH) != 0);
 				
 				if(!player.isCreative()) held.decrement(1);
 				world.playSound(player, pos, placementState.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1f, 1.1f);
@@ -138,20 +134,21 @@ public class TemplateInteractionUtil {
 		}
 	}
 	
-	public static @Nullable VoxelShape getCollisionShape(BlockState state) {
-		return state.contains(SOLID) && !state.get(SOLID) ? VoxelShapes.empty() : null;
+	public static @Nullable VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
+		return view.getBlockEntity(pos) instanceof TemplateEntity be && !be.isSolid() ? VoxelShapes.empty() : null;
 	}
 	
 	public static boolean emitsRedstonePower(BlockState state) {
-		return state.contains(REDSTONE) ? state.get(REDSTONE) : false;
+		//return state.contains(REDSTONE) ? state.get(REDSTONE) : false;
+		return false; //TODO, not available after punting this to BlockEntity. Yarn makes this method sound more important than it is, it's just for dust redirection.
 	}
 	
 	public static int getWeakRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
-		return state.contains(REDSTONE) && state.get(REDSTONE) ? 15 : 0;
+		return view.getBlockEntity(pos) instanceof TemplateEntity be && be.emitsRedstone() ? 15 : 0;
 	}
 	
 	public static int getStrongRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
-		return state.contains(REDSTONE) && state.get(REDSTONE) ? 15 : 0;
+		return view.getBlockEntity(pos) instanceof TemplateEntity be && be.emitsRedstone() ? 15 : 0;
 	}
 	
 	public static int luminance(BlockState state) {

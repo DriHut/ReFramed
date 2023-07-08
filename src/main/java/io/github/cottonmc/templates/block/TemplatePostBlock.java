@@ -47,7 +47,7 @@ public class TemplatePostBlock extends WaterloggableTemplateBlock {
 	
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-		return MoreObjects.firstNonNull(TemplateInteractionUtil.getCollisionShape(state), shap(state));
+		return MoreObjects.firstNonNull(TemplateInteractionUtil.getCollisionShape(state, view, pos, ctx), shap(state));
 	}
 	
 	@Override

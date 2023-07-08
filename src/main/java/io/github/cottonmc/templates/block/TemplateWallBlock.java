@@ -66,7 +66,7 @@ public class TemplateWallBlock extends WallBlock implements BlockEntityProvider 
 	
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-		return MoreObjects.firstNonNull(TemplateInteractionUtil.getCollisionShape(state), getNewShape(state, newCollisionShapeMap));
+		return MoreObjects.firstNonNull(TemplateInteractionUtil.getCollisionShape(state, view, pos, ctx), getNewShape(state, newCollisionShapeMap));
 	}
 	
 	@Override

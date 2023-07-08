@@ -30,6 +30,9 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 	protected boolean spentRedstoneTorch = false;
 	protected boolean spentPoppedChorus = false;
 	
+	protected boolean emitsRedstone;
+	protected boolean isSolid = true;
+	
 	public TemplateEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
@@ -41,9 +44,12 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		BlockState lastRenderedState = renderedState;
 		
 		renderedState = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound("BlockState"));
-		spentGlowstoneDust = tag.getBoolean("Glowstone");
-		spentRedstoneTorch = tag.getBoolean("Redstone");
-		spentPoppedChorus = tag.getBoolean("Chorus");
+		spentGlowstoneDust = tag.getBoolean("spentglow");
+		spentRedstoneTorch = tag.getBoolean("spentredst");
+		spentPoppedChorus = tag.getBoolean("spentchor");
+		
+		emitsRedstone = tag.getBoolean("emitsredst");
+		isSolid = !tag.contains("solid") || tag.getBoolean("solid"); //default to "true" if it's nonexistent
 		
 		//Force a chunk remesh on the client if the displayed blockstate has changed
 		if(world != null && world.isClient && !Objects.equals(lastRenderedState, renderedState)) {
@@ -55,9 +61,12 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 	public void writeNbt(NbtCompound tag) {
 		super.writeNbt(tag);
 		tag.put("BlockState", NbtHelper.fromBlockState(renderedState));
-		tag.putBoolean("Glowstone", spentGlowstoneDust);
-		tag.putBoolean("Redstone", spentRedstoneTorch);
-		tag.putBoolean("Chorus", spentPoppedChorus);
+		tag.putBoolean("spentglow", spentGlowstoneDust);
+		tag.putBoolean("spentredst", spentRedstoneTorch);
+		tag.putBoolean("spentchor", spentPoppedChorus);
+		
+		tag.putBoolean("emitsredst", emitsRedstone);
+		tag.putBoolean("solid", isSolid);
 	}
 	
 	@Nullable
@@ -69,6 +78,7 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 	@Override
 	public NbtCompound toInitialChunkDataNbt() {
 		//TERRIBLE yarn name, this is "getUpdateTag", it's the nbt that will be sent to clients
+		//and it just calls "writeNbt"
 		return createNbt();
 	}
 	
@@ -77,11 +87,15 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		return renderedState;
 	}
 	
+	private void dispatch() {
+		if(world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
+	}
+	
 	public void setRenderedState(BlockState newState) {
 		if(!Objects.equals(renderedState, newState)) {
 			renderedState = newState;
 			markDirty();
-			if(world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos); //dispatch to clients
+			dispatch();
 		}
 	}
 	
@@ -110,5 +124,34 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 	public void spentPoppedChorus() {
 		spentPoppedChorus = true;
 		markDirty();
+	}
+	
+	public boolean emitsRedstone() {
+		return emitsRedstone;
+	}
+	
+	public void setEmitsRedstone(boolean emitsRedstone) {
+		if(this.emitsRedstone != emitsRedstone) {
+			this.emitsRedstone = emitsRedstone;
+			markDirty();
+			
+			if(world != null) world.updateNeighbors(pos, getCachedState().getBlock());
+		}
+	}
+	
+	public boolean isSolid() {
+		return isSolid;
+	}
+	
+	public void setSolidity(boolean isSolid) {
+		if(this.isSolid != isSolid) {
+			this.isSolid = isSolid;
+			markDirty();
+			
+			//do i need to invalidate any shape caches or something
+			if(world != null) world.setBlockState(pos, getCachedState());
+			
+			dispatch();
+		}
 	}
 }

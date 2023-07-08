@@ -58,7 +58,7 @@ public class TemplateFenceBlock extends FenceBlock implements BlockEntityProvide
 	
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-		return MoreObjects.firstNonNull(TemplateInteractionUtil.getCollisionShape(state), super.getCollisionShape(state, view, pos, ctx));
+		return MoreObjects.firstNonNull(TemplateInteractionUtil.getCollisionShape(state, view, pos, ctx), super.getCollisionShape(state, view, pos, ctx));
 	}
 	
 	@Override
