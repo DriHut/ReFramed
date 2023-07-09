@@ -135,6 +135,7 @@ public class TemplateInteractionUtil {
 		}
 	}
 	
+	//Returns "null" to signal "no opinion". Imagine it like an InteractionResult.PASS.
 	public static @Nullable VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
 		return view.getBlockEntity(pos) instanceof TemplateEntity be && !be.isSolid() ? VoxelShapes.empty() : null;
 	}

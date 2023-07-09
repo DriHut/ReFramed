@@ -46,7 +46,9 @@ public class TemplatePressurePlateBlock extends PressurePlateBlock implements Bl
 	
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		return TemplateInteractionUtil.onUse(state, world, pos, player, hand, hit);
+		ActionResult r = TemplateInteractionUtil.onUse(state, world, pos, player, hand, hit);
+		if(!r.isAccepted()) r = super.onUse(state, world, pos, player, hand, hit);
+		return r;
 	}
 	
 	@Override
