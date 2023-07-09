@@ -13,7 +13,7 @@
 			"item": "minecraft:string"
 		},
 		"C": {
-			"item": "#minecraft:candles"
+			"tag": "minecraft:candles"
 		}
 	},
 	"result": {
