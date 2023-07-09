@@ -82,9 +82,9 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("slope_special"), new RetexturedMeshUnbakedModel(Templates.id("block/slope_base"), SlopeBaseMesh::make));
 		
 		//item only models -- TODO move to item/ prolly
-		provider.addTemplateModel(Templates.id("button_inventory_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/button_inventory")));
-		provider.addTemplateModel(Templates.id("fence_inventory_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/fence_inventory")));
-		provider.addTemplateModel(Templates.id("wall_inventory_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/wall_inventory")));
+		provider.addTemplateModel(Templates.id("button_inventory_special"), new RetexturedJsonModelUnbakedModel(Templates.id("item/button_inventory")));
+		provider.addTemplateModel(Templates.id("fence_inventory_special"), new RetexturedJsonModelUnbakedModel(Templates.id("item/fence_inventory")));
+		provider.addTemplateModel(Templates.id("wall_inventory_special"), new RetexturedJsonModelUnbakedModel(Templates.id("item/wall_inventory")));
 		
 		provider.assignItemModel(Templates.id("button_special"), Templates.BUTTON);
 		provider.assignItemModel(Templates.id("carpet_special"), Templates.CARPET);
