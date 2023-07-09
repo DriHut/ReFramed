@@ -61,6 +61,10 @@ public class TemplatesClient implements ClientModInitializer {
 		//vanilla style models (using "auto" method)
 		provider.addTemplateModel(Templates.id("button_special"), new UnbakedAutoRetexturedModel(new Identifier("block/button")));
 		provider.addTemplateModel(Templates.id("button_pressed_special"), new UnbakedAutoRetexturedModel(new Identifier("block/button_pressed")));
+		provider.addTemplateModel(Templates.id("one_candle_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_candle")));
+		provider.addTemplateModel(Templates.id("two_candles_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_two_candles")));
+		provider.addTemplateModel(Templates.id("three_candles_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_three_candles")));
+		provider.addTemplateModel(Templates.id("four_candles_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_four_candles")));
 		provider.addTemplateModel(Templates.id("carpet_special"), new UnbakedAutoRetexturedModel(new Identifier("block/carpet")));
 		provider.addTemplateModel(Templates.id("cube_special"), new UnbakedAutoRetexturedModel(new Identifier("block/cube")));
 		provider.addTemplateModel(Templates.id("fence_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/fence_post")));
@@ -92,6 +96,7 @@ public class TemplatesClient implements ClientModInitializer {
 		
 		//item model assignments (in lieu of models/item/___.json)
 		provider.assignItemModel(Templates.id("button_inventory_special"), Templates.BUTTON);
+		provider.assignItemModel(Templates.id("one_candle_special"), Templates.CANDLE); //TODO vanilla uses its own item model
 		provider.assignItemModel(Templates.id("carpet_special"), Templates.CARPET);
 		provider.assignItemModel(Templates.id("cube_special"), Templates.CUBE);
 		provider.assignItemModel(Templates.id("fence_inventory_special"), Templates.FENCE);

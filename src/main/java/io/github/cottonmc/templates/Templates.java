@@ -3,6 +3,7 @@ package io.github.cottonmc.templates;
 import io.github.cottonmc.templates.api.TemplateInteractionUtil;
 import io.github.cottonmc.templates.block.TemplateBlock;
 import io.github.cottonmc.templates.block.TemplateButtonBlock;
+import io.github.cottonmc.templates.block.TemplateCandleBlock;
 import io.github.cottonmc.templates.block.TemplateCarpetBlock;
 import io.github.cottonmc.templates.block.TemplateFenceBlock;
 import io.github.cottonmc.templates.block.TemplateFenceGateBlock;
@@ -16,16 +17,16 @@ import io.github.cottonmc.templates.block.TemplateWallBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -46,21 +47,25 @@ public class Templates implements ModInitializer {
 		return b;
 	}
 	
-	public static final Block BUTTON = reg("button", new TemplateButtonBlock(TemplateInteractionUtil.makeSettings().pistonBehavior(PistonBehavior.DESTROY)));
-	//candle? (lol)
-	public static final Block CARPET = reg("carpet", new TemplateCarpetBlock(TemplateInteractionUtil.makeSettings().sounds(BlockSoundGroup.WOOL).pistonBehavior(PistonBehavior.DESTROY)));
+	private static AbstractBlock.Settings cp(Block base) {
+		return TemplateInteractionUtil.configureSettings(AbstractBlock.Settings.copy(base));
+	}
+	
+	public static final Block BUTTON = reg("button", new TemplateButtonBlock(cp(Blocks.OAK_BUTTON)));
+	public static final Block CANDLE = reg("candle", new TemplateCandleBlock(TemplateCandleBlock.configureSettings(cp(Blocks.CANDLE))));
+	public static final Block CARPET = reg("carpet", new TemplateCarpetBlock(cp(Blocks.WHITE_CARPET)));
 	public static final Block CUBE = reg("cube", new TemplateBlock(TemplateInteractionUtil.makeSettings()));
 	//door? (hard cause its a multiblock)
-	public static final Block FENCE = reg("fence", new TemplateFenceBlock(TemplateInteractionUtil.makeSettings()));
-	public static final Block FENCE_GATE = reg("fence_gate", new TemplateFenceGateBlock(TemplateInteractionUtil.makeSettings()));
-	public static final Block LEVER = reg("lever", new TemplateLeverBlock(TemplateInteractionUtil.makeSettings().pistonBehavior(PistonBehavior.DESTROY)));
+	public static final Block FENCE = reg("fence", new TemplateFenceBlock(cp(Blocks.OAK_FENCE)));
+	public static final Block FENCE_GATE = reg("fence_gate", new TemplateFenceGateBlock(cp(Blocks.OAK_FENCE_GATE)));
+	public static final Block LEVER = reg("lever", new TemplateLeverBlock(cp(Blocks.LEVER)));
 	//pane
-	public static final Block POST = reg("post", new TemplatePostBlock(TemplateInteractionUtil.makeSettings()));
-	public static final Block PRESSURE_PLATE = reg("pressure_plate", new TemplatePressurePlateBlock(TemplateInteractionUtil.makeSettings().noCollision().pistonBehavior(PistonBehavior.DESTROY)));
-	public static final Block SLAB = reg("slab", new TemplateSlabBlock(TemplateInteractionUtil.makeSettings()));
+	public static final Block POST = reg("post", new TemplatePostBlock(cp(Blocks.OAK_FENCE)));
+	public static final Block PRESSURE_PLATE = reg("pressure_plate", new TemplatePressurePlateBlock(cp(Blocks.OAK_PRESSURE_PLATE)));
+	public static final Block SLAB = reg("slab", new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
 	//stair
 	//trapdoor
-	public static final Block WALL = reg("wall", new TemplateWallBlock(TemplateInteractionUtil.makeSettings()));
+	public static final Block WALL = reg("wall", new TemplateWallBlock(cp(Blocks.COBBLESTONE_WALL)));
 	
 	public static final Block SLOPE = reg("slope", new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
 	//30 degree slope (shallow/deep)

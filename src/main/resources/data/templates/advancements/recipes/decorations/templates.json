@@ -3,6 +3,7 @@
 	"rewards": {
 		"recipes": [
 			"templates:button",
+			"templates:candle",
 			"templates:carpet",
 			"templates:cube",
 			"templates:fence",
