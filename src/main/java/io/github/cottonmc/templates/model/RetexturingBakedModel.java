@@ -1,14 +1,13 @@
 package io.github.cottonmc.templates.model;
 
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import io.github.cottonmc.templates.mixin.MinecraftAccessor;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.color.block.BlockColorProvider;
-import net.minecraft.client.color.item.ItemColorProvider;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.texture.Sprite;
@@ -43,13 +42,11 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	protected final BlockState itemModelState;
 	
 	private static record CacheKey(BlockState state, TemplateAppearance appearance) {}
-	private final ConcurrentMap<CacheKey, Mesh> retexturedMeshes = new ConcurrentHashMap<>();
+	private final ConcurrentMap<CacheKey, Mesh> retexturedMeshes = new ConcurrentHashMap<>(); //mutable, append-only cache
 	
 	protected static final Direction[] DIRECTIONS = Direction.values();
 	protected static final Direction[] DIRECTIONS_AND_NULL = new Direction[DIRECTIONS.length + 1];
-	static {
-		System.arraycopy(DIRECTIONS, 0, DIRECTIONS_AND_NULL, 0, DIRECTIONS.length);
-	}
+	static { System.arraycopy(DIRECTIONS, 0, DIRECTIONS_AND_NULL, 0, DIRECTIONS.length); }
 	
 	protected abstract Mesh getBaseMesh(BlockState state);
 	
@@ -73,8 +70,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		
 		TemplateAppearance ta = tam.getAppearance(theme);
 		
-		BlockColorProvider prov = ColorProviderRegistry.BLOCK.get(theme.getBlock());
-		int tint = prov == null ? 0xFFFFFFFF : (0xFF000000 | prov.getColor(theme, blockView, pos, 1));
+		int tint = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(theme, blockView, pos, 0);
 		Mesh untintedMesh = getUntintedRetexturedMesh(new CacheKey(state, ta));
 		
 		//The specific tint might vary a lot; imagine grass color smoothly changing. Trying to bake the tint into
@@ -101,8 +97,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			if(!theme.isAir()) {
 				nbtAppearance = tam.getAppearance(theme);
 				
-				ItemColorProvider prov = ColorProviderRegistry.ITEM.get(theme.getBlock());
-				if(prov != null) tint = prov.getColor(new ItemStack(theme.getBlock()), 1);
+				tint = 0xFF000000 | ((MinecraftAccessor) MinecraftClient.getInstance()).templates$getItemColors().getColor(new ItemStack(theme.getBlock()), 0);
 			}
 		}
 		
