@@ -1,7 +1,8 @@
 package io.github.cottonmc.templates;
 
-import io.github.cottonmc.templates.model.RetexturedJsonModelUnbakedModel;
-import io.github.cottonmc.templates.model.RetexturedMeshUnbakedModel;
+import io.github.cottonmc.templates.model.UnbakedAutoRetexturedModel;
+import io.github.cottonmc.templates.model.UnbakedJsonRetexturedModel;
+import io.github.cottonmc.templates.model.UnbakedMeshRetexturedModel;
 import io.github.cottonmc.templates.model.SlopeBaseMesh;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -57,42 +58,46 @@ public class TemplatesClient implements ClientModInitializer {
 		
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), Templates.BLOCKS.toArray(new Block[0]));
 		
-		//vanilla style
-		provider.addTemplateModel(Templates.id("button_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/button")));
-		provider.addTemplateModel(Templates.id("button_pressed_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/button_pressed")));
-		provider.addTemplateModel(Templates.id("carpet_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/carpet")));
-		provider.addTemplateModel(Templates.id("cube_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/cube")));
-		provider.addTemplateModel(Templates.id("fence_post_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/fence_post")));
-		provider.addTemplateModel(Templates.id("fence_side_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/fence_side")));
-		provider.addTemplateModel(Templates.id("fence_gate_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/fence_gate")));
-		provider.addTemplateModel(Templates.id("fence_gate_open_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/fence_gate_open")));
-		provider.addTemplateModel(Templates.id("fence_gate_wall_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/fence_gate_wall")));
-		provider.addTemplateModel(Templates.id("fence_gate_wall_open_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/fence_gate_wall_open")));
-		provider.addTemplateModel(Templates.id("lever_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/lever")));
-		provider.addTemplateModel(Templates.id("lever_on_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/lever_on")));
-		provider.addTemplateModel(Templates.id("pressure_plate_up_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/pressure_plate_up")));
-		provider.addTemplateModel(Templates.id("pressure_plate_down_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/pressure_plate_down")));
-		provider.addTemplateModel(Templates.id("slab_bottom_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/slab_bottom")));
-		provider.addTemplateModel(Templates.id("slab_top_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/slab_top")));
-		provider.addTemplateModel(Templates.id("wall_post_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/wall_post")));
-		provider.addTemplateModel(Templates.id("wall_side_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/wall_side")));
-		provider.addTemplateModel(Templates.id("wall_side_tall_special"), new RetexturedJsonModelUnbakedModel(Templates.id("block/wall_side_tall")));
+		//vanilla style models (using "auto" method)
+		provider.addTemplateModel(Templates.id("button_special"), new UnbakedAutoRetexturedModel(new Identifier("block/button")));
+		provider.addTemplateModel(Templates.id("button_pressed_special"), new UnbakedAutoRetexturedModel(new Identifier("block/button_pressed")));
+		provider.addTemplateModel(Templates.id("carpet_special"), new UnbakedAutoRetexturedModel(new Identifier("block/carpet")));
+		provider.addTemplateModel(Templates.id("cube_special"), new UnbakedAutoRetexturedModel(new Identifier("block/cube")));
+		provider.addTemplateModel(Templates.id("fence_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/fence_post")));
+		provider.addTemplateModel(Templates.id("fence_side_special"), new UnbakedAutoRetexturedModel(new Identifier("block/fence_side")));
+		provider.addTemplateModel(Templates.id("fence_gate_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate")));
+		provider.addTemplateModel(Templates.id("fence_gate_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_open")));
+		provider.addTemplateModel(Templates.id("fence_gate_wall_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_wall")));
+		provider.addTemplateModel(Templates.id("fence_gate_wall_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_wall_open")));
+		provider.addTemplateModel(Templates.id("pressure_plate_up_special"), new UnbakedAutoRetexturedModel(new Identifier("block/pressure_plate_up")));
+		provider.addTemplateModel(Templates.id("pressure_plate_down_special"), new UnbakedAutoRetexturedModel(new Identifier("block/pressure_plate_down")));
+		provider.addTemplateModel(Templates.id("slab_bottom_special"), new UnbakedAutoRetexturedModel(new Identifier("block/slab")));
+		provider.addTemplateModel(Templates.id("slab_top_special"), new UnbakedAutoRetexturedModel(new Identifier("block/slab_top")));
+		provider.addTemplateModel(Templates.id("wall_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_post")));
+		provider.addTemplateModel(Templates.id("wall_side_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_side")));
+		provider.addTemplateModel(Templates.id("wall_side_tall_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_side_tall")));
 		
-		//meshes
-		provider.addTemplateModel(Templates.id("slope_special"), new RetexturedMeshUnbakedModel(Templates.id("block/slope_base"), SlopeBaseMesh::make));
+		//vanilla style models (using "special-sprite replacement" method)
+		provider.addTemplateModel(Templates.id("lever_special"), new UnbakedJsonRetexturedModel(Templates.id("block/lever")));
+		provider.addTemplateModel(Templates.id("lever_on_special"), new UnbakedJsonRetexturedModel(Templates.id("block/lever_on")));
 		
-		//item only models -- TODO move to item/ prolly
-		provider.addTemplateModel(Templates.id("button_inventory_special"), new RetexturedJsonModelUnbakedModel(Templates.id("item/button_inventory")));
-		provider.addTemplateModel(Templates.id("fence_inventory_special"), new RetexturedJsonModelUnbakedModel(Templates.id("item/fence_inventory")));
-		provider.addTemplateModel(Templates.id("wall_inventory_special"), new RetexturedJsonModelUnbakedModel(Templates.id("item/wall_inventory")));
+		//mesh models
+		provider.addTemplateModel(Templates.id("slope_special"), new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::make));
 		
-		provider.assignItemModel(Templates.id("button_special"), Templates.BUTTON);
+		//item only models
+		provider.addTemplateModel(Templates.id("button_inventory_special"), new UnbakedAutoRetexturedModel(new Identifier("block/button_inventory")));
+		provider.addTemplateModel(Templates.id("fence_inventory_special"), new UnbakedAutoRetexturedModel(new Identifier("block/fence_inventory")));
+		provider.addTemplateModel(Templates.id("fence_post_inventory_special"), new UnbakedAutoRetexturedModel(Templates.id("block/fence_post_inventory")));
+		provider.addTemplateModel(Templates.id("wall_inventory_special"), new UnbakedAutoRetexturedModel(new Identifier("block/wall_inventory")));
+		
+		//item model assignments (in lieu of models/item/___.json)
+		provider.assignItemModel(Templates.id("button_inventory_special"), Templates.BUTTON);
 		provider.assignItemModel(Templates.id("carpet_special"), Templates.CARPET);
 		provider.assignItemModel(Templates.id("cube_special"), Templates.CUBE);
 		provider.assignItemModel(Templates.id("fence_inventory_special"), Templates.FENCE);
 		provider.assignItemModel(Templates.id("fence_gate_special"), Templates.FENCE_GATE);
 		provider.assignItemModel(Templates.id("lever_special"), Templates.LEVER); //TODO vanilla uses its own item model
-		provider.assignItemModel(Templates.id("fence_post_special"), Templates.POST);
+		provider.assignItemModel(Templates.id("fence_post_inventory_special"), Templates.POST);
 		provider.assignItemModel(Templates.id("pressure_plate_up_special"), Templates.PRESSURE_PLATE);
 		provider.assignItemModel(Templates.id("slope_special"), Templates.SLOPE);
 		provider.assignItemModel(Templates.id("slab_bottom_special"), Templates.SLAB);

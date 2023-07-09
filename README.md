@@ -30,56 +30,42 @@ The only other requirement is that your block *must* have a block entity that bo
 
 ## Creating the custom model
 
-TL;DR: Look at `assets/templates/blockstates`, look at `assets/templates/models/block`, and look at the bottom of `TemplatesClient`.
+(TL;DR look at `assets/templates/blockstates` and the bottom of `TemplatesClient`)
 
-### Using a JSON model
+To make a model retexturable, Templates has to know which faces you want to retexture, and which side of the block they correspond to. There are currently three ways to tell Templates your intentions:
 
-We will construct a `RetexturedJsonModelUnbakedModel`. You need the ID of the json model to retexture.
+### `UnbakedAutoRetexturedModel`
 
-The base model can have a `parent` of anything you want. To make a surface retexturable, give it the texture `templates:templates_special/down`, `templates:templates_special/north`, `templates:templates_special/east` (etc). These textures will be *replaced* at runtime by the corresponding region of the corresponding texture of the template's theme block. (For example, a surface textured using `templates:templates_special/north` will look like the north side of the template's theme.)
+Pass the ID of a JSON model to retexture. All quads that face east will be textured with the east side of the theme, all quads that face up will be textured with the top side of the theme, etc. There is no way to skip a face.
 
-If possible, I don't recommend making a wholly *new* json model. If you have an existing model that defines `north`, `south`, `east` etc texture variables, just use this:
+Most of Templates's blocks use this model.
 
-```json
-{
-	"parent": "yourmod:your/cool/json/model",
-	"textures": {
-		"down": "templates:templates_special/down",
-		"up": "templates:templates_special/up",
-		"north": "templates:templates_special/north",
-		"south": "templates:templates_special/south",
-		"west": "templates:templates_special/west",
-		"east": "templates:templates_special/east"
-	}
-}
-```
+**TODO**: this does not work well with `multipart` models with differently-rotated parts, like the fence model (consisting of 1 fence post and 1 fence-side model that gets rotated around to fill all 4 sides)
 
-(If your model has texture variables that look more like `up/down/side` instead of `up/down/north/south/east/west`, you *can* cheat and assign something like `templates:templates_special/east` to the `side` texture slot - but imagine a player retexturing your template to look like a sideways log, which is not rotationally symmetric. It won't work as expected.)
+### `UnbakedJsonRetexturedModel`
 
-Finally, if your base model is a multipart model, *and* you plan on using it as an item model, I need a representative blockstate in order to select the correct configuration of the base model. Pick one and pass it as the second parameter to `RetexturedJsonModelUnbakedModel`. If the base model is not a multipart model, this is not required.
+Pass the ID of a JSON model to retexture. All quads textured with `templates:templates_special/east` will be textured with the east side of the theme, all quads textured with `templates:templates_special/up` will be retextured with the top side of the theme, etc. Quads textured with any other texture will be passed through unaltered.
 
-That's all you need to construct a `RetexturedJsonModelUnbakedModel`, so to finish things off, [register it.](#registering-the-custom-model)
+Templates's lever uses this model - `AutoRetexturedModel` was not appropriate because I did not want to retexture the lever arm.
 
-### Using a custom `Mesh`-based model
+(This works better with multipart models.)
 
-If you have a shape in mind that can't be represented with a json model (like a perfect 45 degree wedge), this is a good option.
+### `UnbakedMeshRetexturedModel`
 
-We will construct a `RetexturedMeshUnbakedModel`. You need two things - the ID of a parent model, and a `Supplier<>` of a `Mesh` to retexture.
+Pass either a `Supplier<Mesh>` or a `Function<Function<SpriteIdentifier, Sprite>, Mesh>` (i.e. a function with an optional `Function<SpriteIdentifier, Sprite>` argument, and a return type of `Mesh`). All quads `.tag()`ged with `Direction.EAST.ordinal() + 1` will be textured with the east side of the theme, all quads tagged with `Direction.UP.ordinal() + 1` will be retextured with the top side of the theme, etc. Give these faces UV coordinates ranging from 0 to 1.
 
-Ideally, the parent model should have a parent of `block/block`, or at least define *some* non-default rotations (smokey the bear voice *Only You Can Prevent Weirdly Rotated First-Person Models*) and set `"gui_light": "front"` (lest the item model look weird). You should use a json model for this, but keep in mind that no quads will be read from the json model - it's only used to source all the miscellaneous `BakedModel` options.
+Quads with the tag `0` will be passed through unaltered (hence the `+ 1` bias), and they expect UV coordinates that already point to an appropriate region of the block atlas (which is where the `Function<SpriteIdentifier, Sprite>` argument comes in - query it for sprites and put their UV coordinates on the model)
 
-When building the `Mesh`, if you want a face to be dynamically retextured, `.tag()` it with the `.ordinal() + 1` of the `Direction` it corresponds to, and give the face UV coordinates ranging from 0 to 1. (For example, if you tag a face with `3` (`Direction.NORTH.ordinal() + 1`), it will be retextured to the north side of the template's theme.)
+(To construct this type, you will also need to pass the identifier of a "base model", which can be a regular JSON model. Miscellaneous `BakedModel` properties like rotations, AO, `isSideLit`, etc will be sourced from it.) 
 
-(TODO: implement a system for baking unchanging `Sprite`s onto the mesh, potentially by "registering" more tags; the problem is you don't have access to sprite uvs at mesh building time. Or just provide a way to get sprite UVs at mesh building time...?)
+Templates's slope blocks use this model, because it's otherwise impossible to make triangle-shaped faces in a JSON model.
 
-That's all you need in order to construct a `RetexturedMeshUnbakedModel`, so to finish things off, [register it.](#registering-the-custom-model)
-
-## Registering the custom model
+## Registering your model
 
 1. Decide on an ID for your special model that's *different* from the ID used for the base model.
    * If your base model lives at `yourmod:block/awesome_template`, something like `yourmod:awesome_template_special` would do.
 2. Register it using `TemplatesClient.provider.addTemplateModel`.
 3. Create a blockstate json for your block, and point it at the ID you decided for your special model in 1).
-   * You may rotate the blockmodel with the `x` and `y` properties. You can also toggle `uvlock`. Things should work as expected.
+   * You may use the `x`, `y`, and `uvlock` properties as normal.
 
 You may create a regular item model, or use ours by calling `TemplatesClient.provider.assignItemModel`, passing the ID of the special model & the items you want to assign it to. (The reason you have to do this instead of simply creating a regular item model and setting its `parent`, is that `JsonUnbakedModel`s can't have non-`JsonUnbakedModel`s as their `parent`, and even a trivial item model with only the `parent` field set counts as a `JsonUnbakedModel`. This isn't a problem for block models because blockstates are a layer of indirection before model loading.)

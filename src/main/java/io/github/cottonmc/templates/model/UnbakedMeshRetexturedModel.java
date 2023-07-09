@@ -17,12 +17,12 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RetexturedMeshUnbakedModel implements UnbakedModel {
-	public RetexturedMeshUnbakedModel(Identifier parent, Supplier<Mesh> baseMeshFactory) {
+public class UnbakedMeshRetexturedModel implements UnbakedModel {
+	public UnbakedMeshRetexturedModel(Identifier parent, Supplier<Mesh> baseMeshFactory) {
 		this(parent, __ -> baseMeshFactory.get());
 	}
 	
-	public RetexturedMeshUnbakedModel(Identifier parent, Function<Function<SpriteIdentifier, Sprite>, Mesh> baseMeshFactory) {
+	public UnbakedMeshRetexturedModel(Identifier parent, Function<Function<SpriteIdentifier, Sprite>, Mesh> baseMeshFactory) {
 		this.parent = parent;
 		this.baseMeshFactory = baseMeshFactory;
 	}

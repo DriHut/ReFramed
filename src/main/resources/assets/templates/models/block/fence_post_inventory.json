@@ -1,12 +1,7 @@
 {
 	"parent": "minecraft:block/block",
 	"textures": {
-		"down": "templates:templates_special/down",
-		"up": "templates:templates_special/up",
-		"north": "templates:templates_special/north",
-		"south": "templates:templates_special/south",
-		"west": "templates:templates_special/west",
-		"east": "templates:templates_special/east"
+		"particle": "#texture"
 	},
 	"elements": [
 		{
@@ -15,29 +10,29 @@
 			"faces": {
 				"down": {
 					"uv": [6, 6, 10, 10],
-					"texture": "#down",
+					"texture": "#texture",
 					"cullface": "down"
 				},
 				"up": {
 					"uv": [6, 6, 10, 10],
-					"texture": "#up",
+					"texture": "#texture",
 					"cullface": "up"
 				},
 				"north": {
 					"uv": [6, 0, 10, 16],
-					"texture": "#north"
+					"texture": "#texture"
 				},
 				"south": {
 					"uv": [6, 0, 10, 16],
-					"texture": "#south"
+					"texture": "#texture"
 				},
 				"west": {
 					"uv": [6, 0, 10, 16],
-					"texture": "#west"
+					"texture": "#texture"
 				},
 				"east": {
 					"uv": [6, 0, 10, 16],
-					"texture": "#east"
+					"texture": "#texture"
 				}
 			},
 			"__comment": "Center post"

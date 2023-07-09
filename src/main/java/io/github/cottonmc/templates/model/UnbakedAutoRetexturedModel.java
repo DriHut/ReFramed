@@ -1,6 +1,5 @@
 package io.github.cottonmc.templates.model;
 
-import io.github.cottonmc.templates.Templates;
 import io.github.cottonmc.templates.TemplatesClient;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -16,7 +15,6 @@ import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -24,17 +22,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
-public class RetexturedJsonModelUnbakedModel implements UnbakedModel {
-	public RetexturedJsonModelUnbakedModel(Identifier parent) {
+public class UnbakedAutoRetexturedModel implements UnbakedModel {
+	public UnbakedAutoRetexturedModel(Identifier parent) {
 		this(parent, Blocks.AIR.getDefaultState());
 	}
 	
-	public RetexturedJsonModelUnbakedModel(Identifier parent, BlockState itemModelState) {
+	public UnbakedAutoRetexturedModel(Identifier parent, BlockState itemModelState) {
 		this.parent = parent;
 		this.itemModelState = itemModelState;
 	}
@@ -55,14 +52,6 @@ public class RetexturedJsonModelUnbakedModel implements UnbakedModel {
 	@Nullable
 	@Override
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> spriteLookup, ModelBakeSettings modelBakeSettings, Identifier identifier) {
-		Direction[] DIRECTIONS = RetexturingBakedModel.DIRECTIONS;
-		
-		Sprite[] specialSprites = new Sprite[DIRECTIONS.length];
-		for(int i = 0; i < DIRECTIONS.length; i++) {
-			SpriteIdentifier id = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Templates.id("templates_special/" + DIRECTIONS[i].getName()));
-			specialSprites[i] = Objects.requireNonNull(spriteLookup.apply(id), () -> "Couldn't find sprite " + id + " !");
-		}
-		
 		ConcurrentMap<BlockState, Mesh> jsonToMesh = new ConcurrentHashMap<>();
 		
 		return new RetexturingBakedModel(
@@ -88,16 +77,8 @@ public class RetexturedJsonModelUnbakedModel implements UnbakedModel {
 				for(Direction cullFace : DIRECTIONS_AND_NULL) {
 					for(BakedQuad quad : wrapped.getQuads(state, cullFace, rand)) {
 						emitter.fromVanilla(quad, mat, cullFace);
-						
-						QuadUvBounds bounds = QuadUvBounds.read(emitter);
-						for(int i = 0; i < specialSprites.length; i++) {
-							if(bounds.displaysSprite(specialSprites[i])) {
-								bounds.normalizeUv(emitter, specialSprites[i]);
-								emitter.tag(i + 1);
-								break;
-							}
-						}
-						
+						QuadUvBounds.read(emitter).normalizeUv(emitter, quad.getSprite());
+						emitter.tag(emitter.lightFace().ordinal() + 1);
 						emitter.emit();
 					}
 				}
