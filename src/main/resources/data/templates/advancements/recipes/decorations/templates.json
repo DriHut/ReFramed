@@ -11,6 +11,7 @@
 			"templates:post",
 			"templates:slab",
 			"templates:slope",
+			"templates:stairs",
 			"templates:wall"
 		]
 	},

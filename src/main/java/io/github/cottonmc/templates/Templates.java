@@ -13,6 +13,7 @@ import io.github.cottonmc.templates.block.TemplatePressurePlateBlock;
 import io.github.cottonmc.templates.block.TemplateSlabBlock;
 import io.github.cottonmc.templates.block.TemplateSlopeBlock;
 import io.github.cottonmc.templates.block.TemplateEntity;
+import io.github.cottonmc.templates.block.TemplateStairsBlock;
 import io.github.cottonmc.templates.block.TemplateWallBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -63,7 +64,7 @@ public class Templates implements ModInitializer {
 	public static final Block POST = reg("post", new TemplatePostBlock(cp(Blocks.OAK_FENCE)));
 	public static final Block PRESSURE_PLATE = reg("pressure_plate", new TemplatePressurePlateBlock(cp(Blocks.OAK_PRESSURE_PLATE)));
 	public static final Block SLAB = reg("slab", new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
-	//stair
+	public static final Block STAIRS = reg("stairs", new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
 	//trapdoor
 	public static final Block WALL = reg("wall", new TemplateWallBlock(cp(Blocks.COBBLESTONE_WALL)));
 	

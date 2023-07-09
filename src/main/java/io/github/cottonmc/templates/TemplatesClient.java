@@ -77,6 +77,9 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("pressure_plate_down_special"), new UnbakedAutoRetexturedModel(new Identifier("block/pressure_plate_down")));
 		provider.addTemplateModel(Templates.id("slab_bottom_special"), new UnbakedAutoRetexturedModel(new Identifier("block/slab")));
 		provider.addTemplateModel(Templates.id("slab_top_special"), new UnbakedAutoRetexturedModel(new Identifier("block/slab_top")));
+		provider.addTemplateModel(Templates.id("stairs_special"), new UnbakedAutoRetexturedModel(new Identifier("block/stairs")));
+		provider.addTemplateModel(Templates.id("inner_stairs_special"), new UnbakedAutoRetexturedModel(new Identifier("block/inner_stairs")));
+		provider.addTemplateModel(Templates.id("outer_stairs_special"), new UnbakedAutoRetexturedModel(new Identifier("block/outer_stairs")));
 		provider.addTemplateModel(Templates.id("wall_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_post")));
 		provider.addTemplateModel(Templates.id("wall_side_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_side")));
 		provider.addTemplateModel(Templates.id("wall_side_tall_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_side_tall")));
@@ -106,6 +109,7 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.assignItemModel(Templates.id("pressure_plate_up_special"), Templates.PRESSURE_PLATE);
 		provider.assignItemModel(Templates.id("slope_special"), Templates.SLOPE);
 		provider.assignItemModel(Templates.id("slab_bottom_special"), Templates.SLAB);
+		provider.assignItemModel(Templates.id("stairs_special"), Templates.STAIRS);
 		provider.assignItemModel(Templates.id("wall_inventory_special"), Templates.WALL);
 	}
 }
