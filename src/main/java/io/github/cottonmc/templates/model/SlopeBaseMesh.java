@@ -55,6 +55,8 @@ public class SlopeBaseMesh {
 		return builder.build();
 	}
 	
+	//My mfw (my face when) mfw face when you can't rotate blockmodels on the z axis from a blockstate file
+	//Fine i will do it myself !!!
 	public static Mesh makeSide() {
 		Matrix4f mat = new Matrix4f();
 		RotationAxis.POSITIVE_Z.rotationDegrees(90).get(mat);
