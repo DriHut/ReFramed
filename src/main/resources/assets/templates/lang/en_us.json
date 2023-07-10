@@ -8,10 +8,12 @@
 	"block.templates.fence": "Fence Template",
 	"block.templates.fence_gate": "Fence Gate Template",
 	"block.templates.lever": "Lever Template",
+	"block.templates.pane": "Pane Template",
 	"block.templates.post": "Post Template",
 	"block.templates.pressure_plate": "Pressure Plate Template",
 	"block.templates.slope": "Slope Template",
 	"block.templates.slab": "Slab Template",
 	"block.templates.stairs": "Stairs Template",
+	"block.templates.trapdoor": "Trapdoor Template",
 	"block.templates.wall": "Wall Template"
 }

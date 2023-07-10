@@ -73,6 +73,11 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("fence_gate_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_open")));
 		provider.addTemplateModel(Templates.id("fence_gate_wall_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_wall")));
 		provider.addTemplateModel(Templates.id("fence_gate_wall_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_wall_open")));
+		provider.addTemplateModel(Templates.id("glass_pane_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_post")));
+		provider.addTemplateModel(Templates.id("glass_pane_side_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_side")));
+		provider.addTemplateModel(Templates.id("glass_pane_side_alt_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_side_alt")));
+		provider.addTemplateModel(Templates.id("glass_pane_noside_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_noside")));
+		provider.addTemplateModel(Templates.id("glass_pane_noside_alt_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_noside_alt")));
 		provider.addTemplateModel(Templates.id("pressure_plate_up_special"), new UnbakedAutoRetexturedModel(new Identifier("block/pressure_plate_up")));
 		provider.addTemplateModel(Templates.id("pressure_plate_down_special"), new UnbakedAutoRetexturedModel(new Identifier("block/pressure_plate_down")));
 		provider.addTemplateModel(Templates.id("slab_bottom_special"), new UnbakedAutoRetexturedModel(new Identifier("block/slab")));
@@ -80,6 +85,9 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("stairs_special"), new UnbakedAutoRetexturedModel(new Identifier("block/stairs")));
 		provider.addTemplateModel(Templates.id("inner_stairs_special"), new UnbakedAutoRetexturedModel(new Identifier("block/inner_stairs")));
 		provider.addTemplateModel(Templates.id("outer_stairs_special"), new UnbakedAutoRetexturedModel(new Identifier("block/outer_stairs")));
+		provider.addTemplateModel(Templates.id("trapdoor_bottom_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_bottom")));
+		provider.addTemplateModel(Templates.id("trapdoor_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_open")));
+		provider.addTemplateModel(Templates.id("trapdoor_top_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_top")));
 		provider.addTemplateModel(Templates.id("wall_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_post")));
 		provider.addTemplateModel(Templates.id("wall_side_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_side")));
 		provider.addTemplateModel(Templates.id("wall_side_tall_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_side_tall")));
@@ -106,11 +114,13 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.assignItemModel(Templates.id("fence_inventory_special"), Templates.FENCE);
 		provider.assignItemModel(Templates.id("fence_gate_special"), Templates.FENCE_GATE);
 		provider.assignItemModel(Templates.id("lever_special"), Templates.LEVER); //TODO vanilla uses its own item model
+		//provider.assignItemModel(Templates.id("glass_pane_side_special"), Templates.PANE); //Done with a regular json model actually
 		provider.assignItemModel(Templates.id("fence_post_inventory_special"), Templates.POST);
 		provider.assignItemModel(Templates.id("pressure_plate_up_special"), Templates.PRESSURE_PLATE);
 		provider.assignItemModel(Templates.id("slope_special"), Templates.SLOPE);
 		provider.assignItemModel(Templates.id("slab_bottom_special"), Templates.SLAB);
 		provider.assignItemModel(Templates.id("stairs_special"), Templates.STAIRS);
+		provider.assignItemModel(Templates.id("trapdoor_bottom_special"), Templates.TRAPDOOR);
 		provider.assignItemModel(Templates.id("wall_inventory_special"), Templates.WALL);
 	}
 }

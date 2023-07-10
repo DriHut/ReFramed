@@ -8,12 +8,14 @@ import io.github.cottonmc.templates.block.TemplateCarpetBlock;
 import io.github.cottonmc.templates.block.TemplateFenceBlock;
 import io.github.cottonmc.templates.block.TemplateFenceGateBlock;
 import io.github.cottonmc.templates.block.TemplateLeverBlock;
+import io.github.cottonmc.templates.block.TemplatePaneBlock;
 import io.github.cottonmc.templates.block.TemplatePostBlock;
 import io.github.cottonmc.templates.block.TemplatePressurePlateBlock;
 import io.github.cottonmc.templates.block.TemplateSlabBlock;
 import io.github.cottonmc.templates.block.TemplateSlopeBlock;
 import io.github.cottonmc.templates.block.TemplateEntity;
 import io.github.cottonmc.templates.block.TemplateStairsBlock;
+import io.github.cottonmc.templates.block.TemplateTrapdoorBlock;
 import io.github.cottonmc.templates.block.TemplateWallBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -60,12 +62,12 @@ public class Templates implements ModInitializer {
 	public static final Block FENCE = reg("fence", new TemplateFenceBlock(cp(Blocks.OAK_FENCE)));
 	public static final Block FENCE_GATE = reg("fence_gate", new TemplateFenceGateBlock(cp(Blocks.OAK_FENCE_GATE)));
 	public static final Block LEVER = reg("lever", new TemplateLeverBlock(cp(Blocks.LEVER)));
-	//pane
+	public static final Block PANE = reg("pane", new TemplatePaneBlock(cp(Blocks.GLASS_PANE)));
 	public static final Block POST = reg("post", new TemplatePostBlock(cp(Blocks.OAK_FENCE)));
 	public static final Block PRESSURE_PLATE = reg("pressure_plate", new TemplatePressurePlateBlock(cp(Blocks.OAK_PRESSURE_PLATE)));
 	public static final Block SLAB = reg("slab", new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
 	public static final Block STAIRS = reg("stairs", new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
-	//trapdoor
+	public static final Block TRAPDOOR = reg("trapdoor", new TemplateTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR)));
 	public static final Block WALL = reg("wall", new TemplateWallBlock(cp(Blocks.COBBLESTONE_WALL)));
 	
 	public static final Block SLOPE = reg("slope", new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));

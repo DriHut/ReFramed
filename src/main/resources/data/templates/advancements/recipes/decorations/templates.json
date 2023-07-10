@@ -8,10 +8,12 @@
 			"templates:cube",
 			"templates:fence",
 			"templates:fence_gate",
+			"templates:pane",
 			"templates:post",
 			"templates:slab",
 			"templates:slope",
 			"templates:stairs",
+			"templates:trapdoor",
 			"templates:wall"
 		]
 	},
