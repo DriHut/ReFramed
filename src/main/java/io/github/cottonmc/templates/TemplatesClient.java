@@ -89,7 +89,8 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("lever_on_special"), new UnbakedJsonRetexturedModel(Templates.id("block/lever_on")));
 		
 		//mesh models
-		provider.addTemplateModel(Templates.id("slope_special"), new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::make));
+		provider.addTemplateModel(Templates.id("slope_special"), new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeUpright));
+		provider.addTemplateModel(Templates.id("slope_side_special"), new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeSide));
 		
 		//item only models
 		provider.addTemplateModel(Templates.id("button_inventory_special"), new UnbakedAutoRetexturedModel(new Identifier("block/button_inventory")));

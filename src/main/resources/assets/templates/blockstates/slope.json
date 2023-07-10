@@ -1,45 +1,64 @@
 {
 	"variants": {
-		"facing=east,half=bottom": {
+		"facing=down_east": {
 			"model": "templates:slope_special",
 			"uvlock": true,
 			"y": 270
 		},
-		"facing=north,half=bottom": {
+		"facing=down_north": {
 			"model": "templates:slope_special",
 			"uvlock": true,
 			"y": 180
 		},
-		"facing=south,half=bottom": {
+		"facing=down_south": {
 			"model": "templates:slope_special"
 		},
-		"facing=west,half=bottom": {
+		"facing=down_west": {
 			"model": "templates:slope_special",
 			"uvlock": true,
 			"y": 90
 		},
-		"facing=east,half=top": {
+		"facing=up_east": {
 			"model": "templates:slope_special",
 			"uvlock": true,
 			"x": 180,
 			"y": 90
 		},
-		"facing=north,half=top": {
+		"facing=up_north": {
 			"model": "templates:slope_special",
 			"uvlock": true,
 			"x": 180
 		},
-		"facing=south,half=top": {
+		"facing=up_south": {
 			"model": "templates:slope_special",
 			"uvlock": true,
 			"x": 180,
 			"y": 180
 		},
-		"facing=west,half=top": {
+		"facing=up_west": {
 			"model": "templates:slope_special",
 			"uvlock": true,
 			"x": 180,
 			"y": 270
+		},
+		"facing=north_east": {
+			"model": "templates:slope_side_special",
+			"uvlock": true,
+			"y": 270
+		},
+		"facing=north_west": {
+			"model": "templates:slope_side_special",
+			"uvlock": true,
+			"y": 180
+		},
+		"facing=south_east": {
+			"model": "templates:slope_side_special",
+			"uvlock": true
+		},
+		"facing=south_west": {
+			"model": "templates:slope_side_special",
+			"uvlock": true,
+			"y": 90
 		}
 	}
 }

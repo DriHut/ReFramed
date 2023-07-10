@@ -5,11 +5,9 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.math.Direction;
-
-import java.util.function.Function;
+import net.minecraft.util.math.RotationAxis;
+import org.joml.Matrix4f;
 
 public class SlopeBaseMesh {
 	/**
@@ -21,7 +19,7 @@ public class SlopeBaseMesh {
 	public static final int TAG_BACK = Direction.SOUTH.ordinal() + 1;
 	public static final int TAG_BOTTOM = Direction.DOWN.ordinal() + 1;
 	
-	public static Mesh make() {
+	public static Mesh makeUpright() {
 		Renderer renderer = TemplatesClient.getFabricRenderer();
 		
 		MeshBuilder builder = renderer.meshBuilder();
@@ -55,5 +53,12 @@ public class SlopeBaseMesh {
 			.uvUnitSquare()
 			.emit();
 		return builder.build();
+	}
+	
+	public static Mesh makeSide() {
+		Matrix4f mat = new Matrix4f();
+		RotationAxis.POSITIVE_Z.rotationDegrees(90).get(mat);
+		
+		return MeshTransformUtil.pretransformMesh(makeUpright(), MeshTransformUtil.applyMatrix(mat));
 	}
 }

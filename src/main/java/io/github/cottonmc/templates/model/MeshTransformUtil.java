@@ -75,8 +75,14 @@ public class MeshTransformUtil {
 				quad.pos(i, pos4.x + 0.5f, pos4.y + 0.5f, pos4.z + 0.5f);
 			}
 			
+			//permute tags
+			int tag = quad.tag();
+			if(tag != 0) quad.tag(facePermutation.get(RetexturingBakedModel.DIRECTIONS[tag - 1]).ordinal() + 1);
+			
+			//permute lighting face (?)
 			quad.nominalFace(facePermutation.get(quad.lightFace()));
 			
+			//permute cullface
 			Direction cull = quad.cullFace();
 			if(cull != null) quad.cullFace(facePermutation.get(cull));
 			
