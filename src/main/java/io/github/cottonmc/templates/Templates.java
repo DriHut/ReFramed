@@ -27,6 +27,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -38,7 +39,6 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 public class Templates implements ModInitializer {
 	public static final String MODID = "templates";
@@ -71,9 +71,7 @@ public class Templates implements ModInitializer {
 	public static final Block WALL = reg("wall", new TemplateWallBlock(cp(Blocks.COBBLESTONE_WALL)));
 	
 	public static final Block SLOPE = reg("slope", new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
-	//30 degree slope (shallow/deep)
-	//60 degree slope
-	//wall slopes
+	//30 degree slope (shallow/deep) 
 	//corner slopes
 	//quarter slabs????
 	
@@ -93,7 +91,7 @@ public class Templates implements ModInitializer {
 			FabricItemGroup.builder()
 				.displayName(Text.translatable("itemGroup.templates.tab"))
 				.icon(() -> new ItemStack(SLOPE))
-				.entries((ctx, ent) -> ent.addAll(BLOCKS.stream().map(ItemStack::new).collect(Collectors.toList())))
+				.entries(this::fillCreativeTab)
 				.build()
 		);
 		
@@ -110,5 +108,26 @@ public class Templates implements ModInitializer {
 	//simply for breaking circular reference in the registration call
 	private static TemplateEntity makeTemplateBlockEntity(BlockPos pos, BlockState state) {
 		return new TemplateEntity(TEMPLATE_BLOCK_ENTITY, pos, state);
+	}
+	
+	private void fillCreativeTab(ItemGroup.DisplayContext ctx, ItemGroup.Entries e) {
+		//sorted by encounter order of the vanilla block in the "search" creative tab
+		//with the non-vanilla "post" inserted of course
+		//and i moved the lever next to the pressureplate and button cause theyre redstoney
+		e.add(CUBE);
+		e.add(STAIRS);
+		e.add(SLAB);
+		e.add(POST);
+		e.add(FENCE);
+		e.add(FENCE_GATE);
+		// <-- insert door here
+		e.add(TRAPDOOR);
+		e.add(PRESSURE_PLATE);
+		e.add(BUTTON);
+		e.add(LEVER);
+		e.add(WALL);
+		e.add(CARPET);
+		e.add(PANE);
+		e.add(CANDLE);
 	}
 }
