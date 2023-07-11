@@ -86,7 +86,6 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("inner_stairs_special"), new UnbakedAutoRetexturedModel(new Identifier("block/inner_stairs")));
 		provider.addTemplateModel(Templates.id("outer_stairs_special"), new UnbakedAutoRetexturedModel(new Identifier("block/outer_stairs")));
 		provider.addTemplateModel(Templates.id("trapdoor_bottom_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_bottom")));
-		provider.addTemplateModel(Templates.id("trapdoor_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_open")));
 		provider.addTemplateModel(Templates.id("trapdoor_top_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_top")));
 		provider.addTemplateModel(Templates.id("wall_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_post")));
 		provider.addTemplateModel(Templates.id("wall_side_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_side")));
@@ -94,6 +93,7 @@ public class TemplatesClient implements ClientModInitializer {
 		
 		//vanilla style models (using "special-sprite replacement" method)
 		provider.addTemplateModel(Templates.id("lever_special"), new UnbakedJsonRetexturedModel(Templates.id("block/lever")));
+		provider.addTemplateModel(Templates.id("trapdoor_open_special"), new UnbakedJsonRetexturedModel(Templates.id("block/trapdoor_open")));
 		provider.addTemplateModel(Templates.id("lever_on_special"), new UnbakedJsonRetexturedModel(Templates.id("block/lever_on")));
 		
 		//mesh models
