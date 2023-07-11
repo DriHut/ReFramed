@@ -36,41 +36,31 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 
 public class Templates implements ModInitializer {
 	public static final String MODID = "templates";
 	
-	public static final List<Block> BLOCKS = new ArrayList<>();
-	private static <B extends Block> B reg(String id, B block) {
-		B b = Registry.register(Registries.BLOCK, id(id), block);
-		BLOCKS.add(b);
-		return b;
-	}
-	
 	private static AbstractBlock.Settings cp(Block base) {
 		return TemplateInteractionUtil.configureSettings(AbstractBlock.Settings.copy(base));
 	}
 	
-	public static final Block BUTTON = reg("button", new TemplateButtonBlock(cp(Blocks.OAK_BUTTON)));
-	public static final Block CANDLE = reg("candle", new TemplateCandleBlock(TemplateCandleBlock.configureSettings(cp(Blocks.CANDLE))));
-	public static final Block CARPET = reg("carpet", new TemplateCarpetBlock(cp(Blocks.WHITE_CARPET)));
-	public static final Block CUBE = reg("cube", new TemplateBlock(TemplateInteractionUtil.makeSettings()));
+	public static final Block BUTTON         = Registry.register(Registries.BLOCK, id("button")        , new TemplateButtonBlock(cp(Blocks.OAK_BUTTON)));
+	public static final Block CANDLE         = Registry.register(Registries.BLOCK, id("candle")        , new TemplateCandleBlock(TemplateCandleBlock.configureSettings(cp(Blocks.CANDLE))));
+	public static final Block CARPET         = Registry.register(Registries.BLOCK, id("carpet")        , new TemplateCarpetBlock(cp(Blocks.WHITE_CARPET)));
+	public static final Block CUBE           = Registry.register(Registries.BLOCK, id("cube")          , new TemplateBlock(TemplateInteractionUtil.makeSettings()));
 	//door? (hard cause its a multiblock)
-	public static final Block FENCE = reg("fence", new TemplateFenceBlock(cp(Blocks.OAK_FENCE)));
-	public static final Block FENCE_GATE = reg("fence_gate", new TemplateFenceGateBlock(cp(Blocks.OAK_FENCE_GATE)));
-	public static final Block LEVER = reg("lever", new TemplateLeverBlock(cp(Blocks.LEVER)));
-	public static final Block PANE = reg("pane", new TemplatePaneBlock(cp(Blocks.GLASS_PANE)));
-	public static final Block POST = reg("post", new TemplatePostBlock(cp(Blocks.OAK_FENCE)));
-	public static final Block PRESSURE_PLATE = reg("pressure_plate", new TemplatePressurePlateBlock(cp(Blocks.OAK_PRESSURE_PLATE)));
-	public static final Block SLAB = reg("slab", new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
-	public static final Block STAIRS = reg("stairs", new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
-	public static final Block TRAPDOOR = reg("trapdoor", new TemplateTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR)));
-	public static final Block WALL = reg("wall", new TemplateWallBlock(cp(Blocks.COBBLESTONE_WALL)));
-	
-	public static final Block SLOPE = reg("slope", new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
+	public static final Block FENCE          = Registry.register(Registries.BLOCK, id("fence")         , new TemplateFenceBlock(cp(Blocks.OAK_FENCE)));
+	public static final Block FENCE_GATE     = Registry.register(Registries.BLOCK, id("fence_gate")    , new TemplateFenceGateBlock(cp(Blocks.OAK_FENCE_GATE)));
+	public static final Block LEVER          = Registry.register(Registries.BLOCK, id("lever")         , new TemplateLeverBlock(cp(Blocks.LEVER)));
+	public static final Block PANE           = Registry.register(Registries.BLOCK, id("pane")          , new TemplatePaneBlock(cp(Blocks.GLASS_PANE)));
+	public static final Block POST           = Registry.register(Registries.BLOCK, id("post")          , new TemplatePostBlock(cp(Blocks.OAK_FENCE)));
+	public static final Block PRESSURE_PLATE = Registry.register(Registries.BLOCK, id("pressure_plate"), new TemplatePressurePlateBlock(cp(Blocks.OAK_PRESSURE_PLATE)));
+	public static final Block SLAB           = Registry.register(Registries.BLOCK, id("slab")          , new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
+	public static final Block STAIRS         = Registry.register(Registries.BLOCK, id("stairs")        , new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
+	public static final Block TRAPDOOR       = Registry.register(Registries.BLOCK, id("trapdoor")      , new TemplateTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR)));
+	public static final Block WALL           = Registry.register(Registries.BLOCK, id("wall")          , new TemplateWallBlock(cp(Blocks.COBBLESTONE_WALL)));
+	public static final Block SLOPE          = Registry.register(Registries.BLOCK, id("slope")         , new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
 	//30 degree slope (shallow/deep) 
 	//corner slopes
 	//quarter slabs????
@@ -78,7 +68,23 @@ public class Templates implements ModInitializer {
 	//for addon devs: it's fine to make your own block entity type instead of gluing additional blocks to this one
 	public static final BlockEntityType<TemplateEntity> TEMPLATE_BLOCK_ENTITY = Registry.register(
 		Registries.BLOCK_ENTITY_TYPE, id("slope"),
-		FabricBlockEntityTypeBuilder.create(Templates::makeTemplateBlockEntity, BLOCKS.toArray(new Block[0])).build(null)
+		FabricBlockEntityTypeBuilder.create(Templates::makeTemplateBlockEntity,
+			BUTTON,
+			CANDLE,
+			CARPET,
+			CUBE,
+			FENCE,
+			FENCE_GATE,
+			LEVER,
+			PANE,
+			POST,
+			PRESSURE_PLATE,
+			SLAB,
+			STAIRS,
+			TRAPDOOR,
+			WALL,
+			SLOPE
+		).build(null)
 	);
 	
 	//Overridden in TemplatesClient
@@ -95,10 +101,21 @@ public class Templates implements ModInitializer {
 				.build()
 		);
 		
-		for(Block b : BLOCKS) {
-			Identifier id = Registries.BLOCK.getId(b);
-			Registry.register(Registries.ITEM, id, new BlockItem(b, new Item.Settings()));
-		}
+		Registry.register(Registries.ITEM, id("button")        , new BlockItem(BUTTON, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("candle")        , new BlockItem(CANDLE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("carpet")        , new BlockItem(CARPET, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("cube")          , new BlockItem(CUBE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("fence")         , new BlockItem(FENCE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("fence_gate")    , new BlockItem(FENCE_GATE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("lever")         , new BlockItem(LEVER, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("pane")          , new BlockItem(PANE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("post")          , new BlockItem(POST, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("pressure_plate"), new BlockItem(PRESSURE_PLATE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("slab")          , new BlockItem(SLAB, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("stairs")        , new BlockItem(STAIRS, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("trapdoor")      , new BlockItem(TRAPDOOR, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("wall")          , new BlockItem(WALL, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("slope")         , new BlockItem(SLOPE, new Item.Settings()));
 	}
 	
 	public static Identifier id(String path) {
