@@ -56,6 +56,9 @@ public class TemplateStairsBlock extends StairsBlock implements BlockEntityProvi
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		TemplateInteractionUtil.onStateReplaced(state, world, pos, newState, moved);
 		super.onStateReplaced(state, world, pos, newState, moved);
+		
+		//StairsBlock onStateReplaced is Weird! it doesn't delegate to regular block onStateReplaced!
+		if(!state.isOf(newState.getBlock())) world.removeBlockEntity(pos);
 	}
 	
 	@Override
