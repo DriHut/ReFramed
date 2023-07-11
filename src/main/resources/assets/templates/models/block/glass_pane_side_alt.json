@@ -1,0 +1,40 @@
+{
+	"ambientocclusion": false,
+	"textures": {
+		"down": "templates:templates_special/down",
+		"up": "templates:templates_special/up",
+		"north": "templates:templates_special/north",
+		"south": "templates:templates_special/south",
+		"west": "templates:templates_special/west",
+		"east": "templates:templates_special/east"
+	},
+	"elements": [
+		{
+			"from": [7, 0, 9],
+			"to": [9, 16, 16],
+			"faces": {
+				"down": {
+					"uv": [7, 0, 9, 7],
+					"texture": "#down"
+				},
+				"up": {
+					"uv": [7, 0, 9, 7],
+					"texture": "#up"
+				},
+				"south": {
+					"uv": [7, 0, 9, 16],
+					"texture": "#south",
+					"cullface": "south"
+				},
+				"west": {
+					"uv": [7, 0, 0, 16],
+					"texture": "#west"
+				},
+				"east": {
+					"uv": [0, 0, 7, 16],
+					"texture": "#east"
+				}
+			}
+		}
+	]
+}

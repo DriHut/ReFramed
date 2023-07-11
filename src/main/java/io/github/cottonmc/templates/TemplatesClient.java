@@ -68,14 +68,11 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("carpet_special"), new UnbakedAutoRetexturedModel(new Identifier("block/carpet")));
 		provider.addTemplateModel(Templates.id("cube_special"), new UnbakedAutoRetexturedModel(new Identifier("block/cube")));
 		provider.addTemplateModel(Templates.id("fence_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/fence_post")));
-		provider.addTemplateModel(Templates.id("fence_side_special"), new UnbakedAutoRetexturedModel(new Identifier("block/fence_side")));
 		provider.addTemplateModel(Templates.id("fence_gate_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate")));
 		provider.addTemplateModel(Templates.id("fence_gate_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_open")));
 		provider.addTemplateModel(Templates.id("fence_gate_wall_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_wall")));
 		provider.addTemplateModel(Templates.id("fence_gate_wall_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_wall_open")));
 		provider.addTemplateModel(Templates.id("glass_pane_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_post")));
-		provider.addTemplateModel(Templates.id("glass_pane_side_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_side")));
-		provider.addTemplateModel(Templates.id("glass_pane_side_alt_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_side_alt")));
 		provider.addTemplateModel(Templates.id("glass_pane_noside_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_noside")));
 		provider.addTemplateModel(Templates.id("glass_pane_noside_alt_special"), new UnbakedAutoRetexturedModel(new Identifier("block/glass_pane_noside_alt")));
 		provider.addTemplateModel(Templates.id("pressure_plate_up_special"), new UnbakedAutoRetexturedModel(new Identifier("block/pressure_plate_up")));
@@ -88,13 +85,17 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("trapdoor_bottom_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_bottom")));
 		provider.addTemplateModel(Templates.id("trapdoor_top_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_top")));
 		provider.addTemplateModel(Templates.id("wall_post_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_post")));
-		provider.addTemplateModel(Templates.id("wall_side_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_side")));
-		provider.addTemplateModel(Templates.id("wall_side_tall_special"), new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_side_tall")));
 		
 		//vanilla style models (using "special-sprite replacement" method)
 		provider.addTemplateModel(Templates.id("lever_special"), new UnbakedJsonRetexturedModel(Templates.id("block/lever")));
 		provider.addTemplateModel(Templates.id("trapdoor_open_special"), new UnbakedJsonRetexturedModel(Templates.id("block/trapdoor_open")));
 		provider.addTemplateModel(Templates.id("lever_on_special"), new UnbakedJsonRetexturedModel(Templates.id("block/lever_on")));
+		//these only exist because AutoRetexturedModels don't seem to rotate their textures the right way when rotated from a multipart blockstate
+		provider.addTemplateModel(Templates.id("fence_side_special"), new UnbakedJsonRetexturedModel(Templates.id("block/fence_side")));
+		provider.addTemplateModel(Templates.id("glass_pane_side_special"), new UnbakedJsonRetexturedModel(Templates.id("block/glass_pane_side")));
+		provider.addTemplateModel(Templates.id("glass_pane_side_alt_special"), new UnbakedAutoRetexturedModel(Templates.id("block/glass_pane_side_alt")));
+		provider.addTemplateModel(Templates.id("wall_side_special"), new UnbakedJsonRetexturedModel(Templates.id("block/wall_side")));
+		provider.addTemplateModel(Templates.id("wall_side_tall_special"), new UnbakedJsonRetexturedModel(Templates.id("block/wall_side_tall")));
 		
 		//mesh models
 		provider.addTemplateModel(Templates.id("slope_special"), new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeUpright));
