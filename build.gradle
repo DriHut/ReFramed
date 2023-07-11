@@ -50,6 +50,12 @@ dependencies {
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
 }
 
+loom {
+	mixin {
+		defaultRefmapName = "templates.refmap.json" //see templates.mixins.json. I just like to always specify the name
+	}
+}
+
 processResources {
 	inputs.property "version", project.version
 	filesMatching("**/fabric.mod.json") {
