@@ -8,13 +8,15 @@
 			"templates:cube",
 			"templates:fence",
 			"templates:fence_gate",
+			"templates:lever",
 			"templates:pane",
 			"templates:post",
+			"templates:pressure_plate",
 			"templates:slab",
-			"templates:slope",
 			"templates:stairs",
 			"templates:trapdoor",
-			"templates:wall"
+			"templates:wall",
+			"templates:slope"
 		]
 	},
 	"criteria": {

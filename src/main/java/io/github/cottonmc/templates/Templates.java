@@ -59,7 +59,7 @@ public class Templates implements ModInitializer {
 	public static final Block SLAB           = Registry.register(Registries.BLOCK, id("slab")          , new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
 	public static final Block STAIRS         = Registry.register(Registries.BLOCK, id("stairs")        , new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
 	public static final Block TRAPDOOR       = Registry.register(Registries.BLOCK, id("trapdoor")      , new TemplateTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR)));
-	public static final Block WALL           = Registry.register(Registries.BLOCK, id("wall")          , new TemplateWallBlock(cp(Blocks.COBBLESTONE_WALL)));
+	public static final Block WALL           = Registry.register(Registries.BLOCK, id("wall")          , new TemplateWallBlock(TemplateInteractionUtil.makeSettings()));
 	public static final Block SLOPE          = Registry.register(Registries.BLOCK, id("slope")         , new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
 	//30 degree slope (shallow/deep) 
 	//corner slopes
@@ -146,5 +146,7 @@ public class Templates implements ModInitializer {
 		e.add(CARPET);
 		e.add(PANE);
 		e.add(CANDLE);
+		
+		e.add(SLOPE);
 	}
 }

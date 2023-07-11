@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 public class TemplateStairsBlock extends StairsBlock implements BlockEntityProvider {
 	public TemplateStairsBlock(BlockState blockState, Settings settings) {
 		super(blockState, settings);
+		setDefaultState(TemplateInteractionUtil.setDefaultStates(getDefaultState()));
 	}
 	
 	public TemplateStairsBlock(Settings settings) {
