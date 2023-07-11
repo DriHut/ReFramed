@@ -31,3 +31,4 @@ local.properties
 # krita Moments
 *.png~
 *-autosave.kra
+*.kra~
