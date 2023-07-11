@@ -3,6 +3,7 @@ package io.github.cottonmc.templates.block;
 import com.google.common.base.MoreObjects;
 import io.github.cottonmc.templates.Templates;
 import io.github.cottonmc.templates.api.TemplateInteractionUtil;
+import io.github.cottonmc.templates.api.TemplateInteractionUtilExt;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockSetType;
@@ -24,7 +25,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class TemplateTrapdoorBlock extends TrapdoorBlock implements BlockEntityProvider {
+public class TemplateTrapdoorBlock extends TrapdoorBlock implements BlockEntityProvider, TemplateInteractionUtilExt {
 	public TemplateTrapdoorBlock(Settings settings, BlockSetType blah) {
 		super(settings, blah);
 		setDefaultState(TemplateInteractionUtil.setDefaultStates(getDefaultState()));
@@ -81,5 +82,10 @@ public class TemplateTrapdoorBlock extends TrapdoorBlock implements BlockEntityP
 	@Override
 	public int getStrongRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
 		return TemplateInteractionUtil.getStrongRedstonePower(state, view, pos, dir);
+	}
+	
+	@Override
+	public boolean templatesPlayerCanAddRedstoneEmission(BlockState state, BlockView view, BlockPos pos) {
+		return false;
 	}
 }

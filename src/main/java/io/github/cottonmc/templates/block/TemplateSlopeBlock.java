@@ -40,7 +40,7 @@ public class TemplateSlopeBlock extends WaterloggableTemplateBlock {
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
 		BlockState sup = super.getPlacementState(ctx);
-		if(sup != null) sup = sup.with(EDGE, Edge.closestTo(ctx.getHitPos(), ctx.getBlockPos()));
+		if(sup != null) sup = sup.with(EDGE, Edge.stairslikePlacement(ctx));
 		
 		return sup;
 	}

@@ -59,6 +59,7 @@ public class TemplateInteractionUtil {
 		if(!player.canModifyBlocks() || !world.canPlayerModifyAt(player, pos)) return ActionResult.PASS;
 		
 		ItemStack held = player.getStackInHand(hand);
+		TemplateInteractionUtilExt ext = state.getBlock() instanceof TemplateInteractionUtilExt e ? e : TemplateInteractionUtilExt.Default.INSTANCE;
 		
 		//Glowstone
 		if(state.contains(LIGHT) && held.getItem() == Items.GLOWSTONE_DUST && !state.get(LIGHT) && !be.hasSpentGlowstoneDust()) {
@@ -71,7 +72,11 @@ public class TemplateInteractionUtil {
 		}
 		
 		//Redstone
-		if(held.getItem() == Blocks.REDSTONE_TORCH.asItem() && !be.emitsRedstone() && !be.hasSpentRedstoneTorch()) {
+		if(held.getItem() == Blocks.REDSTONE_TORCH.asItem() &&
+			!be.emitsRedstone() &&
+			!be.hasSpentRedstoneTorch() &&
+			ext.templatesPlayerCanAddRedstoneEmission(state, world, pos)
+		) {
 			be.setEmitsRedstone(true);
 			be.spentRedstoneTorch();
 			
@@ -81,7 +86,11 @@ public class TemplateInteractionUtil {
 		}
 		
 		//Popped chorus fruit
-		if(held.getItem() == Items.POPPED_CHORUS_FRUIT && be.isSolid() && !be.hasSpentPoppedChorus()) {
+		if(held.getItem() == Items.POPPED_CHORUS_FRUIT &&
+			be.isSolid() &&
+			!be.hasSpentPoppedChorus() &&
+			ext.templatesPlayerCanRemoveCollision(state, world, pos)
+		) {
 			be.setSolidity(false);
 			be.spentPoppedChorus();
 			

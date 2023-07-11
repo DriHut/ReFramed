@@ -24,9 +24,13 @@ Todo move this into the main readme section
 
 ## Creating your block
 
-So there are various block interactions in Templates, like adding glowstone to make the block illuminate, adding redstone to make it a power source, etc. In an ideal world, I'd be able to simply provide the `TemplateBlock` class implementing all those features and ask that you extend it from your block. And if your block doesn't already have a superclass I recommend doing this - alas, if it does you can't extend `TemplateBlock`, so the implementation of everything has been farmed out to `public static` methods in `TemplateInteractionUtil` in the api package. Simply wire everything up. Don't forget to feed your `Block.Settings` through `TemplateInteractionUtil.configureSettings` too.
+So there are various block interactions in Templates, like adding glowstone to make the block illuminate, adding redstone to make it a power source, etc.
 
-The only other requirement is that your block *must* have a block entity that both returns a `BlockState` object from `RenderAttachmentBlockEntity.getRenderAttachmentData` and implements `ThemeableBlockEntity`. `TemplateEntity` is an implementation of this (and also implements the other half of the features from `TemplateInteractionUtil`); I recommend using it if you can.
+In an ideal world, I'd be able to simply provide the `TemplateBlock` class implementing all those features and ask that you extend it from your block. If your block doesn't already have a superclass I recommend doing this - alas, if it does, you can't also extend `TemplateBlock`, so the implementation of everything has been farmed out to `public static` methods in `TemplateInteractionUtil` in the api package. Simply wire everything up.
+
+Don't forget to feed your `Block.Settings` through `TemplateInteractionUtil.configureSettings` too, and if there's any behaviors you'd like to tweak, try implementing some methods from `TemplateInteractionUtilExt` before resorting to copy-pasting the implementation of `TemplateInteractionUtil` methods. But copy paste away if you must.
+
+The only other requirement is that your block *must* have a block entity, that both returns a `BlockState` object from `RenderAttachmentBlockEntity.getRenderAttachmentData` and implements `ThemeableBlockEntity`. `TemplateEntity` is an implementation of this (and also implements the other half of the features from `TemplateInteractionUtil`); I recommend using it if you can.
 
 ## Creating the custom model
 
