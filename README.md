@@ -1,8 +1,8 @@
 <img src="icon.png" align="right" width="180px"/>
 
-# Templates
+# Templates 2
 
-[>> Downloads <<](https://github.com/CottonMC/Templates/releases)
+[>> Downloads <<](https://modrinth.com/mod/templates-2)
 
 *Slopes?*
 

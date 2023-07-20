@@ -2,16 +2,19 @@
 	"schemaVersion": 1,
 	"id": "templates",
 	"version": "$version",
-	"name": "Templates",
-	"icon": "assets/templates/icon.png",
+	"name": "Templates 2",
 	"description": "An API for templated blocks",
-	"license": "MIT",
-	"contact": {
-		"sources": "https://github.com/CottonMC/Templates"
-	},
-	"mixins": [
-		"templates.mixins.json"
+	"authors": [
+		"quaternary",
+		"LemmaEOF",
+		"Grondag"
 	],
+	"contact": {
+		"homepage": "https://highlysuspect.agency/",
+		"sources": "https://github.com/quat1024/templates-mod"
+	},
+	"license": "MIT",
+	"icon": "templates-icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -21,6 +24,9 @@
 			"io.github.cottonmc.templates.TemplatesClient"
 		]
 	},
+	"mixins": [
+		"templates.mixins.json"
+	],
 	"depends": {
 		"minecraft": ">=1.20.1",
 		"fabricloader": "*",
