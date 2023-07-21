@@ -39,6 +39,13 @@ version = "2.0.2+1.20.1"
 
 repositories {
 	mavenCentral()
+
+	maven {
+		url = "https://maven.terraformersmc.com/releases/"
+		content {
+			includeGroup "com.terraformersmc"
+		}
+	}
 }
 
 dependencies {
@@ -48,6 +55,8 @@ dependencies {
 	modApi "net.fabricmc.fabric-api:fabric-api:0.83.1+1.20.1"
 
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
+
+	modRuntimeOnly "com.terraformersmc:modmenu:7.2.1"
 }
 
 loom {

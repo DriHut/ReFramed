@@ -11,7 +11,8 @@
 	],
 	"contact": {
 		"homepage": "https://highlysuspect.agency/",
-		"sources": "https://github.com/quat1024/templates-mod"
+		"sources": "https://github.com/quat1024/templates-mod",
+		"issues": "https://github.com/quat1024/templates-mod/issues"
 	},
 	"license": "MIT",
 	"icon": "templates-icon.png",
