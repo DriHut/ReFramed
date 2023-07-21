@@ -62,6 +62,7 @@ public class TemplatesClient implements ClientModInitializer {
 			Templates.CUBE,
 			Templates.FENCE,
 			Templates.FENCE_GATE,
+			Templates.IRON_TRAPDOOR,
 			Templates.LEVER,
 			Templates.PANE,
 			Templates.POST,
@@ -129,6 +130,7 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.assignItemModel(Templates.id("cube_special")                  , Templates.CUBE);
 		provider.assignItemModel(Templates.id("fence_inventory_special")       , Templates.FENCE);
 		provider.assignItemModel(Templates.id("fence_gate_special")            , Templates.FENCE_GATE);
+		provider.assignItemModel(Templates.id("trapdoor_bottom_special")       , Templates.IRON_TRAPDOOR);
 		provider.assignItemModel(Templates.id("lever_special")                 , Templates.LEVER); //TODO vanilla uses its own item model
 		//provider.assignItemModel(Templates.id("glass_pane_side_special"), Templates.PANE); //Done with a regular json model actually
 		provider.assignItemModel(Templates.id("fence_post_inventory_special")  , Templates.POST);

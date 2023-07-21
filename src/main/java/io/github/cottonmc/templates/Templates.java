@@ -20,10 +20,7 @@ import io.github.cottonmc.templates.block.TemplateWallBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -52,13 +49,14 @@ public class Templates implements ModInitializer {
 	//door? (hard cause its a multiblock)
 	public static final Block FENCE          = Registry.register(Registries.BLOCK, id("fence")         , new TemplateFenceBlock(cp(Blocks.OAK_FENCE)));
 	public static final Block FENCE_GATE     = Registry.register(Registries.BLOCK, id("fence_gate")    , new TemplateFenceGateBlock(cp(Blocks.OAK_FENCE_GATE)));
+	public static final Block IRON_TRAPDOOR  = Registry.register(Registries.BLOCK, id("iron_trapdoor") , new TemplateTrapdoorBlock(cp(Blocks.IRON_TRAPDOOR), BlockSetType.IRON));
 	public static final Block LEVER          = Registry.register(Registries.BLOCK, id("lever")         , new TemplateLeverBlock(cp(Blocks.LEVER)));
 	public static final Block PANE           = Registry.register(Registries.BLOCK, id("pane")          , new TemplatePaneBlock(cp(Blocks.GLASS_PANE)));
 	public static final Block POST           = Registry.register(Registries.BLOCK, id("post")          , new TemplatePostBlock(cp(Blocks.OAK_FENCE)));
 	public static final Block PRESSURE_PLATE = Registry.register(Registries.BLOCK, id("pressure_plate"), new TemplatePressurePlateBlock(cp(Blocks.OAK_PRESSURE_PLATE)));
 	public static final Block SLAB           = Registry.register(Registries.BLOCK, id("slab")          , new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
 	public static final Block STAIRS         = Registry.register(Registries.BLOCK, id("stairs")        , new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
-	public static final Block TRAPDOOR       = Registry.register(Registries.BLOCK, id("trapdoor")      , new TemplateTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR)));
+	public static final Block TRAPDOOR       = Registry.register(Registries.BLOCK, id("trapdoor")      , new TemplateTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR), BlockSetType.OAK));
 	public static final Block WALL           = Registry.register(Registries.BLOCK, id("wall")          , new TemplateWallBlock(TemplateInteractionUtil.makeSettings()));
 	public static final Block SLOPE          = Registry.register(Registries.BLOCK, id("slope")         , new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
 	//30 degree slope (shallow/deep) 
@@ -75,6 +73,7 @@ public class Templates implements ModInitializer {
 			CUBE,
 			FENCE,
 			FENCE_GATE,
+			IRON_TRAPDOOR,
 			LEVER,
 			PANE,
 			POST,
@@ -107,6 +106,7 @@ public class Templates implements ModInitializer {
 		Registry.register(Registries.ITEM, id("cube")          , new BlockItem(CUBE, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("fence")         , new BlockItem(FENCE, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("fence_gate")    , new BlockItem(FENCE_GATE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("iron_trapdoor") , new BlockItem(IRON_TRAPDOOR, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("lever")         , new BlockItem(LEVER, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("pane")          , new BlockItem(PANE, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("post")          , new BlockItem(POST, new Item.Settings()));
@@ -139,6 +139,7 @@ public class Templates implements ModInitializer {
 		e.add(FENCE_GATE);
 		// <-- insert door here
 		e.add(TRAPDOOR);
+		e.add(IRON_TRAPDOOR);
 		e.add(PRESSURE_PLATE);
 		e.add(BUTTON);
 		e.add(LEVER);
