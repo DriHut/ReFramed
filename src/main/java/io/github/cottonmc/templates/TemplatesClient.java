@@ -60,6 +60,7 @@ public class TemplatesClient implements ClientModInitializer {
 			Templates.CANDLE,
 			Templates.CARPET,
 			Templates.CUBE,
+			Templates.DOOR,
 			Templates.FENCE,
 			Templates.FENCE_GATE,
 			Templates.IRON_TRAPDOOR,
@@ -83,6 +84,14 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("four_candles_special")         , new UnbakedAutoRetexturedModel(new Identifier("block/template_four_candles")));
 		provider.addTemplateModel(Templates.id("carpet_special")               , new UnbakedAutoRetexturedModel(new Identifier("block/carpet")));
 		provider.addTemplateModel(Templates.id("cube_special")                 , new UnbakedAutoRetexturedModel(new Identifier("block/cube")));
+		provider.addTemplateModel(Templates.id("door_bottom_left_special")     , new UnbakedAutoRetexturedModel(new Identifier("block/door_bottom_left")));
+		provider.addTemplateModel(Templates.id("door_bottom_right_special")    , new UnbakedAutoRetexturedModel(new Identifier("block/door_bottom_right")));
+		provider.addTemplateModel(Templates.id("door_top_left_special")        , new UnbakedAutoRetexturedModel(new Identifier("block/door_top_left")));
+		provider.addTemplateModel(Templates.id("door_top_right_special")       , new UnbakedAutoRetexturedModel(new Identifier("block/door_top_right")));
+		provider.addTemplateModel(Templates.id("door_bottom_left_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/door_bottom_left_open")));
+		provider.addTemplateModel(Templates.id("door_bottom_right_open_special"), new UnbakedAutoRetexturedModel(new Identifier("block/door_bottom_right_open"))); //This is why we dont format code as tables kids
+		provider.addTemplateModel(Templates.id("door_top_left_open_special")   , new UnbakedAutoRetexturedModel(new Identifier("block/door_top_left_open")));
+		provider.addTemplateModel(Templates.id("door_top_right_open_special")  , new UnbakedAutoRetexturedModel(new Identifier("block/door_top_right_open")));
 		provider.addTemplateModel(Templates.id("fence_post_special")           , new UnbakedAutoRetexturedModel(new Identifier("block/fence_post")));
 		provider.addTemplateModel(Templates.id("fence_gate_special")           , new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate")));
 		provider.addTemplateModel(Templates.id("fence_gate_open_special")      , new UnbakedAutoRetexturedModel(new Identifier("block/template_fence_gate_open")));

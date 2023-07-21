@@ -52,6 +52,7 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		isSolid = !tag.contains("solid") || tag.getBoolean("solid"); //default to "true" if it's nonexistent
 		
 		//Force a chunk remesh on the client if the displayed blockstate has changed
+		//TODO: doors? (need remeshing when the *other* party changes)
 		if(world != null && world.isClient && !Objects.equals(lastRenderedState, renderedState)) {
 			Templates.chunkRerenderProxy.accept(world, pos);
 		}
@@ -87,7 +88,7 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		return renderedState;
 	}
 	
-	private void dispatch() {
+	protected void dispatch() {
 		if(world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
 	}
 	

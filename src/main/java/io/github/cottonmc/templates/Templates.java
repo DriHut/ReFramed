@@ -1,22 +1,7 @@
 package io.github.cottonmc.templates;
 
 import io.github.cottonmc.templates.api.TemplateInteractionUtil;
-import io.github.cottonmc.templates.block.TemplateBlock;
-import io.github.cottonmc.templates.block.TemplateButtonBlock;
-import io.github.cottonmc.templates.block.TemplateCandleBlock;
-import io.github.cottonmc.templates.block.TemplateCarpetBlock;
-import io.github.cottonmc.templates.block.TemplateFenceBlock;
-import io.github.cottonmc.templates.block.TemplateFenceGateBlock;
-import io.github.cottonmc.templates.block.TemplateLeverBlock;
-import io.github.cottonmc.templates.block.TemplatePaneBlock;
-import io.github.cottonmc.templates.block.TemplatePostBlock;
-import io.github.cottonmc.templates.block.TemplatePressurePlateBlock;
-import io.github.cottonmc.templates.block.TemplateSlabBlock;
-import io.github.cottonmc.templates.block.TemplateSlopeBlock;
-import io.github.cottonmc.templates.block.TemplateEntity;
-import io.github.cottonmc.templates.block.TemplateStairsBlock;
-import io.github.cottonmc.templates.block.TemplateTrapdoorBlock;
-import io.github.cottonmc.templates.block.TemplateWallBlock;
+import io.github.cottonmc.templates.block.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -46,7 +31,7 @@ public class Templates implements ModInitializer {
 	public static final Block CANDLE         = Registry.register(Registries.BLOCK, id("candle")        , new TemplateCandleBlock(TemplateCandleBlock.configureSettings(cp(Blocks.CANDLE))));
 	public static final Block CARPET         = Registry.register(Registries.BLOCK, id("carpet")        , new TemplateCarpetBlock(cp(Blocks.WHITE_CARPET)));
 	public static final Block CUBE           = Registry.register(Registries.BLOCK, id("cube")          , new TemplateBlock(TemplateInteractionUtil.makeSettings()));
-	//door? (hard cause its a multiblock)
+	public static final Block DOOR           = Registry.register(Registries.BLOCK, id("door")          , new TemplateDoorBlock(cp(Blocks.OAK_DOOR), BlockSetType.OAK));
 	public static final Block FENCE          = Registry.register(Registries.BLOCK, id("fence")         , new TemplateFenceBlock(cp(Blocks.OAK_FENCE)));
 	public static final Block FENCE_GATE     = Registry.register(Registries.BLOCK, id("fence_gate")    , new TemplateFenceGateBlock(cp(Blocks.OAK_FENCE_GATE)));
 	public static final Block IRON_TRAPDOOR  = Registry.register(Registries.BLOCK, id("iron_trapdoor") , new TemplateTrapdoorBlock(cp(Blocks.IRON_TRAPDOOR), BlockSetType.IRON));
@@ -71,6 +56,7 @@ public class Templates implements ModInitializer {
 			CANDLE,
 			CARPET,
 			CUBE,
+			DOOR,
 			FENCE,
 			FENCE_GATE,
 			IRON_TRAPDOOR,
@@ -104,6 +90,7 @@ public class Templates implements ModInitializer {
 		Registry.register(Registries.ITEM, id("candle")        , new BlockItem(CANDLE, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("carpet")        , new BlockItem(CARPET, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("cube")          , new BlockItem(CUBE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("door")          , new BlockItem(DOOR, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("fence")         , new BlockItem(FENCE, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("fence_gate")    , new BlockItem(FENCE_GATE, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("iron_trapdoor") , new BlockItem(IRON_TRAPDOOR, new Item.Settings()));
@@ -137,7 +124,7 @@ public class Templates implements ModInitializer {
 		e.add(POST);
 		e.add(FENCE);
 		e.add(FENCE_GATE);
-		// <-- insert door here
+		e.add(DOOR);
 		e.add(TRAPDOOR);
 		e.add(IRON_TRAPDOOR);
 		e.add(PRESSURE_PLATE);
