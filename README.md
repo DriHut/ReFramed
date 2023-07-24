@@ -16,6 +16,8 @@ While Templates itself adds a handful of common shapes, it's also not too hard f
 
 Todo move this into the main readme section
 
+COOL RIVULET is by mev , this is the most important block in the mod & perhaps the most important block in any mod ever since `incorporeal:clearly`
+
 ## Todo
 
 * More templates !!

@@ -18,5 +18,7 @@
 	"block.templates.slab": "Slab Template",
 	"block.templates.stairs": "Stairs Template",
 	"block.templates.trapdoor": "Trapdoor Template",
-	"block.templates.wall": "Wall Template"
+	"block.templates.wall": "Wall Template",
+	
+	"block.templates.cool_rivulet": "cool rivulet"
 }

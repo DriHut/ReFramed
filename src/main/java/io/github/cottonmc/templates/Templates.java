@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -14,10 +15,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public class Templates implements ModInitializer {
@@ -48,6 +53,13 @@ public class Templates implements ModInitializer {
 	//30 degree slope (shallow/deep) 
 	//corner slopes
 	//quarter slabs????
+	
+	public static final Block COOL_RIVULET = Registry.register(Registries.BLOCK, id("cool_rivulet"), new GlazedTerracottaBlock(AbstractBlock.Settings.create().hardness(0.2f)) {
+		@Override
+		public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext eggbals) {
+			tooltip.add(Text.translatable("block.templates.cool_rivulet").formatted(Formatting.GRAY));
+		}
+	}); //Very good
 	
 	//for addon devs: it's fine to make your own block entity type instead of gluing additional blocks to this one
 	public static final BlockEntityType<TemplateEntity> TEMPLATE_BLOCK_ENTITY = Registry.register(
@@ -106,6 +118,8 @@ public class Templates implements ModInitializer {
 		Registry.register(Registries.ITEM, id("trapdoor")      , new BlockItem(TRAPDOOR, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("wall")          , new BlockItem(WALL, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("slope")         , new BlockItem(SLOPE, new Item.Settings()));
+		
+		Registry.register(Registries.ITEM, id("cool_rivulet")  , new BlockItem(COOL_RIVULET, new Item.Settings())); //Very good
 	}
 	
 	public static Identifier id(String path) {
@@ -140,5 +154,7 @@ public class Templates implements ModInitializer {
 		e.add(CANDLE);
 		
 		e.add(SLOPE);
+		
+		e.add(COOL_RIVULET); //Very good
 	}
 }
