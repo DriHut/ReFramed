@@ -134,14 +134,11 @@ public class TemplatesClient implements ClientModInitializer {
 		
 		//item model assignments (in lieu of models/item/___.json)
 		provider.assignItemModel(Templates.id("button_inventory_special")      , Templates.BUTTON);
-		provider.assignItemModel(Templates.id("one_candle_special")            , Templates.CANDLE); //TODO vanilla uses its own item model
 		provider.assignItemModel(Templates.id("carpet_special")                , Templates.CARPET);
 		provider.assignItemModel(Templates.id("cube_special")                  , Templates.CUBE);
 		provider.assignItemModel(Templates.id("fence_inventory_special")       , Templates.FENCE);
 		provider.assignItemModel(Templates.id("fence_gate_special")            , Templates.FENCE_GATE);
 		provider.assignItemModel(Templates.id("trapdoor_bottom_special")       , Templates.IRON_TRAPDOOR);
-		provider.assignItemModel(Templates.id("lever_special")                 , Templates.LEVER); //TODO vanilla uses its own item model
-		//provider.assignItemModel(Templates.id("glass_pane_side_special"), Templates.PANE); //Done with a regular json model actually
 		provider.assignItemModel(Templates.id("fence_post_inventory_special")  , Templates.POST);
 		provider.assignItemModel(Templates.id("pressure_plate_up_special")     , Templates.PRESSURE_PLATE);
 		provider.assignItemModel(Templates.id("slab_bottom_special")           , Templates.SLAB);

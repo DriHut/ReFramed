@@ -6,6 +6,7 @@
 			"templates:candle",
 			"templates:carpet",
 			"templates:cube",
+			"templates:door",
 			"templates:fence",
 			"templates:fence_gate",
 			"templates:iron_trapdoor",

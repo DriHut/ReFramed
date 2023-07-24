@@ -1,6 +1,6 @@
 {
 	"parent": "minecraft:item/generated",
 	"textures": {
-		"layer0": "minecraft:block/scaffolding_top"
+		"layer0": "templates:item/door"
 	}
 }
