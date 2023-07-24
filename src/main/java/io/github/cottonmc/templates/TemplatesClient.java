@@ -63,6 +63,7 @@ public class TemplatesClient implements ClientModInitializer {
 			Templates.DOOR,
 			Templates.FENCE,
 			Templates.FENCE_GATE,
+			Templates.IRON_DOOR,
 			Templates.IRON_TRAPDOOR,
 			Templates.LEVER,
 			Templates.PANE,

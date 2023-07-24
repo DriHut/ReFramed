@@ -34,6 +34,7 @@ public class Templates implements ModInitializer {
 	public static final Block DOOR           = Registry.register(Registries.BLOCK, id("door")          , new TemplateDoorBlock(cp(Blocks.OAK_DOOR), BlockSetType.OAK));
 	public static final Block FENCE          = Registry.register(Registries.BLOCK, id("fence")         , new TemplateFenceBlock(cp(Blocks.OAK_FENCE)));
 	public static final Block FENCE_GATE     = Registry.register(Registries.BLOCK, id("fence_gate")    , new TemplateFenceGateBlock(cp(Blocks.OAK_FENCE_GATE)));
+	public static final Block IRON_DOOR      = Registry.register(Registries.BLOCK, id("iron_door")     , new TemplateDoorBlock(cp(Blocks.IRON_DOOR), BlockSetType.IRON));
 	public static final Block IRON_TRAPDOOR  = Registry.register(Registries.BLOCK, id("iron_trapdoor") , new TemplateTrapdoorBlock(cp(Blocks.IRON_TRAPDOOR), BlockSetType.IRON));
 	public static final Block LEVER          = Registry.register(Registries.BLOCK, id("lever")         , new TemplateLeverBlock(cp(Blocks.LEVER)));
 	public static final Block PANE           = Registry.register(Registries.BLOCK, id("pane")          , new TemplatePaneBlock(cp(Blocks.GLASS_PANE)));
@@ -59,6 +60,7 @@ public class Templates implements ModInitializer {
 			DOOR,
 			FENCE,
 			FENCE_GATE,
+			IRON_DOOR,
 			IRON_TRAPDOOR,
 			LEVER,
 			PANE,
@@ -93,6 +95,7 @@ public class Templates implements ModInitializer {
 		Registry.register(Registries.ITEM, id("door")          , new BlockItem(DOOR, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("fence")         , new BlockItem(FENCE, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("fence_gate")    , new BlockItem(FENCE_GATE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("iron_door")     , new BlockItem(IRON_DOOR, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("iron_trapdoor") , new BlockItem(IRON_TRAPDOOR, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("lever")         , new BlockItem(LEVER, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("pane")          , new BlockItem(PANE, new Item.Settings()));
@@ -126,6 +129,7 @@ public class Templates implements ModInitializer {
 		e.add(FENCE_GATE);
 		e.add(DOOR);
 		e.add(TRAPDOOR);
+		e.add(IRON_DOOR);
 		e.add(IRON_TRAPDOOR);
 		e.add(PRESSURE_PLATE);
 		e.add(BUTTON);

@@ -1,6 +1,7 @@
 {
 	"replace": false,
 	"values": [
+		"templates:iron_door",
 		"templates:iron_trapdoor"
 	]
 }

@@ -9,6 +9,7 @@
 			"templates:door",
 			"templates:fence",
 			"templates:fence_gate",
+			"templates:iron_door",
 			"templates:iron_trapdoor",
 			"templates:lever",
 			"templates:pane",
