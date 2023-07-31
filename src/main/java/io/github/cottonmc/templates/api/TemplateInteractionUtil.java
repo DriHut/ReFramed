@@ -55,6 +55,10 @@ public class TemplateInteractionUtil {
 		return in;
 	}
 	
+	public static @Nullable BlockState modifyPlacementState(@Nullable BlockState in, ItemPlacementContext ctx) {
+		return TemplateEntity.weirdNbtLightLevelStuff(in, ctx.getStack());
+	}
+	
 	public static ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if(!(world.getBlockEntity(pos) instanceof TemplateEntity be)) return ActionResult.PASS;
 		if(!player.canModifyBlocks() || !world.canPlayerModifyAt(player, pos)) return ActionResult.PASS;

@@ -28,6 +28,7 @@ public class TemplatePostBlock extends WaterloggableTemplateBlock {
 	
 	@Override
 	public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
+		//not calling TemplateInteractionUtil.modifyPlacementState because we extend WaterloggableTemplateBlock which already does
 		BlockState sup = super.getPlacementState(ctx);
 		if(sup != null) sup = sup.with(Properties.AXIS, ctx.getSide().getAxis());
 		return sup;

@@ -1,6 +1,7 @@
 package io.github.cottonmc.templates.block;
 
 import io.github.cottonmc.templates.Templates;
+import io.github.cottonmc.templates.api.TemplateInteractionUtil;
 import io.github.cottonmc.templates.api.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -33,8 +34,8 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 	protected static final int IS_SOLID_MASK             = 0b00010000;
 	protected static final byte DEFAULT_BITFIELD = IS_SOLID_MASK; //brand-new templates shall be solid
 	
-	//Using one-character names is a little brash, like, what if there's a mod that adds crap to the NBT of ever
-	//block entity, and uses short names for the same reason I am (there are lots and lots of block entities).
+	//Using one-character names is a little brash, like, what if there's a mod that adds crap to the NBT of every
+	//block entity, and uses short names for the same reason I am (because there are lots and lots of block entities)?
 	//Kinda doubt it?
 	protected static final String BLOCKSTATE_KEY = "s";
 	protected static final String BITFIELD_KEY = "b";
@@ -90,6 +91,27 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		if(!(subElement instanceof NbtCompound subCompound)) return Blocks.AIR.getDefaultState();
 		
 		else return NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), subCompound);
+	}
+	
+	//Awkward: usually the BlockState is the source of truth for things like the "emits light" blockstate, but if you
+	//ctrl-pick a glowing block and place it, it should still be glowing. This is some hacky shit that guesses the value of
+	//the LIGHT blockstate based off information in the NBT tag, and also prevents bugginess like "the blockstate is not
+	//glowing but the copied NBT thinks glowstone dust was already added, so it refuses to accept more dust"
+	public static @Nullable BlockState weirdNbtLightLevelStuff(@Nullable BlockState state, ItemStack stack) {
+		if(state == null || stack == null) return state;
+		
+		NbtCompound blockEntityTag = BlockItem.getBlockEntityNbt(stack);
+		if(blockEntityTag == null) return state;
+		
+		if(state.contains(TemplateInteractionUtil.LIGHT)) {
+			state = state.with(TemplateInteractionUtil.LIGHT,
+				blockEntityTag.getBoolean("spentglow") || //2.0.4
+				((blockEntityTag.contains(BITFIELD_KEY) ? blockEntityTag.getByte(BITFIELD_KEY) : DEFAULT_BITFIELD) & SPENT_GLOWSTONE_DUST_MASK) != 0 || //2.0.5
+				readStateFromItem(stack).getLuminance() != 0 //glowstone dust wasn't manually added, the block just emits light
+			);
+		}
+		
+		return state;
 	}
 	
 	//RenderAttachmentBlockEntity impl. Note that ThemeableBlockEntity depends on this returning a BlockState object.

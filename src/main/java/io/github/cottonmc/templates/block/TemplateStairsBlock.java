@@ -12,6 +12,7 @@ import net.minecraft.block.StairsBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
@@ -43,6 +44,12 @@ public class TemplateStairsBlock extends StairsBlock implements BlockEntityProvi
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		super.appendProperties(TemplateInteractionUtil.appendProperties(builder));
+	}
+	
+	@Nullable
+	@Override
+	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		return TemplateInteractionUtil.modifyPlacementState(super.getPlacementState(ctx), ctx);
 	}
 	
 	@Override

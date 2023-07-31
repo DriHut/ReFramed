@@ -28,6 +28,7 @@ public class WaterloggableTemplateBlock extends TemplateBlock implements Waterlo
 	@Nullable
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		//not calling TemplateInteractionUtil.modifyPlacementState because we extend TemplateBlock which already does
 		BlockState sup = super.getPlacementState(ctx);
 		if(sup != null) sup = sup.with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(Fluids.WATER));
 		return sup;

@@ -13,6 +13,7 @@ import net.minecraft.block.WoodType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
@@ -39,6 +40,12 @@ public class TemplateFenceGateBlock extends FenceGateBlock implements BlockEntit
 	@Override
 	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 		return Templates.TEMPLATE_BLOCK_ENTITY.instantiate(pos, state);
+	}
+	
+	@Nullable
+	@Override
+	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		return TemplateInteractionUtil.modifyPlacementState(super.getPlacementState(ctx), ctx);
 	}
 	
 	@Override
