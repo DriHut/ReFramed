@@ -30,6 +30,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -119,8 +120,12 @@ public class TemplateInteractionUtil {
 		return ActionResult.PASS;
 	}
 	
+	//Maybe an odd spot to put this logic but it's consistent w/ vanilla chests, barrels, etc
 	public static void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		if(!state.isOf(newState.getBlock()) && world.getBlockEntity(pos) instanceof TemplateEntity template) {
+		if(!state.isOf(newState.getBlock()) &&
+			world.getBlockEntity(pos) instanceof TemplateEntity template &&
+			world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)
+		) {
 			DefaultedList<ItemStack> drops = DefaultedList.of();
 			
 			//TODO: remember the specific ItemStack
