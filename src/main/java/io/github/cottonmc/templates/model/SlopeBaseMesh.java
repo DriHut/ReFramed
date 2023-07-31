@@ -21,10 +21,8 @@ public class SlopeBaseMesh {
 	
 	public static Mesh makeUpright() {
 		Renderer renderer = TemplatesClient.getFabricRenderer();
-		
 		MeshBuilder builder = renderer.meshBuilder();
 		QuadEmitter qu = builder.getEmitter();
-		
 		qu.tag(TAG_SLOPE)
 			.pos(0, 0f, 0f, 0f).pos(1, 0f, 1f, 1f).pos(2, 1f, 1f, 1f).pos(3, 1f, 0f, 0f)
 			.color(-1, -1, -1, -1)
@@ -60,7 +58,56 @@ public class SlopeBaseMesh {
 	public static Mesh makeSide() {
 		Matrix4f mat = new Matrix4f();
 		RotationAxis.POSITIVE_Z.rotationDegrees(90).get(mat);
-		
 		return MeshTransformUtil.pretransformMesh(makeUpright(), MeshTransformUtil.applyMatrix(mat));
+	}
+	
+	//looks weird since i wrote a janky script to massage a .bbmodel, some manual fixups applied
+	public static Mesh makeTinyUpright() {
+		Renderer renderer = TemplatesClient.getFabricRenderer();
+		MeshBuilder builder = renderer.meshBuilder();
+		QuadEmitter qu = builder.getEmitter();
+		qu.tag(TAG_LEFT)
+			.pos(0, 1f, 0.25f, 0.75f).uv(0, 0.25f, 0.75f)
+			.pos(1, 1f, 0.5f, 1f).uv(1, 0f, 0.5f)
+			.pos(2, 1f, 0f, 1f).uv(2, 0f, 1f)
+			.pos(3, 1f, 0f, 0.5f).uv(3, 0.5f, 1f)
+			.color(-1, -1, -1, -1)
+			.emit()
+			.tag(TAG_RIGHT)
+			.pos(0, 0f, 0f, 1f).uv(0, 1f, 1f)
+			.pos(1, 0f, 0.5f, 1f).uv(1, 1f, 0.5f)
+			.pos(2, 0f, 0.25f, 0.75f).uv(2, 0.75f, 0.75f)
+			.pos(3, 0f, 0f, 0.5f).uv(3, 0.5f, 1f)
+			.color(-1, -1, -1, -1)
+			.emit()
+			.tag(TAG_BOTTOM)
+			.pos(0, 1f, 0f, 0.5f).uv(0, 1f, 0.5f)
+			.pos(1, 1f, 0f, 1f).uv(1, 1f, 0f)
+			.pos(2, 0f, 0f, 1f).uv(2, 0f, 0f)
+			.pos(3, 0f, 0f, 0.5f).uv(3, 0f, 0.5f)
+			.color(-1, -1, -1, -1)
+			.emit()
+			.tag(TAG_BACK)
+			.pos(0, 1f, 0f, 1f).uv(0, 1f, 1f)
+			.pos(1, 1f, 0.5f, 1f).uv(1, 1f, 0.5f)
+			.pos(2, 0f, 0.5f, 1f).uv(2, 0f, 0.5f)
+			.pos(3, 0f, 0f, 1f).uv(3, 0f, 1f)
+			.color(-1, -1, -1, -1)
+			.emit()
+			.tag(TAG_SLOPE)
+			.pos(0, 1f, 0.5f, 1f).uv(2, 0f, 0.5f) //manually permuted uvs
+			.pos(1, 1f, 0f, 0.5f).uv(3, 0f, 1f)
+			.pos(2, 0f, 0f, 0.5f).uv(0, 1f, 1f)
+			.pos(3, 0f, 0.5f, 1f).uv(1, 1f, 0.5f)
+			.color(-1, -1, -1, -1)
+			.emit()
+		;
+		return builder.build();
+	}
+	
+	public static Mesh makeTinySide() {
+		Matrix4f mat = new Matrix4f();
+		RotationAxis.POSITIVE_Z.rotationDegrees(90).get(mat);
+		return MeshTransformUtil.pretransformMesh(makeTinyUpright(), MeshTransformUtil.applyMatrix(mat));
 	}
 }

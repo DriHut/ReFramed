@@ -76,6 +76,7 @@ public class Templates implements ModInitializer {
 	
 	//oddball templates:
 	public static final Block SLOPE          = Registry.register(Registries.BLOCK, id("slope")         , new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
+	public static final Block TINY_SLOPE     = Registry.register(Registries.BLOCK, id("tiny_slope")    , new TemplateSlopeBlock.Tiny(TemplateInteractionUtil.makeSettings()));
 	//30 degree slope (shallow/deep) 
 	//corner slopes
 	//quarter slabs????
@@ -111,7 +112,8 @@ public class Templates implements ModInitializer {
 			TRAPDOOR,
 			VERTICAL_SLAB,
 			WALL,
-			SLOPE
+			SLOPE,
+			TINY_SLOPE
 		).build(null)
 	);
 	
@@ -147,7 +149,9 @@ public class Templates implements ModInitializer {
 		Registry.register(Registries.ITEM, id("trapdoor")      , new BlockItem(TRAPDOOR, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("vertical_slab") , new BlockItem(VERTICAL_SLAB, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("wall")          , new BlockItem(WALL, new Item.Settings()));
+		
 		Registry.register(Registries.ITEM, id("slope")         , new BlockItem(SLOPE, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("tiny_slope")    , new BlockItem(TINY_SLOPE, new Item.Settings()));
 		
 		Registry.register(Registries.ITEM, id("cool_rivulet")  , new BlockItem(COOL_RIVULET, new Item.Settings())); //Very good
 	}
@@ -187,6 +191,7 @@ public class Templates implements ModInitializer {
 		
 		//Oddball that doesn't look anything like vanilla blocks
 		e.add(SLOPE);
+		e.add(TINY_SLOPE);
 		
 		//Very good
 		e.add(COOL_RIVULET);

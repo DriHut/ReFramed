@@ -74,7 +74,9 @@ public class TemplatesClient implements ClientModInitializer {
 			Templates.TRAPDOOR,
 			Templates.VERTICAL_SLAB,
 			Templates.WALL,
-			Templates.SLOPE
+			
+			Templates.SLOPE,
+			Templates.TINY_SLOPE
 		);
 		
 		//vanilla style models (using "auto" method)
@@ -128,6 +130,8 @@ public class TemplatesClient implements ClientModInitializer {
 		//mesh models
 		provider.addTemplateModel(Templates.id("slope_special")                , new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeUpright));
 		provider.addTemplateModel(Templates.id("slope_side_special")           , new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeSide));
+		provider.addTemplateModel(Templates.id("tiny_slope_special")           , new UnbakedMeshRetexturedModel(Templates.id("block/tiny_slope_base"), SlopeBaseMesh::makeTinyUpright));
+		provider.addTemplateModel(Templates.id("tiny_slope_side_special")      , new UnbakedMeshRetexturedModel(Templates.id("block/tiny_slope_base"), SlopeBaseMesh::makeTinySide));
 		
 		//item only models
 		provider.addTemplateModel(Templates.id("button_inventory_special")     , new UnbakedAutoRetexturedModel(new Identifier("block/button_inventory")));
@@ -149,6 +153,8 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.assignItemModel(Templates.id("trapdoor_bottom_special")       , Templates.TRAPDOOR);
 		provider.assignItemModel(Templates.id("vertical_slab_special")         , Templates.VERTICAL_SLAB);
 		provider.assignItemModel(Templates.id("wall_inventory_special")        , Templates.WALL);
+		
 		provider.assignItemModel(Templates.id("slope_special")                 , Templates.SLOPE);
+		provider.assignItemModel(Templates.id("tiny_slope_special")            , Templates.TINY_SLOPE);
 	}
 }

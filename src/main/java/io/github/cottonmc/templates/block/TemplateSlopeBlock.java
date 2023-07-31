@@ -19,16 +19,19 @@ import javax.annotation.Nullable;
 public class TemplateSlopeBlock extends WaterloggableTemplateBlock {
 	public static final EnumProperty<Edge> EDGE = EnumProperty.of("edge", Edge.class);
 	
-	private static final VoxelShape[] shapes = new VoxelShape[Edge.values().length];
-	static {
-		for(Edge edge : Edge.values()) {
-			shapes[edge.ordinal()] = StairShapeMaker.makeStair(edge, 1, 0.125d, 0.125d, 0.125d, 8);
-		}
-	}
+	protected final VoxelShape[] shapes = new VoxelShape[Edge.values().length];
 	
 	public TemplateSlopeBlock(Settings settings) {
 		super(settings);
 		setDefaultState(getDefaultState().with(EDGE, Edge.DOWN_NORTH));
+		
+		for(Edge edge : Edge.values()) {
+			shapes[edge.ordinal()] = getShape(edge);
+		}
+	}
+	
+	protected VoxelShape getShape(Edge edge) {
+		return StairShapeMaker.makeStair(edge, 1, 0.125d, 0.125d, 0.125d, 8);
 	}
 	
 	@Override
@@ -57,5 +60,16 @@ public class TemplateSlopeBlock extends WaterloggableTemplateBlock {
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
 		return shapes[state.get(EDGE).ordinal()];
+	}
+	
+	public static class Tiny extends TemplateSlopeBlock {
+		public Tiny(Settings settings) {
+			super(settings);
+		}
+		
+		@Override
+		protected VoxelShape getShape(Edge edge) {
+			return StairShapeMaker.makeStair(edge, 0.5, 0.125d, 0.125d, 0.125d, 4);
+		}
 	}
 }

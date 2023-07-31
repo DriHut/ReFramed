@@ -17,6 +17,7 @@
 		"templates:trapdoor",
 		"templates:vertical_slab",
 		"templates:wall",
-		"templates:slope"
+		"templates:slope",
+		"templates:tiny_slope"
 	]
 }

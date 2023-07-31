@@ -15,6 +15,7 @@
 	"block.templates.post": "Post Template",
 	"block.templates.pressure_plate": "Pressure Plate Template",
 	"block.templates.slope": "Slope Template",
+	"block.templates.tiny_slope": "Tiny Slope Template",
 	"block.templates.slab": "Slab Template",
 	"block.templates.stairs": "Stairs Template",
 	"block.templates.trapdoor": "Trapdoor Template",
