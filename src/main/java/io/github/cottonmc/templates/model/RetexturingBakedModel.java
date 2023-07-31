@@ -1,5 +1,6 @@
 package io.github.cottonmc.templates.model;
 
+import io.github.cottonmc.templates.block.TemplateEntity;
 import io.github.cottonmc.templates.mixin.MinecraftAccessor;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -11,11 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -86,19 +83,17 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		TemplateAppearance nbtAppearance = tam.getDefaultAppearance();
-		int tint = 0xFFFFFFFF;
-		
 		//cheeky: if the item has NBT data, pluck out the blockstate from it & look up the item color provider
 		//none of this is accessible unless you're in creative mode doing ctrl-pick btw
-		NbtCompound tag = BlockItem.getBlockEntityNbt(stack);
-		if(tag != null && tag.contains("BlockState")) {
-			BlockState theme = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound("BlockState"));
-			if(!theme.isAir()) {
-				nbtAppearance = tam.getAppearance(theme);
-				
-				tint = 0xFF000000 | ((MinecraftAccessor) MinecraftClient.getInstance()).templates$getItemColors().getColor(new ItemStack(theme.getBlock()), 0);
-			}
+		TemplateAppearance nbtAppearance;
+		int tint;
+		BlockState theme = TemplateEntity.readStateFromItem(stack);
+		if(!theme.isAir()) {
+			nbtAppearance = tam.getAppearance(theme);
+			tint = 0xFF000000 | ((MinecraftAccessor) MinecraftClient.getInstance()).templates$getItemColors().getColor(new ItemStack(theme.getBlock()), 0);
+		} else {
+			nbtAppearance = tam.getDefaultAppearance();
+			tint = 0xFFFFFFFF;
 		}
 		
 		Mesh untintedMesh = getUntintedRetexturedMesh(new CacheKey(itemModelState, nbtAppearance));

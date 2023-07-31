@@ -6,7 +6,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
@@ -16,22 +19,25 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity {
 	protected BlockState renderedState = Blocks.AIR.getDefaultState();
+	protected byte bitfield = DEFAULT_BITFIELD;
 	
-	//Whether the player has manually spent a redstone/glowstone item to upgrade the template.
-	//It's possible to get templates that, e.g. glow, without manually spending a glowstone on them
-	//(put a froglight in a template!) Same for redstone activation. We need to separately store
-	//whether a redstone/glowstone should be refunded when the player breaks the template, and wasting a
-	//blockstate for it is a little silly, so, here you go.
-	protected boolean spentGlowstoneDust = false;
-	protected boolean spentRedstoneTorch = false;
-	protected boolean spentPoppedChorus = false;
+	protected static final int SPENT_GLOWSTONE_DUST_MASK = 0b00000001;
+	protected static final int SPENT_REDSTONE_TORCH_MASK = 0b00000010;
+	protected static final int SPENT_POPPED_CHORUS_MASK  = 0b00000100;
+	protected static final int EMITS_REDSTONE_MASK       = 0b00001000;
+	protected static final int IS_SOLID_MASK             = 0b00010000;
+	protected static final byte DEFAULT_BITFIELD = IS_SOLID_MASK; //brand-new templates shall be solid
 	
-	protected boolean emitsRedstone;
-	protected boolean isSolid = true;
+	//Using one-character names is a little brash, like, what if there's a mod that adds crap to the NBT of ever
+	//block entity, and uses short names for the same reason I am (there are lots and lots of block entities).
+	//Kinda doubt it?
+	protected static final String BLOCKSTATE_KEY = "s";
+	protected static final String BITFIELD_KEY = "b";
 	
 	public TemplateEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -43,13 +49,18 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		
 		BlockState lastRenderedState = renderedState;
 		
-		renderedState = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound("BlockState"));
-		spentGlowstoneDust = tag.getBoolean("spentglow");
-		spentRedstoneTorch = tag.getBoolean("spentredst");
-		spentPoppedChorus = tag.getBoolean("spentchor");
-		
-		emitsRedstone = tag.getBoolean("emitsredst");
-		isSolid = !tag.contains("solid") || tag.getBoolean("solid"); //default to "true" if it's nonexistent
+		if(tag.contains("BlockState")) { //2.0.4 and earlier
+			renderedState = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound("BlockState"));
+			
+			if(tag.getBoolean("spentglow")) spentGlowstoneDust();
+			if(tag.getBoolean("spentredst")) spentRedstoneTorch();
+			if(tag.getBoolean("spentchor")) spentPoppedChorus();
+			setEmitsRedstone(tag.getBoolean("emitsredst"));
+			setSolidity(!tag.contains("solid") || tag.getBoolean("solid")); //default to "true" if it's nonexistent
+		} else {
+			renderedState = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound(BLOCKSTATE_KEY));
+			bitfield = tag.contains(BITFIELD_KEY) ? tag.getByte(BITFIELD_KEY) : DEFAULT_BITFIELD;
+		}
 		
 		//Force a chunk remesh on the client if the displayed blockstate has changed
 		//TODO: doors? (need remeshing when the *other* party changes)
@@ -61,15 +72,97 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 	@Override
 	public void writeNbt(NbtCompound tag) {
 		super.writeNbt(tag);
-		tag.put("BlockState", NbtHelper.fromBlockState(renderedState));
-		tag.putBoolean("spentglow", spentGlowstoneDust);
-		tag.putBoolean("spentredst", spentRedstoneTorch);
-		tag.putBoolean("spentchor", spentPoppedChorus);
 		
-		tag.putBoolean("emitsredst", emitsRedstone);
-		tag.putBoolean("solid", isSolid);
+		if(renderedState != Blocks.AIR.getDefaultState()) tag.put(BLOCKSTATE_KEY, NbtHelper.fromBlockState(renderedState));
+		if(bitfield != DEFAULT_BITFIELD) tag.putByte(BITFIELD_KEY, bitfield);
 	}
 	
+	public static @Nonnull BlockState readStateFromItem(ItemStack stack) {
+		NbtCompound blockEntityTag = BlockItem.getBlockEntityNbt(stack);
+		if(blockEntityTag == null) return Blocks.AIR.getDefaultState();
+		
+		//slightly paranoid NBT handling cause you never know what mysteries are afoot with items
+		NbtElement subElement;
+		if(blockEntityTag.contains(BLOCKSTATE_KEY)) subElement = blockEntityTag.get(BLOCKSTATE_KEY); //2.0.5
+		else if(blockEntityTag.contains("BlockState")) subElement = blockEntityTag.get("BlockState"); //old 2.0.4 items
+		else return Blocks.AIR.getDefaultState();
+		
+		if(!(subElement instanceof NbtCompound subCompound)) return Blocks.AIR.getDefaultState();
+		
+		else return NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), subCompound);
+	}
+	
+	//RenderAttachmentBlockEntity impl. Note that ThemeableBlockEntity depends on this returning a BlockState object.
+	@Override
+	public BlockState getRenderAttachmentData() {
+		return renderedState;
+	}
+	
+	public void setRenderedState(BlockState newState) {
+		if(!Objects.equals(renderedState, newState)) {
+			renderedState = newState;
+			markDirtyAndDispatch();
+		}
+	}
+	
+	public boolean hasSpentGlowstoneDust() {
+		return (bitfield & SPENT_GLOWSTONE_DUST_MASK) != 0;
+	}
+	
+	public void spentGlowstoneDust() {
+		bitfield |= SPENT_GLOWSTONE_DUST_MASK;
+		markDirtyAndDispatch();
+	}
+	
+	public boolean hasSpentRedstoneTorch() {
+		return (bitfield & SPENT_REDSTONE_TORCH_MASK) != 0;
+	}
+	
+	public void spentRedstoneTorch() {
+		bitfield |= SPENT_REDSTONE_TORCH_MASK;
+		markDirtyAndDispatch();
+	}
+	
+	public boolean hasSpentPoppedChorus() {
+		return (bitfield & SPENT_POPPED_CHORUS_MASK) != 0;
+	}
+	
+	public void spentPoppedChorus() {
+		bitfield |= SPENT_POPPED_CHORUS_MASK;
+		markDirtyAndDispatch();
+	}
+	
+	public boolean emitsRedstone() {
+		return (bitfield & EMITS_REDSTONE_MASK) != 0;
+	}
+	
+	public void setEmitsRedstone(boolean nextEmitsRedstone) {
+		boolean currentlyEmitsRedstone = emitsRedstone();
+		
+		if(currentlyEmitsRedstone != nextEmitsRedstone) {
+			if(currentlyEmitsRedstone) bitfield &= ~EMITS_REDSTONE_MASK;
+			else bitfield |= EMITS_REDSTONE_MASK;
+			markDirtyAndDispatch();
+			if(world != null) world.updateNeighbors(pos, getCachedState().getBlock());
+		}
+	}
+	
+	public boolean isSolid() {
+		return (bitfield & IS_SOLID_MASK) != 0;
+	}
+	
+	public void setSolidity(boolean nextSolid) {
+		boolean currentlySolid = isSolid();
+		
+		if(currentlySolid != nextSolid) {
+			if(currentlySolid) bitfield &= ~IS_SOLID_MASK;
+			else bitfield |= IS_SOLID_MASK;
+			markDirtyAndDispatch();
+			if(world != null) world.setBlockState(pos, getCachedState()); //do i need to invalidate any shape caches or something
+		}
+	}
+	
+	//<standard blockentity boilerplate>
 	@Nullable
 	@Override
 	public Packet<ClientPlayPacketListener> toUpdatePacket() {
@@ -83,76 +176,13 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		return createNbt();
 	}
 	
-	@Override
-	public BlockState getRenderAttachmentData() {
-		return renderedState;
-	}
-	
 	protected void dispatch() {
 		if(world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
 	}
 	
-	public void setRenderedState(BlockState newState) {
-		if(!Objects.equals(renderedState, newState)) {
-			renderedState = newState;
-			markDirty();
-			dispatch();
-		}
-	}
-	
-	public boolean hasSpentGlowstoneDust() {
-		return spentGlowstoneDust;
-	}
-	
-	public void spentGlowstoneDust() {
-		spentGlowstoneDust = true;
+	protected void markDirtyAndDispatch() {
 		markDirty();
+		dispatch();
 	}
-	
-	public boolean hasSpentRedstoneTorch() {
-		return spentRedstoneTorch;
-	}
-	
-	public void spentRedstoneTorch() {
-		spentRedstoneTorch = true;
-		markDirty();
-	}
-	
-	public boolean hasSpentPoppedChorus() {
-		return spentPoppedChorus;
-	}
-	
-	public void spentPoppedChorus() {
-		spentPoppedChorus = true;
-		markDirty();
-	}
-	
-	public boolean emitsRedstone() {
-		return emitsRedstone;
-	}
-	
-	public void setEmitsRedstone(boolean emitsRedstone) {
-		if(this.emitsRedstone != emitsRedstone) {
-			this.emitsRedstone = emitsRedstone;
-			markDirty();
-			
-			if(world != null) world.updateNeighbors(pos, getCachedState().getBlock());
-		}
-	}
-	
-	public boolean isSolid() {
-		return isSolid;
-	}
-	
-	public void setSolidity(boolean isSolid) {
-		if(this.isSolid != isSolid) {
-			this.isSolid = isSolid;
-			markDirty();
-			
-			//do i need to invalidate any shape caches or something
-			if(world != null) world.setBlockState(pos, getCachedState());
-			
-			dispatch();
-		}
-	}
+	//</standard blockentity boilerplate>
 }
