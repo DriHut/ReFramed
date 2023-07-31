@@ -68,6 +68,9 @@ public class TemplateVerticalSlabBlock extends TemplateSlabBlock {
 //			};
 			
 			Direction hmm = ctx.getHorizontalPlayerFacing();
+			//So when you click on the ground, they place on the near side of the block rather than the far side.
+			//Gives you more options when looking at a corner & it feels better imo
+			if(ctx.getSide().getAxis().isVertical()) hmm = hmm.getOpposite();
 			
 			return TemplateInteractionUtil.modifyPlacementState(getDefaultState()
 				.with(WATERLOGGED, ctx.getWorld().getFluidState(pos).getFluid() == Fluids.WATER)

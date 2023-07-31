@@ -111,6 +111,7 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("outer_stairs_special")         , new UnbakedAutoRetexturedModel(new Identifier("block/outer_stairs")));
 		provider.addTemplateModel(Templates.id("trapdoor_bottom_special")      , new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_bottom")));
 		provider.addTemplateModel(Templates.id("trapdoor_top_special")         , new UnbakedAutoRetexturedModel(new Identifier("block/template_trapdoor_top")));
+		provider.addTemplateModel(Templates.id("vertical_slab_special")        , new UnbakedAutoRetexturedModel(Templates.id("block/vertical_slab"))); //my model not vanilla
 		provider.addTemplateModel(Templates.id("wall_post_special")            , new UnbakedAutoRetexturedModel(new Identifier("block/template_wall_post")));
 		
 		//vanilla style models (using "special-sprite replacement" method)
@@ -123,7 +124,6 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("glass_pane_side_alt_special")  , new UnbakedAutoRetexturedModel(Templates.id("block/glass_pane_side_alt")));
 		provider.addTemplateModel(Templates.id("wall_side_special")            , new UnbakedJsonRetexturedModel(Templates.id("block/wall_side")));
 		provider.addTemplateModel(Templates.id("wall_side_tall_special")       , new UnbakedJsonRetexturedModel(Templates.id("block/wall_side_tall")));
-		provider.addTemplateModel(Templates.id("vertical_slab_special")        , new UnbakedJsonRetexturedModel(Templates.id("block/vertical_slab")));
 		
 		//mesh models
 		provider.addTemplateModel(Templates.id("slope_special")                , new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeUpright));
