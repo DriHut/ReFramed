@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.model.BakedModel;
@@ -19,6 +20,7 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -38,10 +40,18 @@ public class TemplateAppearanceManager {
 		Sprite defaultSprite = spriteLookup.apply(DEFAULT_SPRITE_ID);
 		if(defaultSprite == null) throw new IllegalStateException("Couldn't locate " + DEFAULT_SPRITE_ID + " !");
 		this.defaultAppearance = new SingleSpriteAppearance(defaultSprite, blockMaterials.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
+		
+		Sprite barrier = spriteLookup.apply(BARRIER_SPRITE_ID);
+		if(barrier == null) barrier = defaultSprite; //eh
+		this.barrierItemAppearance = new SingleSpriteAppearance(barrier, blockMaterials.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
 	}
 	
+	@ApiStatus.Internal //shouldn't have made this public, just maintaining abi compat
 	public static final SpriteIdentifier DEFAULT_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:block/scaffolding_top"));
+	private static final SpriteIdentifier BARRIER_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:item/barrier"));
+	
 	private final TemplateAppearance defaultAppearance;
+	private final TemplateAppearance barrierItemAppearance;
 	
 	private final ConcurrentHashMap<BlockState, TemplateAppearance> appearanceCache = new ConcurrentHashMap<>(); //Mutable, append-only cache
 	private final AtomicInteger serialNumber = new AtomicInteger(0); //Mutable
@@ -64,6 +74,8 @@ public class TemplateAppearanceManager {
 	//The results are going to be the same, apart from their serialNumbers differing (= their equals & hashCode differing).
 	//Tiny amount of wasted space in some caches if TemplateAppearances are used as a map key, then. IMO it's not a critical issue.
 	private TemplateAppearance computeAppearance(BlockState state) {
+		if(state.getBlock() == Blocks.BARRIER) return barrierItemAppearance;
+		
 		TattletaleRandom rand = new TattletaleRandom(Random.create());
 		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 		

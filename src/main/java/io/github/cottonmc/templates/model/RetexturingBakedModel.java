@@ -1,13 +1,16 @@
 package io.github.cottonmc.templates.model;
 
+import io.github.cottonmc.templates.TemplatesClient;
 import io.github.cottonmc.templates.block.TemplateEntity;
 import io.github.cottonmc.templates.mixin.MinecraftAccessor;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -62,6 +65,9 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		BlockState theme = (((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos) instanceof BlockState s) ? s : null;
 		if(theme == null || theme.isAir()) {
 			context.meshConsumer().accept(getUntintedRetexturedMesh(new CacheKey(state, tam.getDefaultAppearance())));
+			return;
+		} else if(theme.getBlock() == Blocks.BARRIER) {
+			//TODO i don't love putting this rare specialcase smack in the middle of the hot code path
 			return;
 		}
 		
