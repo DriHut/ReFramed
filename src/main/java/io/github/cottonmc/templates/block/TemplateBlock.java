@@ -29,6 +29,8 @@ public class TemplateBlock extends Block implements BlockEntityProvider {
 		setDefaultState(TemplateInteractionUtil.setDefaultStates(getDefaultState()));
 	}
 	
+	//For addon devs: override this so your blocks don't end up trying to place my block entity, my BlockEntityType only handles blocks internal to the mod
+	//Just make your own BlockEntityType, it's fine, you can even use the same TemplateEntity class
 	@Override
 	public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 		return Templates.TEMPLATE_BLOCK_ENTITY.instantiate(pos, state);

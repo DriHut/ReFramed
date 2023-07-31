@@ -30,7 +30,7 @@ if(rootProject.file("private.gradle").exists()) { //Publishing details
 
 archivesBaseName = "templates"
 group = "io.github.cottonmc"
-version = "2.0.5+1.20.1"
+version = "2.1.0+1.20.1"
 
 repositories {
 	mavenCentral()

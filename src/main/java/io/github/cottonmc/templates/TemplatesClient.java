@@ -72,6 +72,7 @@ public class TemplatesClient implements ClientModInitializer {
 			Templates.SLAB,
 			Templates.STAIRS,
 			Templates.TRAPDOOR,
+			Templates.VERTICAL_SLAB,
 			Templates.WALL,
 			Templates.SLOPE
 		);
@@ -122,6 +123,7 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("glass_pane_side_alt_special")  , new UnbakedAutoRetexturedModel(Templates.id("block/glass_pane_side_alt")));
 		provider.addTemplateModel(Templates.id("wall_side_special")            , new UnbakedJsonRetexturedModel(Templates.id("block/wall_side")));
 		provider.addTemplateModel(Templates.id("wall_side_tall_special")       , new UnbakedJsonRetexturedModel(Templates.id("block/wall_side_tall")));
+		provider.addTemplateModel(Templates.id("vertical_slab_special")        , new UnbakedJsonRetexturedModel(Templates.id("block/vertical_slab")));
 		
 		//mesh models
 		provider.addTemplateModel(Templates.id("slope_special")                , new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeUpright));
@@ -145,6 +147,7 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.assignItemModel(Templates.id("slab_bottom_special")           , Templates.SLAB);
 		provider.assignItemModel(Templates.id("stairs_special")                , Templates.STAIRS);
 		provider.assignItemModel(Templates.id("trapdoor_bottom_special")       , Templates.TRAPDOOR);
+		provider.assignItemModel(Templates.id("vertical_slab_special")         , Templates.VERTICAL_SLAB);
 		provider.assignItemModel(Templates.id("wall_inventory_special")        , Templates.WALL);
 		provider.assignItemModel(Templates.id("slope_special")                 , Templates.SLOPE);
 	}

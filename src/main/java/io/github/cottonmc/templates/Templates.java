@@ -17,6 +17,7 @@ import io.github.cottonmc.templates.block.TemplateSlabBlock;
 import io.github.cottonmc.templates.block.TemplateSlopeBlock;
 import io.github.cottonmc.templates.block.TemplateStairsBlock;
 import io.github.cottonmc.templates.block.TemplateTrapdoorBlock;
+import io.github.cottonmc.templates.block.TemplateVerticalSlabBlock;
 import io.github.cottonmc.templates.block.TemplateWallBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -53,6 +54,7 @@ public class Templates implements ModInitializer {
 		return TemplateInteractionUtil.configureSettings(AbstractBlock.Settings.copy(base));
 	}
 	
+	//vanilla, or at least vanilla-like, templates:
 	public static final Block BUTTON         = Registry.register(Registries.BLOCK, id("button")        , new TemplateButtonBlock(cp(Blocks.OAK_BUTTON)));
 	public static final Block CANDLE         = Registry.register(Registries.BLOCK, id("candle")        , new TemplateCandleBlock(TemplateCandleBlock.configureSettings(cp(Blocks.CANDLE))));
 	public static final Block CARPET         = Registry.register(Registries.BLOCK, id("carpet")        , new TemplateCarpetBlock(cp(Blocks.WHITE_CARPET)));
@@ -69,20 +71,25 @@ public class Templates implements ModInitializer {
 	public static final Block SLAB           = Registry.register(Registries.BLOCK, id("slab")          , new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
 	public static final Block STAIRS         = Registry.register(Registries.BLOCK, id("stairs")        , new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
 	public static final Block TRAPDOOR       = Registry.register(Registries.BLOCK, id("trapdoor")      , new TemplateTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR), BlockSetType.OAK));
+	public static final Block VERTICAL_SLAB  = Registry.register(Registries.BLOCK, id("vertical_slab") , new TemplateVerticalSlabBlock(cp(Blocks.OAK_SLAB)));
 	public static final Block WALL           = Registry.register(Registries.BLOCK, id("wall")          , new TemplateWallBlock(TemplateInteractionUtil.makeSettings()));
+	
+	//oddball templates:
 	public static final Block SLOPE          = Registry.register(Registries.BLOCK, id("slope")         , new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
 	//30 degree slope (shallow/deep) 
 	//corner slopes
 	//quarter slabs????
 	
+	//Very good
 	public static final Block COOL_RIVULET = Registry.register(Registries.BLOCK, id("cool_rivulet"), new GlazedTerracottaBlock(AbstractBlock.Settings.create().hardness(0.2f)) {
 		@Override
 		public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext eggbals) {
 			tooltip.add(Text.translatable("block.templates.cool_rivulet").formatted(Formatting.GRAY));
 		}
-	}); //Very good
+	});
 	
-	//for addon devs: it's fine to make your own block entity type instead of gluing additional blocks to this one
+	//For addon devs: Just make your own BlockEntityType instead of trying to add more blocks to this one.
+	//You can even reuse the same TemplateEntity class.
 	public static final BlockEntityType<TemplateEntity> TEMPLATE_BLOCK_ENTITY = Registry.register(
 		Registries.BLOCK_ENTITY_TYPE, id("slope"),
 		FabricBlockEntityTypeBuilder.create(Templates::makeTemplateBlockEntity,
@@ -102,6 +109,7 @@ public class Templates implements ModInitializer {
 			SLAB,
 			STAIRS,
 			TRAPDOOR,
+			VERTICAL_SLAB,
 			WALL,
 			SLOPE
 		).build(null)
@@ -137,6 +145,7 @@ public class Templates implements ModInitializer {
 		Registry.register(Registries.ITEM, id("slab")          , new BlockItem(SLAB, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("stairs")        , new BlockItem(STAIRS, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("trapdoor")      , new BlockItem(TRAPDOOR, new Item.Settings()));
+		Registry.register(Registries.ITEM, id("vertical_slab") , new BlockItem(VERTICAL_SLAB, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("wall")          , new BlockItem(WALL, new Item.Settings()));
 		Registry.register(Registries.ITEM, id("slope")         , new BlockItem(SLOPE, new Item.Settings()));
 		
@@ -154,11 +163,13 @@ public class Templates implements ModInitializer {
 	
 	private void fillCreativeTab(ItemGroup.DisplayContext ctx, ItemGroup.Entries e) {
 		//sorted by encounter order of the vanilla block in the "search" creative tab
-		//with the non-vanilla "post" inserted of course
-		//and i moved the lever next to the pressureplate and button cause theyre redstoney
+		//with the non-vanilla "post" and "vertical slab" inserted where they fit
+		//...and i moved the lever way up next to the pressureplate and button, cause theyre redstoney...
+		//hopefully this ordering makes sense lol
 		e.add(CUBE);
 		e.add(STAIRS);
 		e.add(SLAB);
+		e.add(VERTICAL_SLAB);
 		e.add(POST);
 		e.add(FENCE);
 		e.add(FENCE_GATE);
@@ -174,8 +185,10 @@ public class Templates implements ModInitializer {
 		e.add(PANE);
 		e.add(CANDLE);
 		
+		//Oddball that doesn't look anything like vanilla blocks
 		e.add(SLOPE);
 		
-		e.add(COOL_RIVULET); //Very good
+		//Very good
+		e.add(COOL_RIVULET);
 	}
 }
