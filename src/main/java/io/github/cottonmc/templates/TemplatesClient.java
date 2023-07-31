@@ -1,9 +1,9 @@
 package io.github.cottonmc.templates;
 
+import io.github.cottonmc.templates.model.SlopeBaseMesh;
 import io.github.cottonmc.templates.model.UnbakedAutoRetexturedModel;
 import io.github.cottonmc.templates.model.UnbakedJsonRetexturedModel;
 import io.github.cottonmc.templates.model.UnbakedMeshRetexturedModel;
-import io.github.cottonmc.templates.model.SlopeBaseMesh;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;

@@ -2,7 +2,6 @@ package io.github.cottonmc.templates;
 
 import io.github.cottonmc.templates.model.TemplateAppearanceManager;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
-import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
 import net.minecraft.client.render.model.UnbakedModel;
