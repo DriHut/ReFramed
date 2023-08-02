@@ -74,4 +74,6 @@ Templates's slope blocks use this model, because it's otherwise impossible to ma
 3. Create a blockstate json for your block, and point it at the ID you decided for your special model in 1).
    * You may use the `x`, `y`, and `uvlock` properties as normal.
 
+Ambient occlusion now defaults to "on" (since 2.1.1). If this looks bad on your model, you can reset it with a `.disableAo()` call on your UnbakedModel. 
+
 You may create a regular item model, or use ours by calling `TemplatesClient.provider.assignItemModel`, passing the ID of the special model & the items you want to assign it to. (The reason you have to do this instead of simply creating a regular item model and setting its `parent`, is that `JsonUnbakedModel`s can't have non-`JsonUnbakedModel`s as their `parent`, and even a trivial item model with only the `parent` field set counts as a `JsonUnbakedModel`. This isn't a problem for block models because blockstates are a layer of indirection before model loading.)

@@ -27,19 +27,26 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
 public abstract class RetexturingBakedModel extends ForwardingBakedModel {
+	@Deprecated(forRemoval = true) //binary-compat from before there was an AO boolean
 	public RetexturingBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, BlockState itemModelState) {
+		this(baseModel, tam, settings, itemModelState, true);
+	}
+	
+	public RetexturingBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, BlockState itemModelState, boolean ao) {
 		this.wrapped = baseModel;
 		
 		this.tam = tam;
 		this.facePermutation = MeshTransformUtil.facePermutation(settings);
 		this.uvlock = settings.isUvLocked();
 		this.itemModelState = itemModelState;
+		this.ao = ao;
 	}
 	
 	protected final TemplateAppearanceManager tam;
 	protected final Map<Direction, Direction> facePermutation; //immutable
 	protected final boolean uvlock;
 	protected final BlockState itemModelState;
+	protected final boolean ao;
 	
 	private static record CacheKey(BlockState state, TemplateAppearance appearance) {}
 	private final ConcurrentMap<CacheKey, Mesh> retexturedMeshes = new ConcurrentHashMap<>(); //mutable, append-only cache
@@ -132,7 +139,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		
 		@Override
 		public boolean transform(MutableQuadView quad) {
-			quad.material(ta.getRenderMaterial());
+			quad.material(ta.getRenderMaterial(ao));
 			
 			int tag = quad.tag();
 			if(tag == 0) return true; //Pass the quad through unmodified.

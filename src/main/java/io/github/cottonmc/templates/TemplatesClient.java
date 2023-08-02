@@ -128,10 +128,10 @@ public class TemplatesClient implements ClientModInitializer {
 		provider.addTemplateModel(Templates.id("wall_side_tall_special")       , new UnbakedJsonRetexturedModel(Templates.id("block/wall_side_tall")));
 		
 		//mesh models
-		provider.addTemplateModel(Templates.id("slope_special")                , new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeUpright));
-		provider.addTemplateModel(Templates.id("slope_side_special")           , new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeSide));
-		provider.addTemplateModel(Templates.id("tiny_slope_special")           , new UnbakedMeshRetexturedModel(Templates.id("block/tiny_slope_base"), SlopeBaseMesh::makeTinyUpright));
-		provider.addTemplateModel(Templates.id("tiny_slope_side_special")      , new UnbakedMeshRetexturedModel(Templates.id("block/tiny_slope_base"), SlopeBaseMesh::makeTinySide));
+		provider.addTemplateModel(Templates.id("slope_special")                , new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeUpright).disableAo());
+		provider.addTemplateModel(Templates.id("slope_side_special")           , new UnbakedMeshRetexturedModel(Templates.id("block/slope_base"), SlopeBaseMesh::makeSide).disableAo());
+		provider.addTemplateModel(Templates.id("tiny_slope_special")           , new UnbakedMeshRetexturedModel(Templates.id("block/tiny_slope_base"), SlopeBaseMesh::makeTinyUpright).disableAo());
+		provider.addTemplateModel(Templates.id("tiny_slope_side_special")      , new UnbakedMeshRetexturedModel(Templates.id("block/tiny_slope_base"), SlopeBaseMesh::makeTinySide).disableAo());
 		
 		//item only models
 		provider.addTemplateModel(Templates.id("button_inventory_special")     , new UnbakedAutoRetexturedModel(new Identifier("block/button_inventory")));

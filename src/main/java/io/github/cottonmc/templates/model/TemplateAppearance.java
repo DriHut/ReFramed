@@ -8,8 +8,14 @@ import org.jetbrains.annotations.NotNull;
 public interface TemplateAppearance {
 	@NotNull Sprite getParticleSprite(); //TODO: plug this in (particle mixins don't use it atm)
 	
-	@NotNull RenderMaterial getRenderMaterial();
+	@NotNull RenderMaterial getRenderMaterial(boolean ao);
 	@NotNull Sprite getSprite(Direction dir);
 	int getBakeFlags(Direction dir);
 	boolean hasColor(Direction dir);
+	
+	//binary-compat
+	@Deprecated(forRemoval = true)
+	default @NotNull RenderMaterial getRenderMaterial() {
+		return getRenderMaterial(false);
+	}
 }

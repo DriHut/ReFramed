@@ -30,6 +30,12 @@ public class UnbakedMeshRetexturedModel implements UnbakedModel {
 	protected final Identifier parent;
 	protected final Function<Function<SpriteIdentifier, Sprite>, Mesh> baseMeshFactory;
 	
+	protected boolean ao = true;
+	public UnbakedMeshRetexturedModel disableAo() {
+		ao = false;
+		return this;
+	}
+	
 	@Override
 	public Collection<Identifier> getModelDependencies() {
 		return Collections.singletonList(parent);
@@ -48,7 +54,8 @@ public class UnbakedMeshRetexturedModel implements UnbakedModel {
 			baker.bake(parent, modelBakeSettings),
 			TemplatesClient.provider.getOrCreateTemplateApperanceManager(spriteLookup),
 			modelBakeSettings,
-			Blocks.AIR.getDefaultState()
+			Blocks.AIR.getDefaultState(),
+			ao
 		) {
 			@Override
 			protected Mesh getBaseMesh(BlockState state) {

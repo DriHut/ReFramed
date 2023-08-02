@@ -42,6 +42,12 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel {
 	protected final Identifier parent;
 	protected final BlockState itemModelState;
 	
+	protected boolean ao = true;
+	public UnbakedJsonRetexturedModel disableAo() {
+		ao = false;
+		return this;
+	}
+	
 	@Override
 	public Collection<Identifier> getModelDependencies() {
 		return Collections.singletonList(parent);
@@ -69,7 +75,8 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel {
 			baker.bake(parent, modelBakeSettings),
 			TemplatesClient.provider.getOrCreateTemplateApperanceManager(spriteLookup),
 			modelBakeSettings,
-			itemModelState
+			itemModelState,
+			ao
 		) {
 			@Override
 			protected Mesh getBaseMesh(BlockState state) {
@@ -81,7 +88,7 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel {
 				Renderer r = TemplatesClient.getFabricRenderer();
 				MeshBuilder builder = r.meshBuilder();
 				QuadEmitter emitter = builder.getEmitter();
-				RenderMaterial mat = tam.getCachedMaterial(state);
+				RenderMaterial mat = tam.getCachedMaterial(state, false);
 				
 				Random rand = Random.create(42);
 				

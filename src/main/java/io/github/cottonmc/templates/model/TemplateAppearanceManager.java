@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -34,16 +35,19 @@ public class TemplateAppearanceManager {
 	public TemplateAppearanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
 		MaterialFinder finder = TemplatesClient.getFabricRenderer().materialFinder();
 		for(BlendMode blend : BlendMode.values()) {
-			blockMaterials.put(blend, finder.clear().disableDiffuse(false).ambientOcclusion(TriState.FALSE).blendMode(blend).find());
+			finder.clear().disableDiffuse(false).blendMode(blend);
+			
+			materialsWithoutAo.put(blend, finder.ambientOcclusion(TriState.FALSE).find());
+			materialsWithAo.put(blend, finder.ambientOcclusion(TriState.DEFAULT).find()); //not "true" since that *forces* AO, i just want to *allow* AO
 		}
 		
 		Sprite defaultSprite = spriteLookup.apply(DEFAULT_SPRITE_ID);
 		if(defaultSprite == null) throw new IllegalStateException("Couldn't locate " + DEFAULT_SPRITE_ID + " !");
-		this.defaultAppearance = new SingleSpriteAppearance(defaultSprite, blockMaterials.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
+		this.defaultAppearance = new SingleSpriteAppearance(defaultSprite, materialsWithoutAo.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
 		
 		Sprite barrier = spriteLookup.apply(BARRIER_SPRITE_ID);
 		if(barrier == null) barrier = defaultSprite; //eh
-		this.barrierItemAppearance = new SingleSpriteAppearance(barrier, blockMaterials.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
+		this.barrierItemAppearance = new SingleSpriteAppearance(barrier, materialsWithoutAo.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
 	}
 	
 	@ApiStatus.Internal //shouldn't have made this public, just maintaining abi compat
@@ -55,7 +59,9 @@ public class TemplateAppearanceManager {
 	
 	private final ConcurrentHashMap<BlockState, TemplateAppearance> appearanceCache = new ConcurrentHashMap<>(); //Mutable, append-only cache
 	private final AtomicInteger serialNumber = new AtomicInteger(0); //Mutable
-	private final EnumMap<BlendMode, RenderMaterial> blockMaterials = new EnumMap<>(BlendMode.class); //Immutable contents
+	
+	private final EnumMap<BlendMode, RenderMaterial> materialsWithAo = new EnumMap<>(BlendMode.class);
+	private final EnumMap<BlendMode, RenderMaterial> materialsWithoutAo = new EnumMap<>(BlendMode.class); //Immutable contents
 	
 	public TemplateAppearance getDefaultAppearance() {
 		return defaultAppearance;
@@ -65,8 +71,9 @@ public class TemplateAppearanceManager {
 		return appearanceCache.computeIfAbsent(state, this::computeAppearance);
 	}
 	
-	public RenderMaterial getCachedMaterial(BlockState state) {
-		return blockMaterials.get(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state)));
+	public RenderMaterial getCachedMaterial(BlockState state, boolean ao) {
+		Map<BlendMode, RenderMaterial> m = ao ? materialsWithAo : materialsWithoutAo;
+		return m.get(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state)));
 	}
 	
 	//I'm pretty sure ConcurrentHashMap semantics allow for this function to be called multiple times on the same key, on different threads.
@@ -152,25 +159,28 @@ public class TemplateAppearanceManager {
 			sprites,
 			bakeFlags,
 			hasColorMask,
-			getCachedMaterial(state),
+			getCachedMaterial(state, true),
+			getCachedMaterial(state, false),
 			serialNumber.getAndIncrement()
 		);
 	}
 	
-	@SuppressWarnings("ClassCanBeRecord")
 	private static final class ComputedApperance implements TemplateAppearance {
 		private final Sprite @NotNull[] sprites;
 		private final int @NotNull[] bakeFlags;
 		private final byte hasColorMask;
-		private final RenderMaterial mat;
 		private final int id;
+		private final RenderMaterial matWithAo;
+		private final RenderMaterial matWithoutAo;
 		
-		private ComputedApperance(@NotNull Sprite @NotNull[] sprites, int @NotNull[] bakeFlags, byte hasColorMask, RenderMaterial mat, int id) {
+		private ComputedApperance(@NotNull Sprite @NotNull[] sprites, int @NotNull[] bakeFlags, byte hasColorMask, RenderMaterial withAo, RenderMaterial withoutAo, int id) {
 			this.sprites = sprites;
 			this.bakeFlags = bakeFlags;
 			this.hasColorMask = hasColorMask;
-			this.mat = mat;
 			this.id = id;
+			
+			this.matWithAo = withAo;
+			this.matWithoutAo = withoutAo;
 		}
 		
 		@Override
@@ -179,8 +189,8 @@ public class TemplateAppearanceManager {
 		}
 		
 		@Override
-		public @NotNull RenderMaterial getRenderMaterial() {
-			return mat;
+		public @NotNull RenderMaterial getRenderMaterial(boolean ao) {
+			return ao ? matWithAo : matWithoutAo;
 		}
 		
 		@Override
@@ -213,7 +223,7 @@ public class TemplateAppearanceManager {
 		
 		@Override
 		public String toString() {
-			return "ComputedApperance{sprites=%s, bakeFlags=%s, hasColorMask=%s, mat=%s, id=%d}".formatted(Arrays.toString(sprites), Arrays.toString(bakeFlags), hasColorMask, mat, id);
+			return "ComputedApperance{sprites=%s, bakeFlags=%s, hasColorMask=%s, matWithoutAo=%s, matWithAo=%s, id=%d}".formatted(Arrays.toString(sprites), Arrays.toString(bakeFlags), hasColorMask, matWithoutAo, matWithAo, id);
 		}
 	}
 	
@@ -235,7 +245,7 @@ public class TemplateAppearanceManager {
 		}
 		
 		@Override
-		public @NotNull RenderMaterial getRenderMaterial() {
+		public @NotNull RenderMaterial getRenderMaterial(boolean ao) {
 			return mat;
 		}
 		
