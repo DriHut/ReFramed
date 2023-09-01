@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.resource.ResourceManager;
@@ -21,26 +22,13 @@ import net.minecraft.util.math.ChunkSectionPos;
 import org.jetbrains.annotations.NotNull;
 
 public class TemplatesClient implements ClientModInitializer {
-	//2.2 note: Yes, this wasn't final before, but it should have been
+	//2.2 note: Yes, this wasn't final before, but it should have been.
+	//This field is considered public api by the way, feel free to use it instead of making your own copy.
 	public static final TemplatesModelProvider provider = new TemplatesModelProvider();
-	
-	public static @NotNull Renderer getFabricRenderer() {
-		Renderer obj = RendererAccess.INSTANCE.getRenderer();
-		if(obj != null) return obj;
-		
-		//Welp, not much more we can do, this mod heavily relies on frapi
-		String msg = "A Fabric Rendering API implementation is required to use Templates 2!";
-		
-		if(!FabricLoader.getInstance().isModLoaded("fabric-renderer-indigo"))
-			msg += "\nI noticed you don't have Indigo installed, which is a part of the complete Fabric API package.";
-		if(FabricLoader.getInstance().isModLoaded("sodium"))
-			msg += "\nI noticed you have Sodium installed - consider also installing Indium to provide a compatible renderer implementation.";
-		
-		throw new NullPointerException(msg);
-	}
 	
 	@Override
 	public void onInitializeClient() {
+		//set up some magic to force chunk rerenders when you change a template (see TemplateEntity)
 		Templates.chunkRerenderProxy = (world, pos) -> {
 			if(world == MinecraftClient.getInstance().world) {
 				MinecraftClient.getInstance().worldRenderer.scheduleBlockRender(
@@ -51,46 +39,19 @@ public class TemplatesClient implements ClientModInitializer {
 			}
 		};
 		
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
-			@Override
-			public Identifier getFabricId() {
-				return Templates.id("dump-caches");
-			}
-			
-			@Override
-			public void reload(ResourceManager resourceManager) {
-				provider.dumpCache();
-			}
-		});
-		
+		//supporting code for the TemplatesModelProvider
 		ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> provider); //block models
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(rm -> provider); //item models
 		
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
-			Templates.BUTTON,
-			Templates.CANDLE,
-			Templates.CARPET,
-			Templates.CUBE,
-			Templates.DOOR,
-			Templates.FENCE,
-			Templates.FENCE_GATE,
-			Templates.IRON_DOOR,
-			Templates.IRON_TRAPDOOR,
-			Templates.LEVER,
-			Templates.PANE,
-			Templates.POST,
-			Templates.PRESSURE_PLATE,
-			Templates.SLAB,
-			Templates.STAIRS,
-			Templates.TRAPDOOR,
-			Templates.VERTICAL_SLAB,
-			Templates.WALL,
-			
-			Templates.SLOPE,
-			Templates.TINY_SLOPE
-		);
+		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+			@Override public Identifier getFabricId() { return Templates.id("dump-caches"); }
+			@Override public void reload(ResourceManager blah) { provider.dumpCache(); }
+		});
 		
-		//vanilla style models (using "auto" method)
+		//all templates mustn't be on the SOLID layer because they are not opaque by default (!)
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), Templates.INTERNAL_TEMPLATES.toArray(new Block[0]));
+		
+		//and a big wall of fancy models
 		provider.addTemplateModel(Templates.id("button_special")               , new UnbakedAutoRetexturedModel(new Identifier("block/button")));
 		provider.addTemplateModel(Templates.id("button_pressed_special")       , new UnbakedAutoRetexturedModel(new Identifier("block/button_pressed")));
 		provider.addTemplateModel(Templates.id("one_candle_special")           , new UnbakedAutoRetexturedModel(new Identifier("block/template_candle")));
@@ -167,5 +128,20 @@ public class TemplatesClient implements ClientModInitializer {
 		
 		provider.assignItemModel(Templates.id("slope_special")                 , Templates.SLOPE);
 		provider.assignItemModel(Templates.id("tiny_slope_special")            , Templates.TINY_SLOPE);
+	}
+	
+	public static @NotNull Renderer getFabricRenderer() {
+		Renderer obj = RendererAccess.INSTANCE.getRenderer();
+		if(obj != null) return obj;
+		
+		//Welp, not much more we can do, this mod heavily relies on frapi
+		String msg = "A Fabric Rendering API implementation is required to use Templates 2!";
+		
+		if(!FabricLoader.getInstance().isModLoaded("fabric-renderer-indigo"))
+			msg += "\nI noticed you don't have Indigo installed, which is a part of the complete Fabric API package.";
+		if(FabricLoader.getInstance().isModLoaded("sodium"))
+			msg += "\nI noticed you have Sodium installed - consider also installing Indium to provide a compatible renderer implementation.";
+		
+		throw new NullPointerException(msg);
 	}
 }

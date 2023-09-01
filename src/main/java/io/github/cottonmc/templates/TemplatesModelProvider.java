@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-@SuppressWarnings("unused") //part of the api
+@SuppressWarnings("unused") //this class is part of the api
 public class TemplatesModelProvider implements ModelResourceProvider, ModelVariantProvider {
 	private final Map<Identifier, UnbakedModel> models = new HashMap<>();
 	private final Map<ModelIdentifier, Identifier> itemAssignments = new HashMap<>();
@@ -46,9 +46,10 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 	/// template appearance manager cache
 	
 	public TemplateAppearanceManager getOrCreateTemplateApperanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
-		//This is kind of needlessly fancy using the "volatile double checked locking" pattern.
+		//This is kind of needlessly sketchy using the "volatile double checked locking" pattern.
 		//I'd like all template models to use the same TemplateApperanceManager, despite the model
-		//baking process happening concurrently on several threads.
+		//baking process happening concurrently on several threads, but I also don't want to
+		//hold up the model baking process too long.
 		
 		//Volatile field read:
 		TemplateAppearanceManager read = appearanceManager;
@@ -70,7 +71,7 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 	}
 	
 	public void dumpCache() {
-		appearanceManager = null;
+		appearanceManager = null; //volatile write
 	}
 	
 	/// "public api"

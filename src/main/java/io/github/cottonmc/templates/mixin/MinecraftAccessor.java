@@ -7,5 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(MinecraftClient.class)
 public interface MinecraftAccessor {
+	//Yeah there's a fabric API for this, but do we really need it, no.
 	@Accessor("itemColors") ItemColors templates$getItemColors();
 }

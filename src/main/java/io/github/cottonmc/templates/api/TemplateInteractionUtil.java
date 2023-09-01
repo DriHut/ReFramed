@@ -34,6 +34,8 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+//For an example of how to use this class, have a look at TemplateBlock.
+//Basically there are several methods that would like to modify the return value of something.
 public class TemplateInteractionUtil {
 	public static final BooleanProperty LIGHT = BooleanProperty.of("templates_light");
 	
@@ -41,13 +43,16 @@ public class TemplateInteractionUtil {
 		return builder.add(LIGHT);
 	}
 	
-	public static AbstractBlock.Settings makeSettings() {
-		return configureSettings(AbstractBlock.Settings.create());
-	}
-	
+	//Use this to obtain a Block.Settings that'll make your Template act like the ones in the mod.
+	//(To complete the look, don't forget to tag your blocks with mineable/axe.)
 	private static final AbstractBlock.ContextPredicate NOPE = (blah, blahdey, blahh) -> false;
 	public static AbstractBlock.Settings configureSettings(AbstractBlock.Settings s) {
 		return s.luminance(TemplateInteractionUtil::luminance).nonOpaque().sounds(BlockSoundGroup.WOOD).hardness(0.2f).suffocates(NOPE).blockVision(NOPE);
+	}
+	
+	//And if you don't have a Block.Settings to copy off of.
+	public static AbstractBlock.Settings makeSettings() {
+		return configureSettings(AbstractBlock.Settings.create());
 	}
 	
 	public static BlockState setDefaultStates(BlockState in) {

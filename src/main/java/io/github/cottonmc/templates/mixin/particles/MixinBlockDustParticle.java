@@ -29,7 +29,8 @@ public class MixinBlockDustParticle {
 			
 			//basically just re-implement what the constructor does - since we mixin at tail, this already ran
 			//some modifyvariable magic on the BlockState wouldn't hurt, i suppose, but, eh
-			//it'd need to capture method arguments but 99% of block dust particles are not for template blocks
+			//it'd need to capture method arguments but in this version of mixin it requires using threadlocals,
+			//and 99.9999% of block dust particles are not for template blocks, so it seems like a waste of cpu cycles
 			int color = MinecraftClient.getInstance().getBlockColors().getColor(theme, clientWorld, pos, 0);
 			a.templates$setRed(0.6f * ((color & 0xFF0000) >> 16) / 255f);
 			a.templates$setGreen(0.6f * ((color & 0x00FF00) >> 8) / 255f);

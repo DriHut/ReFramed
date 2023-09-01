@@ -25,14 +25,12 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSetType;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.GlazedTerracottaBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -42,158 +40,98 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 public class Templates implements ModInitializer {
 	public static final String MODID = "templates";
 	
+	//addon devs: *Don't* add your blocks to this collection, it's just for my registration convenience since Templates adds a lot of blocks...
+	@ApiStatus.Internal static final ArrayList<Block> INTERNAL_TEMPLATES = new ArrayList<>();
+	@ApiStatus.Internal static Block CUBE, STAIRS, SLAB, VERTICAL_SLAB, POST, FENCE, FENCE_GATE, DOOR, TRAPDOOR, IRON_DOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE, CANDLE, SLOPE, TINY_SLOPE, COOL_RIVULET;
+	
+	//For addon devs: Please don't stuff more blocks into this BlockEntityType, and register your own.
+	//You can even re-register the same TemplateEntity class under your own ID if you like. (It's an extensible block entity.)
+	@ApiStatus.Internal public static BlockEntityType<TemplateEntity> TEMPLATE_BLOCK_ENTITY;
+	
+	//Changed in TemplatesClient (which is safe since client initializers load after common initializers)
+	@ApiStatus.Internal public static BiConsumer<World, BlockPos> chunkRerenderProxy = (world, pos) -> {};
+	
+	@Override
+	public void onInitialize() {
+		//registerTemplate mutates MY_TEMPLATES as a side effect, which is a List, so order is preserved
+		//the ordering is used in the creative tab, so they're roughly sorted by encounter order of the
+		//corresponding vanilla block in the "search" creative tab... with the non-vanilla "post" and
+		//"vertical slab" inserted where they fit ...and i moved the lever way up next to the pressureplate
+		//and button, cause theyre redstoney... hopefully this ordering makes sense lol
+		CUBE           = registerTemplate("cube"          , new TemplateBlock(TemplateInteractionUtil.makeSettings()));
+		STAIRS         = registerTemplate("stairs"        , new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
+		SLAB           = registerTemplate("slab"          , new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
+		VERTICAL_SLAB  = registerTemplate("vertical_slab" , new TemplateVerticalSlabBlock(cp(Blocks.OAK_SLAB)));
+		POST           = registerTemplate("post"          , new TemplatePostBlock(cp(Blocks.OAK_FENCE)));
+		FENCE          = registerTemplate("fence"         , new TemplateFenceBlock(cp(Blocks.OAK_FENCE)));
+		FENCE_GATE     = registerTemplate("fence_gate"    , new TemplateFenceGateBlock(cp(Blocks.OAK_FENCE_GATE)));
+		DOOR           = registerTemplate("door"          , new TemplateDoorBlock(cp(Blocks.OAK_DOOR), BlockSetType.OAK));
+		TRAPDOOR       = registerTemplate("trapdoor"      , new TemplateTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR), BlockSetType.OAK));
+		IRON_DOOR      = registerTemplate("iron_door"     , new TemplateDoorBlock(cp(Blocks.IRON_DOOR), BlockSetType.IRON));
+		IRON_TRAPDOOR  = registerTemplate("iron_trapdoor" , new TemplateTrapdoorBlock(cp(Blocks.IRON_TRAPDOOR), BlockSetType.IRON));
+		PRESSURE_PLATE = registerTemplate("pressure_plate", new TemplatePressurePlateBlock(cp(Blocks.OAK_PRESSURE_PLATE)));
+		BUTTON         = registerTemplate("button"        , new TemplateButtonBlock(cp(Blocks.OAK_BUTTON)));
+		LEVER          = registerTemplate("lever"         , new TemplateLeverBlock(cp(Blocks.LEVER)));
+		WALL           = registerTemplate("wall"          , new TemplateWallBlock(TemplateInteractionUtil.makeSettings()));
+		CARPET         = registerTemplate("carpet"        , new TemplateCarpetBlock(cp(Blocks.WHITE_CARPET)));
+		PANE           = registerTemplate("pane"          , new TemplatePaneBlock(cp(Blocks.GLASS_PANE)));
+		CANDLE         = registerTemplate("candle"        , new TemplateCandleBlock(TemplateCandleBlock.configureSettings(cp(Blocks.CANDLE))));
+		SLOPE          = registerTemplate("slope"         , new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
+		TINY_SLOPE     = registerTemplate("tiny_slope"    , new TemplateSlopeBlock.Tiny(TemplateInteractionUtil.makeSettings()));
+		
+		TEMPLATE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("slope"),
+			FabricBlockEntityTypeBuilder.create((pos, state) -> new TemplateEntity(TEMPLATE_BLOCK_ENTITY, pos, state), INTERNAL_TEMPLATES.toArray(new Block[0])).build(null)
+		);
+		
+		//hey guys rate my registration code
+		Registry.register(Registries.ITEM, id("cool_rivulet"), new BlockItem(
+			COOL_RIVULET = Registry.register(Registries.BLOCK, id("cool_rivulet"), new GlazedTerracottaBlock(
+				AbstractBlock.Settings.create().hardness(0.2f)) {
+				@Override
+				public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext eggbals) {
+					tooltip.add(Text.translatable("block.templates.cool_rivulet").formatted(Formatting.GRAY));
+				}
+			}),
+			new Item.Settings()
+		));
+		
+		Registry.register(Registries.ITEM_GROUP, id("tab"), FabricItemGroup.builder()
+			.displayName(Text.translatable("itemGroup.templates.tab"))
+			.icon(() -> new ItemStack(SLOPE))
+			.entries((ctx, e) -> {
+				e.addAll(INTERNAL_TEMPLATES.stream().map(ItemStack::new).collect(Collectors.toList()));
+				e.add(COOL_RIVULET);
+			}).build()
+		);
+	}
+	
+	//purely to shorten this call :p
 	private static AbstractBlock.Settings cp(Block base) {
 		return TemplateInteractionUtil.configureSettings(AbstractBlock.Settings.copy(base));
 	}
 	
-	//vanilla, or at least vanilla-like, templates:
-	public static final Block BUTTON         = Registry.register(Registries.BLOCK, id("button")        , new TemplateButtonBlock(cp(Blocks.OAK_BUTTON)));
-	public static final Block CANDLE         = Registry.register(Registries.BLOCK, id("candle")        , new TemplateCandleBlock(TemplateCandleBlock.configureSettings(cp(Blocks.CANDLE))));
-	public static final Block CARPET         = Registry.register(Registries.BLOCK, id("carpet")        , new TemplateCarpetBlock(cp(Blocks.WHITE_CARPET)));
-	public static final Block CUBE           = Registry.register(Registries.BLOCK, id("cube")          , new TemplateBlock(TemplateInteractionUtil.makeSettings()));
-	public static final Block DOOR           = Registry.register(Registries.BLOCK, id("door")          , new TemplateDoorBlock(cp(Blocks.OAK_DOOR), BlockSetType.OAK));
-	public static final Block FENCE          = Registry.register(Registries.BLOCK, id("fence")         , new TemplateFenceBlock(cp(Blocks.OAK_FENCE)));
-	public static final Block FENCE_GATE     = Registry.register(Registries.BLOCK, id("fence_gate")    , new TemplateFenceGateBlock(cp(Blocks.OAK_FENCE_GATE)));
-	public static final Block IRON_DOOR      = Registry.register(Registries.BLOCK, id("iron_door")     , new TemplateDoorBlock(cp(Blocks.IRON_DOOR), BlockSetType.IRON));
-	public static final Block IRON_TRAPDOOR  = Registry.register(Registries.BLOCK, id("iron_trapdoor") , new TemplateTrapdoorBlock(cp(Blocks.IRON_TRAPDOOR), BlockSetType.IRON));
-	public static final Block LEVER          = Registry.register(Registries.BLOCK, id("lever")         , new TemplateLeverBlock(cp(Blocks.LEVER)));
-	public static final Block PANE           = Registry.register(Registries.BLOCK, id("pane")          , new TemplatePaneBlock(cp(Blocks.GLASS_PANE)));
-	public static final Block POST           = Registry.register(Registries.BLOCK, id("post")          , new TemplatePostBlock(cp(Blocks.OAK_FENCE)));
-	public static final Block PRESSURE_PLATE = Registry.register(Registries.BLOCK, id("pressure_plate"), new TemplatePressurePlateBlock(cp(Blocks.OAK_PRESSURE_PLATE)));
-	public static final Block SLAB           = Registry.register(Registries.BLOCK, id("slab")          , new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
-	public static final Block STAIRS         = Registry.register(Registries.BLOCK, id("stairs")        , new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
-	public static final Block TRAPDOOR       = Registry.register(Registries.BLOCK, id("trapdoor")      , new TemplateTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR), BlockSetType.OAK));
-	public static final Block VERTICAL_SLAB  = Registry.register(Registries.BLOCK, id("vertical_slab") , new TemplateVerticalSlabBlock(cp(Blocks.OAK_SLAB)));
-	public static final Block WALL           = Registry.register(Registries.BLOCK, id("wall")          , new TemplateWallBlock(TemplateInteractionUtil.makeSettings()));
-	
-	//oddball templates:
-	public static final Block SLOPE          = Registry.register(Registries.BLOCK, id("slope")         , new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
-	public static final Block TINY_SLOPE     = Registry.register(Registries.BLOCK, id("tiny_slope")    , new TemplateSlopeBlock.Tiny(TemplateInteractionUtil.makeSettings()));
-	//30 degree slope (shallow/deep) 
-	//corner slopes
-	//quarter slabs????
-	
-	//Very good
-	public static final Block COOL_RIVULET = Registry.register(Registries.BLOCK, id("cool_rivulet"), new GlazedTerracottaBlock(AbstractBlock.Settings.create().hardness(0.2f)) {
-		@Override
-		public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext eggbals) {
-			tooltip.add(Text.translatable("block.templates.cool_rivulet").formatted(Formatting.GRAY));
-		}
-	});
-	
-	//For addon devs: Just make your own BlockEntityType instead of trying to add more blocks to this one.
-	//You can even re-register the same TemplateEntity class if you like. It's an extensible block entity.
-	public static final BlockEntityType<TemplateEntity> TEMPLATE_BLOCK_ENTITY = Registry.register(
-		Registries.BLOCK_ENTITY_TYPE, id("slope"),
-		FabricBlockEntityTypeBuilder.create(Templates::makeTemplateBlockEntity,
-			BUTTON,
-			CANDLE,
-			CARPET,
-			CUBE,
-			DOOR,
-			FENCE,
-			FENCE_GATE,
-			IRON_DOOR,
-			IRON_TRAPDOOR,
-			LEVER,
-			PANE,
-			POST,
-			PRESSURE_PLATE,
-			SLAB,
-			STAIRS,
-			TRAPDOOR,
-			VERTICAL_SLAB,
-			WALL,
-			SLOPE,
-			TINY_SLOPE
-		).build(null)
-	);
-	
-	//Overridden in TemplatesClient
-	public static BiConsumer<World, BlockPos> chunkRerenderProxy = (world, pos) -> {};
-	
-	@Override
-	public void onInitialize() {
-		Registry.register(
-			Registries.ITEM_GROUP, id("tab"),
-			FabricItemGroup.builder()
-				.displayName(Text.translatable("itemGroup.templates.tab"))
-				.icon(() -> new ItemStack(SLOPE))
-				.entries(this::fillCreativeTab)
-				.build()
-		);
+	private static <B extends Block> B registerTemplate(String path, B block) {
+		Identifier id = id(path);
 		
-		Registry.register(Registries.ITEM, id("button")        , new BlockItem(BUTTON, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("candle")        , new BlockItem(CANDLE, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("carpet")        , new BlockItem(CARPET, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("cube")          , new BlockItem(CUBE, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("door")          , new BlockItem(DOOR, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("fence")         , new BlockItem(FENCE, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("fence_gate")    , new BlockItem(FENCE_GATE, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("iron_door")     , new BlockItem(IRON_DOOR, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("iron_trapdoor") , new BlockItem(IRON_TRAPDOOR, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("lever")         , new BlockItem(LEVER, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("pane")          , new BlockItem(PANE, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("post")          , new BlockItem(POST, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("pressure_plate"), new BlockItem(PRESSURE_PLATE, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("slab")          , new BlockItem(SLAB, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("stairs")        , new BlockItem(STAIRS, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("trapdoor")      , new BlockItem(TRAPDOOR, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("vertical_slab") , new BlockItem(VERTICAL_SLAB, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("wall")          , new BlockItem(WALL, new Item.Settings()));
-		
-		Registry.register(Registries.ITEM, id("slope")         , new BlockItem(SLOPE, new Item.Settings()));
-		Registry.register(Registries.ITEM, id("tiny_slope")    , new BlockItem(TINY_SLOPE, new Item.Settings()));
-		
-		Registry.register(Registries.ITEM, id("cool_rivulet")  , new BlockItem(COOL_RIVULET, new Item.Settings())); //Very good
+		Registry.register(Registries.BLOCK, id, block);
+		Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
+		INTERNAL_TEMPLATES.add(block);
+		return block;
 	}
 	
+	@ApiStatus.Internal
 	public static Identifier id(String path) {
 		return new Identifier(MODID, path);
-	}
-	
-	//simply for breaking circular reference in the registration call
-	private static TemplateEntity makeTemplateBlockEntity(BlockPos pos, BlockState state) {
-		return new TemplateEntity(TEMPLATE_BLOCK_ENTITY, pos, state);
-	}
-	
-	private void fillCreativeTab(ItemGroup.DisplayContext ctx, ItemGroup.Entries e) {
-		//sorted by encounter order of the vanilla block in the "search" creative tab
-		//with the non-vanilla "post" and "vertical slab" inserted where they fit
-		//...and i moved the lever way up next to the pressureplate and button, cause theyre redstoney...
-		//hopefully this ordering makes sense lol
-		e.add(CUBE);
-		e.add(STAIRS);
-		e.add(SLAB);
-		e.add(VERTICAL_SLAB);
-		e.add(POST);
-		e.add(FENCE);
-		e.add(FENCE_GATE);
-		e.add(DOOR);
-		e.add(TRAPDOOR);
-		e.add(IRON_DOOR);
-		e.add(IRON_TRAPDOOR);
-		e.add(PRESSURE_PLATE);
-		e.add(BUTTON);
-		e.add(LEVER);
-		e.add(WALL);
-		e.add(CARPET);
-		e.add(PANE);
-		e.add(CANDLE);
-		
-		//Oddball that doesn't look anything like vanilla blocks
-		e.add(SLOPE);
-		e.add(TINY_SLOPE);
-		
-		//Very good
-		e.add(COOL_RIVULET);
 	}
 }
