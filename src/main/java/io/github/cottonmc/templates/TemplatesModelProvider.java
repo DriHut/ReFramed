@@ -36,8 +36,7 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 	//Item models don't have that layer of indirection; it always wants to load the hardcoded "item:id#inventory" model.
 	//You *would* be able to create a model json for it and set the "parent" field to the custom model,
 	//but json models are never allowed to have non-json models as a parent, and template unbaked models are not json models. Ah well.
-	//So, instead, we use a ModelVariantProvider to clunkily redirect the item:id#inventory model to the blockmodel.
-	//Not my favorite solution but we'll live.
+	//So, instead, we use a ModelVariantProvider to redirect attempts to load the item:id#inventory model.
 	@Override
 	public @Nullable UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) {
 		Identifier customModelId = itemAssignments.get(modelId);
@@ -61,7 +60,7 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 				//while we were waiting for it, so we do another volatile field read (the "double check"):
 				read = appearanceManager;
 				if(read == null) {
-					//If no-one has initialized it still, I guess we should do it
+					//If no-one has initialized it still, I guess it falls to us
 					read = appearanceManager = new TemplateAppearanceManager(spriteLookup);
 				}
 			}

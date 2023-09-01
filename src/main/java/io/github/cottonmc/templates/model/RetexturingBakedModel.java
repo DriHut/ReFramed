@@ -25,13 +25,13 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
 public abstract class RetexturingBakedModel extends ForwardingBakedModel {
-	@Deprecated(forRemoval = true) //binary-compat from before there was an AO boolean
+	@Deprecated(forRemoval = true) //Kept for ABI compat. From before there was an AO boolean (<2.1.1)
 	public RetexturingBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, BlockState itemModelState) {
 		this(baseModel, tam, settings, itemModelState, true);
 	}
 	
 	public RetexturingBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, BlockState itemModelState, boolean ao) {
-		this.wrapped = baseModel;
+		this.wrapped = baseModel; //field from the superclass; vanilla getQuads etc will delegate through to this
 		
 		this.tam = tam;
 		this.facePermutation = MeshTransformUtil.facePermutation(settings);
@@ -47,7 +47,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	protected final boolean ao;
 	
 	protected record CacheKey(BlockState state, TemplateAppearance appearance) {}
-	private final ConcurrentMap<CacheKey, Mesh> retexturedMeshes = new ConcurrentHashMap<>(); //mutable, append-only cache
+	protected final ConcurrentMap<CacheKey, Mesh> retexturedMeshes = new ConcurrentHashMap<>(); //mutable, append-only cache
 	
 	protected static final Direction[] DIRECTIONS = Direction.values();
 	protected static final Direction[] DIRECTIONS_AND_NULL = new Direction[DIRECTIONS.length + 1];
@@ -123,18 +123,20 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	}
 	
 	protected Mesh createUntintedRetexturedMesh(CacheKey key) {
-		return MeshTransformUtil.pretransformMesh(getBaseMesh(key.state), new RetexturingTransformer(key.appearance, 0xFFFFFFFF));
+		return MeshTransformUtil.pretransformMesh(getBaseMesh(key.state), new RetexturingTransformer(key.appearance));
 	}
 	
 	protected class RetexturingTransformer implements RenderContext.QuadTransform {
-		//TODO: remove the "tint" parameter, it's been kicked to TintingTransformer
-		protected RetexturingTransformer(TemplateAppearance ta, int tint) {
+		protected RetexturingTransformer(TemplateAppearance ta) {
 			this.ta = ta;
-			this.tint = tint;
+		}
+		
+		@Deprecated(forRemoval = true) //Kept for ABI compat (<2.2). Use TintingTransformer for retinting, it works better anyway
+		protected RetexturingTransformer(TemplateAppearance ta, int ignoredTint) {
+			this(ta);
 		}
 		
 		protected final TemplateAppearance ta;
-		protected final int tint;
 		
 		@Override
 		public boolean transform(MutableQuadView quad) {
@@ -145,8 +147,6 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			
 			//The quad tag numbers were selected so this magic trick works:
 			Direction dir = facePermutation.get(DIRECTIONS[quad.tag() - 1]);
-			if(ta.hasColor(dir)) quad.color(tint, tint, tint, tint);
-			
 			quad.spriteBake(ta.getSprite(dir), MutableQuadView.BAKE_NORMALIZED | ta.getBakeFlags(dir) | (uvlock ? MutableQuadView.BAKE_LOCK_UV : 0));
 			
 			return true;

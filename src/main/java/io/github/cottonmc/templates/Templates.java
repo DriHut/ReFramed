@@ -90,7 +90,7 @@ public class Templates implements ModInitializer {
 	});
 	
 	//For addon devs: Just make your own BlockEntityType instead of trying to add more blocks to this one.
-	//You can even reuse the same TemplateEntity class.
+	//You can even re-register the same TemplateEntity class if you like. It's an extensible block entity.
 	public static final BlockEntityType<TemplateEntity> TEMPLATE_BLOCK_ENTITY = Registry.register(
 		Registries.BLOCK_ENTITY_TYPE, id("slope"),
 		FabricBlockEntityTypeBuilder.create(Templates::makeTemplateBlockEntity,

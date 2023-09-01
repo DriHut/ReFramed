@@ -1,8 +1,9 @@
 Versions before 2.1.2 have been backfilled; I gotta be more on top of changelogs.
 
-# 2.1.2 (unreleased)
+# next version (unreleased)
 
 * Remove some unused stuff from the jar
+* Code cleanups, hopefully without breaking ABI compat (i don't have an ABI checker in the pipeline tho)
 
 road map:
 

@@ -23,6 +23,9 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
+//Keeping the weight of this block entity down, both in terms of memory consumption and NBT sync traffic,
+//is pretty important since players might place a lot of them. There were tons and tons of these at Blanketcon.
+//To that end, most of the state has been crammed into a bitfield.
 public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity {
 	protected BlockState renderedState = Blocks.AIR.getDefaultState();
 	protected byte bitfield = DEFAULT_BITFIELD;
@@ -64,7 +67,6 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 		}
 		
 		//Force a chunk remesh on the client if the displayed blockstate has changed
-		//TODO: doors? (need remeshing when the *other* party changes)
 		if(world != null && world.isClient && !Objects.equals(lastRenderedState, renderedState)) {
 			Templates.chunkRerenderProxy.accept(world, pos);
 		}
