@@ -6,9 +6,9 @@
 
 *Slopes?*
 
-**This mod is open source and under a permissive license.** As such, it can be included in any modpack on any platform without prior permission. We appreciate hearing about people using our mods, but you do not need to ask to use them. See the [LICENSE file](LICENSE) for more details.
+**This mod is open source and under a permissive license.** As such, it can be included in any modpack on any platform without prior permission. I appreciate hearing about people using my mods, but you do not need to ask to use them. See the [LICENSE file](LICENSE) for more details.[^1]
 
-If a Template block is placed in the world and right-clicked with a full-size block, it will take on the appearance of that block. Template blocks will inherit light and redstone values from the blocks they're given. Adding a *redstone torch* will make them emit redstone power, *glowstone dust* will make them emit light, and *popped chorus fruit* will make them intangible.
+If a Template block is placed in the world and right-clicked with a full-size block, it will take on the appearance of that block, including whether it emits light and redstone. Adding a *redstone torch* will make them emit redstone power, *glowstone dust* will make them emit light, and *popped chorus fruit* will make them intangible.
 
 While Templates itself adds a handful of common shapes, it's not too hard for other mods to interface with Templates and add their own templatable blocks.
 
@@ -16,9 +16,9 @@ While Templates itself adds a handful of common shapes, it's not too hard for ot
 
 ## Creating a block entity
 
-All templates need a block entity to store what block they look like. Templates registers one under `templates:slope`[^1], but as an addon developer you can't add additional blocks to my block entity. (Don't try, please.)
+All templates need a block entity to store what block they look like. Templates registers one under `templates:slope`[^2], but as an addon developer you can't add additional blocks to my block entity. (Don't try, please.)
 
-To that end, nothing in Templates relies on the *specific* block entity ID, so just re-register `TemplateEntity` under your own name. You are free to extend `TemplateEntity` as well.
+To that end, nothing in Templates relies on the *specific* block entity ID, so just re-register the `TemplateEntity` class under your own name. You are free to extend `TemplateEntity` as well.
 
 The only hard requirement on the block entity is that it `implements ThemeableBlockEntity`. (This implies it returns a `BlockEntity` from `getRenderAttachmentData`.)
 
@@ -129,6 +129,8 @@ COOL RIVULET is by mev, this is the most important block in the mod & perhaps th
 
 # License
 
-MIT, which is unusual for me (usually i write LGPL) - this is inherited from a [CottonMC project](https://github.com/CottonMC/Templates), which inherited [the ElytraDev template](https://github.com/elytra/Concrete), which might explain if the readme layout looks familiar.
+MIT, which is unusual for me (usually i write LGPL). It's the upstream project's license.
 
-[^1]: Yes, even the blocks other than slopes use `templates:slope`. The slope was the first block added to Templates and I forgot to change the block entity ID, and now I can't change it without breaking worlds. At least it demonstrates how the block entity can be used for more than one template?
+[^1]This is inherited from a [CottonMC project](https://github.com/CottonMC/Templates), which inherited [the ElytraDev template](https://github.com/elytra/Concrete), which might explain if the readme layout looks familiar.
+
+[^2]: Yes, even the blocks other than slopes use `templates:slope`. The slope was the first block added to Templates and I forgot to change the block entity ID, and now I can't change it without breaking worlds. At least it demonstrates how the block entity can be used for more than one template?
