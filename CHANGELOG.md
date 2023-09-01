@@ -4,6 +4,9 @@ Versions before 2.1.2 have been backfilled; I gotta be more on top of changelogs
 
 * Remove some unused stuff from the jar
 * Code cleanups, hopefully without breaking ABI compat (i don't have an ABI checker in the pipeline tho)
+* Fix a bug where templates that look like blocks with randomized models, such as stone, could reroll their blockstate on every resource load.
+  * Forgot to specify a random seed.
+  * All templated blocks still use the *same* model, so templated stone will still not be randomly rotated/flipped, but at least it's now the *same* same model.
 
 road map:
 

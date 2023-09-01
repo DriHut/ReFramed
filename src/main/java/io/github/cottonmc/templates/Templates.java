@@ -90,6 +90,7 @@ public class Templates implements ModInitializer {
 		SLOPE          = registerTemplate("slope"         , new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
 		TINY_SLOPE     = registerTemplate("tiny_slope"    , new TemplateSlopeBlock.Tiny(TemplateInteractionUtil.makeSettings()));
 		
+		//The block entity is still called templates:slope; this is a bit of a legacy mistake.
 		TEMPLATE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("slope"),
 			FabricBlockEntityTypeBuilder.create((pos, state) -> new TemplateEntity(TEMPLATE_BLOCK_ENTITY, pos, state), INTERNAL_TEMPLATES.toArray(new Block[0])).build(null)
 		);
