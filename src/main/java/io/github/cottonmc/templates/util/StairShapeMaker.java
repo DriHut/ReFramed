@@ -5,6 +5,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import org.joml.Vector3d;
 
 public class StairShapeMaker {
+	//TODO: clean this the fuck up, maybe keep in mind that VoxelShapes can be rotated multiples of 90 degrees by just rotating their corners
 	public static VoxelShape makeStair(Edge innerEdge, double stepIn, double initialStepRise, double stepRise, double stepRun, int stepCount) {
 		Edge.CoordinateFrame frame = innerEdge.makeCoordinateFrame();
 		Vector3d origin = frame.origin();

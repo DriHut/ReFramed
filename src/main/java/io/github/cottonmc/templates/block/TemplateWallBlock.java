@@ -100,7 +100,7 @@ public class TemplateWallBlock extends WallBlock implements BlockEntityProvider 
 	
 	//Shapemap heck (WallBlock has a map keyed on BlockState, but since we add more blockstates most of those map lookups fail)
 	
-	protected static record ShapeKey(boolean up, WallShape north, WallShape east, WallShape south, WallShape west) {
+	protected record ShapeKey(boolean up, WallShape north, WallShape east, WallShape south, WallShape west) {
 		static ShapeKey fromBlockstate(BlockState state) {
 			return new ShapeKey(
 				state.get(WallBlock.UP),
@@ -112,8 +112,8 @@ public class TemplateWallBlock extends WallBlock implements BlockEntityProvider 
 		}
 	}
 	
-	protected Map<ShapeKey, VoxelShape> newShapeMap = new HashMap<>();
-	protected Map<ShapeKey, VoxelShape> newCollisionShapeMap = new HashMap<>();
+	protected final Map<ShapeKey, VoxelShape> newShapeMap = new HashMap<>();
+	protected final Map<ShapeKey, VoxelShape> newCollisionShapeMap = new HashMap<>();
 	
 	protected void initNewShapemaps() {
 		initNewShapemap(((WallBlockAccessor) this).templates$getShapeMap(), newShapeMap);

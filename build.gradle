@@ -24,14 +24,6 @@ tasks.withType(JavaCompile) {
 	options.release = 17
 }
 
-if(rootProject.file("private.gradle").exists()) { //Publishing details
-	apply from: "private.gradle"
-}
-
-archivesBaseName = "templates"
-group = "io.github.cottonmc"
-version = "2.1.1+1.20.1"
-
 repositories {
 	mavenCentral()
 

@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.enums.SlabType;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -108,7 +107,7 @@ public class TemplateVerticalSlabBlock extends TemplateSlabBlock {
 		}
 	}
 	
-	enum Affinity implements StringIdentifiable {
+	protected enum Affinity implements StringIdentifiable {
 		X, Z;
 		
 		@Override

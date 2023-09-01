@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+@SuppressWarnings("unused") //part of the api
 public class TemplatesModelProvider implements ModelResourceProvider, ModelVariantProvider {
 	private final Map<Identifier, UnbakedModel> models = new HashMap<>();
 	private final Map<ModelIdentifier, Identifier> itemAssignments = new HashMap<>();

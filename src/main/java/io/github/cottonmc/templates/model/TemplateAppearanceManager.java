@@ -1,7 +1,6 @@
 package io.github.cottonmc.templates.model;
 
 import io.github.cottonmc.templates.TemplatesClient;
-import io.github.cottonmc.templates.util.TattletaleRandom;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -83,7 +82,7 @@ public class TemplateAppearanceManager {
 	private TemplateAppearance computeAppearance(BlockState state) {
 		if(state.getBlock() == Blocks.BARRIER) return barrierItemAppearance;
 		
-		TattletaleRandom rand = new TattletaleRandom(Random.create());
+		Random rand = Random.create(42);
 		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 		
 		//Only for parsing vanilla quads:
@@ -102,7 +101,7 @@ public class TemplateAppearanceManager {
 			BakedQuad arbitraryQuad = sideQuads.get(0); //TODO: maybe pick a largest quad instead?
 			if(arbitraryQuad == null) continue;
 			
-			if(arbitraryQuad.hasColor()) hasColorMask |= (1 << dir.ordinal());
+			if(arbitraryQuad.hasColor()) hasColorMask |= (byte) (1 << dir.ordinal());
 			
 			Sprite sprite = arbitraryQuad.getSprite();
 			if(sprite == null) continue;
@@ -149,10 +148,6 @@ public class TemplateAppearanceManager {
 		//Fill out any missing values in the sprites array, since failure to pick textures shouldn't lead to NPEs later on
 		for(int i = 0; i < sprites.length; i++) {
 			if(sprites[i] == null) sprites[i] = defaultAppearance.getParticleSprite();
-		}
-		
-		if(rand.wasUsed) {
-			//System.err.println("State " + state + " makes use of a randomized model");
 		}
 		
 		return new ComputedApperance(

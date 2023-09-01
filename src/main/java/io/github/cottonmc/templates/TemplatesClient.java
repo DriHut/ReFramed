@@ -22,7 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class TemplatesClient implements ClientModInitializer {
-	public static TemplatesModelProvider provider = new TemplatesModelProvider();
+	//2.2 note: Yes, this wasn't final before, but it should have been
+	public static final TemplatesModelProvider provider = new TemplatesModelProvider();
 	
 	public static @NotNull Renderer getFabricRenderer() {
 		return Objects.requireNonNull(RendererAccess.INSTANCE.getRenderer(), "A Fabric Rendering API implementation is required to use Templates!");

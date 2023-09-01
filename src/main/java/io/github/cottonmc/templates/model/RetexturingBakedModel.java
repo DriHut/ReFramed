@@ -1,10 +1,8 @@
 package io.github.cottonmc.templates.model;
 
-import io.github.cottonmc.templates.TemplatesClient;
 import io.github.cottonmc.templates.block.TemplateEntity;
 import io.github.cottonmc.templates.mixin.MinecraftAccessor;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -48,7 +46,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	protected final BlockState itemModelState;
 	protected final boolean ao;
 	
-	private static record CacheKey(BlockState state, TemplateAppearance appearance) {}
+	protected record CacheKey(BlockState state, TemplateAppearance appearance) {}
 	private final ConcurrentMap<CacheKey, Mesh> retexturedMeshes = new ConcurrentHashMap<>(); //mutable, append-only cache
 	
 	protected static final Direction[] DIRECTIONS = Direction.values();
@@ -129,6 +127,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	}
 	
 	protected class RetexturingTransformer implements RenderContext.QuadTransform {
+		//TODO: remove the "tint" parameter, it's been kicked to TintingTransformer
 		protected RetexturingTransformer(TemplateAppearance ta, int tint) {
 			this.ta = ta;
 			this.tint = tint;

@@ -28,11 +28,11 @@ public class MeshTransformUtil {
 	}
 	
 	//Hard to explain what this is for...
-	//Basically, the previous incarnation of this mod assembled the north/south/east/west faces all individually.
+	//Basically, Templates 1.x manually emitted the north/south/east/west faces all individually.
 	//This means it was easy to get the orientation of the block correct - to popular the north face of the slope, look at
 	//the north texture of the theme block. In this version, there is only *one* slope model that is dynamically rotated
 	//to form the other possible orientations. If I populate the north face of the model using the north face of the theme,
-	//that model will then be rotated so it's no longer facing the right way.
+	//then rotate the model, it's no longer facing the right way. So I need to "un-rotate" the face assignments first.
 	//
 	//This seems to work, but I'm kinda surprised I don't need to invert the transformation here, which is a clue that
 	//I don't really understand all the math, loool

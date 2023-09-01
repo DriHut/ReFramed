@@ -9,10 +9,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface AccessorParticle {
 	@Accessor("random") Random templates$getRandom();
 	
-	@Accessor("red") float templates$red();
 	@Accessor("red") void templates$setRed(float red);
-	@Accessor("green") float templates$green();
 	@Accessor("green") void templates$setGreen(float green);
-	@Accessor("blue") float templates$blue();
 	@Accessor("blue") void templates$setBlue(float blue);
 }
