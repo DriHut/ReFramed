@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.resource.ResourceManager;
@@ -19,14 +20,23 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkSectionPos;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 public class TemplatesClient implements ClientModInitializer {
 	//2.2 note: Yes, this wasn't final before, but it should have been
 	public static final TemplatesModelProvider provider = new TemplatesModelProvider();
 	
 	public static @NotNull Renderer getFabricRenderer() {
-		return Objects.requireNonNull(RendererAccess.INSTANCE.getRenderer(), "A Fabric Rendering API implementation is required to use Templates!");
+		Renderer obj = RendererAccess.INSTANCE.getRenderer();
+		if(obj != null) return obj;
+		
+		//Welp, not much more we can do, this mod heavily relies on frapi
+		String msg = "A Fabric Rendering API implementation is required to use Templates 2!";
+		
+		if(!FabricLoader.getInstance().isModLoaded("fabric-renderer-indigo"))
+			msg += "\nI noticed you don't have Indigo installed, which is a part of the complete Fabric API package.";
+		if(FabricLoader.getInstance().isModLoaded("sodium"))
+			msg += "\nI noticed you have Sodium installed - consider also installing Indium to provide a compatible renderer implementation.";
+		
+		throw new NullPointerException(msg);
 	}
 	
 	@Override
