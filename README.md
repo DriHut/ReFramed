@@ -131,6 +131,6 @@ COOL RIVULET is by mev, this is the most important block in the mod & perhaps th
 
 MIT, which is unusual for me (usually i write LGPL). It's the upstream project's license.
 
-[^1]This is inherited from a [CottonMC project](https://github.com/CottonMC/Templates), which inherited [the ElytraDev template](https://github.com/elytra/Concrete), which might explain if the readme layout looks familiar.
+[^1]: This is inherited from a [CottonMC project](https://github.com/CottonMC/Templates), which inherited [the ElytraDev template](https://github.com/elytra/Concrete), which might explain if the readme layout looks familiar.
 
 [^2]: Yes, even the blocks other than slopes use `templates:slope`. The slope was the first block added to Templates and I forgot to change the block entity ID, and now I can't change it without breaking worlds. At least it demonstrates how the block entity can be used for more than one template?
