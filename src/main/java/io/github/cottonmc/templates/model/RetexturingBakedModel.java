@@ -25,11 +25,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
 public abstract class RetexturingBakedModel extends ForwardingBakedModel {
-	@Deprecated(forRemoval = true) //Kept for ABI compat. From before there was an AO boolean (<2.1.1)
-	public RetexturingBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, BlockState itemModelState) {
-		this(baseModel, tam, settings, itemModelState, true);
-	}
-	
 	public RetexturingBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, BlockState itemModelState, boolean ao) {
 		this.wrapped = baseModel; //field from the superclass; vanilla getQuads etc will delegate through to this
 		
@@ -131,7 +126,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			this.ta = ta;
 		}
 		
-		@Deprecated(forRemoval = true) //Kept for ABI compat (<2.2). Use TintingTransformer for retinting, it works better anyway
+		@Deprecated(forRemoval = true) //TODO ABI: Deprecated in 2.2. Use TintingTransformer for retinting, it works better anyway
 		protected RetexturingTransformer(TemplateAppearance ta, int ignoredTint) {
 			this(ta);
 		}
@@ -172,5 +167,11 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			
 			return true;
 		}
+	}
+	
+	//TODO ABI: From before there was an AO boolean, <2.1.1.
+	@Deprecated(forRemoval = true)
+	public RetexturingBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, BlockState itemModelState) {
+		this(baseModel, tam, settings, itemModelState, true);
 	}
 }

@@ -51,7 +51,7 @@ public class TemplateAppearanceManager {
 		this.barrierItemAppearance = new SingleSpriteAppearance(barrier, materialsWithoutAo.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
 	}
 	
-	//TODO ABI: Shouldn't have been made public. Clean up at a later point.
+	//TODO ABI: Shouldn't have been made public. Noticed this in 2.2.
 	@ApiStatus.Internal
 	public static final SpriteIdentifier DEFAULT_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:block/scaffolding_top"));
 	private static final SpriteIdentifier BARRIER_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:item/barrier"));

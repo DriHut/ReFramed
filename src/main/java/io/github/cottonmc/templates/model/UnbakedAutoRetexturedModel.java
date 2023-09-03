@@ -101,8 +101,8 @@ public class UnbakedAutoRetexturedModel implements UnbakedModel, TemplatesClient
 		};
 	}
 	
-	//ABI compat.
-	@Deprecated(forRemoval = true) //2.2 - use TemplatesClientApi.getInstance().auto, and use the builder to set this field
+	//TODO ABI: (2.2) use TemplatesClientApi.getInstance.auto, and use the builder properties to set this field
+	@Deprecated(forRemoval = true)
 	public UnbakedAutoRetexturedModel(Identifier parent, BlockState itemModelState) {
 		this(parent);
 		itemModelState(itemModelState);

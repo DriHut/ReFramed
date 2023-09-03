@@ -70,8 +70,8 @@ public class UnbakedMeshRetexturedModel implements UnbakedModel, TemplatesClient
 		};
 	}
 	
-	//ABI compat
-	@Deprecated(forRemoval = true) //2.2 - use TemplatesClientApi.getInstance().mesh
+	//TODO ABI: (2.2) use TemplatesClientApi.getInstance.mesh
+	@Deprecated(forRemoval = true)
 	public UnbakedMeshRetexturedModel(Identifier parent, Supplier<Mesh> baseMeshFactory) {
 		this(parent, __ -> baseMeshFactory.get());
 	}

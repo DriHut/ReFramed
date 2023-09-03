@@ -119,8 +119,8 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel, TemplatesClient
 		};
 	}
 	
-	//ABI compat
-	@Deprecated(forRemoval = true) //2.2 - use TemplatesClientApi.getInstance().json, and use the builder to set this field
+	//TODO ABI: (2.2) use TemplatesClientApi.getInstance.json, and use the builder properties to set this field
+	@Deprecated(forRemoval = true)
 	public UnbakedJsonRetexturedModel(Identifier parent, BlockState itemModelState) {
 		this(parent);
 		itemModelState(itemModelState);
