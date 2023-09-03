@@ -78,6 +78,17 @@ public class TemplateAppearanceManager {
 		return m.get(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state)));
 	}
 	
+	private static final int[] MAGIC_BAKEFLAGS_SBOX = new int[16];
+	static {
+		//left to right -> u0 v0 u1 v1
+		//the bit is set if the coordinate is "high"
+		MAGIC_BAKEFLAGS_SBOX[0b1110] = 0;
+		MAGIC_BAKEFLAGS_SBOX[0b1000] = MutableQuadView.BAKE_ROTATE_90;
+		MAGIC_BAKEFLAGS_SBOX[0b0001] = MutableQuadView.BAKE_ROTATE_180;
+		MAGIC_BAKEFLAGS_SBOX[0b0111] = MutableQuadView.BAKE_ROTATE_270;
+		//TODO: handle more cases. Also, it might be possible to drop v1 and still have the table be unambiguous
+	}
+	
 	//I'm pretty sure ConcurrentHashMap semantics allow for this function to be called multiple times on the same key, on different threads.
 	//The computeIfAbsent map update will work without corrupting the map, but there will be some "wasted effort" computing the value twice.
 	//The results are going to be the same, apart from their serialNumbers differing (= their equals & hashCode differing).
@@ -90,7 +101,7 @@ public class TemplateAppearanceManager {
 		
 		//Only for parsing vanilla quads:
 		Renderer r = TemplatesClientApi.getInstance().getFabricRenderer();
-		QuadEmitter emitter = r.meshBuilder().getEmitter();
+		QuadEmitter emitterAsParser = r.meshBuilder().getEmitter();
 		RenderMaterial defaultMat = r.materialFinder().clear().find();
 		
 		Sprite[] sprites = new Sprite[6];
@@ -111,40 +122,28 @@ public class TemplateAppearanceManager {
 			if(sprite == null) continue;
 			sprites[dir.ordinal()] = sprite;
 			
-			//GOAL: Reconstruct the `"rotation": 90` stuff that a json model might provide, so we can bake our texture on the same way
-			emitter.fromVanilla(arbitraryQuad, defaultMat, dir);
-			int lowHighSignature = 0;
-			for(int i = 0; i < 4; i++) {
-				//For some reason the uvs stored on the Sprite have less ?precision? than the ones retrieved from the QuadEmitter.
-				// [STDOUT]: emitter u 0.14065552, sprite min u 0.140625
-				//?precision? in question marks cause it could be float noise. It's way higher than the epsilon in MathHelper.approximatelyEquals.
-				//So im gonna guesstimate using "is it closer to the sprite's min or max u", rather than doing an approximately-equals check
-				
-				float diffMinU = Math.abs(emitter.u(i) - sprite.getMinU());
-				float diffMaxU = Math.abs(emitter.u(i) - sprite.getMaxU());
-				boolean minU = diffMinU < diffMaxU;
-				
-				float diffMinV = Math.abs(emitter.v(i) - sprite.getMinV());
-				float diffMaxV = Math.abs(emitter.v(i) - sprite.getMaxV());
-				boolean minV = diffMinV < diffMaxV;
-				
-				lowHighSignature <<= 2;
-				lowHighSignature |= (minU ? 2 : 0) | (minV ? 1 : 0);
-			}
+			//Problem: Some models (eg. pistons, stone, glazed terracotta) have their UV coordinates permuted in
+			//non-standard ways. The actual png image appears sideways, but the original model's UVs rotate it right way up again.
+			//If I simply display the texture on my model, it will appear sideways, like it does in the png.
+			//If I can discover the pattern of rotations and flips on the original model, I can "un-rotate" the texture back
+			//into a standard orientation.
+			//
+			//Solution: Look at the first and second vertices of the orignial quad, and decide whether their UV coordinates
+			//are "low" or "high" compared to the middle of the sprite. The first two vertices uniquely determine the pattern
+			//of the other two (since UV coordinates are unique and shouldn't cross). There are 16 possibilities so this information
+			//is easily summarized in a bitfield, and the correct fabric rendering API "bake flags" to un-transform the sprite
+			//are looked up with a simple table.
+			emitterAsParser.fromVanilla(arbitraryQuad, defaultMat, dir);
 			
-			if(lowHighSignature == 0b11100001) {
-				bakeFlags[dir.ordinal()] = 0;
-			} else if(lowHighSignature == 0b10000111) {
-				bakeFlags[dir.ordinal()] = MutableQuadView.BAKE_ROTATE_90;
-			} else if(lowHighSignature == 0b00011110) {
-				bakeFlags[dir.ordinal()] = MutableQuadView.BAKE_ROTATE_180;
-			} else if(lowHighSignature == 0b01111000) {
-				bakeFlags[dir.ordinal()] = MutableQuadView.BAKE_ROTATE_270;
-			} else {
-				//TODO handle more cases.
-				//Its not critical error or anything, the texture will show rotated or flipped
-				//System.out.println("unknown sig " + Integer.toString(lowHighSignature, 2) + ", state: " + state + ", sprite: " + sprite.getContents().getId() + ", side: " + dir);
-			}
+			float spriteUAvg = (sprite.getMinU() + sprite.getMaxU()) / 2;
+			float spriteVAvg = (sprite.getMinV() + sprite.getMaxV()) / 2;
+			
+			bakeFlags[dir.ordinal()] = MAGIC_BAKEFLAGS_SBOX[
+				(emitterAsParser.u(0) < spriteUAvg ? 8 : 0) |
+				(emitterAsParser.v(0) < spriteVAvg ? 4 : 0) |
+				(emitterAsParser.u(1) < spriteUAvg ? 2 : 0) |
+				(emitterAsParser.v(1) < spriteVAvg ? 1 : 0)
+			];
 		}
 		
 		//Fill out any missing values in the sprites array, since failure to pick textures shouldn't lead to NPEs later on
