@@ -1,14 +1,13 @@
 package io.github.cottonmc.templates.model;
 
 import io.github.cottonmc.templates.Templates;
-import io.github.cottonmc.templates.TemplatesClient;
+import io.github.cottonmc.templates.api.TemplatesClientApi;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.Baker;
@@ -29,24 +28,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
-public class UnbakedJsonRetexturedModel implements UnbakedModel {
+public class UnbakedJsonRetexturedModel implements UnbakedModel, TemplatesClientApi.TweakableUnbakedModel {
 	public UnbakedJsonRetexturedModel(Identifier parent) {
-		this(parent, Blocks.AIR.getDefaultState());
-	}
-	
-	public UnbakedJsonRetexturedModel(Identifier parent, BlockState itemModelState) {
 		this.parent = parent;
-		this.itemModelState = itemModelState;
 	}
 	
 	protected final Identifier parent;
-	protected final BlockState itemModelState;
-	
+	protected BlockState itemModelState;
 	protected boolean ao = true;
+	
+	/// user configuration
+	
+	@Override
 	public UnbakedJsonRetexturedModel disableAo() {
 		ao = false;
 		return this;
 	}
+	
+	@Override
+	public TemplatesClientApi.TweakableUnbakedModel itemModelState(BlockState state) {
+		this.itemModelState = state;
+		return this;
+	}
+	
+	/// actual unbakedmodel stuff
 	
 	@Override
 	public Collection<Identifier> getModelDependencies() {
@@ -69,15 +74,15 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel {
 			specialSprites[i] = Objects.requireNonNull(spriteLookup.apply(id), () -> "Couldn't find sprite " + id + " !");
 		}
 		
-		ConcurrentMap<BlockState, Mesh> jsonToMesh = new ConcurrentHashMap<>();
-		
 		return new RetexturingBakedModel(
 			baker.bake(parent, modelBakeSettings),
-			TemplatesClient.provider.getOrCreateTemplateApperanceManager(spriteLookup),
+			TemplatesClientApi.getInstance().getOrCreateTemplateApperanceManager(spriteLookup),
 			modelBakeSettings,
 			itemModelState,
 			ao
 		) {
+			final ConcurrentMap<BlockState, Mesh> jsonToMesh = new ConcurrentHashMap<>();
+			
 			@Override
 			protected Mesh getBaseMesh(BlockState state) {
 				//Convert models to retexturable Meshes lazily, the first time we encounter each blockstate
@@ -85,7 +90,7 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel {
 			}
 			
 			private Mesh convertModel(BlockState state) {
-				Renderer r = TemplatesClient.getFabricRenderer();
+				Renderer r = TemplatesClientApi.getInstance().getFabricRenderer();
 				MeshBuilder builder = r.meshBuilder();
 				QuadEmitter emitter = builder.getEmitter();
 				RenderMaterial mat = tam.getCachedMaterial(state, false);
@@ -112,5 +117,12 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel {
 				return builder.build();
 			}
 		};
+	}
+	
+	//ABI compat
+	@Deprecated(forRemoval = true) //2.2 - use TemplatesClientApi.getInstance().json, and use the builder to set this field
+	public UnbakedJsonRetexturedModel(Identifier parent, BlockState itemModelState) {
+		this(parent);
+		itemModelState(itemModelState);
 	}
 }

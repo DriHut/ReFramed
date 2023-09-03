@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-@SuppressWarnings("unused") //this class is part of the api
 public class TemplatesModelProvider implements ModelResourceProvider, ModelVariantProvider {
 	private final Map<Identifier, UnbakedModel> models = new HashMap<>();
 	private final Map<ModelIdentifier, Identifier> itemAssignments = new HashMap<>();
@@ -74,10 +73,8 @@ public class TemplatesModelProvider implements ModelResourceProvider, ModelVaria
 		appearanceManager = null; //volatile write
 	}
 	
-	/// "public api"
-	
-	public void addTemplateModel(Identifier id, UnbakedModel modelFactory) {
-		models.put(id, modelFactory);
+	public void addTemplateModel(Identifier id, UnbakedModel unbaked) {
+		models.put(id, unbaked);
 	}
 	
 	public void assignItemModel(Identifier templateModelId, ModelIdentifier... modelIds) {

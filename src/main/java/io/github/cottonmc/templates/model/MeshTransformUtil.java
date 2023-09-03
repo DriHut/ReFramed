@@ -1,6 +1,6 @@
 package io.github.cottonmc.templates.model;
 
-import io.github.cottonmc.templates.TemplatesClient;
+import io.github.cottonmc.templates.api.TemplatesClientApi;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class MeshTransformUtil {
 	public static Mesh pretransformMesh(Mesh mesh, RenderContext.QuadTransform transform) {
-		MeshBuilder builder = TemplatesClient.getFabricRenderer().meshBuilder();
+		MeshBuilder builder = TemplatesClientApi.getInstance().getFabricRenderer().meshBuilder();
 		QuadEmitter emitter = builder.getEmitter();
 		
 		mesh.forEach(quad -> {

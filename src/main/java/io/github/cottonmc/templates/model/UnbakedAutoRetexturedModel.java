@@ -1,6 +1,6 @@
 package io.github.cottonmc.templates.model;
 
-import io.github.cottonmc.templates.TemplatesClient;
+import io.github.cottonmc.templates.api.TemplatesClientApi;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -26,24 +26,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
-public class UnbakedAutoRetexturedModel implements UnbakedModel {
+public class UnbakedAutoRetexturedModel implements UnbakedModel, TemplatesClientApi.TweakableUnbakedModel {
 	public UnbakedAutoRetexturedModel(Identifier parent) {
-		this(parent, Blocks.AIR.getDefaultState());
-	}
-	
-	public UnbakedAutoRetexturedModel(Identifier parent, BlockState itemModelState) {
 		this.parent = parent;
-		this.itemModelState = itemModelState;
 	}
 	
 	protected final Identifier parent;
-	protected final BlockState itemModelState;
-	
+	protected BlockState itemModelState = Blocks.AIR.getDefaultState();
 	protected boolean ao = true;
+	
+	/// user configuration
+	
+	@Override
 	public UnbakedAutoRetexturedModel disableAo() {
 		ao = false;
 		return this;
 	}
+	
+	@Override
+	public TemplatesClientApi.TweakableUnbakedModel itemModelState(BlockState state) {
+		this.itemModelState = state;
+		return this;
+	}
+	
+	/// actual unbakedmodel stuff
 	
 	@Override
 	public Collection<Identifier> getModelDependencies() {
@@ -58,15 +64,15 @@ public class UnbakedAutoRetexturedModel implements UnbakedModel {
 	@Nullable
 	@Override
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> spriteLookup, ModelBakeSettings modelBakeSettings, Identifier identifier) {
-		ConcurrentMap<BlockState, Mesh> jsonToMesh = new ConcurrentHashMap<>();
-		
 		return new RetexturingBakedModel(
 			baker.bake(parent, modelBakeSettings),
-			TemplatesClient.provider.getOrCreateTemplateApperanceManager(spriteLookup),
+			TemplatesClientApi.getInstance().getOrCreateTemplateApperanceManager(spriteLookup),
 			modelBakeSettings,
 			itemModelState,
 			ao
 		) {
+			final ConcurrentMap<BlockState, Mesh> jsonToMesh = new ConcurrentHashMap<>();
+			
 			@Override
 			protected Mesh getBaseMesh(BlockState state) {
 				//Convert models to retexturable Meshes lazily, the first time we encounter each blockstate
@@ -74,7 +80,7 @@ public class UnbakedAutoRetexturedModel implements UnbakedModel {
 			}
 			
 			private Mesh convertModel(BlockState state) {
-				Renderer r = TemplatesClient.getFabricRenderer();
+				Renderer r = TemplatesClientApi.getInstance().getFabricRenderer();
 				MeshBuilder builder = r.meshBuilder();
 				QuadEmitter emitter = builder.getEmitter();
 				RenderMaterial mat = tam.getCachedMaterial(state, false);
@@ -93,5 +99,12 @@ public class UnbakedAutoRetexturedModel implements UnbakedModel {
 				return builder.build();
 			}
 		};
+	}
+	
+	//ABI compat.
+	@Deprecated(forRemoval = true) //2.2 - use TemplatesClientApi.getInstance().auto, and use the builder to set this field
+	public UnbakedAutoRetexturedModel(Identifier parent, BlockState itemModelState) {
+		this(parent);
+		itemModelState(itemModelState);
 	}
 }

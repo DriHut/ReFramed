@@ -54,25 +54,25 @@ The last piece of information is important because Templates tries hard to retai
 
 Pick a model implementation that suits your needs:
 
-### `UnbakedAutoRetexturedModel`
+### Auto retexturing
 
 * the quad: Sourced from a JSON model.
 * whether you want to retexture it: "Yes". All quads will be retextured.
 * what face of the block: Automatically determined by facing direction.
 
-To construct, pass the ID of the JSON model you want to source quads from.
+Construct with `TemplatesClientApi.getInstance().auto`. Pass the ID of the model you want to source quads from.
 
 There's no way to configure this, so if you want to skip retexturing a face, try the next model implementation instead.
 
 **TODO**: this does not work well with `multipart` models with differently-rotated parts, like the fence model (consisting of 1 fence post and 1 fence-side model that gets rotated around to fill all 4 sides)
 
-### `UnbakedJsonRetexturedModel`
+### Special texture-based retexturing
 
 * the quad: Sourced from a JSON model.
 * whether you want to retexture it: Determined from the texture applied to the quad.
 * what face of the block: Determined via the texture applied to the quad.
 
-To construct, pass the ID of a JSON model to retexture. All quads textured with `templates:templates_special/east` will be textured with the east side of the theme, all quads textured with `templates:templates_special/up` will be retextured with the top side of the theme, etc. Quads textured with any other texture will be passed through unaltered.
+Construct with `TemplatesClientApi.getInstance().json`. Pass the ID of the model you want to source quads from. All quads textured with the *special textures* `templates:templates_special/east` will be textured with the east side of the theme, all quads textured with `templates:templates_special/up` will be retextured with the top side of the theme, etc. Quads textured with any other texture will be passed through unaltered.
 
 <details><summary>Regarding texture variables:</summary>
 
@@ -97,31 +97,31 @@ Sadly, many models don't specify *completely* separate textures for all six side
 
 (This one works better with multipart models.)
 
-### `UnbakedMeshRetexturedModel`
+### Mesh retexturing
 
 * the quad: Sourced from a `Mesh`.
 * whether you want to retexture it: Quads with a nonzero `tag`.
 * what face of the block: Determined from the `tag`.
 
-To construct, pass a `Supplier<Mesh>`. To mark a face "retexture this with the EAST side of the block", call `.tag(Direction.EAST.ordinal() + 1)` on it; same for the other directions. (So, the valid tags are 1, 2, 3, 4, 5, and 6, corresponding to down, up, north, south, west, east.) Give these faces UV coordinates ranging from 0 to 1.
+Construct with `TemplatesClientApi.getInstance().mesh`, passing a `Supplier<Mesh>`. To mark a face "retexture this with the EAST side of the block", call `.tag(Direction.EAST.ordinal() + 1)` on it; same for the other directions. (So, the valid tags are 1, 2, 3, 4, 5, and 6, corresponding to down, up, north, south, west, east.) Give these faces UV coordinates ranging from 0 to 1.
 
 A `.tag` of 0 (the default) will be passed through unchanged. This is a little useless since you still need to provide UV coordinates, so instead of passing a `Supplier<Mesh>` you can also pass a `Function<Function<SpriteIdentifier, Sprite>, Mesh>`; you will be provided with a `Function<SpriteIdentifier, Sprite>` that you can query for sprite information, including their UVs.
 
 (To construct this type, you will also need to pass the identifier of a "base model", which can be a regular JSON model. Miscellaneous `BakedModel` properties like rotations, AO, `isSideLit`, etc will be sourced from it. See Template's `models/block/slope_base`. You may need to set `"gui_light": "front"` to avoid a flat look in the ui.)
 
-### A secret fourth thing
+### A secret, fourth thing
 
-Templates doesn't actually care about the block model you pass in. It won't *work* unless you reimplement the retexturing, but if you have your needs I won't stop you.
+Templates doesn't actually care about the implementation of the UnbakedModel you pass in. It won't *work* unless you reimplement the retexturing, but if you have your needs I won't stop you.
 
 All the models are supposed to be extensible (if i left a stray `private` let me know). All the `UnbakedModels` are backed by the same abstract class called `RetexturingBakedModel` which actually does the retexturing; feel free to extend it.
 
 ## Registering your model
 
-After you've decided on and constructed your special model, you should tell Templates about it. Pick an ID that's different from the base model. (If your base model is `mymod:block/awesome_template`, a good name might be `mymod:awesome_template_special`). Register your special model under that ID using `TemplatesClient.provider.addTemplateModel`.
+After you've decided on and constructed your special model, you should tell Templates about it. Pick an ID that's different from the base model. (If your base model is `mymod:block/awesome_template`, a good name might be `mymod:awesome_template_special`). Register your special model under that ID using `TemplatesClientApi.getInstance().addTemplateModel`.
 
 To assign the block model, using a vanilla blockstate file, simply point your block at that model ID as normal. (See this mod's `blockstates` folder.) You may also use the `x`, `y`, and `uvlock` properties.
 
-To assign the item model, since items don't have the "blockstate file" level of indirection, call `TemplatesClient.provider.assignItemModel`, passing your special model's ID and the items it should be assigned to. Or if you'd rather use a vanilla json model (that won't be retextured) just make one the vanilla way.
+To assign the item model, since items don't have the "blockstate file" level of indirection, call `TemplatesClientApi.getInstance().assignItemModel`, passing your special model's ID and the items it should be assigned to. Or if you'd rather use a vanilla json model (that won't be retextured) just make one the vanilla way.
 
 # Most important attribution in the whole wide world
 

@@ -5,6 +5,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 
+//TODO: move to the api package
 public interface TemplateAppearance {
 	@NotNull Sprite getParticleSprite(); //TODO: plug this in (particle mixins don't use it atm)
 	

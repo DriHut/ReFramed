@@ -1,6 +1,7 @@
 package io.github.cottonmc.templates.model;
 
-import io.github.cottonmc.templates.TemplatesClient;
+import io.github.cottonmc.templates.api.TemplatesClientApi;
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -30,9 +31,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+//TODO: extract an API for the api package
 public class TemplateAppearanceManager {
 	public TemplateAppearanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
-		MaterialFinder finder = TemplatesClient.getFabricRenderer().materialFinder();
+		MaterialFinder finder = TemplatesClientApi.getInstance().getFabricRenderer().materialFinder();
 		for(BlendMode blend : BlendMode.values()) {
 			finder.clear().disableDiffuse(false).blendMode(blend);
 			
@@ -86,8 +88,9 @@ public class TemplateAppearanceManager {
 		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 		
 		//Only for parsing vanilla quads:
-		QuadEmitter emitter = TemplatesClient.getFabricRenderer().meshBuilder().getEmitter();
-		RenderMaterial defaultMat = TemplatesClient.getFabricRenderer().materialFinder().clear().find();
+		Renderer r = TemplatesClientApi.getInstance().getFabricRenderer();
+		QuadEmitter emitter = r.meshBuilder().getEmitter();
+		RenderMaterial defaultMat = r.materialFinder().clear().find();
 		
 		Sprite[] sprites = new Sprite[7];
 		int[] bakeFlags = new int[6];

@@ -1,6 +1,6 @@
 package io.github.cottonmc.templates.model;
 
-import io.github.cottonmc.templates.TemplatesClient;
+import io.github.cottonmc.templates.api.TemplatesClientApi;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
@@ -20,7 +20,7 @@ public class SlopeBaseMesh {
 	public static final int TAG_BOTTOM = Direction.DOWN.ordinal() + 1;
 	
 	public static Mesh makeUpright() {
-		Renderer renderer = TemplatesClient.getFabricRenderer();
+		Renderer renderer = TemplatesClientApi.getInstance().getFabricRenderer();
 		MeshBuilder builder = renderer.meshBuilder();
 		QuadEmitter qu = builder.getEmitter();
 		qu.tag(TAG_SLOPE)
@@ -63,7 +63,7 @@ public class SlopeBaseMesh {
 	
 	//looks weird since i wrote a janky script to massage a .bbmodel, some manual fixups applied
 	public static Mesh makeTinyUpright() {
-		Renderer renderer = TemplatesClient.getFabricRenderer();
+		Renderer renderer = TemplatesClientApi.getInstance().getFabricRenderer();
 		MeshBuilder builder = renderer.meshBuilder();
 		QuadEmitter qu = builder.getEmitter();
 		qu.tag(TAG_LEFT)

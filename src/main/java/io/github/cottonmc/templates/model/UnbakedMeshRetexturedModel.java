@@ -1,6 +1,6 @@
 package io.github.cottonmc.templates.model;
 
-import io.github.cottonmc.templates.TemplatesClient;
+import io.github.cottonmc.templates.api.TemplatesClientApi;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -17,11 +17,7 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class UnbakedMeshRetexturedModel implements UnbakedModel {
-	public UnbakedMeshRetexturedModel(Identifier parent, Supplier<Mesh> baseMeshFactory) {
-		this(parent, __ -> baseMeshFactory.get());
-	}
-	
+public class UnbakedMeshRetexturedModel implements UnbakedModel, TemplatesClientApi.TweakableUnbakedModel {
 	public UnbakedMeshRetexturedModel(Identifier parent, Function<Function<SpriteIdentifier, Sprite>, Mesh> baseMeshFactory) {
 		this.parent = parent;
 		this.baseMeshFactory = baseMeshFactory;
@@ -29,12 +25,22 @@ public class UnbakedMeshRetexturedModel implements UnbakedModel {
 	
 	protected final Identifier parent;
 	protected final Function<Function<SpriteIdentifier, Sprite>, Mesh> baseMeshFactory;
-	
 	protected boolean ao = true;
+	
+	/// user configuration
+	
+	@Override
 	public UnbakedMeshRetexturedModel disableAo() {
 		ao = false;
 		return this;
 	}
+	
+	@Override
+	public TemplatesClientApi.TweakableUnbakedModel itemModelState(BlockState state) {
+		throw new UnsupportedOperationException("UnbakedMeshRetexturedModel does not need an item model state set; it uses meshes");
+	}
+	
+	/// actual unbakedmodel stuff
 	
 	@Override
 	public Collection<Identifier> getModelDependencies() {
@@ -52,7 +58,7 @@ public class UnbakedMeshRetexturedModel implements UnbakedModel {
 		
 		return new RetexturingBakedModel(
 			baker.bake(parent, modelBakeSettings),
-			TemplatesClient.provider.getOrCreateTemplateApperanceManager(spriteLookup),
+			TemplatesClientApi.getInstance().getOrCreateTemplateApperanceManager(spriteLookup),
 			modelBakeSettings,
 			Blocks.AIR.getDefaultState(),
 			ao
@@ -62,5 +68,11 @@ public class UnbakedMeshRetexturedModel implements UnbakedModel {
 				return transformedBaseMesh;
 			}
 		};
+	}
+	
+	//ABI compat
+	@Deprecated(forRemoval = true) //2.2 - use TemplatesClientApi.getInstance().mesh
+	public UnbakedMeshRetexturedModel(Identifier parent, Supplier<Mesh> baseMeshFactory) {
+		this(parent, __ -> baseMeshFactory.get());
 	}
 }
