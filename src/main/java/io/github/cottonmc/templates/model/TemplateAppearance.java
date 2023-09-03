@@ -7,16 +7,20 @@ import org.jetbrains.annotations.NotNull;
 
 //TODO: move to the api package
 public interface TemplateAppearance {
-	@NotNull Sprite getParticleSprite(); //TODO: plug this in (particle mixins don't use it atm)
-	
 	@NotNull RenderMaterial getRenderMaterial(boolean ao);
 	@NotNull Sprite getSprite(Direction dir);
 	int getBakeFlags(Direction dir);
 	boolean hasColor(Direction dir);
 	
-	//binary-compat
+	//binary-compat - from before conditional model AO was added
 	@Deprecated(forRemoval = true)
 	default @NotNull RenderMaterial getRenderMaterial() {
 		return getRenderMaterial(false);
+	}
+	
+	//binary-compat - I never ended up implementing this, it's much easier to modify particles via the BlockState
+	@Deprecated(forRemoval = true)
+	default @NotNull Sprite getParticleSprite() {
+		return getSprite(Direction.NORTH);
 	}
 }

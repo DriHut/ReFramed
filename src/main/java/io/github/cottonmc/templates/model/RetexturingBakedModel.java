@@ -62,7 +62,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public Sprite getParticleSprite() {
-		return tam.getDefaultAppearance().getParticleSprite();
+		return tam.getDefaultAppearance().getSprite(Direction.UP);
 	}
 	
 	@Override

@@ -51,7 +51,8 @@ public class TemplateAppearanceManager {
 		this.barrierItemAppearance = new SingleSpriteAppearance(barrier, materialsWithoutAo.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
 	}
 	
-	@ApiStatus.Internal //shouldn't have made this public, just maintaining abi compat
+	//TODO ABI: Shouldn't have been made public. Clean up at a later point.
+	@ApiStatus.Internal
 	public static final SpriteIdentifier DEFAULT_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:block/scaffolding_top"));
 	private static final SpriteIdentifier BARRIER_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:item/barrier"));
 	
@@ -92,7 +93,7 @@ public class TemplateAppearanceManager {
 		QuadEmitter emitter = r.meshBuilder().getEmitter();
 		RenderMaterial defaultMat = r.materialFinder().clear().find();
 		
-		Sprite[] sprites = new Sprite[7];
+		Sprite[] sprites = new Sprite[6];
 		int[] bakeFlags = new int[6];
 		byte hasColorMask = 0b000000;
 		
@@ -140,17 +141,15 @@ public class TemplateAppearanceManager {
 			} else if(lowHighSignature == 0b01111000) {
 				bakeFlags[dir.ordinal()] = MutableQuadView.BAKE_ROTATE_270;
 			} else {
+				//TODO handle more cases.
 				//Its not critical error or anything, the texture will show rotated or flipped
 				//System.out.println("unknown sig " + Integer.toString(lowHighSignature, 2) + ", state: " + state + ", sprite: " + sprite.getContents().getId() + ", side: " + dir);
 			}
 		}
 		
-		//Just for space-usage purposes, we store the particle in sprites[6] instead of using another field.
-		sprites[6] = model.getParticleSprite();
-		
 		//Fill out any missing values in the sprites array, since failure to pick textures shouldn't lead to NPEs later on
 		for(int i = 0; i < sprites.length; i++) {
-			if(sprites[i] == null) sprites[i] = defaultAppearance.getParticleSprite();
+			if(sprites[i] == null) sprites[i] = defaultAppearance.getSprite(Direction.byId(i));
 		}
 		
 		return new ComputedApperance(
@@ -179,11 +178,6 @@ public class TemplateAppearanceManager {
 			
 			this.matWithAo = withAo;
 			this.matWithoutAo = withoutAo;
-		}
-		
-		@Override
-		public @NotNull Sprite getParticleSprite() {
-			return sprites[6];
 		}
 		
 		@Override
@@ -235,11 +229,6 @@ public class TemplateAppearanceManager {
 			this.defaultSprite = defaultSprite;
 			this.mat = mat;
 			this.id = id;
-		}
-		
-		@Override
-		public @NotNull Sprite getParticleSprite() {
-			return defaultSprite;
 		}
 		
 		@Override
