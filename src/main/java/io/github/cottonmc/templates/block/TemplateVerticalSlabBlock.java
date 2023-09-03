@@ -38,44 +38,38 @@ public class TemplateVerticalSlabBlock extends TemplateSlabBlock {
 	
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext ctx) {
-		SlabType type = state.get(TYPE);
-		if(type == SlabType.DOUBLE) return VoxelShapes.fullCube();
-		
-		Affinity aff = state.get(AFFINITY);
-		if(type == SlabType.BOTTOM && aff == Affinity.X) return WEST_SHAPE;
-		if(type == SlabType.BOTTOM && aff == Affinity.Z) return NORTH_SHAPE;
-		if(type == SlabType.TOP && aff == Affinity.X) return EAST_SHAPE;
-		if(type == SlabType.TOP && aff == Affinity.Z) return SOUTH_SHAPE;
-		
-		return VoxelShapes.fullCube(); //unreachable
+		Direction d = stateToDirection(state);
+		if(d == null) return VoxelShapes.fullCube(); //double slab
+		else return switch(d) {
+			case NORTH -> NORTH_SHAPE;
+			case EAST -> EAST_SHAPE;
+			case SOUTH -> SOUTH_SHAPE;
+			case WEST -> WEST_SHAPE;
+			default -> VoxelShapes.fullCube(); //unreachable
+		};
 	}
 	
 	@Override
 	public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
 		BlockPos pos = ctx.getBlockPos();
 		BlockState existingState = ctx.getWorld().getBlockState(pos);
+		BlockState state;
+		
 		if(existingState.isOf(this)) {
-			return TemplateInteractionUtil.modifyPlacementState(existingState.with(TYPE, SlabType.DOUBLE).with(WATERLOGGED, false), ctx);
+			//Player clicked inside of an existing vertical slab. Complete the double slab.
+			state = existingState.with(TYPE, SlabType.DOUBLE).with(WATERLOGGED, false);
 		} else {
-//			double dx = ctx.getHitPos().x - ctx.getBlockPos().getX();
-//			double dz = ctx.getHitPos().z - ctx.getBlockPos().getZ();
-//			
-//			Direction hmm = switch(ctx.getHorizontalPlayerFacing()) {
-//				case NORTH, SOUTH -> dx < 0.5 ? Direction.WEST : Direction.EAST;
-//				case EAST, WEST -> dz < 0.5 ? Direction.NORTH : Direction.SOUTH;
-//				default -> Direction.NORTH; //unreachable
-//			};
+			state = getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(pos).getFluid() == Fluids.WATER);
 			
-			Direction hmm = ctx.getHorizontalPlayerFacing();
-			//So when you click on the ground, they place on the near side of the block rather than the far side.
-			//Gives you more options when looking at a corner & it feels better imo
-			if(ctx.getSide().getAxis().isVertical()) hmm = hmm.getOpposite();
-			
-			return TemplateInteractionUtil.modifyPlacementState(getDefaultState()
-				.with(WATERLOGGED, ctx.getWorld().getFluidState(pos).getFluid() == Fluids.WATER)
-				.with(TYPE, (hmm == Direction.NORTH || hmm == Direction.WEST) ? SlabType.BOTTOM : SlabType.TOP)
-				.with(AFFINITY, (hmm == Direction.NORTH || hmm == Direction.SOUTH) ? Affinity.Z : Affinity.X), ctx);
+			//chosen by fair dice roll, guaranteed to be intuitive
+			if(ctx.getPlayer() != null && ctx.getPlayer().isSneaky() && ctx.getSide().getAxis().isHorizontal()) {
+				state = directionToState(state, ctx.getSide().getOpposite());
+			} else {
+				state = directionToState(state, ctx.getHorizontalPlayerFacing());
+			}
 		}
+		
+		return TemplateInteractionUtil.modifyPlacementState(state, ctx);
 	}
 	
 	@Override
@@ -86,25 +80,14 @@ public class TemplateVerticalSlabBlock extends TemplateSlabBlock {
 		ItemStack stack = ctx.getStack();
 		if(!stack.isOf(asItem())) return false;
 		
-		if(ctx.canReplaceExisting()) {
-			//Easy check -> clicking on the floor or ceiling should complete the slab.
-			//I don't think this check actually works lol, but vanilla has something like it
-			//If you click on the floor or ceiling of the next block, you get !canReplaceExisting
-			Direction dir = ctx.getSide();
-			if(dir.getAxis().isVertical()) return true;
-			
-			//Hard check -> clicking the west face of a slab occupying the east half of the block should complete the slab.
-			Affinity aff = state.get(AFFINITY);
-			return (type == SlabType.BOTTOM && aff == Affinity.X && dir == Direction.EAST) ||
-				(type == SlabType.BOTTOM && aff == Affinity.Z && dir == Direction.SOUTH) ||
-				(type == SlabType.TOP && aff == Affinity.X && dir == Direction.WEST) ||
-				(type == SlabType.TOP && aff == Affinity.Z && dir == Direction.NORTH);
-		} else {
-			//This looks wrong, right? if !ctx.canReplaceExisting, return "true"?
-			//I'll chalk this up to a bad Yarn name. This method seems to return false when the placement was "bumped"
-			//into this blockspace, like when you click the side of an end rod that's facing my block
-			return true;
-		}
+		//This looks wrong, right? if !ctx.canReplaceExisting, return "true"?
+		//canReplaceExisting seems to return false when the placement was "bumped"
+		//into this blockspace, like when you click the side of an end rod that's facing my block.
+		//If that happens I dont care what orientation you're facing, let's just complete the slab.
+		if(!ctx.canReplaceExisting()) return true;
+		
+		Direction d = stateToDirection(state);
+		return d != null && d == ctx.getSide().getOpposite();
 	}
 	
 	protected enum Affinity implements StringIdentifiable {
@@ -114,5 +97,21 @@ public class TemplateVerticalSlabBlock extends TemplateSlabBlock {
 		public String asString() {
 			return this == X ? "x" : "z";
 		}
+	}
+	
+	//This only exists because I'm being dumb and extending SlabBlock.
+	//Really I should fold out into a six-way N/S/E/W/double_x/double_z enum.
+	protected @Nullable Direction stateToDirection(BlockState state) {
+		SlabType type = state.get(TYPE);
+		if(type == SlabType.DOUBLE) return null;
+		
+		return state.get(AFFINITY) == Affinity.X ?
+			(type == SlabType.BOTTOM ? Direction.WEST : Direction.EAST) :
+			(type == SlabType.BOTTOM ? Direction.NORTH : Direction.SOUTH);
+	}
+	
+	protected BlockState directionToState(BlockState state, Direction dir) {
+		return state.with(AFFINITY, (dir == Direction.EAST || dir == Direction.WEST) ? Affinity.X : Affinity.Z)
+			.with(TYPE, (dir == Direction.NORTH || dir == Direction.WEST) ? SlabType.BOTTOM : SlabType.TOP);
 	}
 }
