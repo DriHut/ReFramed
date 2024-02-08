@@ -1,0 +1,64 @@
+{
+	"variants": {
+		"edge=down_east": {
+			"model": "reframedtemplates:tiny_slope_special",
+			"uvlock": true,
+			"y": 270
+		},
+		"edge=down_north": {
+			"model": "reframedtemplates:tiny_slope_special",
+			"uvlock": true,
+			"y": 180
+		},
+		"edge=down_south": {
+			"model": "reframedtemplates:tiny_slope_special"
+		},
+		"edge=down_west": {
+			"model": "reframedtemplates:tiny_slope_special",
+			"uvlock": true,
+			"y": 90
+		},
+		"edge=up_east": {
+			"model": "reframedtemplates:tiny_slope_special",
+			"uvlock": true,
+			"x": 180,
+			"y": 90
+		},
+		"edge=up_north": {
+			"model": "reframedtemplates:tiny_slope_special",
+			"uvlock": true,
+			"x": 180
+		},
+		"edge=up_south": {
+			"model": "reframedtemplates:tiny_slope_special",
+			"uvlock": true,
+			"x": 180,
+			"y": 180
+		},
+		"edge=up_west": {
+			"model": "reframedtemplates:tiny_slope_special",
+			"uvlock": true,
+			"x": 180,
+			"y": 270
+		},
+		"edge=north_east": {
+			"model": "reframedtemplates:tiny_slope_side_special",
+			"uvlock": true,
+			"y": 270
+		},
+		"edge=north_west": {
+			"model": "reframedtemplates:tiny_slope_side_special",
+			"uvlock": true,
+			"y": 180
+		},
+		"edge=south_east": {
+			"model": "reframedtemplates:tiny_slope_side_special",
+			"uvlock": true
+		},
+		"edge=south_west": {
+			"model": "reframedtemplates:tiny_slope_side_special",
+			"uvlock": true,
+			"y": 90
+		}
+	}
+}

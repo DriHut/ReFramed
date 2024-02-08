@@ -1,7 +1,7 @@
 {
 	"replace": false,
 	"values": [
-		"templates:slab",
-		"templates:vertical_slab"
+		"reframedtemplates:slab",
+		"reframedtemplates:vertical_slab"
 	]
 }

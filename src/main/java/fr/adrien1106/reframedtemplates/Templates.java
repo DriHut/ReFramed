@@ -49,14 +49,14 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**
- * TODO handle random textures, handle grass side, multiple camos
+ * TODO handle random textures wip, handle grass side, multiple camos
  */
 public class Templates implements ModInitializer {
-	public static final String MODID = "templates";
+	public static final String MODID = "reframedtemplates";
 	
 	//addon devs: *Don't* add your blocks to this collection, it's just for my registration convenience since Templates adds a lot of blocks...
 	@ApiStatus.Internal static final ArrayList<Block> INTERNAL_TEMPLATES = new ArrayList<>();
-	@ApiStatus.Internal static Block CUBE, STAIRS, SLAB, VERTICAL_SLAB, POST, FENCE, FENCE_GATE, DOOR, TRAPDOOR, IRON_DOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE, CANDLE, SLOPE, TINY_SLOPE, COOL_RIVULET;
+	@ApiStatus.Internal static Block CUBE, STAIRS, SLAB, VERTICAL_SLAB, POST, FENCE, FENCE_GATE, DOOR, TRAPDOOR, IRON_DOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE, CANDLE, SLOPE, TINY_SLOPE;
 	
 	//For addon devs: Please don't stuff more blocks into this BlockEntityType, and register your own.
 	//You can even re-register the same TemplateEntity class under your own ID if you like. (It's an extensible block entity.)
@@ -71,7 +71,7 @@ public class Templates implements ModInitializer {
 		//the ordering is used in the creative tab, so they're roughly sorted by encounter order of the
 		//corresponding vanilla block in the "search" creative tab... with the non-vanilla "post" and
 		//"vertical slab" inserted where they fit ...and i moved the lever way up next to the pressureplate
-		//and button, cause theyre redstoney... hopefully this ordering makes sense lol
+		//and button, because they're redstoney... hopefully this ordering makes sense lol
 		CUBE           = registerTemplate("cube"          , new TemplateBlock(TemplateInteractionUtil.makeSettings()));
 		STAIRS         = registerTemplate("stairs"        , new TemplateStairsBlock(cp(Blocks.OAK_STAIRS)));
 		SLAB           = registerTemplate("slab"          , new TemplateSlabBlock(cp(Blocks.OAK_SLAB)));
@@ -98,24 +98,11 @@ public class Templates implements ModInitializer {
 			FabricBlockEntityTypeBuilder.create((pos, state) -> new TemplateEntity(TEMPLATE_BLOCK_ENTITY, pos, state), INTERNAL_TEMPLATES.toArray(new Block[0])).build(null)
 		);
 		
-		//hey guys rate my registration code
-		Registry.register(Registries.ITEM, id("cool_rivulet"), new BlockItem(
-			COOL_RIVULET = Registry.register(Registries.BLOCK, id("cool_rivulet"), new GlazedTerracottaBlock(
-				AbstractBlock.Settings.create().hardness(0.2f)) {
-				@Override
-				public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext eggbals) {
-					tooltip.add(Text.translatable("block.templates.cool_rivulet").formatted(Formatting.GRAY));
-				}
-			}),
-			new Item.Settings()
-		));
-		
 		Registry.register(Registries.ITEM_GROUP, id("tab"), FabricItemGroup.builder()
-			.displayName(Text.translatable("itemGroup.templates.tab"))
+			.displayName(Text.translatable("itemGroup.reframedtemplates.tab"))
 			.icon(() -> new ItemStack(SLOPE))
 			.entries((ctx, e) -> {
 				e.addAll(INTERNAL_TEMPLATES.stream().map(ItemStack::new).collect(Collectors.toList()));
-				e.add(COOL_RIVULET);
 			}).build()
 		);
 	}

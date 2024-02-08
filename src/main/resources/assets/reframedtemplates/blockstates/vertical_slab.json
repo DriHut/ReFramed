@@ -1,0 +1,25 @@
+{
+	"variants": {
+		"type=bottom,affinity=x": {
+			"model": "reframedtemplates:vertical_slab_special",
+			"y": 270
+		},
+		"type=double,affinity=x": {
+			"model": "reframedtemplates:cube_special"
+		},
+		"type=top,affinity=x": {
+			"model": "reframedtemplates:vertical_slab_special",
+			"y": 90
+		},
+		"type=bottom,affinity=z": {
+			"model": "reframedtemplates:vertical_slab_special"
+		},
+		"type=double,affinity=z": {
+			"model": "reframedtemplates:cube_special"
+		},
+		"type=top,affinity=z": {
+			"model": "reframedtemplates:vertical_slab_special",
+			"y": 180
+		}
+	}
+}

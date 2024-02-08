@@ -1,6 +1,6 @@
 {
 	"replace": false,
 	"values": [
-		"templates:fence_gate"
+		"reframedtemplates:fence_gate"
 	]
 }

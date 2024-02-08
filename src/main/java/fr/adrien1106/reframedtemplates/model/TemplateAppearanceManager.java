@@ -53,7 +53,7 @@ public class TemplateAppearanceManager {
 	
 	//TODO ABI: Shouldn't have been made public. Noticed this in 2.2.
 	@ApiStatus.Internal
-	public static final SpriteIdentifier DEFAULT_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:block/scaffolding_top"));
+	public static final SpriteIdentifier DEFAULT_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("reframedtemplates:block/framed_block"));
 	private static final SpriteIdentifier BARRIER_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:item/barrier"));
 	
 	private final TemplateAppearance defaultAppearance;

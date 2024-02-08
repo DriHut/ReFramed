@@ -1,0 +1,51 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards": {
+		"recipes": [
+			"reframedtemplates:button",
+			"reframedtemplates:candle",
+			"reframedtemplates:carpet",
+			"reframedtemplates:cube",
+			"reframedtemplates:door",
+			"reframedtemplates:fence",
+			"reframedtemplates:fence_gate",
+			"reframedtemplates:iron_door",
+			"reframedtemplates:iron_trapdoor",
+			"reframedtemplates:lever",
+			"reframedtemplates:pane",
+			"reframedtemplates:post",
+			"reframedtemplates:pressure_plate",
+			"reframedtemplates:slab",
+			"reframedtemplates:stairs",
+			"reframedtemplates:trapdoor",
+			"reframedtemplates:vertical_slab",
+			"reframedtemplates:wall",
+			"reframedtemplates:slope",
+			"reframedtemplates:tiny_slope"
+		]
+	},
+	"criteria": {
+		"has_bamboo": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "minecraft:bamboo"
+					}
+				]
+			}
+		},
+		"has_the_recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "reframedtemplates:slope"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"has_bamboo",
+			"has_the_recipe"
+		]
+	]
+}

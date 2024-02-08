@@ -1,0 +1,77 @@
+{
+	"multipart": [
+		{
+			"apply": {
+				"model": "reframedtemplates:glass_pane_post_special"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframedtemplates:glass_pane_side_special"
+			},
+			"when": {
+				"north": "true"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframedtemplates:glass_pane_side_special",
+				"y": 90
+			},
+			"when": {
+				"east": "true"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframedtemplates:glass_pane_side_alt_special"
+			},
+			"when": {
+				"south": "true"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframedtemplates:glass_pane_side_alt_special",
+				"y": 90
+			},
+			"when": {
+				"west": "true"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframedtemplates:glass_pane_noside_special"
+			},
+			"when": {
+				"north": "false"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframedtemplates:glass_pane_noside_alt_special"
+			},
+			"when": {
+				"east": "false"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframedtemplates:glass_pane_noside_alt_special",
+				"y": 90
+			},
+			"when": {
+				"south": "false"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframedtemplates:glass_pane_noside_special",
+				"y": 270
+			},
+			"when": {
+				"west": "false"
+			}
+		}
+	]
+}

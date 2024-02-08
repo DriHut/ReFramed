@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"II ",
+		"II~",
+		"IIX"
+	],
+	"key": {
+		"I": {
+			"item": "minecraft:bamboo"
+		},
+		"~": {
+			"item": "minecraft:string"
+		},
+		"X": {
+			"item": "minecraft:iron_ingot"
+		}
+	},
+	"result": {
+		"item": "reframedtemplates:door",
+		"count": 2
+	},
+	"group": "reframedtemplates"
+}

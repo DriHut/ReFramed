@@ -1,0 +1,13 @@
+{
+	"variants": {
+		"type=bottom": {
+			"model": "reframedtemplates:slab_bottom_special"
+		},
+		"type=double": {
+			"model": "reframedtemplates:cube_special"
+		},
+		"type=top": {
+			"model": "reframedtemplates:slab_top_special"
+		}
+	}
+}

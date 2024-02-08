@@ -1,6 +1,6 @@
 {
 	"replace": false,
 	"values": [
-		"templates:pressure_plate"
+		"reframedtemplates:pressure_plate"
 	]
 }

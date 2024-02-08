@@ -2,17 +2,14 @@ package fr.adrien1106.reframedtemplates.model;
 
 import fr.adrien1106.reframedtemplates.Templates;
 import fr.adrien1106.reframedtemplates.api.TemplatesClientApi;
+import fr.adrien1106.reframedtemplates.mixin.model.WeightedBakedModelAccessor;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.*;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.screen.PlayerScreenHandler;
@@ -73,9 +70,15 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel, TemplatesClient
 			SpriteIdentifier id = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Templates.id("templates_special/" + DIRECTIONS[i].getName()));
 			specialSprites[i] = Objects.requireNonNull(spriteLookup.apply(id), () -> "Couldn't find sprite " + id + " !");
 		}
-		
+
+		BakedModel model = baker.bake(parent, modelBakeSettings);
+		if (model instanceof WeightedBakedModel weighted_model) {
+			System.out.println("weighted model");
+			((WeightedBakedModelAccessor) weighted_model).getModels();
+		}
+
 		return new RetexturingBakedModel(
-			baker.bake(parent, modelBakeSettings),
+			model,
 			TemplatesClientApi.getInstance().getOrCreateTemplateApperanceManager(spriteLookup),
 			modelBakeSettings,
 			itemModelState,
@@ -85,7 +88,7 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel, TemplatesClient
 			
 			@Override
 			protected Mesh getBaseMesh(BlockState state) {
-				//Convert models to retexturable Meshes lazily, the first time we encounter each blockstate
+				//Convert models to re-texturable Meshes lazily, the first time we encounter each blockstate
 				return jsonToMesh.computeIfAbsent(state, this::convertModel);
 			}
 			
@@ -96,7 +99,7 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel, TemplatesClient
 				RenderMaterial mat = tam.getCachedMaterial(state, false);
 				
 				Random rand = Random.create(42);
-				
+
 				for(Direction cullFace : DIRECTIONS_AND_NULL) {
 					for(BakedQuad quad : wrapped.getQuads(state, cullFace, rand)) {
 						emitter.fromVanilla(quad, mat, cullFace);
@@ -117,12 +120,5 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel, TemplatesClient
 				return builder.build();
 			}
 		};
-	}
-	
-	//TODO ABI: (2.2) use TemplatesClientApi.getInstance.json, and use the builder properties to set this field
-	@Deprecated(forRemoval = true)
-	public UnbakedJsonRetexturedModel(Identifier parent, BlockState itemModelState) {
-		this(parent);
-		itemModelState(itemModelState);
 	}
 }
