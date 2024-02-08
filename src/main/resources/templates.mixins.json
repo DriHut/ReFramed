@@ -1,17 +1,17 @@
 {
 	"required": true,
-	"package": "io.github.cottonmc.templates.mixin",
+	"package": "fr.adrien1106.reframedtemplates.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"MinecraftAccessor",
-		"WallBlockAccessor",
-		"particles.MixinEntity",
-		"particles.MixinLivingEntity"
+      "MinecraftAccessor",
+      "WallBlockAccessor",
+      "particles.MixinEntity",
+      "particles.MixinLivingEntity"
 	],
 	"client": [
-		"particles.AccessorParticle",
-		"particles.AccessorSpriteBillboardParticle",
-		"particles.MixinBlockDustParticle"
+      "particles.AccessorParticle",
+      "particles.AccessorSpriteBillboardParticle",
+      "particles.MixinBlockDustParticle"
 	],
 	"injectors": {
 		"defaultRequire": 1

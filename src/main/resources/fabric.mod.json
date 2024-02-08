@@ -1,37 +1,30 @@
 {
 	"schemaVersion": 1,
-	"id": "templates",
-	"version": "$version",
-	"name": "Templates 2",
+	"id": "${mod_id}",
+	"version": "${version}",
+	"name": "ReFramedBlocks",
 	"description": "An API for templated blocks",
 	"authors": [
-		"quaternary",
-		"LemmaEOF",
-		"Grondag",
-		"mevvern"
+		"Adrien1106"
 	],
-	"contact": {
-		"homepage": "https://highlysuspect.agency/",
-		"sources": "https://github.com/quat1024/templates-mod",
-		"issues": "https://github.com/quat1024/templates-mod/issues"
-	},
-	"license": "MIT",
-	"icon": "templates-icon.png",
+	"contact": {},
+	"license": "All-Rights-Reserved",
+	"icon": "assets/framed-templates-icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"io.github.cottonmc.templates.Templates"
+			"fr.adrien1106.reframedtemplates.Templates"
 		],
 		"client": [
-			"io.github.cottonmc.templates.TemplatesClient"
+			"fr.adrien1106.reframedtemplates.TemplatesClient"
 		]
 	},
 	"mixins": [
 		"templates.mixins.json"
 	],
 	"depends": {
-		"minecraft": ">=1.20.1",
-		"fabricloader": "*",
+		"minecraft": ">=${minecraft_version}",
+		"fabricloader": "${loader_version}",
 		"fabric-api": "*"
 	}
 }
