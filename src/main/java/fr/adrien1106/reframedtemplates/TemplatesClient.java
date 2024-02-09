@@ -58,8 +58,7 @@ public class TemplatesClient implements ClientModInitializer {
 		api.addTemplateModel(Templates.id("glass_pane_noside_alt_special"), api.auto(new Identifier("block/glass_pane_noside_alt")));
 		api.addTemplateModel(Templates.id("pressure_plate_up_special")    , api.auto(new Identifier("block/pressure_plate_up")));
 		api.addTemplateModel(Templates.id("pressure_plate_down_special")  , api.auto(new Identifier("block/pressure_plate_down")));
-		api.addTemplateModel(Templates.id("slab_bottom_special")          , api.auto(new Identifier("block/slab")));
-		api.addTemplateModel(Templates.id("slab_top_special")             , api.auto(new Identifier("block/slab_top")));
+		api.addTemplateModel(Templates.id("slab_special")          , api.auto(new Identifier("block/slab")));
 		api.addTemplateModel(Templates.id("stairs_special")               , api.auto(new Identifier("block/stairs")));
 		api.addTemplateModel(Templates.id("inner_stairs_special")         , api.auto(new Identifier("block/inner_stairs")));
 		api.addTemplateModel(Templates.id("outer_stairs_special")         , api.auto(new Identifier("block/outer_stairs")));

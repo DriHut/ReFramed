@@ -2,7 +2,7 @@
 	"multipart": [
 		{
 			"apply": {
-				"model": "reframedtemplates:slab_bottom_special",
+				"model": "reframedtemplates:slab_special",
 				"uvlock": true
 			},
 			"when": {
@@ -11,7 +11,7 @@
 		},
 		{
 			"apply": {
-				"model": "reframedtemplates:slab_bottom_special",
+				"model": "reframedtemplates:slab_special",
 				"uvlock": true,
 				"x": 180
 			},
@@ -21,7 +21,7 @@
 		},
 		{
 			"apply": {
-				"model": "reframedtemplates:slab_bottom_special",
+				"model": "reframedtemplates:slab_special",
 				"uvlock": true,
 				"x": 270
 			},
@@ -31,7 +31,7 @@
 		},
 		{
 			"apply": {
-				"model": "reframedtemplates:slab_bottom_special",
+				"model": "reframedtemplates:slab_special",
 				"uvlock": true,
 				"x": 90
 			},
@@ -41,7 +41,7 @@
 		},
 		{
 			"apply": {
-				"model": "reframedtemplates:slab_bottom_special",
+				"model": "reframedtemplates:slab_special",
 				"uvlock": true,
 				"x": 90,
 				"y": 90
@@ -52,7 +52,7 @@
 		},
 		{
 			"apply": {
-				"model": "reframedtemplates:slab_bottom_special",
+				"model": "reframedtemplates:slab_special",
 				"uvlock": true,
 				"x": 90,
 				"y": 270
