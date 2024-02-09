@@ -33,7 +33,7 @@ public class Templates implements ModInitializer {
 	
 	//addon devs: *Don't* add your blocks to this collection, it's just for my registration convenience since Templates adds a lot of blocks...
 	@ApiStatus.Internal static final ArrayList<Block> INTERNAL_TEMPLATES = new ArrayList<>();
-	@ApiStatus.Internal static Block CUBE, STAIRS, SLAB, VERTICAL_SLAB, POST, FENCE, FENCE_GATE, DOOR, TRAPDOOR, IRON_DOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE, CANDLE, SLOPE, TINY_SLOPE;
+	@ApiStatus.Internal static Block CUBE, STAIRS, SLAB, VERTICAL_SLAB, POST, FENCE, FENCE_GATE, DOOR, TRAPDOOR, IRON_DOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE, CANDLE;
 	
 	//For addon devs: Please don't stuff more blocks into this BlockEntityType, and register your own.
 	//You can even re-register the same TemplateEntity class under your own ID if you like. (It's an extensible block entity.)
@@ -67,8 +67,6 @@ public class Templates implements ModInitializer {
 		CARPET         = registerTemplate("carpet"        , new TemplateCarpetBlock(cp(Blocks.WHITE_CARPET)));
 		PANE           = registerTemplate("pane"          , new TemplatePaneBlock(cp(Blocks.GLASS_PANE)));
 		CANDLE         = registerTemplate("candle"        , new TemplateCandleBlock(TemplateCandleBlock.configureSettings(cp(Blocks.CANDLE))));
-		SLOPE          = registerTemplate("slope"         , new TemplateSlopeBlock(TemplateInteractionUtil.makeSettings()));
-		TINY_SLOPE     = registerTemplate("tiny_slope"    , new TemplateSlopeBlock.Tiny(TemplateInteractionUtil.makeSettings()));
 		
 		//The block entity is still called templates:slope; this is a bit of a legacy mistake.
 		TEMPLATE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("slope"),
@@ -77,7 +75,7 @@ public class Templates implements ModInitializer {
 		
 		Registry.register(Registries.ITEM_GROUP, id("tab"), FabricItemGroup.builder()
 			.displayName(Text.translatable("itemGroup.reframedtemplates.tab"))
-			.icon(() -> new ItemStack(SLOPE))
+			.icon(() -> new ItemStack(SLAB))
 			.entries((ctx, e) -> {
 				e.addAll(INTERNAL_TEMPLATES.stream().map(ItemStack::new).collect(Collectors.toList()));
 			}).build()

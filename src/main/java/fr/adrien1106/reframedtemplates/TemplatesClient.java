@@ -80,12 +80,6 @@ public class TemplatesClient implements ClientModInitializer {
 		api.addTemplateModel(Templates.id("wall_side_special")            , api.json(Templates.id("block/wall_side")));
 		api.addTemplateModel(Templates.id("wall_side_tall_special")       , api.json(Templates.id("block/wall_side_tall")));
 		
-		//mesh models
-		api.addTemplateModel(Templates.id("slope_special")                , api.mesh(Templates.id("block/slope_base"), SlopeBaseMesh::makeUpright).disableAo());
-		api.addTemplateModel(Templates.id("slope_side_special")           , api.mesh(Templates.id("block/slope_base"), SlopeBaseMesh::makeSide).disableAo());
-		api.addTemplateModel(Templates.id("tiny_slope_special")           , api.mesh(Templates.id("block/tiny_slope_base"), SlopeBaseMesh::makeTinyUpright).disableAo());
-		api.addTemplateModel(Templates.id("tiny_slope_side_special")      , api.mesh(Templates.id("block/tiny_slope_base"), SlopeBaseMesh::makeTinySide).disableAo());
-		
 		//item only models
 		api.addTemplateModel(Templates.id("button_inventory_special")     , api.auto(new Identifier("block/button_inventory")));
 		api.addTemplateModel(Templates.id("fence_inventory_special")      , api.auto(new Identifier("block/fence_inventory")));
@@ -106,8 +100,6 @@ public class TemplatesClient implements ClientModInitializer {
 		api.assignItemModel(Templates.id("trapdoor_bottom_special")       , Templates.TRAPDOOR);
 		api.assignItemModel(Templates.id("vertical_slab_special")         , Templates.VERTICAL_SLAB);
 		api.assignItemModel(Templates.id("wall_inventory_special")        , Templates.WALL);
-		api.assignItemModel(Templates.id("slope_special")                 , Templates.SLOPE);
-		api.assignItemModel(Templates.id("tiny_slope_special")            , Templates.TINY_SLOPE);
 	}
 	
 	private void privateInit() {

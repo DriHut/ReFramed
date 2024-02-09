@@ -16,8 +16,6 @@
 		"reframedtemplates:stairs",
 		"reframedtemplates:trapdoor",
 		"reframedtemplates:vertical_slab",
-		"reframedtemplates:wall",
-		"reframedtemplates:slope",
-		"reframedtemplates:tiny_slope"
+		"reframedtemplates:wall"
 	]
 }
