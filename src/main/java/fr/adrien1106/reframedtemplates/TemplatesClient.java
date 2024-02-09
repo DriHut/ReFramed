@@ -1,7 +1,6 @@
 package fr.adrien1106.reframedtemplates;
 
 import fr.adrien1106.reframedtemplates.api.TemplatesClientApi;
-import fr.adrien1106.reframedtemplates.model.SlopeBaseMesh;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
