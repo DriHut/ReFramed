@@ -21,7 +21,7 @@ record QuadUvBounds(float minU, float maxU, float minV, float maxV) {
 		return sprite.getMinU() <= minU && sprite.getMaxU() >= maxU && sprite.getMinV() <= minV && sprite.getMaxV() >= maxV;
 	}
 	
-	void normalizeUv(MutableQuadView quad, Sprite sprite) {
+	void normalizeUv(MutableQuadView quad, Sprite sprite) { // TODO find out for sprites rotations and mirroring
 		float remappedMinU = norm(minU, sprite.getMinU(), sprite.getMaxU());
 		float remappedMaxU = norm(maxU, sprite.getMinU(), sprite.getMaxU());
 		float remappedMinV = norm(minV, sprite.getMinV(), sprite.getMaxV());

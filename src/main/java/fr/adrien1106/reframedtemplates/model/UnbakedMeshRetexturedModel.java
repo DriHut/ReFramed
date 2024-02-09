@@ -11,12 +11,10 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class UnbakedMeshRetexturedModel implements UnbakedModel, TemplatesClientApi.TweakableUnbakedModel {
 	public UnbakedMeshRetexturedModel(Identifier parent, Function<Function<SpriteIdentifier, Sprite>, Mesh> baseMeshFactory) {

@@ -36,7 +36,7 @@ public class WeightedComputedAppearance implements TemplateAppearance {
     public int getAppearanceIndex(long seed) {
         Random random = Random.create(seed);
         return Weighting.getAt(appearances, Math.abs((int)random.nextLong()) % total_weight)
-            .map(appearances::indexOf).get();
+            .map(appearances::indexOf).orElse(0);
     }
 
     private Appearance getAppearance(long seed) {

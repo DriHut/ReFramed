@@ -49,7 +49,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**
- * TODO handle random textures wip, handle grass side, multiple camos
+ * TODO handle random textures rotation and mirroring wip, handle grass side, multiple camos
  */
 public class Templates implements ModInitializer {
 	public static final String MODID = "reframedtemplates";
