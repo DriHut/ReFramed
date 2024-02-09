@@ -2,11 +2,14 @@ package fr.adrien1106.reframedtemplates.model;
 
 import fr.adrien1106.reframedtemplates.block.TemplateEntity;
 import fr.adrien1106.reframedtemplates.mixin.MinecraftAccessor;
+import fr.adrien1106.reframedtemplates.model.apperance.TemplateAppearance;
+import fr.adrien1106.reframedtemplates.model.apperance.TemplateAppearanceManager;
+import fr.adrien1106.reframedtemplates.model.apperance.WeightedComputedAppearance;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -41,8 +44,10 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	protected final BlockState itemModelState;
 	protected final boolean ao;
 	
-	protected record CacheKey(BlockState state, TemplateAppearance appearance) {}
-	protected final ConcurrentMap<CacheKey, Mesh> retexturedMeshes = new ConcurrentHashMap<>(); //mutable, append-only cache
+	protected record MeshCacheKey(BlockState state, TransformCacheKey transform) {}
+	protected final ConcurrentMap<MeshCacheKey, Mesh> retextured_meshes = new ConcurrentHashMap<>(); //mutable, append-only cache
+	protected record TransformCacheKey(TemplateAppearance appearance, int model_id) {}
+	protected final ConcurrentMap<TransformCacheKey, RetexturingTransformer> retextured_transforms = new ConcurrentHashMap<>();
 	
 	protected static final Direction[] DIRECTIONS = Direction.values();
 	protected static final Direction[] DIRECTIONS_AND_NULL = new Direction[DIRECTIONS.length + 1];
@@ -57,32 +62,34 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public Sprite getParticleSprite() {
-		return tam.getDefaultAppearance().getSprite(Direction.UP);
+		return tam.getDefaultAppearance().getSprite(Direction.UP, 0);
 	}
 	
 	@Override
 	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		BlockState theme = (((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos) instanceof BlockState s) ? s : null;
+		BlockState theme = (blockView.getBlockEntityRenderData(pos) instanceof BlockState s) ? s : null;
+		QuadEmitter quad_emitter = context.getEmitter();
 		if(theme == null || theme.isAir()) {
-			context.meshConsumer().accept(getUntintedRetexturedMesh(new CacheKey(state, tam.getDefaultAppearance())));
-			return;
-		} else if(theme.getBlock() == Blocks.BARRIER) {
-			//TODO i don't love putting this rare specialcase smack in the middle of the hot code path
+			getUntintedRetexturedMesh(new MeshCacheKey(state, new TransformCacheKey(tam.getDefaultAppearance(), 0)), 0).outputTo(quad_emitter);
 			return;
 		}
+		if(theme.getBlock() == Blocks.BARRIER) return;
 		
-		TemplateAppearance ta = tam.getAppearance(theme);
+		TemplateAppearance ta = tam.getTemplateAppearance(theme);
+		long seed = theme.getRenderingSeed(pos);
+		int model_id = 0;
+		if (ta instanceof WeightedComputedAppearance wca) model_id = wca.getAppearanceIndex(seed);
 		
 		int tint = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(theme, blockView, pos, 0);
-		Mesh untintedMesh = getUntintedRetexturedMesh(new CacheKey(state, ta));
+		Mesh untintedMesh = getUntintedRetexturedMesh(new MeshCacheKey(state, new TransformCacheKey(ta, model_id)), seed);
 		
 		//The specific tint might vary a lot; imagine grass color smoothly changing. Trying to bake the tint into
-		//the cached mesh will pollute it with a ton of single-use meshes with only slighly different colors.
+		//the cached mesh will pollute it with a ton of single-use meshes with only slightly different colors.
 		if(tint == 0xFFFFFFFF) {
-			context.meshConsumer().accept(untintedMesh);
+			untintedMesh.outputTo(quad_emitter);
 		} else {
-			context.pushTransform(new TintingTransformer(ta, tint));
-			context.meshConsumer().accept(untintedMesh);
+			context.pushTransform(new TintingTransformer(ta, tint, seed));
+			untintedMesh.outputTo(quad_emitter);
 			context.popTransform();
 		}
 	}
@@ -95,40 +102,39 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		int tint;
 		BlockState theme = TemplateEntity.readStateFromItem(stack);
 		if(!theme.isAir()) {
-			nbtAppearance = tam.getAppearance(theme);
+			nbtAppearance = tam.getTemplateAppearance(theme);
 			tint = 0xFF000000 | ((MinecraftAccessor) MinecraftClient.getInstance()).templates$getItemColors().getColor(new ItemStack(theme.getBlock()), 0);
 		} else {
 			nbtAppearance = tam.getDefaultAppearance();
 			tint = 0xFFFFFFFF;
 		}
 		
-		Mesh untintedMesh = getUntintedRetexturedMesh(new CacheKey(itemModelState, nbtAppearance));
-		
+		Mesh untintedMesh = getUntintedRetexturedMesh(new MeshCacheKey(itemModelState, new TransformCacheKey(nbtAppearance, 0)), 0);
+
+		QuadEmitter quad_emitter = context.getEmitter();
 		if(tint == 0xFFFFFFFF) {
-			context.meshConsumer().accept(untintedMesh);
+			untintedMesh.outputTo(quad_emitter);
 		} else {
-			context.pushTransform(new TintingTransformer(nbtAppearance, tint));
-			context.meshConsumer().accept(untintedMesh);
+			context.pushTransform(new TintingTransformer(nbtAppearance, tint, 0));
+			untintedMesh.outputTo(quad_emitter);
 			context.popTransform();
 		}
 	}
 	
-	protected Mesh getUntintedRetexturedMesh(CacheKey key) {
-		return retexturedMeshes.computeIfAbsent(key, this::createUntintedRetexturedMesh);
+	protected Mesh getUntintedRetexturedMesh(MeshCacheKey key, long seed) {
+		return retextured_meshes.computeIfAbsent(key, (k) -> createUntintedRetexturedMesh(k, seed));
 	}
 	
-	protected Mesh createUntintedRetexturedMesh(CacheKey key) {
-		return MeshTransformUtil.pretransformMesh(getBaseMesh(key.state), new RetexturingTransformer(key.appearance));
+	protected Mesh createUntintedRetexturedMesh(MeshCacheKey key, long seed) {
+		RetexturingTransformer transformer = retextured_transforms.computeIfAbsent(key.transform, (k) -> new RetexturingTransformer(k.appearance, seed));
+		return MeshTransformUtil.pretransformMesh(getBaseMesh(key.state), transformer);
 	}
 	
 	protected class RetexturingTransformer implements RenderContext.QuadTransform {
-		protected RetexturingTransformer(TemplateAppearance ta) {
+		private final long seed;
+		protected RetexturingTransformer(TemplateAppearance ta, long seed) {
 			this.ta = ta;
-		}
-		
-		@Deprecated(forRemoval = true) //TODO ABI: Deprecated in 2.2. Use TintingTransformer for retinting, it works better anyway
-		protected RetexturingTransformer(TemplateAppearance ta, int ignoredTint) {
-			this(ta);
+			this.seed = seed;
 		}
 		
 		protected final TemplateAppearance ta;
@@ -141,17 +147,18 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			if(tag == 0) return true; //Pass the quad through unmodified.
 			
 			//The quad tag numbers were selected so this magic trick works:
-			Direction dir = facePermutation.get(DIRECTIONS[quad.tag() - 1]);
-			quad.spriteBake(ta.getSprite(dir), MutableQuadView.BAKE_NORMALIZED | ta.getBakeFlags(dir) | (uvlock ? MutableQuadView.BAKE_LOCK_UV : 0));
-			
+			Direction direction = facePermutation.get(DIRECTIONS[quad.tag() - 1]);
+			quad.spriteBake(ta.getSprite(direction, seed), MutableQuadView.BAKE_NORMALIZED | ta.getBakeFlags(direction, seed) | (uvlock ? MutableQuadView.BAKE_LOCK_UV : 0));
 			return true;
 		}
 	}
 	
 	protected class TintingTransformer implements RenderContext.QuadTransform {
-		protected TintingTransformer(TemplateAppearance ta, int tint) {
+		private final long seed;
+		protected TintingTransformer(TemplateAppearance ta, int tint, long seed) {
 			this.ta = ta;
 			this.tint = tint;
+			this.seed = seed;
 		}
 		
 		protected final TemplateAppearance ta;
@@ -163,15 +170,9 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			if(tag == 0) return true;
 			
 			Direction dir = facePermutation.get(DIRECTIONS[quad.tag() - 1]);
-			if(ta.hasColor(dir)) quad.color(tint, tint, tint, tint);
+			if(ta.hasColor(dir, seed)) quad.color(tint, tint, tint, tint);
 			
 			return true;
 		}
-	}
-	
-	//TODO ABI: From before there was an AO boolean, <2.1.1.
-	@Deprecated(forRemoval = true)
-	public RetexturingBakedModel(BakedModel baseModel, TemplateAppearanceManager tam, ModelBakeSettings settings, BlockState itemModelState) {
-		this(baseModel, tam, settings, itemModelState, true);
 	}
 }

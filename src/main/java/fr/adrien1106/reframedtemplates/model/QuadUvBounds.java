@@ -21,11 +21,11 @@ record QuadUvBounds(float minU, float maxU, float minV, float maxV) {
 		return sprite.getMinU() <= minU && sprite.getMaxU() >= maxU && sprite.getMinV() <= minV && sprite.getMaxV() >= maxV;
 	}
 	
-	void normalizeUv(MutableQuadView quad, Sprite specialSprite) {
-		float remappedMinU = norm(minU, specialSprite.getMinU(), specialSprite.getMaxU());
-		float remappedMaxU = norm(maxU, specialSprite.getMinU(), specialSprite.getMaxU());
-		float remappedMinV = norm(minV, specialSprite.getMinV(), specialSprite.getMaxV());
-		float remappedMaxV = norm(maxV, specialSprite.getMinV(), specialSprite.getMaxV());
+	void normalizeUv(MutableQuadView quad, Sprite sprite) {
+		float remappedMinU = norm(minU, sprite.getMinU(), sprite.getMaxU());
+		float remappedMaxU = norm(maxU, sprite.getMinU(), sprite.getMaxU());
+		float remappedMinV = norm(minV, sprite.getMinV(), sprite.getMaxV());
+		float remappedMaxV = norm(maxV, sprite.getMinV(), sprite.getMaxV());
 		quad.uv(0, MathHelper.approximatelyEquals(quad.u(0), minU) ? remappedMinU : remappedMaxU, MathHelper.approximatelyEquals(quad.v(0), minV) ? remappedMinV : remappedMaxV);
 		quad.uv(1, MathHelper.approximatelyEquals(quad.u(1), minU) ? remappedMinU : remappedMaxU, MathHelper.approximatelyEquals(quad.v(1), minV) ? remappedMinV : remappedMaxV);
 		quad.uv(2, MathHelper.approximatelyEquals(quad.u(2), minU) ? remappedMinU : remappedMaxU, MathHelper.approximatelyEquals(quad.v(2), minV) ? remappedMinV : remappedMaxV);

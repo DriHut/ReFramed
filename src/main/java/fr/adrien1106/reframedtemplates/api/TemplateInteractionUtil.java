@@ -70,7 +70,7 @@ public class TemplateInteractionUtil {
 		
 		ItemStack held = player.getStackInHand(hand);
 		TemplateInteractionUtilExt ext = state.getBlock() instanceof TemplateInteractionUtilExt e ? e : TemplateInteractionUtilExt.Default.INSTANCE;
-		
+
 		//Glowstone
 		if(state.contains(LIGHT) && held.getItem() == Items.GLOWSTONE_DUST && !state.get(LIGHT) && !be.hasSpentGlowstoneDust()) {
 			world.setBlockState(pos, state.with(LIGHT, true));
@@ -113,7 +113,7 @@ public class TemplateInteractionUtil {
 		if(held.getItem() instanceof BlockItem bi && be.getThemeState().getBlock() == Blocks.AIR) {
 			Block block = bi.getBlock();
 			ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
-			BlockState placementState = block.getPlacementState(ctx); // TODO Smart
+			BlockState placementState = block.getPlacementState(ctx);
 			if(placementState != null && Block.isShapeFullCube(placementState.getCollisionShape(world, pos)) && !(block instanceof BlockEntityProvider)) {
 				if(!world.isClient) be.setRenderedState(placementState);
 				

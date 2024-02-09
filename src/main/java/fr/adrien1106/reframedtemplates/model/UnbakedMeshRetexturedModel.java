@@ -11,6 +11,7 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.random.Random;
 
 import java.util.Collection;
 import java.util.Collections;

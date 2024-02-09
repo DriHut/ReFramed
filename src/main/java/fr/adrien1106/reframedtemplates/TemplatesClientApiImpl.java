@@ -1,7 +1,7 @@
 package fr.adrien1106.reframedtemplates;
 
 import fr.adrien1106.reframedtemplates.api.TemplatesClientApi;
-import fr.adrien1106.reframedtemplates.model.TemplateAppearanceManager;
+import fr.adrien1106.reframedtemplates.model.apperance.TemplateAppearanceManager;
 import fr.adrien1106.reframedtemplates.model.UnbakedAutoRetexturedModel;
 import fr.adrien1106.reframedtemplates.model.UnbakedJsonRetexturedModel;
 import fr.adrien1106.reframedtemplates.model.UnbakedMeshRetexturedModel;

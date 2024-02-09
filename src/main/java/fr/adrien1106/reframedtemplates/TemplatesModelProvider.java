@@ -1,6 +1,6 @@
 package fr.adrien1106.reframedtemplates;
 
-import fr.adrien1106.reframedtemplates.model.TemplateAppearanceManager;
+import fr.adrien1106.reframedtemplates.model.apperance.TemplateAppearanceManager;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
