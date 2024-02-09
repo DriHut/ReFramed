@@ -14,12 +14,9 @@
 	"block.reframedtemplates.pane": "Pane Frame",
 	"block.reframedtemplates.post": "Post Frame",
 	"block.reframedtemplates.pressure_plate": "Pressure Plate Frame",
-	"block.reframedtemplates.slope": "Slope Frame",
-	"block.reframedtemplates.tiny_slope": "Tiny Slope Frame",
 	"block.reframedtemplates.slab": "Slab Frame",
 	"block.reframedtemplates.stairs": "Stairs Frame",
 	"block.reframedtemplates.trapdoor": "Trapdoor Frame",
-	"block.reframedtemplates.vertical_slab": "Vertical Slab Frame",
 	"block.reframedtemplates.wall": "Wall Frame"
 
 }

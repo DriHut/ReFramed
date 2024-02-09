@@ -6,25 +6,6 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"conditions": [
-								{
-									"block": "reframedtemplates:slab",
-									"condition": "minecraft:block_state_property",
-									"properties": {
-										"type": "double"
-									}
-								}
-							],
-							"count": 2.0,
-							"function": "minecraft:set_count"
-						},
-						{
-							"function": "minecraft:explosion_decay"
-						}
-					],
 					"name": "reframedtemplates:slab"
 				}
 			],

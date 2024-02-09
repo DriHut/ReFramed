@@ -65,7 +65,6 @@ public class TemplatesClient implements ClientModInitializer {
 		api.addTemplateModel(Templates.id("outer_stairs_special")         , api.auto(new Identifier("block/outer_stairs")));
 		api.addTemplateModel(Templates.id("trapdoor_bottom_special")      , api.auto(new Identifier("block/template_trapdoor_bottom")));
 		api.addTemplateModel(Templates.id("trapdoor_top_special")         , api.auto(new Identifier("block/template_trapdoor_top")));
-		api.addTemplateModel(Templates.id("vertical_slab_special")        , api.auto(Templates.id("block/vertical_slab"))); //my model not vanilla
 		api.addTemplateModel(Templates.id("wall_post_special")            , api.auto(new Identifier("block/template_wall_post")));
 		
 		//vanilla style models (using "special-sprite replacement" method)
@@ -97,7 +96,6 @@ public class TemplatesClient implements ClientModInitializer {
 		api.assignItemModel(Templates.id("slab_bottom_special")           , Templates.SLAB);
 		api.assignItemModel(Templates.id("stairs_special")                , Templates.STAIRS);
 		api.assignItemModel(Templates.id("trapdoor_bottom_special")       , Templates.TRAPDOOR);
-		api.assignItemModel(Templates.id("vertical_slab_special")         , Templates.VERTICAL_SLAB);
 		api.assignItemModel(Templates.id("wall_inventory_special")        , Templates.WALL);
 	}
 	
