@@ -75,9 +75,7 @@ public class Templates implements ModInitializer {
 		Registry.register(Registries.ITEM_GROUP, id("tab"), FabricItemGroup.builder()
 			.displayName(Text.translatable("itemGroup.reframedtemplates.tab"))
 			.icon(() -> new ItemStack(SLAB))
-			.entries((ctx, e) -> {
-				e.addAll(INTERNAL_TEMPLATES.stream().map(ItemStack::new).collect(Collectors.toList()));
-			}).build()
+			.entries((ctx, e) -> e.addAll(INTERNAL_TEMPLATES.stream().map(ItemStack::new).collect(Collectors.toList()))).build()
 		);
 	}
 	
