@@ -2,18 +2,12 @@ package fr.adrien1106.reframedtemplates.generator;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
-import net.minecraft.block.CandleBlock;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.LeverBlock;
-import net.minecraft.block.PaneBlock;
 import net.minecraft.data.client.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 
-import java.util.Iterator;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 public class GBlockstate extends FabricModelProvider {
 
@@ -24,14 +18,7 @@ public class GBlockstate extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator model_generator) { // TODO Find out smth for items
         Generator.BLOCKS
-            .forEach(block -> {
-                Identifier block_id = Registries.BLOCK.getId(block);
-                model_generator.excludeFromSimpleItemModelGeneration(block);
-//                model_generator.registerParentedItemModel(
-//                    block.asItem(),
-//                    block_id.withSuffixedPath("_special")
-//                );
-            });
+            .forEach(model_generator::excludeFromSimpleItemModelGeneration);
         Generator.BLOCKS.stream()
             .map(block -> block instanceof MultipartBlockStateProvider multipart_block ? multipart_block.getMultipart(): null)
             .filter(Objects::nonNull)
