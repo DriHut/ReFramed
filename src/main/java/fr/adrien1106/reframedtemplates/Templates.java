@@ -30,17 +30,13 @@ import java.util.stream.Collectors;
  */
 public class Templates implements ModInitializer {
 	public static final String MODID = "reframedtemplates";
-	
-	//addon devs: *Don't* add your blocks to this collection, it's just for my registration convenience since Templates adds a lot of blocks...
-	@ApiStatus.Internal static final ArrayList<Block> INTERNAL_TEMPLATES = new ArrayList<>();
-	@ApiStatus.Internal static Block CUBE, STAIRS, SLAB, POST, FENCE, FENCE_GATE, DOOR, TRAPDOOR, IRON_DOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE, CANDLE;
-	
-	//For addon devs: Please don't stuff more blocks into this BlockEntityType, and register your own.
-	//You can even re-register the same TemplateEntity class under your own ID if you like. (It's an extensible block entity.)
-	@ApiStatus.Internal public static BlockEntityType<TemplateEntity> TEMPLATE_BLOCK_ENTITY;
-	
-	//Changed in TemplatesClient (which is safe since client initializers load after common initializers)
-	@ApiStatus.Internal public static BiConsumer<World, BlockPos> chunkRerenderProxy = (world, pos) -> {};
+
+	protected static final ArrayList<Block> INTERNAL_TEMPLATES = new ArrayList<>();
+	public static Block CUBE, STAIRS, SLAB, POST, FENCE, FENCE_GATE, DOOR, TRAPDOOR, IRON_DOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE, CANDLE;
+
+	public static BlockEntityType<FramedEntity> TEMPLATE_BLOCK_ENTITY;
+
+	public static BiConsumer<World, BlockPos> chunkRerenderProxy = (world, pos) -> {};
 	
 	@Override
 	public void onInitialize() {
@@ -69,7 +65,7 @@ public class Templates implements ModInitializer {
 		
 		//The block entity is still called templates:slope; this is a bit of a legacy mistake.
 		TEMPLATE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("slope"),
-			FabricBlockEntityTypeBuilder.create((pos, state) -> new TemplateEntity(TEMPLATE_BLOCK_ENTITY, pos, state), INTERNAL_TEMPLATES.toArray(new Block[0])).build(null)
+			FabricBlockEntityTypeBuilder.create((pos, state) -> new FramedEntity(TEMPLATE_BLOCK_ENTITY, pos, state), INTERNAL_TEMPLATES.toArray(new Block[0])).build(null)
 		);
 		
 		Registry.register(Registries.ITEM_GROUP, id("tab"), FabricItemGroup.builder()
@@ -78,8 +74,7 @@ public class Templates implements ModInitializer {
 			.entries((ctx, e) -> e.addAll(INTERNAL_TEMPLATES.stream().map(ItemStack::new).collect(Collectors.toList()))).build()
 		);
 	}
-	
-	//purely to shorten this call :p
+
 	private static AbstractBlock.Settings cp(Block base) {
 		return TemplateInteractionUtil.configureSettings(AbstractBlock.Settings.copy(base));
 	}

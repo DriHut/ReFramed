@@ -26,7 +26,7 @@ import java.util.Objects;
 //Keeping the weight of this block entity down, both in terms of memory consumption and NBT sync traffic,
 //is pretty important since players might place a lot of them. There were tons and tons of these at Blanketcon.
 //To that end, most of the state has been crammed into a bitfield.
-public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity {
+public class FramedEntity extends BlockEntity implements ThemeableBlockEntity {
 	protected BlockState renderedState = Blocks.AIR.getDefaultState();
 	protected byte bitfield = DEFAULT_BITFIELD;
 	
@@ -43,7 +43,7 @@ public class TemplateEntity extends BlockEntity implements ThemeableBlockEntity 
 	protected static final String BLOCKSTATE_KEY = "s";
 	protected static final String BITFIELD_KEY = "b";
 	
-	public TemplateEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+	public FramedEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
 	

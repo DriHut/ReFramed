@@ -1,6 +1,6 @@
 package fr.adrien1106.reframedtemplates.api;
 
-import fr.adrien1106.reframedtemplates.block.TemplateEntity;
+import fr.adrien1106.reframedtemplates.block.FramedEntity;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -61,11 +61,11 @@ public class TemplateInteractionUtil {
 	}
 	
 	public static @Nullable BlockState modifyPlacementState(@Nullable BlockState in, ItemPlacementContext ctx) {
-		return TemplateEntity.weirdNbtLightLevelStuff(in, ctx.getStack());
+		return FramedEntity.weirdNbtLightLevelStuff(in, ctx.getStack());
 	}
 	
 	public static ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if(!(world.getBlockEntity(pos) instanceof TemplateEntity be)) return ActionResult.PASS;
+		if(!(world.getBlockEntity(pos) instanceof FramedEntity be)) return ActionResult.PASS;
 		if(!player.canModifyBlocks() || !world.canPlayerModifyAt(player, pos)) return ActionResult.PASS;
 		
 		ItemStack held = player.getStackInHand(hand);
@@ -132,7 +132,7 @@ public class TemplateInteractionUtil {
 	//Maybe an odd spot to put this logic but it's consistent w/ vanilla chests, barrels, etc
 	public static void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		if(!state.isOf(newState.getBlock()) &&
-			world.getBlockEntity(pos) instanceof TemplateEntity template &&
+			world.getBlockEntity(pos) instanceof FramedEntity template &&
 			world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)
 		) {
 			DefaultedList<ItemStack> drops = DefaultedList.of();
@@ -152,7 +152,7 @@ public class TemplateInteractionUtil {
 	public static void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		//Load the BlockEntityTag clientside, which fixes the template briefly showing its default state when placing it.
 		//I'm surprised this doesn't happen by default; the BlockEntityTag stuff is only done serverside.
-		if(world.isClient && world.getBlockEntity(pos) instanceof TemplateEntity be) {
+		if(world.isClient && world.getBlockEntity(pos) instanceof FramedEntity be) {
 			NbtCompound tag = BlockItem.getBlockEntityNbt(stack);
 			if(tag != null) be.readNbt(tag);
 		}
@@ -160,7 +160,7 @@ public class TemplateInteractionUtil {
 	
 	//Returns "null" to signal "no opinion". Imagine it like an InteractionResult.PASS.
 	public static @Nullable VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-		return view.getBlockEntity(pos) instanceof TemplateEntity be && !be.isSolid() ? VoxelShapes.empty() : null;
+		return view.getBlockEntity(pos) instanceof FramedEntity be && !be.isSolid() ? VoxelShapes.empty() : null;
 	}
 	
 	public static boolean emitsRedstonePower(BlockState state) {
@@ -169,11 +169,11 @@ public class TemplateInteractionUtil {
 	}
 	
 	public static int getWeakRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
-		return view.getBlockEntity(pos) instanceof TemplateEntity be && be.emitsRedstone() ? 15 : 0;
+		return view.getBlockEntity(pos) instanceof FramedEntity be && be.emitsRedstone() ? 15 : 0;
 	}
 	
 	public static int getStrongRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
-		return view.getBlockEntity(pos) instanceof TemplateEntity be && be.emitsRedstone() ? 15 : 0;
+		return view.getBlockEntity(pos) instanceof FramedEntity be && be.emitsRedstone() ? 15 : 0;
 	}
 	
 	public static int luminance(BlockState state) {

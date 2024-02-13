@@ -1,6 +1,6 @@
 package fr.adrien1106.reframedtemplates.model;
 
-import fr.adrien1106.reframedtemplates.block.TemplateEntity;
+import fr.adrien1106.reframedtemplates.block.FramedEntity;
 import fr.adrien1106.reframedtemplates.mixin.MinecraftAccessor;
 import fr.adrien1106.reframedtemplates.model.apperance.TemplateAppearance;
 import fr.adrien1106.reframedtemplates.model.apperance.TemplateAppearanceManager;
@@ -100,7 +100,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		//none of this is accessible unless you're in creative mode doing ctrl-pick btw
 		TemplateAppearance nbtAppearance;
 		int tint;
-		BlockState theme = TemplateEntity.readStateFromItem(stack);
+		BlockState theme = FramedEntity.readStateFromItem(stack);
 		if(!theme.isAir()) {
 			nbtAppearance = tam.getTemplateAppearance(theme);
 			tint = 0xFF000000 | ((MinecraftAccessor) MinecraftClient.getInstance()).templates$getItemColors().getColor(new ItemStack(theme.getBlock()), 0);

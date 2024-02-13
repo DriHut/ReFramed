@@ -58,8 +58,9 @@ public class TemplatesClient implements ClientModInitializer {
 		api.addTemplateModel(Templates.id("glass_pane_noside_alt_special"), api.auto(new Identifier("block/glass_pane_noside_alt")));
 		api.addTemplateModel(Templates.id("pressure_plate_up_special")    , api.auto(new Identifier("block/pressure_plate_up")));
 		api.addTemplateModel(Templates.id("pressure_plate_down_special")  , api.auto(new Identifier("block/pressure_plate_down")));
-		api.addTemplateModel(Templates.id("slab_special")          , api.auto(new Identifier("block/slab")));
+		api.addTemplateModel(Templates.id("slab_special")                 , api.auto(new Identifier("block/slab")));
 		api.addTemplateModel(Templates.id("stairs_special")               , api.auto(new Identifier("block/stairs")));
+		api.addTemplateModel(Templates.id("double_outer_stairs_special")  , api.auto(Templates.id("block/double_outer_stairs")));
 		api.addTemplateModel(Templates.id("inner_stairs_special")         , api.auto(new Identifier("block/inner_stairs")));
 		api.addTemplateModel(Templates.id("outer_stairs_special")         , api.auto(new Identifier("block/outer_stairs")));
 		api.addTemplateModel(Templates.id("trapdoor_bottom_special")      , api.auto(new Identifier("block/template_trapdoor_bottom")));
@@ -92,7 +93,7 @@ public class TemplatesClient implements ClientModInitializer {
 		api.assignItemModel(Templates.id("trapdoor_bottom_special")       , Templates.IRON_TRAPDOOR);
 		api.assignItemModel(Templates.id("fence_post_inventory_special")  , Templates.POST);
 		api.assignItemModel(Templates.id("pressure_plate_up_special")     , Templates.PRESSURE_PLATE);
-		api.assignItemModel(Templates.id("slab_bottom_special")           , Templates.SLAB);
+		api.assignItemModel(Templates.id("slab_special")                  , Templates.SLAB);
 		api.assignItemModel(Templates.id("stairs_special")                , Templates.STAIRS);
 		api.assignItemModel(Templates.id("trapdoor_bottom_special")       , Templates.TRAPDOOR);
 		api.assignItemModel(Templates.id("wall_inventory_special")        , Templates.WALL);
