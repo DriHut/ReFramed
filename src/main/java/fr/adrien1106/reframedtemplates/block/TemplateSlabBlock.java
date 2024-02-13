@@ -1,6 +1,8 @@
 package fr.adrien1106.reframedtemplates.block;
 
+import fr.adrien1106.reframedtemplates.generator.MultipartBlockStateProvider;
 import net.minecraft.block.*;
+import net.minecraft.data.client.MultipartBlockStateSupplier;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
@@ -11,7 +13,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-public class TemplateSlabBlock extends WaterloggableTemplateBlock implements BlockEntityProvider, Waterloggable {
+public class TemplateSlabBlock extends WaterloggableTemplateBlock implements MultipartBlockStateProvider {
 
 	private static final VoxelShape DOWN = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1f);
 	private static final VoxelShape UP = VoxelShapes.cuboid(0f, 0.5f, 0f, 1f, 1f, 1f);
@@ -46,5 +48,10 @@ public class TemplateSlabBlock extends WaterloggableTemplateBlock implements Blo
 			case EAST -> EAST;
 			case WEST -> WEST;
 		};
+	}
+
+	@Override
+	public MultipartBlockStateSupplier getMultipart() {
+		return null;
 	}
 }

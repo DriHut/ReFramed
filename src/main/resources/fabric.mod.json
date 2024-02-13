@@ -12,6 +12,9 @@
 	"icon": "assets/framed-templates-icon.png",
 	"environment": "*",
 	"entrypoints": {
+		"fabric-datagen": [
+			"fr.adrien1106.reframedtemplates.generator.Generator"
+		],
 		"main": [
 			"fr.adrien1106.reframedtemplates.Templates"
 		],
