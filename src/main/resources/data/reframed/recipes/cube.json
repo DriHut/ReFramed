@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"III",
+		"I~I",
+		"III"
+	],
+	"key": {
+		"I": {
+			"item": "minecraft:bamboo"
+		},
+		"~": {
+			"item": "minecraft:string"
+		}
+	},
+	"result": {
+		"item": "reframed:cube",
+		"count": 4
+	},
+	"group": "reframed"
+}

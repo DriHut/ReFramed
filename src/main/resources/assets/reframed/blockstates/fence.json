@@ -1,0 +1,48 @@
+{
+	"multipart": [
+		{
+			"apply": {
+				"model": "reframed:fence_post_special"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframed:fence_side_special",
+				"uvlock": true
+			},
+			"when": {
+				"north": "true"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframed:fence_side_special",
+				"uvlock": true,
+				"y": 90
+			},
+			"when": {
+				"east": "true"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframed:fence_side_special",
+				"uvlock": true,
+				"y": 180
+			},
+			"when": {
+				"south": "true"
+			}
+		},
+		{
+			"apply": {
+				"model": "reframed:fence_side_special",
+				"uvlock": true,
+				"y": 270
+			},
+			"when": {
+				"west": "true"
+			}
+		}
+	]
+}

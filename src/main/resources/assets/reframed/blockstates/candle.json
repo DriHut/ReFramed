@@ -1,0 +1,16 @@
+{
+	"variants": {
+		"candles=1": {
+			"model": "reframed:one_candle_special"
+		},
+		"candles=2": {
+			"model": "reframed:two_candles_special"
+		},
+		"candles=3": {
+			"model": "reframed:three_candles_special"
+		},
+		"candles=4": {
+			"model": "reframed:four_candles_special"
+		}
+	}
+}

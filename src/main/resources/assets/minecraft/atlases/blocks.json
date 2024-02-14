@@ -2,8 +2,8 @@
 	"sources": [
 		{
 			"type": "directory",
-			"source": "templates_special",
-			"prefix": "templates_special/"
+			"source": "reframed_special",
+			"prefix": "reframed_special/"
 		}
 	]
 }

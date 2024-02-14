@@ -1,0 +1,22 @@
+{
+	"itemGroup.reframed.tab": "Frames",
+	
+	"block.reframed.button": "Button Frame",
+	"block.reframed.candle": "Candle Frame",
+	"block.reframed.carpet": "Carpet Frame",
+	"block.reframed.cube": "Cube Frame",
+	"block.reframed.door": "Door Frame",
+	"block.reframed.fence": "Fence Frame",
+	"block.reframed.fence_gate": "Fence Gate Frame",
+	"block.reframed.iron_door": "Iron Door Frame",
+	"block.reframed.iron_trapdoor": "Iron Trapdoor Frame",
+	"block.reframed.lever": "Lever Frame",
+	"block.reframed.pane": "Pane Frame",
+	"block.reframed.post": "Post Frame",
+	"block.reframed.pressure_plate": "Pressure Plate Frame",
+	"block.reframed.slab": "Slab Frame",
+	"block.reframed.stairs": "Stairs Frame",
+	"block.reframed.trapdoor": "Trapdoor Frame",
+	"block.reframed.wall": "Wall Frame"
+
+}

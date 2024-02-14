@@ -1,6 +1,0 @@
-{
-	"parent": "minecraft:item/generated",
-	"textures": {
-		"layer0": "reframedtemplates:block/framed_block"
-	}
-}

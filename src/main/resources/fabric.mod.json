@@ -2,28 +2,28 @@
 	"schemaVersion": 1,
 	"id": "${mod_id}",
 	"version": "${version}",
-	"name": "ReFramedBlocks",
-	"description": "An API for templated blocks",
+	"name": "ReFramed",
+	"description": "A remake of forge framed blocks",
 	"authors": [
 		"Adrien1106"
 	],
 	"contact": {},
 	"license": "All-Rights-Reserved",
-	"icon": "assets/framed-templates-icon.png",
+	"icon": "assets/reframed-icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"fabric-datagen": [
-			"fr.adrien1106.reframedtemplates.generator.Generator"
+			"fr.adrien1106.reframed.generator.Generator"
 		],
 		"main": [
-			"fr.adrien1106.reframedtemplates.Templates"
+			"fr.adrien1106.reframed.ReFramed"
 		],
 		"client": [
-			"fr.adrien1106.reframedtemplates.TemplatesClient"
+			"fr.adrien1106.reframed.client.ReFramedClient"
 		]
 	},
 	"mixins": [
-		"reframedtemplates.mixins.json"
+		"reframed.mixins.json"
 	],
 	"depends": {
 		"minecraft": ">=${minecraft_version}",

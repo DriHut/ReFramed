@@ -1,0 +1,118 @@
+{
+	"variants": {
+		"face=ceiling,facing=east,powered=false": {
+			"model": "reframed:button_special",
+			"x": 180,
+			"y": 270
+		},
+		"face=ceiling,facing=east,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"x": 180,
+			"y": 270
+		},
+		"face=ceiling,facing=north,powered=false": {
+			"model": "reframed:button_special",
+			"x": 180,
+			"y": 180
+		},
+		"face=ceiling,facing=north,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"x": 180,
+			"y": 180
+		},
+		"face=ceiling,facing=south,powered=false": {
+			"model": "reframed:button_special",
+			"x": 180
+		},
+		"face=ceiling,facing=south,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"x": 180
+		},
+		"face=ceiling,facing=west,powered=false": {
+			"model": "reframed:button_special",
+			"x": 180,
+			"y": 90
+		},
+		"face=ceiling,facing=west,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"x": 180,
+			"y": 90
+		},
+		"face=floor,facing=east,powered=false": {
+			"model": "reframed:button_special",
+			"y": 90
+		},
+		"face=floor,facing=east,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"y": 90
+		},
+		"face=floor,facing=north,powered=false": {
+			"model": "reframed:button_special"
+		},
+		"face=floor,facing=north,powered=true": {
+			"model": "reframed:button_pressed_special"
+		},
+		"face=floor,facing=south,powered=false": {
+			"model": "reframed:button_special",
+			"y": 180
+		},
+		"face=floor,facing=south,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"y": 180
+		},
+		"face=floor,facing=west,powered=false": {
+			"model": "reframed:button_special",
+			"y": 270
+		},
+		"face=floor,facing=west,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"y": 270
+		},
+		"face=wall,facing=east,powered=false": {
+			"model": "reframed:button_special",
+			"uvlock": true,
+			"x": 90,
+			"y": 90
+		},
+		"face=wall,facing=east,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"uvlock": true,
+			"x": 90,
+			"y": 90
+		},
+		"face=wall,facing=north,powered=false": {
+			"model": "reframed:button_special",
+			"uvlock": true,
+			"x": 90
+		},
+		"face=wall,facing=north,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"uvlock": true,
+			"x": 90
+		},
+		"face=wall,facing=south,powered=false": {
+			"model": "reframed:button_special",
+			"uvlock": true,
+			"x": 90,
+			"y": 180
+		},
+		"face=wall,facing=south,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"uvlock": true,
+			"x": 90,
+			"y": 180
+		},
+		"face=wall,facing=west,powered=false": {
+			"model": "reframed:button_special",
+			"uvlock": true,
+			"x": 90,
+			"y": 270
+		},
+		"face=wall,facing=west,powered=true": {
+			"model": "reframed:button_pressed_special",
+			"uvlock": true,
+			"x": 90,
+			"y": 270
+		}
+	}
+}

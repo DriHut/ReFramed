@@ -1,7 +1,7 @@
 {
 	"replace": false,
 	"values": [
-		"reframedtemplates:iron_door",
-		"reframedtemplates:iron_trapdoor"
+		"reframed:iron_door",
+		"reframed:iron_trapdoor"
 	]
 }

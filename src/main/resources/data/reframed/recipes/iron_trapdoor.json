@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"III",
+		"III",
+		"~X~"
+	],
+	"key": {
+		"I": {
+			"item": "minecraft:bamboo"
+		},
+		"~": {
+			"item": "minecraft:string"
+		},
+		"X": {
+			"item": "minecraft:iron_ingot"
+		}
+	},
+	"result": {
+		"item": "reframed:iron_trapdoor",
+		"count": 4
+	},
+	"group": "reframed"
+}

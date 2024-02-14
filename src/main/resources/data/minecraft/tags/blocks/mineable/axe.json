@@ -1,20 +1,20 @@
 {
 	"replace": false,
 	"values": [
-		"reframedtemplates:button",
-		"reframedtemplates:candle",
-		"reframedtemplates:carpet",
-		"reframedtemplates:cube",
-		"reframedtemplates:door",
-		"reframedtemplates:fence",
-		"reframedtemplates:fence_gate",
-		"reframedtemplates:lever",
-		"reframedtemplates:pane",
-		"reframedtemplates:post",
-		"reframedtemplates:pressure_plate",
-		"reframedtemplates:slab",
-		"reframedtemplates:stairs",
-		"reframedtemplates:trapdoor",
-		"reframedtemplates:wall"
+		"reframed:button",
+		"reframed:candle",
+		"reframed:carpet",
+		"reframed:cube",
+		"reframed:door",
+		"reframed:fence",
+		"reframed:fence_gate",
+		"reframed:lever",
+		"reframed:pane",
+		"reframed:post",
+		"reframed:pressure_plate",
+		"reframed:slab",
+		"reframed:stairs",
+		"reframed:trapdoor",
+		"reframed:wall"
 	]
 }
