@@ -4,7 +4,6 @@ import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 
 import java.util.Arrays;
-import java.util.Map;
 
 public enum StairDirection implements StringIdentifiable {
     NORTH_DOWN("north_down", Direction.NORTH, Direction.DOWN, Direction.EAST, 0),

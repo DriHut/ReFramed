@@ -2,7 +2,6 @@ package fr.adrien1106.reframedtemplates.model;
 
 import fr.adrien1106.reframedtemplates.Templates;
 import fr.adrien1106.reframedtemplates.api.TemplatesClientApi;
-import fr.adrien1106.reframedtemplates.mixin.model.WeightedBakedModelAccessor;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
