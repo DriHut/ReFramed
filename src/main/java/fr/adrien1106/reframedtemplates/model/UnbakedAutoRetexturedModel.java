@@ -86,10 +86,10 @@ public class UnbakedAutoRetexturedModel implements UnbakedModel, TemplatesClient
 				RenderMaterial mat = tam.getCachedMaterial(state, false);
 				
 				Random rand = Random.create(42);
-				
-				for(Direction cullFace : DIRECTIONS_AND_NULL) {
-					for(BakedQuad quad : wrapped.getQuads(state, cullFace, rand)) {
-						emitter.fromVanilla(quad, mat, cullFace);
+
+				for(Direction direction : DIRECTIONS_AND_NULL) {
+					for(BakedQuad quad : wrapped.getQuads(state, direction, rand)) {
+						emitter.fromVanilla(quad, mat, direction);
 						QuadUvBounds.read(emitter).normalizeUv(emitter, quad.getSprite());
 						emitter.tag(emitter.lightFace().ordinal() + 1);
 						emitter.emit();

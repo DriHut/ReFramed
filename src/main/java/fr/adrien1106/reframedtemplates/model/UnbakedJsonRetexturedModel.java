@@ -72,10 +72,6 @@ public class UnbakedJsonRetexturedModel implements UnbakedModel, TemplatesClient
 		}
 
 		BakedModel model = baker.bake(parent, modelBakeSettings);
-		if (model instanceof WeightedBakedModel weighted_model) {
-			System.out.println("weighted model");
-			((WeightedBakedModelAccessor) weighted_model).getModels();
-		}
 
 		return new RetexturingBakedModel(
 			model,

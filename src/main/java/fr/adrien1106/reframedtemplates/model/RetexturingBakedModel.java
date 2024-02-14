@@ -32,14 +32,14 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		this.wrapped = baseModel; //field from the superclass; vanilla getQuads etc. will delegate through to this
 		
 		this.tam = tam;
-		this.facePermutation = MeshTransformUtil.facePermutation(settings);
+//		this.facePermutation = MeshTransformUtil.facePermutation(settings);
 		this.uvlock = settings.isUvLocked();
 		this.itemModelState = itemModelState;
 		this.ao = ao;
 	}
 	
 	protected final TemplateAppearanceManager tam;
-	protected final Map<Direction, Direction> facePermutation; //immutable
+//	protected final Map<Direction, Direction> facePermutation;
 	protected final boolean uvlock;
 	protected final BlockState itemModelState;
 	protected final boolean ao;
@@ -75,20 +75,26 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		}
 		if(theme.getBlock() == Blocks.BARRIER) return;
 		
-		TemplateAppearance ta = tam.getTemplateAppearance(theme);
+		TemplateAppearance template_appearance = tam.getTemplateAppearance(theme);
 		long seed = theme.getRenderingSeed(pos);
 		int model_id = 0;
-		if (ta instanceof WeightedComputedAppearance wca) model_id = wca.getAppearanceIndex(seed);
+		if (template_appearance instanceof WeightedComputedAppearance wca) model_id = wca.getAppearanceIndex(seed);
 		
 		int tint = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(theme, blockView, pos, 0);
-		Mesh untintedMesh = getUntintedRetexturedMesh(new MeshCacheKey(state, new TransformCacheKey(ta, model_id)), seed);
+		Mesh untintedMesh = getUntintedRetexturedMesh(
+			new MeshCacheKey(
+				state,
+				new TransformCacheKey(template_appearance, model_id)
+			),
+			seed
+		);
 		
 		//The specific tint might vary a lot; imagine grass color smoothly changing. Trying to bake the tint into
 		//the cached mesh will pollute it with a ton of single-use meshes with only slightly different colors.
 		if(tint == 0xFFFFFFFF) {
 			untintedMesh.outputTo(quad_emitter);
 		} else {
-			context.pushTransform(new TintingTransformer(ta, tint, seed));
+			context.pushTransform(new TintingTransformer(template_appearance, tint, seed));
 			untintedMesh.outputTo(quad_emitter);
 			context.popTransform();
 		}
@@ -147,7 +153,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			if(tag == 0) return true; //Pass the quad through unmodified.
 			
 			//The quad tag numbers were selected so this magic trick works:
-			Direction direction = facePermutation.get(DIRECTIONS[quad.tag() - 1]);
+			Direction direction = quad.nominalFace(); // facePermutation.get(quad.nominalFace());
 			quad.spriteBake(ta.getSprite(direction, seed), MutableQuadView.BAKE_NORMALIZED | ta.getBakeFlags(direction, seed) | (uvlock ? MutableQuadView.BAKE_LOCK_UV : 0));
 			return true;
 		}
@@ -168,9 +174,9 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		public boolean transform(MutableQuadView quad) {
 			int tag = quad.tag();
 			if(tag == 0) return true;
-			
-			Direction dir = facePermutation.get(DIRECTIONS[quad.tag() - 1]);
-			if(ta.hasColor(dir, seed)) quad.color(tint, tint, tint, tint);
+
+//			Direction dir = facePermutation.get(DIRECTIONS[quad.tag() - 1]);
+			if(ta.hasColor(quad.nominalFace(), seed)) quad.color(tint, tint, tint, tint);
 			
 			return true;
 		}

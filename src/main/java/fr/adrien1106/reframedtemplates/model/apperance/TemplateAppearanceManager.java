@@ -126,6 +126,7 @@ public class TemplateAppearanceManager {
 		int[] flags = new int[6];
 		byte[] color_mask = {0b000000};
 
+		System.out.println("new mesh"); // TODO remove
 		//Read quads off the model by their `cullface`
 		Arrays.stream(Direction.values()).forEach(direction -> {
 			List<BakedQuad> quads = model.getQuads(null, direction, random);
@@ -154,17 +155,58 @@ public class TemplateAppearanceManager {
 			//are looked up with a simple table.
 			quad_emitter.fromVanilla(quad, material, direction);
 
-			float spriteUAvg = (sprite.getMinU() + sprite.getMaxU()) / 2;
-			float spriteVAvg = (sprite.getMinV() + sprite.getMaxV()) / 2;
-
-			flags[direction.ordinal()] = MAGIC_BAKEFLAGS_SBOX[
-				(quad_emitter.u(0) < spriteUAvg ? 8 : 0) |
-				(quad_emitter.v(0) < spriteVAvg ? 4 : 0) |
-				(quad_emitter.u(1) < spriteUAvg ? 2 : 0) |
-				(quad_emitter.v(1) < spriteVAvg ? 1 : 0)
-			];
+			flags[direction.ordinal()] = getBakeFlags(quad_emitter, sprite);
 		});
 
 		return new Appearance(sprites, flags, color_mask[0]);
+	}
+
+	private static int getBakeFlags(QuadEmitter emitter, Sprite sprite) { // TODO can probably receive tons of improvements
+		boolean[][] order_matrix = getOrderMatrix(emitter, sprite);
+		int flag = 0;
+		if (!isClockwise(order_matrix)) { // check if quad has been mirrored on model
+			// check which mirroring is more efficient in terms of rotations
+			int rotation_u = getRotation(flipOrderMatrix(order_matrix, MutableQuadView.BAKE_FLIP_U));
+			int rotation_v = getRotation(flipOrderMatrix(order_matrix, MutableQuadView.BAKE_FLIP_V));
+			if (rotation_u < rotation_v) flag = MutableQuadView.BAKE_FLIP_U | rotation_u;
+			else flag = MutableQuadView.BAKE_FLIP_V | rotation_v;
+		} else flag |= getRotation(order_matrix);
+		return flag;
+	}
+
+	private static int getRotation(boolean[][] order_matrix) {
+		int rotations = MutableQuadView.BAKE_ROTATE_NONE;
+		rotations |= order_matrix[0][0] && !order_matrix[0][1] ? MutableQuadView.BAKE_ROTATE_90 : 0;
+		rotations |= !order_matrix[0][0] && !order_matrix[0][1] ? MutableQuadView.BAKE_ROTATE_180 : 0;
+		rotations |= !order_matrix[0][0] && order_matrix[0][1] ? MutableQuadView.BAKE_ROTATE_270 : 0;
+		return rotations;
+	}
+
+	private static boolean isClockwise(boolean[][] rotation_matrix) {
+		for (int i = 1; i < rotation_matrix.length; i++) {
+			if (rotation_matrix[i][0] != rotation_matrix[i-1][1] && rotation_matrix[i][0] != rotation_matrix[i][1])
+				return false;
+		}
+		return true;
+	}
+
+	private static boolean[][] flipOrderMatrix(boolean[][] order_matrix, int flag) {
+		boolean[][] new_matrix = new boolean[4][2];
+		for (int i = 0; i < 4; i++) {
+			new_matrix[i][0] = (flag == MutableQuadView.BAKE_FLIP_U) != order_matrix[i][0];
+			new_matrix[i][1] = (flag == MutableQuadView.BAKE_FLIP_V) != order_matrix[i][1];
+		}
+		return new_matrix;
+	}
+
+	private static boolean[][] getOrderMatrix(QuadEmitter emitter, Sprite sprite) {
+		float u_center = (sprite.getMinU() + sprite.getMaxU()) / 2;
+		float v_center = (sprite.getMinV() + sprite.getMaxV()) / 2;
+		boolean[][] order_matrix = new boolean[4][2];
+		for (int i = 0; i < 4; i++) {
+			order_matrix[i][0] = emitter.u(i) < u_center;
+			order_matrix[i][1] = emitter.v(i) < v_center;
+		}
+		return order_matrix;
 	}
 }
