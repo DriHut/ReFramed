@@ -82,8 +82,9 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 				? Direction.AxisDirection.POSITIVE
 				: Direction.AxisDirection.NEGATIVE
 		);
+		StairDirection face = StairDirection.getByDirections(side, part_direction);
 
-		return state.with(FACING, StairDirection.getByDirections(side, part_direction));
+		return state.with(FACING, face).with(SHAPE, getPlacementShape(face, ctx.getWorld(), block_pos));
 	}
 
 	@Override
@@ -313,15 +314,15 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 			VoxelShapes.cuboid(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
 			VoxelShapes.cuboid(0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f)
 		).reduce((previous, current) -> VoxelShapes.combineAndSimplify(previous, current, BooleanBiFunction.OR)).get();
-		final VoxelShape INNER = Stream.of(
+		final VoxelShape OUTER = Stream.of(
 			VoxelShapes.cuboid(0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f),
 			VoxelShapes.cuboid(0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f),
 			VoxelShapes.cuboid(0.0f, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f),
 			VoxelShapes.cuboid(0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 1.0f)
 		).reduce((previous, current) -> VoxelShapes.combineAndSimplify(previous, current, BooleanBiFunction.OR)).get();
-		final VoxelShape OUTER = Stream.of(
+		final VoxelShape INNER = Stream.of(
 			VoxelShapes.cuboid(0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f),
-			VoxelShapes.cuboid(0.0f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f),
+			VoxelShapes.cuboid(0.0f, 0.5f, 0.0f, 0.5f, 1.0f, 1.0f),
 			VoxelShapes.cuboid(0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f)
 		).reduce((previous, current) -> VoxelShapes.combineAndSimplify(previous, current, BooleanBiFunction.OR)).get();
 
@@ -370,16 +371,6 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 		VOXEL_LIST.add(VoxelHelper.rotateClockwise(VoxelHelper.rotateClockwise(VoxelHelper.mirror(VoxelHelper.rotateClockwise(VoxelHelper.rotateCounterClockwise(JUNCTION, Axis.X), Axis.Y), Axis.X), Axis.X), Axis.X));
 		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.mirror(VoxelHelper.rotateClockwise(VoxelHelper.rotateCounterClockwise(JUNCTION, Axis.X), Axis.Y), Axis.X), Axis.X));
 
-		VOXEL_LIST.add(INNER);
-		VOXEL_LIST.add(VoxelHelper.rotateClockwise(INNER, Axis.Y));
-		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.rotateCounterClockwise(INNER, Axis.Y), Axis.Y));
-		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(INNER, Axis.Y));
-
-		VOXEL_LIST.add(VoxelHelper.mirror(INNER, Axis.Y));
-		VOXEL_LIST.add(VoxelHelper.rotateClockwise(VoxelHelper.mirror(INNER, Axis.Y), Axis.Y));
-		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.rotateCounterClockwise(VoxelHelper.mirror(INNER, Axis.Y), Axis.Y), Axis.Y));
-		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.mirror(INNER, Axis.Y), Axis.Y));
-
 		VOXEL_LIST.add(OUTER);
 		VOXEL_LIST.add(VoxelHelper.rotateClockwise(OUTER, Axis.Y));
 		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.rotateCounterClockwise(OUTER, Axis.Y), Axis.Y));
@@ -389,5 +380,15 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 		VOXEL_LIST.add(VoxelHelper.rotateClockwise(VoxelHelper.mirror(OUTER, Axis.Y), Axis.Y));
 		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.rotateCounterClockwise(VoxelHelper.mirror(OUTER, Axis.Y), Axis.Y), Axis.Y));
 		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.mirror(OUTER, Axis.Y), Axis.Y));
+
+		VOXEL_LIST.add(INNER);
+		VOXEL_LIST.add(VoxelHelper.rotateClockwise(INNER, Axis.Y));
+		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.rotateCounterClockwise(INNER, Axis.Y), Axis.Y));
+		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(INNER, Axis.Y));
+
+		VOXEL_LIST.add(VoxelHelper.mirror(INNER, Axis.Y));
+		VOXEL_LIST.add(VoxelHelper.rotateClockwise(VoxelHelper.mirror(INNER, Axis.Y), Axis.Y));
+		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.rotateCounterClockwise(VoxelHelper.mirror(INNER, Axis.Y), Axis.Y), Axis.Y));
+		VOXEL_LIST.add(VoxelHelper.rotateCounterClockwise(VoxelHelper.mirror(INNER, Axis.Y), Axis.Y));
 	}
 }
