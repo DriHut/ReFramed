@@ -3,10 +3,7 @@ package fr.adrien1106.reframed.block;
 import com.google.common.base.MoreObjects;
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.util.ReFramedInteractionUtil;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +32,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 		return ReFramed.REFRAMED_BLOCK_ENTITY.instantiate(pos, state);
 	}
-	
+
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		super.appendProperties(ReFramedInteractionUtil.appendProperties(builder));

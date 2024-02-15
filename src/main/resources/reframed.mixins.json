@@ -9,6 +9,8 @@
   		"particles.MixinLivingEntity"
 	],
 	"client": [
+		"BlockRenderInfoMixin",
+		"BlockMixin",
   		"particles.AccessorParticle",
 		"particles.AccessorSpriteBillboardParticle",
   		"particles.MixinBlockDustParticle",
