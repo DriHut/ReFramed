@@ -38,7 +38,7 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 
 	public static final EnumProperty<StairDirection> FACING = EnumProperty.of("facing", StairDirection.class);
 	public static final EnumProperty<StairShape> SHAPE = EnumProperty.of("shape", StairShape.class);
-	private static final List<VoxelShape> VOXEL_LIST= new ArrayList<>();
+	private static final List<VoxelShape> VOXEL_LIST = new ArrayList<>(52);
 
 	public ReFramedStairsBlock(Settings settings) {
 		super(settings);
