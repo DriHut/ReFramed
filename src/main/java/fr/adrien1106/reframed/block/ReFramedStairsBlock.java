@@ -265,6 +265,7 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 		Identifier double_outer_id = ReFramed.id("double_outer_stairs_special");
 		Identifier inner_id = ReFramed.id("inner_stairs_special");
 		Identifier outer_id = ReFramed.id("outer_stairs_special");
+		Identifier outer_side_id = ReFramed.id("outer_side_stairs_special");
 		return MultipartBlockStateSupplier.create(this)
 			/* STRAIGHT X AXIS */
 			.with(GBlockstate.when(FACING, DOWN_EAST, SHAPE, STRAIGHT),
@@ -336,14 +337,127 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 				GBlockstate.when(FACING, UP_WEST, SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R180, R270))
 			/* OUTER BOTTOM */
-			.with(GBlockstate.when(FACING, DOWN_EAST, SHAPE, FIRST_OUTER_RIGHT),
+			.with(When.anyOf(
+				GBlockstate.when(FACING, DOWN_SOUTH, SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(FACING, DOWN_EAST, SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_id, true, R0, R0))
-			.with(GBlockstate.when(FACING, DOWN_EAST, SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.variant(inner_id, true, R0, R270))
-			/* OUTER DOUBLE */
-			.with(GBlockstate.when(FACING, NORTH_DOWN, SHAPE, OUTER_LEFT),
+			.with(When.anyOf(
+				GBlockstate.when(FACING, DOWN_SOUTH, SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(FACING, WEST_DOWN, SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.variant(outer_id, true, R0, R90))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, NORTH_DOWN, SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(FACING, WEST_DOWN, SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.variant(outer_id, true, R0, R180))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, NORTH_DOWN, SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(FACING, DOWN_EAST, SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.variant(outer_id, true, R0, R270))
+			/* OUTER TOP */
+			.with(When.anyOf(
+				GBlockstate.when(FACING, UP_NORTH, SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(FACING, EAST_UP, SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.variant(outer_id, true, R180, R0))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, SOUTH_UP, SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(FACING, EAST_UP, SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.variant(outer_id, true, R180, R90))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, SOUTH_UP, SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(FACING, UP_WEST, SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.variant(outer_id, true, R180, R180))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, UP_NORTH, SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(FACING, UP_WEST, SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.variant(outer_id, true, R180, R270))
+			/* OUTER EAST */
+			.with(When.anyOf(
+				GBlockstate.when(FACING, EAST_SOUTH, SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(FACING, DOWN_EAST, SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.variant(outer_side_id, true, R0, R0))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, EAST_SOUTH, SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(FACING, EAST_UP, SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.variant(outer_side_id, true, R90, R0))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, NORTH_EAST, SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(FACING, EAST_UP, SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.variant(outer_side_id, true, R180, R0))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, NORTH_EAST, SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(FACING, DOWN_EAST, SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.variant(outer_side_id, true, R270, R0))
+			/* OUTER SOUTH */
+			.with(When.anyOf(
+				GBlockstate.when(FACING, SOUTH_WEST, SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(FACING, DOWN_SOUTH, SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.variant(outer_side_id, true, R0, R90))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, SOUTH_WEST, SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(FACING, SOUTH_UP, SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.variant(outer_side_id, true, R90, R90))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, EAST_SOUTH, SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(FACING, SOUTH_UP, SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.variant(outer_side_id, true, R180, R90))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, EAST_SOUTH, SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(FACING, DOWN_SOUTH, SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.variant(outer_side_id, true, R270, R90))
+			/* OUTER WEST */
+			.with(When.anyOf(
+				GBlockstate.when(FACING, WEST_NORTH, SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(FACING, WEST_DOWN, SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.variant(outer_side_id, true, R0, R180))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, WEST_NORTH, SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(FACING, UP_WEST, SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.variant(outer_side_id, true, R90, R180))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, SOUTH_WEST, SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(FACING, UP_WEST, SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.variant(outer_side_id, true, R180, R180))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, SOUTH_WEST, SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(FACING, WEST_DOWN, SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.variant(outer_side_id, true, R270, R180))
+			/* OUTER NORTH */
+			.with(When.anyOf(
+				GBlockstate.when(FACING, NORTH_EAST, SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(FACING, NORTH_DOWN, SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.variant(outer_side_id, true, R0, R270))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, NORTH_EAST, SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(FACING, UP_NORTH, SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.variant(outer_side_id, true, R90, R270))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, WEST_NORTH, SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(FACING, UP_NORTH, SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.variant(outer_side_id, true, R180, R270))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, WEST_NORTH, SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(FACING, NORTH_DOWN, SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.variant(outer_side_id, true, R270, R270))
+			/* OUTER BOTTOM */
+			.with(When.anyOf(
+				GBlockstate.when(FACING, DOWN_SOUTH, SHAPE, OUTER_RIGHT),
+				GBlockstate.when(FACING, DOWN_EAST, SHAPE, OUTER_RIGHT),
+				GBlockstate.when(FACING, EAST_SOUTH, SHAPE, OUTER_RIGHT)),
+				GBlockstate.variant(double_outer_id, true, R0, R0))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, DOWN_SOUTH, SHAPE, OUTER_LEFT),
+				GBlockstate.when(FACING, WEST_DOWN, SHAPE, OUTER_RIGHT),
+				GBlockstate.when(FACING, SOUTH_WEST, SHAPE, OUTER_RIGHT)),
+				GBlockstate.variant(double_outer_id, true, R0, R90))
+			.with(When.anyOf(
+				GBlockstate.when(FACING, NORTH_DOWN, SHAPE, OUTER_LEFT),
+				GBlockstate.when(FACING, WEST_DOWN, SHAPE, OUTER_LEFT),
+				GBlockstate.when(FACING, WEST_NORTH, SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R180))
-			.with(GBlockstate.when(FACING, NORTH_DOWN, SHAPE, OUTER_RIGHT),
+			.with(When.anyOf(
+				GBlockstate.when(FACING, NORTH_DOWN, SHAPE, OUTER_RIGHT),
+				GBlockstate.when(FACING, DOWN_EAST, SHAPE, OUTER_LEFT),
+				GBlockstate.when(FACING, NORTH_EAST, SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R270));
 	}
 

@@ -57,6 +57,7 @@ public class ReFramedClient implements ClientModInitializer {
 		HELPER.addReFramedModel(ReFramed.id("double_outer_stairs_special")  , HELPER.auto(ReFramed.id("block/double_outer_stairs")));
 		HELPER.addReFramedModel(ReFramed.id("inner_stairs_special")         , HELPER.auto(new Identifier("block/inner_stairs")));
 		HELPER.addReFramedModel(ReFramed.id("outer_stairs_special")         , HELPER.auto(new Identifier("block/outer_stairs")));
+		HELPER.addReFramedModel(ReFramed.id("outer_side_stairs_special")    , HELPER.auto(ReFramed.id("block/outer_side_stairs")));
 		HELPER.addReFramedModel(ReFramed.id("trapdoor_bottom_special")      , HELPER.auto(new Identifier("block/template_trapdoor_bottom")));
 		HELPER.addReFramedModel(ReFramed.id("trapdoor_top_special")         , HELPER.auto(new Identifier("block/template_trapdoor_top")));
 		HELPER.addReFramedModel(ReFramed.id("wall_post_special")            , HELPER.auto(new Identifier("block/template_wall_post")));
