@@ -1,0 +1,38 @@
+name: deploy
+description: Deploy artifact to maven repo
+on:
+  push:
+    branches: [ master ]
+env:
+  REPO_USERNAME: Altarik
+  REPO_PASSWORD: ${{ secrets.REPO_PASSWORD }}
+  DISCORD_PUB_ID: ${{ secrets.DISCORD_PUB_ID }}
+  DISCORD_PUB_TOKEN: ${{ secrets.DISCORD_PUB_TOKEN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    #    if: gitea.ref == 'refs/heads/main'
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+      - name: validate gradle wrapper
+        uses: https://github.com/gradle/wrapper-validation-action@v1
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'oracle'
+      - name: make gradle wrapper executable
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          chmod +x ./gradlew
+          touch local.properties
+      - name: deploy
+        run: ./gradlew publish
+      - name: create tag
+        run: ./gradlew createTag
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+      - name: report to discord
+        run: ./gradlew reportToDiscord

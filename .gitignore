@@ -1,7 +1,7 @@
 # Compiled nonsense that does not belong in *source* control
 /build
 /bin
-/.gradle
+.gradle
 /minecraft
 /out
 /run
@@ -32,5 +32,4 @@ local.properties
 *.png~
 *-autosave.kra
 *.kra~
-/gradle/
 /src/generated/

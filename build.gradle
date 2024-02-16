@@ -1,10 +1,32 @@
+import fr.altarik.ReportDiscord
+import fr.altarik.CreateTag
+
+
 plugins {
 	id 'fabric-loom' version '1.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
+
+Properties local = new Properties()
+try {
+	local.load(new FileInputStream(rootProject.file("local.properties")))
+} catch (IOException ignored) {}
+
 version = project.mod_version
 group = project.maven_group
+
+
+String webhookId = getEnv("DISCORD_PUB_ID", local.getProperty("discord_pub_id"))
+String webhookToken = getEnv("DISCORD_PUB_TOKEN", local.getProperty("discord_pub_token"))
+String repoUrl = "https://repo.altarik.fr/#/" + (project.version.endsWith('SNAPSHOT') ? 'snapshots/' : 'releases/') + project.group.replace(".", "/") + "/" + project.rootProject.name + "/" + project.version
+
+var reportConfig = new ReportDiscord.ReportData("https://discord.com/api/", webhookId, webhookToken, project.rootProject.name, "Update " + project.version + " has been published", repoUrl)
+
+String giteaToken = getEnv("GITEA_TOKEN", local.getProperty("gitea_token"))
+
+var releaseConfig = new CreateTag.CreateReleaseData("https://git.altarik.fr", project.git_owner, project.git_repo, "v" + project.version as String, giteaToken)
+
 
 base {
 	archivesName = project.archives_base_name
@@ -36,6 +58,16 @@ loom {
 }
 
 repositories {
+	maven {
+		name 'altarik-snapshots'
+		url 'https://repo.altarik.fr/snapshots/'
+	}
+	maven {
+		name 'altarik-releases'
+		url 'https://repo.altarik.fr/releases/'
+	}
+	mavenCentral()
+
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -61,10 +93,7 @@ processResources {
 	filteringCharset "UTF-8"
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version,
-				"mod_id": mod_id,
-				"minecraft_version": project.minecraft_version,
-				"loader_version": project.loader_version
+		expand inputs.properties
 	}
 }
 
@@ -81,6 +110,9 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+
 	def javaVersion = JavaVersion.toVersion(targetJavaVersion)
 	if (JavaVersion.current() < javaVersion) {
 		toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
@@ -111,5 +143,32 @@ publishing {
 		// Notice: This block does NOT have the same function as the block in the top level.
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
+		maven {
+			name 'altarik'
+			url 'https://repo.altarik.fr/'.concat(project.version.endsWith('SNAPSHOT') ? 'snapshots/' : 'releases/')
+			credentials {
+				username = getEnv("REPO_USERNAME", local.getProperty("repo_username"))
+				password = getEnv("REPO_PASSWORD", local.getProperty("repo_password"))
+			}
+		}
+
 	}
 }
+
+tasks.register("reportToDiscord", ReportDiscord) {
+	config.set(reportConfig)
+}
+
+tasks.register("createTag", CreateTag) {
+	config.set(releaseConfig)
+}
+
+static def getEnv(String envName, String defaultValue) {
+	String r = System.getenv(envName)
+	if(r != null) {
+		return r
+	} else {
+		return defaultValue
+	}
+}
+

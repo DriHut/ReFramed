@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation "com.squareup.okhttp3:okhttp:${project.okhttp_version}"
+}
+
+repositories {
+    mavenCentral()
+}
