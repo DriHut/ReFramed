@@ -28,6 +28,8 @@ jobs:
         run: |
           chmod +x ./gradlew
           touch local.properties
+      - name: Generate data
+        run: ./gradlew runDatagen
       - name: deploy
         run: ./gradlew publish
       - name: create tag
