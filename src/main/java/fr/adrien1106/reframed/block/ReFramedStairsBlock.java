@@ -296,38 +296,46 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 			/* INNER BOTTOM */
 			.with(When.anyOf(
 				GBlockstate.when(FACING, NORTH_DOWN, SHAPE, INNER_LEFT),
+				GBlockstate.when(FACING, WEST_NORTH, SHAPE, INNER_RIGHT),
 			    GBlockstate.when(FACING, WEST_DOWN, SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R0, R180))
 			.with(When.anyOf(
 				GBlockstate.when(FACING, NORTH_DOWN, SHAPE, INNER_RIGHT),
+				GBlockstate.when(FACING, NORTH_EAST, SHAPE, INNER_RIGHT),
 				GBlockstate.when(FACING, DOWN_EAST, SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R0, R270))
 			.with(When.anyOf(
 				GBlockstate.when(FACING, DOWN_SOUTH, SHAPE, INNER_RIGHT),
+				GBlockstate.when(FACING, EAST_SOUTH, SHAPE, INNER_RIGHT),
 				GBlockstate.when(FACING, DOWN_EAST, SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R0, R0))
 			.with(When.anyOf(
 				GBlockstate.when(FACING, DOWN_SOUTH, SHAPE, INNER_LEFT),
+				GBlockstate.when(FACING, SOUTH_WEST, SHAPE, INNER_RIGHT),
 				GBlockstate.when(FACING, WEST_DOWN, SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R0, R90))
 			/* INNER TOP */
 			.with(When.anyOf(
 				GBlockstate.when(FACING, EAST_UP, SHAPE, INNER_LEFT),
+				GBlockstate.when(FACING, NORTH_EAST, SHAPE, INNER_LEFT),
 				GBlockstate.when(FACING, UP_NORTH, SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R180, R0))
 			.with(When.anyOf(
 				GBlockstate.when(FACING, EAST_UP, SHAPE, INNER_RIGHT),
+				GBlockstate.when(FACING, EAST_SOUTH, SHAPE, INNER_LEFT),
 				GBlockstate.when(FACING, SOUTH_UP, SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R180, R90))
 			.with(When.anyOf(
 				GBlockstate.when(FACING, SOUTH_UP, SHAPE, INNER_LEFT),
+				GBlockstate.when(FACING, SOUTH_WEST, SHAPE, INNER_LEFT),
 				GBlockstate.when(FACING, UP_WEST, SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R180, R180))
 			.with(When.anyOf(
 				GBlockstate.when(FACING, UP_NORTH, SHAPE, INNER_LEFT),
+				GBlockstate.when(FACING, WEST_NORTH, SHAPE, INNER_LEFT),
 				GBlockstate.when(FACING, UP_WEST, SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R180, R270))
-			/* OUTER X AXIS */
+			/* OUTER BOTTOM */
 			.with(GBlockstate.when(FACING, DOWN_EAST, SHAPE, FIRST_OUTER_RIGHT),
 				GBlockstate.variant(outer_id, true, R0, R0))
 			.with(GBlockstate.when(FACING, DOWN_EAST, SHAPE, FIRST_OUTER_RIGHT),
