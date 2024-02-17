@@ -3,12 +3,12 @@
 	"package": "fr.adrien1106.reframed.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-  		"MinecraftAccessor",
   		"WallBlockAccessor",
   		"particles.MixinEntity",
   		"particles.MixinLivingEntity"
 	],
 	"client": [
+		"MinecraftAccessor",
 		"BlockRenderInfoMixin",
 		"BlockMixin",
   		"particles.AccessorParticle",
