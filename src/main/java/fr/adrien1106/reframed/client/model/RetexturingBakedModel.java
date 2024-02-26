@@ -1,6 +1,7 @@
 package fr.adrien1106.reframed.client.model;
 
 import fr.adrien1106.reframed.block.ReFramedEntity;
+import fr.adrien1106.reframed.client.model.apperance.SpriteProperties;
 import fr.adrien1106.reframed.mixin.MinecraftAccessor;
 import fr.adrien1106.reframed.client.model.apperance.CamoAppearance;
 import fr.adrien1106.reframed.client.model.apperance.CamoAppearanceManager;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
@@ -59,12 +61,12 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public Sprite getParticleSprite() {
-		return tam.getDefaultAppearance().getSprite(Direction.UP, 0);
+		return tam.getDefaultAppearance().getSprites(Direction.UP, 0).get(0).sprite();
 	}
 	
 	@Override
-	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		BlockState theme = (blockView.getBlockEntityRenderData(pos) instanceof BlockState s) ? s : null;
+	public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+		BlockState theme = (world.getBlockEntityRenderData(pos) instanceof BlockState s) ? s : null;
 		QuadEmitter quad_emitter = context.getEmitter();
 		if(theme == null || theme.isAir()) {
 			getUntintedRetexturedMesh(new MeshCacheKey(state, new TransformCacheKey(tam.getDefaultAppearance(), 0)), 0).outputTo(quad_emitter);
@@ -72,12 +74,12 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		}
 		if(theme.getBlock() == Blocks.BARRIER) return;
 		
-		CamoAppearance camo = tam.getCamoAppearance(theme);
+		CamoAppearance camo = tam.getCamoAppearance(world, theme, pos);
 		long seed = theme.getRenderingSeed(pos);
 		int model_id = 0;
 		if (camo instanceof WeightedComputedAppearance wca) model_id = wca.getAppearanceIndex(seed);
 		
-		int tint = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(theme, blockView, pos, 0);
+		int tint = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(theme, world, pos, 0);
 		Mesh untintedMesh = getUntintedRetexturedMesh(
 			new MeshCacheKey(
 				state,
@@ -105,7 +107,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		int tint;
 		BlockState theme = ReFramedEntity.readStateFromItem(stack);
 		if(!theme.isAir()) {
-			nbtAppearance = tam.getCamoAppearance(theme);
+			nbtAppearance = tam.getCamoAppearance(null, theme, null);
 			tint = 0xFF000000 | ((MinecraftAccessor) MinecraftClient.getInstance()).getItemColors().getColor(new ItemStack(theme.getBlock()), 0);
 		} else {
 			nbtAppearance = tam.getDefaultAppearance();
@@ -133,7 +135,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		return MeshTransformUtil.pretransformMesh(getBaseMesh(key.state), transformer);
 	}
 	
-	protected class RetexturingTransformer implements RenderContext.QuadTransform {
+	public class RetexturingTransformer {
 		private final long seed;
 		protected RetexturingTransformer(CamoAppearance ta, long seed) {
 			this.ta = ta;
@@ -141,22 +143,49 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		}
 		
 		protected final CamoAppearance ta;
-		
-		@Override
-		public boolean transform(MutableQuadView quad) {
-			quad.material(ta.getRenderMaterial(ao));
-			
+
+		public int transform(QuadEmitter quad, int i) {
 			int tag = quad.tag();
-			if(tag == 0) return true; //Pass the quad through unmodified.
-			
-			//The quad tag numbers were selected so this magic trick works:
+			if(tag == 0) return 0; //Pass the quad through unmodified.
+
 			Direction direction = quad.nominalFace();
-			quad.spriteBake(ta.getSprite(direction, seed), MutableQuadView.BAKE_NORMALIZED | ta.getBakeFlags(direction, seed) | (uvlock ? MutableQuadView.BAKE_LOCK_UV : 0));
-			return true;
+			List<SpriteProperties> sprites = ta.getSprites(direction, seed);
+			if (i == -1) i = sprites.size();
+
+			SpriteProperties properties = sprites.get(sprites.size() - i);
+			i--;
+			QuadPosBounds bounds = properties.bounds();
+
+			if (bounds == null) { // sprite applies anywhere e.g. default behaviour
+				quad.material(ta.getRenderMaterial(ao));
+				quad.spriteBake(
+					properties.sprite(),
+					MutableQuadView.BAKE_NORMALIZED
+						| properties.flags()
+						| (uvlock ? MutableQuadView.BAKE_LOCK_UV : 0)
+				);
+				quad.emit();
+				return i;
+			}
+
+			// verify if sprite covers the current quad and apply the new size
+			QuadPosBounds origin_bounds = QuadPosBounds.read(quad, false);
+			if (!bounds.matches(origin_bounds)) return i;
+
+			// apply new quad shape
+			quad.material(ta.getRenderMaterial(ao));
+			bounds.intersection(origin_bounds, direction.getAxis()).apply(quad, origin_bounds);
+			quad.spriteBake( // TODO check if the flags are usefull because it seems to be braking the functioning of it
+				properties.sprite(),
+				MutableQuadView.BAKE_NORMALIZED
+					| MutableQuadView.BAKE_LOCK_UV
+			);
+			quad.emit();
+			return i;
 		}
 	}
 	
-	protected class TintingTransformer implements RenderContext.QuadTransform {
+	protected static class TintingTransformer implements RenderContext.QuadTransform {
 		private final long seed;
 		protected TintingTransformer(CamoAppearance ta, int tint, long seed) {
 			this.ta = ta;

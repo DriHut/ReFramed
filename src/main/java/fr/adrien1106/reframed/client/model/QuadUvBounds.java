@@ -5,10 +5,10 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.MathHelper;
 
-record QuadUvBounds(float minU, float maxU, float minV, float maxV) {
-	static QuadUvBounds read(QuadView quad) {
-		float u0 = quad.u(0); float u1 = quad.u(1); float u2 = quad.u(2); float u3 = quad.u(3);
-		float v0 = quad.v(0); float v1 = quad.v(1); float v2 = quad.v(2); float v3 = quad.v(3);
+public record QuadUvBounds(float minU, float maxU, float minV, float maxV) {
+	public static QuadUvBounds read(QuadView quad) {
+		float u0 = quad.u(0), u1 = quad.u(1), u2 = quad.u(2), u3 = quad.u(3);
+		float v0 = quad.v(0), v1 = quad.v(1), v2 = quad.v(2), v3 = quad.v(3);
 		return new QuadUvBounds(
 			Math.min(Math.min(u0, u1), Math.min(u2, u3)),
 			Math.max(Math.max(u0, u1), Math.max(u2, u3)),
@@ -36,9 +36,5 @@ record QuadUvBounds(float minU, float maxU, float minV, float maxV) {
 		float value2 = MathHelper.clamp(value, low, high);
 		return (value2 - low) / (high - low);
 	}
-	
-	//static float rangeRemap(float value, float low1, float high1, float low2, float high2) {
-	//	float value2 = MathHelper.clamp(value, low1, high1);
-	//	return low2 + (value2 - low1) * (high2 - low2) / (high1 - low1);
-	//}
+
 }

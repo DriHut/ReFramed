@@ -5,6 +5,8 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class SingleSpriteAppearance implements CamoAppearance {
     private final @NotNull Sprite defaultSprite;
     private final RenderMaterial mat;
@@ -22,13 +24,8 @@ public class SingleSpriteAppearance implements CamoAppearance {
     }
 
     @Override
-    public @NotNull Sprite getSprite(Direction dir, long seed) {
-        return defaultSprite;
-    }
-
-    @Override
-    public int getBakeFlags(Direction dir, long seed) {
-        return 0;
+    public @NotNull List<SpriteProperties> getSprites(Direction dir, long seed) {
+        return List.of(new SpriteProperties(defaultSprite, 0, null));
     }
 
     @Override

@@ -2,6 +2,8 @@ package fr.adrien1106.reframed.client.model.apperance;
 
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.client.ReFramedClient;
+import fr.adrien1106.reframed.client.model.DynamicBakedModel;
+import fr.adrien1106.reframed.client.model.QuadPosBounds;
 import fr.adrien1106.reframed.mixin.model.WeightedBakedModelAccessor;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -21,13 +23,12 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Weighted;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -68,8 +69,14 @@ public class CamoAppearanceManager {
 		return defaultAppearance;
 	}
 	
-	public CamoAppearance getCamoAppearance(BlockState state) {
-		return appearanceCache.computeIfAbsent(state, this::computeAppearance);
+	public CamoAppearance getCamoAppearance(BlockRenderView world, BlockState state, BlockPos pos) {
+		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
+
+		// add support for connected textures and more generally any compatible models injected so that they return baked quads
+		if (model instanceof DynamicBakedModel dynamic_model) {
+			return computeAppearance(dynamic_model.computeQuads(world, state, pos), state);
+		}
+		return appearanceCache.computeIfAbsent(state, block_state -> computeAppearance(model, block_state));
 	}
 	
 	public RenderMaterial getCachedMaterial(BlockState state, boolean ao) {
@@ -81,10 +88,9 @@ public class CamoAppearanceManager {
 	// The computeIfAbsent map update will work without corrupting the map, but there will be some "wasted effort" computing the value twice.
 	// The results are going to be the same, apart from their serialNumbers differing (= their equals & hashCode differing).
 	// Tiny amount of wasted space in some caches if CamoAppearances are used as a map key, then. IMO it's not a critical issue.
-	private CamoAppearance computeAppearance(BlockState state) {
+	private CamoAppearance computeAppearance(BakedModel model, BlockState state) {
 		if(state.getBlock() == Blocks.BARRIER) return barrierItemAppearance;
 
-		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 		if (!(model instanceof WeightedBakedModelAccessor weighted_model)) {
 			return new ComputedAppearance(
 				getAppearance(model),
@@ -112,42 +118,32 @@ public class CamoAppearanceManager {
 		RenderMaterial material = r.materialFinder().clear().find();
 		Random random = Random.create();
 
-		Sprite[] sprites = new Sprite[6];
-		int[] flags = new int[6];
+		Map<Direction, List<SpriteProperties>> sprites = new EnumMap<>(Direction.class);
 		byte[] color_mask = {0b000000};
 
 		//Read quads off the model by their `cullface`
 		Arrays.stream(Direction.values()).forEach(direction -> {
 			List<BakedQuad> quads = model.getQuads(null, direction, random);
-			if(quads.isEmpty() || quads.get(0) == null) {
-				sprites[direction.ordinal()] = defaultAppearance.getSprite(direction, 0); // make sure direction has a sprite
+			if(quads.isEmpty()) { // add default appearance if none present
+				sprites.put(direction, defaultAppearance.getSprites(direction, 0));
 				return;
 			}
 
-			BakedQuad quad = quads.get(0);
-			if(quad.hasColor()) color_mask[0] |= (byte) (1 << direction.ordinal());
+			sprites.put(direction, new ArrayList<>());
+			quads.forEach(quad -> {
+				if(quad.hasColor()) color_mask[0] |= (byte) (1 << direction.ordinal());
 
-			Sprite sprite = quad.getSprite();
-			if(sprite == null) return;
-			sprites[direction.ordinal()] = sprite;
-
-			//Problem: Some models (eg. pistons, stone, glazed terracotta) have their UV coordinates permuted in
-			//non-standard ways. The actual png image appears sideways, but the original model's UVs rotate it right way up again.
-			//If I simply display the texture on my model, it will appear sideways, like it does in the png.
-			//If I can discover the pattern of rotations and flips on the original model, I can "un-rotate" the texture back
-			//into a standard orientation.
-			//
-			//Solution: Look at the first and second vertices of the orignial quad, and decide whether their UV coordinates
-			//are "low" or "high" compared to the middle of the sprite. The first two vertices uniquely determine the pattern
-			//of the other two (since UV coordinates are unique and shouldn't cross). There are 16 possibilities so this information
-			//is easily summarized in a bitfield, and the correct fabric rendering API "bake flags" to un-transform the sprite
-			//are looked up with a simple table.
-			quad_emitter.fromVanilla(quad, material, direction);
-
-			flags[direction.ordinal()] = getBakeFlags(quad_emitter, sprite);
+				Sprite sprite = quad.getSprite();
+				if(sprite == null) return;
+				sprites.compute(direction, (dir, pairs) -> {
+					quad_emitter.fromVanilla(quad, material, direction);
+					pairs.add(new SpriteProperties(sprite, getBakeFlags(quad_emitter, sprite), QuadPosBounds.read(quad_emitter)));
+					return pairs;
+				});
+			});
 		});
 
-		return new Appearance(sprites, flags, color_mask[0]);
+		return new Appearance(sprites, color_mask[0]);
 	}
 
 	private static int getBakeFlags(QuadEmitter emitter, Sprite sprite) {

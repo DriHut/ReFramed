@@ -29,5 +29,8 @@
 		"minecraft": "${minecraft_version}",
 		"fabricloader": "^${loader_version}",
 		"fabric-api": "*"
+	},
+	"suggest": {
+		"athena": "^${athena_version}"
 	}
 }

@@ -1,11 +1,10 @@
 package fr.adrien1106.reframed.client.model.apperance;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class ComputedAppearance implements CamoAppearance {
     private final Appearance appearance;
@@ -27,13 +26,8 @@ public class ComputedAppearance implements CamoAppearance {
     }
 
     @Override
-    public @NotNull Sprite getSprite(Direction dir, long seed) {
-        return appearance.sprites()[dir.ordinal()];
-    }
-
-    @Override
-    public int getBakeFlags(Direction dir, long seed) {
-        return appearance.flags()[dir.ordinal()];
+    public @NotNull List<SpriteProperties> getSprites(Direction dir, long seed) {
+        return appearance.sprites().get(dir);
     }
 
     @Override
@@ -52,11 +46,5 @@ public class ComputedAppearance implements CamoAppearance {
     @Override
     public int hashCode() {
         return id;
-    }
-
-    @Override
-    public String toString() {
-        return "ComputedApperance{sprites=%s, bakeFlags=%s, hasColorMask=%s, matWithoutAo=%s, matWithAo=%s, id=%d}"
-            .formatted(Arrays.toString(appearance.sprites()), Arrays.toString(appearance.flags()), appearance.color_mask(), matWithoutAo, matWithAo, id);
     }
 }

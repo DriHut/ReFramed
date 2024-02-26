@@ -1,5 +1,8 @@
 package fr.adrien1106.reframed.client.model.apperance;
 
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.util.math.Direction;
 
-public record Appearance(Sprite[] sprites, int[] flags, byte color_mask) {}
+import java.util.List;
+import java.util.Map;
+
+public record Appearance(Map<Direction, List<SpriteProperties>> sprites, byte color_mask) {}

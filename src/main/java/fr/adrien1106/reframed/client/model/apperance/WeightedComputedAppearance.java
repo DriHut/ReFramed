@@ -1,14 +1,12 @@
 package fr.adrien1106.reframed.client.model.apperance;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.collection.Weighting;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class WeightedComputedAppearance implements CamoAppearance {
@@ -46,14 +44,10 @@ public class WeightedComputedAppearance implements CamoAppearance {
     }
 
     @Override
-    public @NotNull Sprite getSprite(Direction dir, long seed) {
-        return getAppearance(seed).sprites()[dir.ordinal()];
+    public @NotNull List<SpriteProperties> getSprites(Direction dir, long seed) {
+        return getAppearance(seed).sprites().get(dir);
     }
 
-    @Override
-    public int getBakeFlags(Direction dir, long seed) {
-        return getAppearance(seed).flags()[dir.ordinal()];
-    }
 
     @Override
     public boolean hasColor(Direction dir, long seed) {
@@ -71,12 +65,5 @@ public class WeightedComputedAppearance implements CamoAppearance {
     @Override
     public int hashCode() {
         return id;
-    }
-
-    @Override
-    public String toString() {
-        Appearance appearance = appearances.get(0).getData();
-        return "ComputedApperance{sprites=%s, bakeFlags=%s, hasColorMask=%s, matWithoutAo=%s, matWithAo=%s, id=%d}"
-            .formatted(Arrays.toString(appearance.sprites()), Arrays.toString(appearance.flags()), appearance.color_mask(), matWithoutAo, matWithAo, id);
     }
 }

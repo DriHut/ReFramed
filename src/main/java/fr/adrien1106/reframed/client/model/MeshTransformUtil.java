@@ -15,13 +15,16 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class MeshTransformUtil {
-	public static Mesh pretransformMesh(Mesh mesh, RenderContext.QuadTransform transform) {
+	public static Mesh pretransformMesh(Mesh mesh, RetexturingBakedModel.RetexturingTransformer transform) {
 		MeshBuilder builder = ReFramedClient.HELPER.getFabricRenderer().meshBuilder();
 		QuadEmitter emitter = builder.getEmitter();
 		
 		mesh.forEach(quad -> {
-			emitter.copyFrom(quad);
-			if(transform.transform(emitter)) emitter.emit();
+			int i = -1;
+			do {
+				emitter.copyFrom(quad);
+				i = transform.transform(emitter, i);
+			} while (i > 0);
 		});
 		
 		return builder.build();
