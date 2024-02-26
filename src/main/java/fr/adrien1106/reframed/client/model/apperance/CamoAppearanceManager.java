@@ -119,7 +119,6 @@ public class CamoAppearanceManager {
 		Random random = Random.create();
 
 		Map<Direction, List<SpriteProperties>> sprites = new EnumMap<>(Direction.class);
-		byte[] color_mask = {0b000000};
 
 		//Read quads off the model by their `cullface`
 		Arrays.stream(Direction.values()).forEach(direction -> {
@@ -131,19 +130,22 @@ public class CamoAppearanceManager {
 
 			sprites.put(direction, new ArrayList<>());
 			quads.forEach(quad -> {
-				if(quad.hasColor()) color_mask[0] |= (byte) (1 << direction.ordinal());
-
 				Sprite sprite = quad.getSprite();
 				if(sprite == null) return;
-				sprites.compute(direction, (dir, pairs) -> {
+				sprites.computeIfPresent(direction, (dir, pairs) -> {
 					quad_emitter.fromVanilla(quad, material, direction);
-					pairs.add(new SpriteProperties(sprite, getBakeFlags(quad_emitter, sprite), QuadPosBounds.read(quad_emitter)));
+					pairs.add(new SpriteProperties(
+						sprite,
+						getBakeFlags(quad_emitter, sprite),
+						QuadPosBounds.read(quad_emitter),
+						quad.hasColor())
+					);
 					return pairs;
 				});
 			});
 		});
 
-		return new Appearance(sprites, color_mask[0]);
+		return new Appearance(sprites);
 	}
 
 	private static int getBakeFlags(QuadEmitter emitter, Sprite sprite) {

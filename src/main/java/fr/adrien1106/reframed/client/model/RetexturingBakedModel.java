@@ -145,8 +145,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		protected final CamoAppearance ta;
 
 		public int transform(QuadEmitter quad, int i) {
-			int tag = quad.tag();
-			if(tag == 0) return 0; //Pass the quad through unmodified.
+			if(quad.tag() == 0) return 0; //Pass the quad through unmodified.
 
 			Direction direction = quad.nominalFace();
 			List<SpriteProperties> sprites = ta.getSprites(direction, seed);
@@ -164,6 +163,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 						| properties.flags()
 						| (uvlock ? MutableQuadView.BAKE_LOCK_UV : 0)
 				);
+				quad.tag(i+1);
 				quad.emit();
 				return i;
 			}
@@ -180,6 +180,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 				MutableQuadView.BAKE_NORMALIZED
 					| MutableQuadView.BAKE_LOCK_UV
 			);
+			quad.tag(i+1);
 			quad.emit();
 			return i;
 		}
@@ -198,10 +199,9 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		
 		@Override
 		public boolean transform(MutableQuadView quad) {
-			int tag = quad.tag();
-			if(tag == 0) return true;
+			if(quad.tag() == 0) return true;
 
-			if(ta.hasColor(quad.nominalFace(), seed)) quad.color(tint, tint, tint, tint);
+			if(ta.hasColor(quad.nominalFace(), seed, quad.tag())) quad.color(tint, tint, tint, tint);
 			
 			return true;
 		}

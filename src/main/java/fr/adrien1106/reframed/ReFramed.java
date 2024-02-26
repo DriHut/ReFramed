@@ -25,7 +25,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**
- * TODO handle grass side, multiple camos
+ * TODO multiple camos
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";

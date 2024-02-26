@@ -31,8 +31,10 @@ public class ComputedAppearance implements CamoAppearance {
     }
 
     @Override
-    public boolean hasColor(Direction dir, long seed) {
-        return (appearance.color_mask() & (1 << dir.ordinal())) != 0;
+    public boolean hasColor(Direction dir, long seed, int index) {
+        List<SpriteProperties> properties = getSprites(dir, seed);
+        if (index != 0) index = properties.size() - index;
+        return properties.get(index).has_colors();
     }
 
     @Override

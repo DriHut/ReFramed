@@ -5,4 +5,4 @@ import net.minecraft.util.math.Direction;
 import java.util.List;
 import java.util.Map;
 
-public record Appearance(Map<Direction, List<SpriteProperties>> sprites, byte color_mask) {}
+public record Appearance(Map<Direction, List<SpriteProperties>> sprites) {}

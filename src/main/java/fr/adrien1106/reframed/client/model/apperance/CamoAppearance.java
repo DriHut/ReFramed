@@ -9,5 +9,5 @@ import java.util.List;
 public interface CamoAppearance {
 	@NotNull RenderMaterial getRenderMaterial(boolean ao);
 	@NotNull List<SpriteProperties> getSprites(Direction dir, long seed);
-	boolean hasColor(Direction dir, long seed);
+	boolean hasColor(Direction dir, long seed, int index);
 }

@@ -25,11 +25,11 @@ public class SingleSpriteAppearance implements CamoAppearance {
 
     @Override
     public @NotNull List<SpriteProperties> getSprites(Direction dir, long seed) {
-        return List.of(new SpriteProperties(defaultSprite, 0, null));
+        return List.of(new SpriteProperties(defaultSprite, 0, null, false));
     }
 
     @Override
-    public boolean hasColor(Direction dir, long seed) {
+    public boolean hasColor(Direction dir, long seed, int index) {
         return false;
     }
 
