@@ -459,7 +459,7 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 				GBlockstate.when(FACING, DOWN_EAST, SHAPE, OUTER_LEFT),
 				GBlockstate.when(FACING, NORTH_EAST, SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R270))
-			/* OUTER BOTTOM */
+			/* OUTER TOP */
 			.with(When.anyOf(
 				GBlockstate.when(FACING, UP_NORTH, SHAPE, OUTER_RIGHT),
 				GBlockstate.when(FACING, EAST_UP, SHAPE, OUTER_LEFT),
@@ -474,12 +474,12 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 				GBlockstate.when(FACING, SOUTH_UP, SHAPE, OUTER_LEFT),
 				GBlockstate.when(FACING, UP_WEST, SHAPE, OUTER_RIGHT),
 				GBlockstate.when(FACING, SOUTH_WEST, SHAPE, OUTER_LEFT)),
-				GBlockstate.variant(double_outer_id, true, R180, R90))
+				GBlockstate.variant(double_outer_id, true, R180, R180))
 			.with(When.anyOf(
 				GBlockstate.when(FACING, UP_NORTH, SHAPE, OUTER_LEFT),
 				GBlockstate.when(FACING, UP_WEST, SHAPE, OUTER_LEFT),
 				GBlockstate.when(FACING, WEST_NORTH, SHAPE, OUTER_LEFT)),
-				GBlockstate.variant(double_outer_id, true, R270, R90));
+				GBlockstate.variant(double_outer_id, true, R180, R270));
 	}
 
 	static {
