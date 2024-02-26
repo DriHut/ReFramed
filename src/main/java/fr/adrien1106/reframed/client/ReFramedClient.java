@@ -53,10 +53,10 @@ public class ReFramedClient implements ClientModInitializer {
 		HELPER.addReFramedModel(ReFramed.id("pressure_plate_up_special")    , HELPER.auto(new Identifier("block/pressure_plate_up")));
 		HELPER.addReFramedModel(ReFramed.id("pressure_plate_down_special")  , HELPER.auto(new Identifier("block/pressure_plate_down")));
 		HELPER.addReFramedModel(ReFramed.id("slab_special")                 , HELPER.auto(new Identifier("block/slab")));
-		HELPER.addReFramedModel(ReFramed.id("stairs_special")               , HELPER.auto(new Identifier("block/stairs")));
+		HELPER.addReFramedModel(ReFramed.id("stairs_special")               , HELPER.auto(ReFramed.id("block/stairs")));
 		HELPER.addReFramedModel(ReFramed.id("double_outer_stairs_special")  , HELPER.auto(ReFramed.id("block/double_outer_stairs")));
-		HELPER.addReFramedModel(ReFramed.id("inner_stairs_special")         , HELPER.auto(new Identifier("block/inner_stairs")));
-		HELPER.addReFramedModel(ReFramed.id("outer_stairs_special")         , HELPER.auto(new Identifier("block/outer_stairs")));
+		HELPER.addReFramedModel(ReFramed.id("inner_stairs_special")         , HELPER.auto(ReFramed.id("block/inner_stairs")));
+		HELPER.addReFramedModel(ReFramed.id("outer_stairs_special")         , HELPER.auto(ReFramed.id("block/outer_stairs")));
 		HELPER.addReFramedModel(ReFramed.id("outer_side_stairs_special")    , HELPER.auto(ReFramed.id("block/outer_side_stairs")));
 		HELPER.addReFramedModel(ReFramed.id("trapdoor_bottom_special")      , HELPER.auto(new Identifier("block/template_trapdoor_bottom")));
 		HELPER.addReFramedModel(ReFramed.id("trapdoor_top_special")         , HELPER.auto(new Identifier("block/template_trapdoor_top")));
