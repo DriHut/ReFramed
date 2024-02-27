@@ -1,7 +1,7 @@
 package fr.adrien1106.reframed.mixin.compat;
 
 import earth.terrarium.athena.api.client.fabric.WrappedGetter;
-import fr.adrien1106.reframed.block.ReFramedEntity;
+import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
@@ -20,7 +20,7 @@ public class AthenaWrappedGetterMixin {
 
     @Inject(method = "getBlockState", at = @At(value = "HEAD"), cancellable = true)
     private void getCamoState(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
-        if (!(getter.getBlockEntity(pos) instanceof ReFramedEntity framed_entity)) return;
+        if (!(getter.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity)) return;
         cir.setReturnValue(framed_entity.getThemeState());
     }
 
@@ -30,7 +30,7 @@ public class AthenaWrappedGetterMixin {
             "getBlockState(Lnet/minecraft/util/math/BlockPos;)" +
             "Lnet/minecraft/block/BlockState;"))
     private BlockState appearanceCamoState(BlockRenderView world, BlockPos pos) {
-        if (world.getBlockEntity(pos) instanceof ReFramedEntity framed_entity) return framed_entity.getThemeState();
+        if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity) return framed_entity.getThemeState();
         return world.getBlockState(pos);
     }
 
@@ -39,7 +39,7 @@ public class AthenaWrappedGetterMixin {
             "getBlockState(Lnet/minecraft/util/math/BlockPos;)" +
             "Lnet/minecraft/block/BlockState;"))
     private BlockState queryCamoState(BlockRenderView world, BlockPos pos) {
-        if (world.getBlockEntity(pos) instanceof ReFramedEntity framed_entity) return framed_entity.getThemeState();
+        if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity) return framed_entity.getThemeState();
         return world.getBlockState(pos);
     }
 }

@@ -3,7 +3,7 @@ package fr.adrien1106.reframed.mixin.compat;
 import earth.terrarium.athena.api.client.utils.AppearanceAndTintGetter;
 import earth.terrarium.athena.api.client.utils.CtmUtils;
 import earth.terrarium.athena.impl.client.models.ConnectedBlockModel;
-import fr.adrien1106.reframed.block.ReFramedEntity;
+import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -22,8 +22,8 @@ public class AthenaConnectedBlockModelMixin {
             "Lnet/minecraft/util/math/Direction;)Z"))
     private boolean checkForCull(AppearanceAndTintGetter level, BlockState state, BlockPos pos, Direction direction) {
         // Always get all the textures unless its another block then use default behaviour
-        if (level.getBlockEntity(pos) instanceof ReFramedEntity
-            || level.getBlockEntity(pos.offset(direction)) instanceof ReFramedEntity)
+        if (level.getBlockEntity(pos) instanceof ThemeableBlockEntity
+            || level.getBlockEntity(pos.offset(direction)) instanceof ThemeableBlockEntity)
             return false;
         return CtmUtils.checkRelative(level, state, pos, direction);
     }

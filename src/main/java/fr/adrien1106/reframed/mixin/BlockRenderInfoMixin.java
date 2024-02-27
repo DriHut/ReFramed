@@ -1,7 +1,7 @@
 package fr.adrien1106.reframed.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import fr.adrien1106.reframed.block.ReFramedEntity;
+import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -34,7 +34,7 @@ public abstract class BlockRenderInfoMixin {
             "getBlockLayer(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/render/RenderLayer;"))
     public BlockState prepareCamoLayer(BlockState state, @Local(argsOnly = true) BlockPos pos) {
         BlockEntity block_entity = MinecraftClient.getInstance().world.getBlockEntity(pos);
-        if (!(block_entity instanceof ReFramedEntity frame_entity)) return state;
+        if (!(block_entity instanceof ThemeableBlockEntity frame_entity)) return state;
         return frame_entity.getThemeState();
     }
 
@@ -43,7 +43,7 @@ public abstract class BlockRenderInfoMixin {
         cancellable = true)
     private void shouldDrawCamoFace(Direction face, CallbackInfoReturnable<Boolean> cir) {
         BlockEntity block_entity = MinecraftClient.getInstance().world.getBlockEntity(blockPos);
-        if (!(block_entity instanceof ReFramedEntity)) return;
+        if (!(block_entity instanceof ThemeableBlockEntity)) return;
         cir.setReturnValue(Block.shouldDrawSide(blockState, blockView, blockPos, face, searchPos.set(blockPos, face)));
     }
 }

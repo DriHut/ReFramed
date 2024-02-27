@@ -1,7 +1,7 @@
 package fr.adrien1106.reframed.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import fr.adrien1106.reframed.block.ReFramedEntity;
+import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -21,20 +21,20 @@ public class BlockMixin {
     @Redirect(method = "shouldDrawSide", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOpaque()Z"))
     private static boolean isNeighborCamoOpaque(BlockState state, @Local(argsOnly = true) BlockView world, @Local(ordinal = 1, argsOnly = true) BlockPos pos) {
         BlockEntity block_entity = world.getBlockEntity(pos);
-        if (!(block_entity instanceof ReFramedEntity frame_entity)) return state.isOpaque();
+        if (!(block_entity instanceof ThemeableBlockEntity frame_entity)) return state.isOpaque();
         return frame_entity.getThemeState().isOpaque();
     }
 
     @Redirect(method = "shouldDrawSide", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isSideInvisible(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;)Z"))
     private static boolean isCamoInvisible(BlockState state, BlockState other_state, Direction direction, @Local(argsOnly = true) BlockView world, @Local(ordinal = 0, argsOnly = true) BlockPos pos, @Local(ordinal = 1, argsOnly = true) BlockPos other_pos) {
-        if (world.getBlockEntity(other_pos) instanceof ReFramedEntity entity) other_state = entity.getThemeState();
-        if (world.getBlockEntity(pos) instanceof ReFramedEntity entity) state = entity.getThemeState();
+        if (world.getBlockEntity(other_pos) instanceof ThemeableBlockEntity entity) other_state = entity.getThemeState();
+        if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity entity) state = entity.getThemeState();
         return state.isSideInvisible(other_state, direction);
     }
 
     @Inject(method = "shouldDrawSide", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
     private static void shouldDrawGlassCamoSide(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos other_pos, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 1) BlockState neighbor) {
-        if (!(world.getBlockEntity(pos) instanceof ReFramedEntity) && !(world.getBlockEntity(other_pos) instanceof ReFramedEntity)) return;
+        if (!(world.getBlockEntity(pos) instanceof ThemeableBlockEntity) && !(world.getBlockEntity(other_pos) instanceof ThemeableBlockEntity)) return;
         VoxelShape voxel_block = state.getCullingFace(world, pos, side);
         if (voxel_block.isEmpty()) {
             cir.setReturnValue(true);

@@ -40,34 +40,35 @@ public abstract class AthenaBakedModelMixin implements DynamicBakedModel, BakedM
      */
     @Override
     public BakedModel computeQuads(BlockRenderView level, BlockState state, BlockPos pos) {
-        if (level == null || pos == null) return this;
-
         Map<Direction, List<BakedQuad>> face_quads = new HashMap<>();
-
         Renderer r = ReFramedClient.HELPER.getFabricRenderer();
         QuadEmitter emitter = r.meshBuilder().getEmitter();
 
         WrappedGetter getter = new WrappedGetter(level);
         Arrays.stream(Direction.values()).forEach(direction -> {
             face_quads.put(direction, new ArrayList<>());
-            model.getQuads(getter, state, pos, direction).forEach(sprite -> face_quads.computeIfPresent(direction, (d, quads) -> {
-                Sprite texture = textures.get(sprite.sprite());
-                if (texture == null) return quads;
-                emitter.square(direction, sprite.left(), sprite.bottom(), sprite.right(), sprite.top(), sprite.depth());
 
-                int flag = MutableQuadView.BAKE_LOCK_UV;
+            (level == null || pos == null
+                ? model.getDefaultQuads(direction).get(direction)
+                : model.getQuads(getter, state, pos, direction))
+                .forEach(sprite -> face_quads.computeIfPresent(direction, (d, quads) -> {
+                    Sprite texture = textures.get(sprite.sprite());
+                    if (texture == null) return quads;
+                    emitter.square(direction, sprite.left(), sprite.bottom(), sprite.right(), sprite.top(), sprite.depth());
 
-                switch (sprite.rotation()) {
-                    case CLOCKWISE_90 -> flag |= MutableQuadView.BAKE_ROTATE_90;
-                    case CLOCKWISE_180 -> flag |= MutableQuadView.BAKE_ROTATE_180;
-                    case COUNTERCLOCKWISE_90 -> flag |= MutableQuadView.BAKE_ROTATE_270;
-                }
+                    int flag = MutableQuadView.BAKE_LOCK_UV;
 
-                emitter.spriteBake(texture, flag);
-                emitter.color(-1, -1, -1, -1);
-                quads.add(emitter.toBakedQuad(texture));
-                return quads;
-            }));
+                    switch (sprite.rotation()) {
+                        case CLOCKWISE_90 -> flag |= MutableQuadView.BAKE_ROTATE_90;
+                        case CLOCKWISE_180 -> flag |= MutableQuadView.BAKE_ROTATE_180;
+                        case COUNTERCLOCKWISE_90 -> flag |= MutableQuadView.BAKE_ROTATE_270;
+                    }
+
+                    emitter.spriteBake(texture, flag);
+                    emitter.color(-1, -1, -1, -1);
+                    quads.add(emitter.toBakedQuad(texture));
+                    return quads;
+                }));
         });
 
         return new RebakedAthenaModel(face_quads);
