@@ -1,6 +1,7 @@
 package fr.adrien1106.reframed.client.model;
 
 import fr.adrien1106.reframed.client.ReFramedClient;
+import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -12,7 +13,6 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
@@ -20,50 +20,27 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
-public class UnbakedAutoRetexturedModel implements UnbakedModel {
-	public UnbakedAutoRetexturedModel(Identifier parent) {
-		this.parent = parent;
-	}
-	
-	protected final Identifier parent;
-	protected BlockState itemModelState = Blocks.AIR.getDefaultState();
-	protected boolean ao = true;
-	
-	@Override
-	public Collection<Identifier> getModelDependencies() {
-		return Collections.singletonList(parent);
-	}
-	
-	@Override
-	public void setParents(Function<Identifier, UnbakedModel> function) {
-		function.apply(parent).setParents(function);
+public class UnbakedAutoRetexturedModel extends UnbakedRetexturedModel {
+
+	public UnbakedAutoRetexturedModel(Identifier parent, Function<ThemeableBlockEntity, BlockState> state_getter) {
+		super(parent, state_getter);
+		item_state = Blocks.AIR.getDefaultState();
 	}
 	
 	@Nullable
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> spriteLookup, ModelBakeSettings modelBakeSettings, Identifier identifier) {
+	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> texture_getter, ModelBakeSettings bake_settings, Identifier identifier) {
 		return new RetexturingBakedModel(
-			baker.bake(parent, modelBakeSettings),
-			ReFramedClient.HELPER.getCamoApperanceManager(spriteLookup),
-			modelBakeSettings,
-			itemModelState,
+			baker.bake(parent, bake_settings),
+			ReFramedClient.HELPER.getCamoApperanceManager(texture_getter),
+			state_getter,
+			bake_settings,
+			item_state,
 			ao
 		) {
-			final ConcurrentMap<BlockState, Mesh> jsonToMesh = new ConcurrentHashMap<>();
-			
-			@Override
-			protected Mesh getBaseMesh(BlockState state) {
-				//Convert models to retexturable Meshes lazily, the first time we encounter each blockstate
-				return jsonToMesh.computeIfAbsent(state, this::convertModel);
-			}
-			
-			private Mesh convertModel(BlockState state) {
+			protected Mesh convertModel(BlockState state) {
 				Renderer r = ReFramedClient.HELPER.getFabricRenderer();
 				MeshBuilder builder = r.meshBuilder();
 				QuadEmitter emitter = builder.getEmitter();

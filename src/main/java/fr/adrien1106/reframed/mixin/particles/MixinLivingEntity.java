@@ -30,7 +30,7 @@ public class MixinLivingEntity {
 		World world = ((Entity) (Object) this).getWorld();
 		
 		if(lastFallCheckPos != null && world.getBlockEntity(lastFallCheckPos) instanceof ThemeableBlockEntity themeable) {
-			BlockState theme = themeable.getThemeState();
+			BlockState theme = themeable.getFirstTheme();
 			if(!theme.isAir()) return theme;
 		}
 		

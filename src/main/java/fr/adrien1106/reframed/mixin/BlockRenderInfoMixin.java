@@ -35,7 +35,7 @@ public abstract class BlockRenderInfoMixin {
     public BlockState prepareCamoLayer(BlockState state, @Local(argsOnly = true) BlockPos pos) {
         BlockEntity block_entity = MinecraftClient.getInstance().world.getBlockEntity(pos);
         if (!(block_entity instanceof ThemeableBlockEntity frame_entity)) return state;
-        return frame_entity.getThemeState();
+        return frame_entity.getFirstTheme();
     }
 
     @Inject(method = "shouldDrawFace",

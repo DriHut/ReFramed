@@ -21,7 +21,7 @@ public class AthenaWrappedGetterMixin {
     @Inject(method = "getBlockState", at = @At(value = "HEAD"), cancellable = true)
     private void getCamoState(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
         if (!(getter.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity)) return;
-        cir.setReturnValue(framed_entity.getThemeState());
+        cir.setReturnValue(framed_entity.getFirstTheme());
     }
 
     @Redirect(method = "getAppearance(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;)" +
@@ -30,7 +30,7 @@ public class AthenaWrappedGetterMixin {
             "getBlockState(Lnet/minecraft/util/math/BlockPos;)" +
             "Lnet/minecraft/block/BlockState;"))
     private BlockState appearanceCamoState(BlockRenderView world, BlockPos pos) {
-        if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity) return framed_entity.getThemeState();
+        if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity) return framed_entity.getFirstTheme();
         return world.getBlockState(pos);
     }
 
@@ -39,7 +39,7 @@ public class AthenaWrappedGetterMixin {
             "getBlockState(Lnet/minecraft/util/math/BlockPos;)" +
             "Lnet/minecraft/block/BlockState;"))
     private BlockState queryCamoState(BlockRenderView world, BlockPos pos) {
-        if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity) return framed_entity.getThemeState();
+        if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity) return framed_entity.getFirstTheme();
         return world.getBlockState(pos);
     }
 }

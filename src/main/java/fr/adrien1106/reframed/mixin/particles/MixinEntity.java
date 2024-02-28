@@ -22,7 +22,7 @@ public abstract class MixinEntity {
 		World world = ((Entity) (Object) this).getWorld();
 		
 		if(world.getBlockEntity(getLandingPos()) instanceof ThemeableBlockEntity themeable) {
-			BlockState theme = themeable.getThemeState();
+			BlockState theme = themeable.getFirstTheme();
 			if(!theme.isAir()) return theme;
 		}
 		

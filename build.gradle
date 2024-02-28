@@ -93,8 +93,8 @@ dependencies {
 	modRuntimeOnly "earth.terrarium.athena:athena-fabric-${project.minecraft_version}:${project.athena_version}"
 
 	// Chipped to test athena implementation
-//	modRuntimeOnly "com.teamresourceful.resourcefullib:resourcefullib-fabric-${project.minecraft_version}:2.4.7"
-//	modRuntimeOnly "earth.terrarium.chipped:Chipped-fabric-${project.minecraft_version}:3.1.2"
+	modRuntimeOnly "com.teamresourceful.resourcefullib:resourcefullib-fabric-${project.minecraft_version}:2.4.7"
+	modRuntimeOnly "earth.terrarium.chipped:Chipped-fabric-${project.minecraft_version}:3.1.2"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

@@ -22,13 +22,13 @@ public class BlockMixin {
     private static boolean isNeighborCamoOpaque(BlockState state, @Local(argsOnly = true) BlockView world, @Local(ordinal = 1, argsOnly = true) BlockPos pos) {
         BlockEntity block_entity = world.getBlockEntity(pos);
         if (!(block_entity instanceof ThemeableBlockEntity frame_entity)) return state.isOpaque();
-        return frame_entity.getThemeState().isOpaque();
+        return frame_entity.getFirstTheme().isOpaque();
     }
 
     @Redirect(method = "shouldDrawSide", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isSideInvisible(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;)Z"))
     private static boolean isCamoInvisible(BlockState state, BlockState other_state, Direction direction, @Local(argsOnly = true) BlockView world, @Local(ordinal = 0, argsOnly = true) BlockPos pos, @Local(ordinal = 1, argsOnly = true) BlockPos other_pos) {
-        if (world.getBlockEntity(other_pos) instanceof ThemeableBlockEntity entity) other_state = entity.getThemeState();
-        if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity entity) state = entity.getThemeState();
+        if (world.getBlockEntity(other_pos) instanceof ThemeableBlockEntity entity) other_state = entity.getFirstTheme();
+        if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity entity) state = entity.getFirstTheme();
         return state.isSideInvisible(other_state, direction);
     }
 

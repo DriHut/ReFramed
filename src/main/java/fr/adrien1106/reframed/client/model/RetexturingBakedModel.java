@@ -6,6 +6,7 @@ import fr.adrien1106.reframed.mixin.MinecraftAccessor;
 import fr.adrien1106.reframed.client.model.apperance.CamoAppearance;
 import fr.adrien1106.reframed.client.model.apperance.CamoAppearanceManager;
 import fr.adrien1106.reframed.client.model.apperance.WeightedComputedAppearance;
+import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -26,19 +27,22 @@ import net.minecraft.world.BlockRenderView;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class RetexturingBakedModel extends ForwardingBakedModel {
-	public RetexturingBakedModel(BakedModel baseModel, CamoAppearanceManager tam, ModelBakeSettings settings, BlockState itemModelState, boolean ao) {
+	public RetexturingBakedModel(BakedModel baseModel, CamoAppearanceManager tam, Function<ThemeableBlockEntity, BlockState> state_getter, ModelBakeSettings settings, BlockState itemModelState, boolean ao) {
 		this.wrapped = baseModel; //field from the superclass; vanilla getQuads etc. will delegate through to this
 		
 		this.tam = tam;
+		this.state_getter = state_getter;
 		this.uvlock = settings.isUvLocked();
 		this.itemModelState = itemModelState;
 		this.ao = ao;
 	}
-	
+
 	protected final CamoAppearanceManager tam;
+	protected final Function<ThemeableBlockEntity, BlockState> state_getter;
 	protected final boolean uvlock;
 	protected final BlockState itemModelState;
 	protected final boolean ao;
@@ -51,8 +55,17 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	protected static final Direction[] DIRECTIONS = Direction.values();
 	protected static final Direction[] DIRECTIONS_AND_NULL = new Direction[DIRECTIONS.length + 1];
 	static { System.arraycopy(DIRECTIONS, 0, DIRECTIONS_AND_NULL, 0, DIRECTIONS.length); }
-	
-	protected abstract Mesh getBaseMesh(BlockState state);
+
+
+	protected final ConcurrentMap<BlockState, Mesh> jsonToMesh = new ConcurrentHashMap<>();
+
+
+	protected Mesh getBaseMesh(BlockState state) {
+		//Convert models to re-texturable Meshes lazily, the first time we encounter each blockstate
+		return jsonToMesh.computeIfAbsent(state, this::convertModel);
+	}
+
+	protected abstract Mesh convertModel(BlockState state);
 	
 	@Override
 	public boolean isVanillaAdapter() {
@@ -66,7 +79,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	
 	@Override
 	public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		BlockState theme = (world.getBlockEntityRenderData(pos) instanceof BlockState s) ? s : null;
+		BlockState theme = (world.getBlockEntity(pos) instanceof ThemeableBlockEntity s) ? state_getter.apply(s) : null;
 		QuadEmitter quad_emitter = context.getEmitter();
 		if(theme == null || theme.isAir()) {
 			getUntintedRetexturedMesh(new MeshCacheKey(state, new TransformCacheKey(tam.getDefaultAppearance(), 0)), 0).outputTo(quad_emitter);
@@ -105,7 +118,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		//none of this is accessible unless you're in creative mode doing ctrl-pick btw
 		CamoAppearance nbtAppearance;
 		int tint;
-		BlockState theme = ReFramedEntity.readStateFromItem(stack);
+		BlockState theme = ReFramedEntity.readStateFromItem(stack); // TODO Different states for both models
 		if(!theme.isAir()) {
 			nbtAppearance = tam.getCamoAppearance(null, theme, null);
 			tint = 0xFF000000 | ((MinecraftAccessor) MinecraftClient.getInstance()).getItemColors().getColor(new ItemStack(theme.getBlock()), 0);

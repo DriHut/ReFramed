@@ -21,7 +21,7 @@ public class MixinBlockDustParticle {
 	void modifyParticleSprite(ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, BlockState state, BlockPos pos, CallbackInfo ci) {
 		AccessorParticle a = (AccessorParticle) this;
 		if(a.getRandom().nextBoolean() && clientWorld.getBlockEntity(pos) instanceof ThemeableBlockEntity themeable) {
-			BlockState theme = themeable.getThemeState();
+			BlockState theme = themeable.getFirstTheme();
 			if(theme == null || theme.isAir()) return;
 			
 			Sprite replacement = MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelParticleSprite(theme);
