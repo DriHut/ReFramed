@@ -74,12 +74,12 @@ public class CamoAppearanceManager {
 		return appearance == 2 ? accent_appearance: default_appearance;
 	}
 	
-	public CamoAppearance getCamoAppearance(BlockRenderView world, BlockState state, BlockPos pos) {
+	public CamoAppearance getCamoAppearance(BlockRenderView world, BlockState state, BlockPos pos, int theme_index) {
 		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 
 		// add support for connected textures and more generally any compatible models injected so that they return baked quads
 		if (model instanceof DynamicBakedModel dynamic_model) {
-			return computeAppearance(dynamic_model.computeQuads(world, state, pos), state);
+			return computeAppearance(dynamic_model.computeQuads(world, state, pos, theme_index), state);
 		}
 		return appearanceCache.computeIfAbsent(state, block_state -> computeAppearance(model, block_state));
 	}

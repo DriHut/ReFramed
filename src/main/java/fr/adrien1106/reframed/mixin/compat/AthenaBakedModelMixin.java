@@ -6,6 +6,7 @@ import earth.terrarium.athena.api.client.models.AthenaBlockModel;
 import fr.adrien1106.reframed.client.ReFramedClient;
 import fr.adrien1106.reframed.client.model.DynamicBakedModel;
 import fr.adrien1106.reframed.compat.RebakedAthenaModel;
+import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -39,7 +40,7 @@ public abstract class AthenaBakedModelMixin implements DynamicBakedModel, BakedM
      * @return - the rebakedmodel containing the computed quads
      */
     @Override
-    public BakedModel computeQuads(BlockRenderView level, BlockState state, BlockPos pos) {
+    public BakedModel computeQuads(BlockRenderView level, BlockState state, BlockPos pos, int theme_index) {
         Map<Direction, List<BakedQuad>> face_quads = new HashMap<>();
         Renderer r = ReFramedClient.HELPER.getFabricRenderer();
         QuadEmitter emitter = r.meshBuilder().getEmitter();
@@ -50,7 +51,12 @@ public abstract class AthenaBakedModelMixin implements DynamicBakedModel, BakedM
 
             (level == null || pos == null
                 ? model.getDefaultQuads(direction).get(direction)
-                : model.getQuads(getter, state, pos, direction))
+                : model.getQuads(
+                    getter,
+                    level.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity
+                        ? framed_entity.getTheme(theme_index)
+                        : state, pos, direction)
+                )
                 .forEach(sprite -> face_quads.computeIfPresent(direction, (d, quads) -> {
                     Sprite texture = textures.get(sprite.sprite());
                     if (texture == null) return quads;

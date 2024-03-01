@@ -6,5 +6,5 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
 public interface DynamicBakedModel {
-    BakedModel computeQuads(BlockRenderView level, BlockState state, BlockPos pos);
+    BakedModel computeQuads(BlockRenderView level, BlockState state, BlockPos pos, int theme_index);
 }
