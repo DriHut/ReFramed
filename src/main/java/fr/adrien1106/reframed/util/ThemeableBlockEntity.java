@@ -2,16 +2,12 @@ package fr.adrien1106.reframed.util;
 
 import net.minecraft.block.BlockState;
 
+import java.util.List;
+
 public interface ThemeableBlockEntity {
-	BlockState getFirstTheme();
+	BlockState getTheme(int i);
 
-	default BlockState getSecondTheme() {
-		return getFirstTheme();
-	}
+	void setTheme(BlockState state, int i);
 
-	void setFirstTheme(BlockState state);
-
-	default void setSecondTheme(BlockState state) {
-		setFirstTheme(state);
-	}
+	List<BlockState> getThemes();
 }

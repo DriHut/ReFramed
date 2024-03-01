@@ -53,6 +53,7 @@ public class ReFramedClient implements ClientModInitializer {
 		HELPER.addReFramedModel(ReFramed.id("pressure_plate_up_special")    , HELPER.auto(new Identifier("block/pressure_plate_up")));
 		HELPER.addReFramedModel(ReFramed.id("pressure_plate_down_special")  , HELPER.auto(new Identifier("block/pressure_plate_down")));
 		HELPER.addReFramedModel(ReFramed.id("slab_special")                 , HELPER.auto(new Identifier("block/slab")));
+		HELPER.addReFramedModel(ReFramed.id("double_slab_special")          , HELPER.autoDouble(new Identifier("block/slab"), new Identifier("block/slab_top")));
 		HELPER.addReFramedModel(ReFramed.id("stairs_special")               , HELPER.auto(ReFramed.id("block/stairs")));
 		HELPER.addReFramedModel(ReFramed.id("double_outer_stairs_special")  , HELPER.auto(ReFramed.id("block/double_outer_stairs")));
 		HELPER.addReFramedModel(ReFramed.id("inner_stairs_special")         , HELPER.auto(ReFramed.id("block/inner_stairs")));
@@ -89,6 +90,7 @@ public class ReFramedClient implements ClientModInitializer {
 		HELPER.assignItemModel(ReFramed.id("fence_post_inventory_special")  , ReFramed.POST);
 		HELPER.assignItemModel(ReFramed.id("pressure_plate_up_special")     , ReFramed.PRESSURE_PLATE);
 		HELPER.assignItemModel(ReFramed.id("slab_special")                  , ReFramed.SLAB);
+		HELPER.assignItemModel(ReFramed.id("double_slab_special")           , ReFramed.DOUBLE_SLAB);
 		HELPER.assignItemModel(ReFramed.id("stairs_special")                , ReFramed.STAIRS);
 		HELPER.assignItemModel(ReFramed.id("trapdoor_bottom_special")       , ReFramed.TRAPDOOR);
 		HELPER.assignItemModel(ReFramed.id("wall_inventory_special")        , ReFramed.WALL);

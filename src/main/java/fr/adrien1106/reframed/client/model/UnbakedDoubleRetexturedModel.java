@@ -19,15 +19,16 @@ public class UnbakedDoubleRetexturedModel implements UnbakedModel {
     protected final UnbakedModel model_1;
     protected final UnbakedModel model_2;
 
-    public UnbakedDoubleRetexturedModel(UnbakedModel model_1, UnbakedModel model_2) {
+    public UnbakedDoubleRetexturedModel(UnbakedRetexturedModel model_1, UnbakedRetexturedModel model_2) {
         this.model_1 = model_1;
         this.model_2 = model_2;
+        model_2.setThemeIndex(2);
     }
 
 
     @Override
     public Collection<Identifier> getModelDependencies() {
-        return List.of(model_1.getModelDependencies().iterator().next(), model_2.getModelDependencies().iterator().next());
+        return List.of(((List<Identifier>) model_1.getModelDependencies()).get(0), ((List<Identifier>) model_2.getModelDependencies()).get(0));
     }
 
     @Override

@@ -44,29 +44,34 @@ public class CamoAppearanceManager {
 			materialsWithAo.put(blend, finder.ambientOcclusion(TriState.DEFAULT).find()); //not "true" since that *forces* AO, i just want to *allow* AO
 		}
 		
-		Sprite defaultSprite = spriteLookup.apply(DEFAULT_SPRITE_ID);
-		if(defaultSprite == null) throw new IllegalStateException("Couldn't locate " + DEFAULT_SPRITE_ID + " !");
-		this.defaultAppearance = new SingleSpriteAppearance(defaultSprite, materialsWithoutAo.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
-		
-		Sprite barrier = spriteLookup.apply(BARRIER_SPRITE_ID);
-		if(barrier == null) barrier = defaultSprite; //eh
-		this.barrierItemAppearance = new SingleSpriteAppearance(barrier, materialsWithoutAo.get(BlendMode.CUTOUT), serialNumber.getAndIncrement());
+		Sprite sprite = spriteLookup.apply(DEFAULT_SPRITE_MAIN);
+		if(sprite == null) throw new IllegalStateException("Couldn't locate " + DEFAULT_SPRITE_MAIN + " !");
+		this.default_appearance = new SingleSpriteAppearance(sprite, materialsWithoutAo.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
+
+		sprite = spriteLookup.apply(DEFAULT_SPRITE_SECONDARY);
+		if(sprite == null) throw new IllegalStateException("Couldn't locate " + DEFAULT_SPRITE_MAIN + " !");
+		this.accent_appearance = new SingleSpriteAppearance(sprite, materialsWithoutAo.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
+
+		sprite = spriteLookup.apply(BARRIER_SPRITE_ID);
+		this.barrierItemAppearance = new SingleSpriteAppearance(sprite, materialsWithoutAo.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
 	}
 
-	protected static final SpriteIdentifier DEFAULT_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier(ReFramed.MODID, "block/framed_block"));
+	protected static final SpriteIdentifier DEFAULT_SPRITE_MAIN = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier(ReFramed.MODID, "block/framed_block"));
+	protected static final SpriteIdentifier DEFAULT_SPRITE_SECONDARY = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier(ReFramed.MODID, "block/framed_accent_block"));
 	private static final SpriteIdentifier BARRIER_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:item/barrier"));
 	
-	private final CamoAppearance defaultAppearance;
+	private final CamoAppearance default_appearance;
+	private final CamoAppearance accent_appearance;
 	private final CamoAppearance barrierItemAppearance;
 	
 	private final ConcurrentHashMap<BlockState, CamoAppearance> appearanceCache = new ConcurrentHashMap<>(); //Mutable, append-only cache
-	private final AtomicInteger serialNumber = new AtomicInteger(0); //Mutable
+	private final AtomicInteger serial_number = new AtomicInteger(0); //Mutable
 	
 	private final EnumMap<BlendMode, RenderMaterial> materialsWithAo = new EnumMap<>(BlendMode.class);
 	private final EnumMap<BlendMode, RenderMaterial> materialsWithoutAo = new EnumMap<>(BlendMode.class); //Immutable contents
 	
-	public CamoAppearance getDefaultAppearance() {
-		return defaultAppearance;
+	public CamoAppearance getDefaultAppearance(int appearance) {
+		return appearance == 2 ? accent_appearance: default_appearance;
 	}
 	
 	public CamoAppearance getCamoAppearance(BlockRenderView world, BlockState state, BlockPos pos) {
@@ -96,7 +101,7 @@ public class CamoAppearanceManager {
 				getAppearance(model),
 				getCachedMaterial(state, true),
 				getCachedMaterial(state, false),
-				serialNumber.getAndIncrement()
+				serial_number.getAndIncrement()
 			);
 		}
 		List<Weighted.Present<Appearance>> appearances = weighted_model.getModels().stream()
@@ -107,7 +112,7 @@ public class CamoAppearanceManager {
 			appearances,
 			getCachedMaterial(state, true),
 			getCachedMaterial(state, false),
-			serialNumber.getAndIncrement()
+			serial_number.getAndIncrement()
 		);
 	}
 
@@ -124,7 +129,7 @@ public class CamoAppearanceManager {
 		Arrays.stream(Direction.values()).forEach(direction -> {
 			List<BakedQuad> quads = model.getQuads(null, direction, random);
 			if(quads.isEmpty()) { // add default appearance if none present
-				sprites.put(direction, defaultAppearance.getSprites(direction, 0));
+				sprites.put(direction, default_appearance.getSprites(direction, 0));
 				return;
 			}
 

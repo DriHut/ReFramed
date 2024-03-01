@@ -1,7 +1,6 @@
 package fr.adrien1106.reframed.client.model;
 
 import fr.adrien1106.reframed.client.ReFramedClient;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -24,8 +23,8 @@ import java.util.function.Function;
 
 public class UnbakedAutoRetexturedModel extends UnbakedRetexturedModel {
 
-	public UnbakedAutoRetexturedModel(Identifier parent, Function<ThemeableBlockEntity, BlockState> state_getter) {
-		super(parent, state_getter);
+	public UnbakedAutoRetexturedModel(Identifier parent) {
+		super(parent);
 		item_state = Blocks.AIR.getDefaultState();
 	}
 	
@@ -35,7 +34,7 @@ public class UnbakedAutoRetexturedModel extends UnbakedRetexturedModel {
 		return new RetexturingBakedModel(
 			baker.bake(parent, bake_settings),
 			ReFramedClient.HELPER.getCamoApperanceManager(texture_getter),
-			state_getter,
+			theme_index,
 			bake_settings,
 			item_state,
 			ao

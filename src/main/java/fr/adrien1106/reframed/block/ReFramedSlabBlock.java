@@ -1,11 +1,15 @@
 package fr.adrien1106.reframed.block;
 
+import fr.adrien1106.reframed.ReFramed;
+import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.generator.MultipartBlockStateProvider;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -13,34 +17,37 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
+import static net.minecraft.data.client.VariantSettings.Rotation.*;
+import static net.minecraft.state.property.Properties.FACING;
+
 public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements MultipartBlockStateProvider {
 
-	private static final VoxelShape DOWN = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1f);
-	private static final VoxelShape UP = VoxelShapes.cuboid(0f, 0.5f, 0f, 1f, 1f, 1f);
-	private static final VoxelShape NORTH = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 1f, 0.5f);
-	private static final VoxelShape SOUTH = VoxelShapes.cuboid(0f, 0f, 0.5f, 1f, 1f, 1f);
-	private static final VoxelShape EAST = VoxelShapes.cuboid(0.5f, 0f, 0f, 1f, 1f, 1f);
-	private static final VoxelShape WEST = VoxelShapes.cuboid(0f, 0f, 0f, 0.5f, 1f, 1f);
+	protected static final VoxelShape DOWN = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1f);
+	protected static final VoxelShape UP = VoxelShapes.cuboid(0f, 0.5f, 0f, 1f, 1f, 1f);
+	protected static final VoxelShape NORTH = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 1f, 0.5f);
+	protected static final VoxelShape SOUTH = VoxelShapes.cuboid(0f, 0f, 0.5f, 1f, 1f, 1f);
+	protected static final VoxelShape EAST = VoxelShapes.cuboid(0.5f, 0f, 0f, 1f, 1f, 1f);
+	protected static final VoxelShape WEST = VoxelShapes.cuboid(0f, 0f, 0f, 0.5f, 1f, 1f);
 
 	public ReFramedSlabBlock(Settings settings) {
 		super(settings);
-		setDefaultState(getDefaultState().with(Properties.FACING, Direction.DOWN));
+		setDefaultState(getDefaultState().with(FACING, Direction.DOWN));
 	}
 	
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		super.appendProperties(builder.add(Properties.FACING));
+		super.appendProperties(builder.add(FACING));
 	}
 	
 	@Nullable
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return super.getPlacementState(ctx).with(Properties.FACING, ctx.getSide().getOpposite());
+		return super.getPlacementState(ctx).with(FACING, ctx.getSide().getOpposite());
 	}
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return switch (state.get(Properties.FACING)) {
+		return switch (state.get(FACING)) {
 			case DOWN -> DOWN;
 			case UP -> UP;
 			case NORTH -> NORTH;
@@ -52,6 +59,19 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements Mul
 
 	@Override
 	public MultipartBlockStateSupplier getMultipart() {
-		return null;
+		Identifier model_id = ReFramed.id("slab_special");
+		return MultipartBlockStateSupplier.create(this)
+			.with(GBlockstate.when(FACING, Direction.DOWN),
+				GBlockstate.variant(model_id, true, R0, R0))
+			.with(GBlockstate.when(FACING, Direction.SOUTH),
+				GBlockstate.variant(model_id, true, R90, R0))
+			.with(GBlockstate.when(FACING, Direction.UP),
+				GBlockstate.variant(model_id, true, R180, R0))
+			.with(GBlockstate.when(FACING, Direction.NORTH),
+				GBlockstate.variant(model_id, true, R270, R0))
+			.with(GBlockstate.when(FACING, Direction.WEST),
+				GBlockstate.variant(model_id, true, R90, R90))
+			.with(GBlockstate.when(FACING, Direction.EAST),
+				GBlockstate.variant(model_id, true, R90, R270));
 	}
 }

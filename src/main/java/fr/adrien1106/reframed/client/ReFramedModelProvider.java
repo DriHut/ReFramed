@@ -37,9 +37,9 @@ public class ReFramedModelProvider implements ModelResourceProvider, ModelVarian
 	//but json models are never allowed to have non-json models as a parent, and frame unbaked models are not json models. Ah well.
 	//So, instead, we use a ModelVariantProvider to redirect attempts to load the item:id#inventory model.
 	@Override
-	public @Nullable UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) {
-		Identifier customModelId = itemAssignments.get(modelId);
-		return customModelId == null ? null : loadModelResource(customModelId, context);
+	public @Nullable UnbakedModel loadModelVariant(ModelIdentifier model, ModelProviderContext context) {
+		Identifier custom_model = itemAssignments.get(model);
+		return custom_model == null ? null : loadModelResource(custom_model, context);
 	}
 	
 	/// camo appearance manager cache

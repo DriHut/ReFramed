@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.List;
 import java.util.Objects;
 
 public class ReFramedDoubleEntity extends ReFramedEntity {
@@ -20,15 +21,23 @@ public class ReFramedDoubleEntity extends ReFramedEntity {
     }
 
     @Override
-    public BlockState getSecondTheme() {
-        return second_state;
+    public BlockState getTheme(int i) {
+        return i == 2 ? second_state : super.getTheme(i);
     }
 
-    public void setSecondTheme(BlockState newState) {
-        if(!Objects.equals(second_state, newState)) {
-            second_state = newState;
+    @Override
+    public List<BlockState> getThemes() {
+        List<BlockState> themes = super.getThemes();
+        themes.add(second_state);
+        return themes;
+    }
+
+    public void setTheme(BlockState new_state, int i) {
+        if(i == 2) {
+            if (Objects.equals(second_state, new_state)) return;
+            second_state = new_state;
             markDirtyAndDispatch();
-        }
+        } else super.setTheme(new_state, i);
     }
 
     @Override
@@ -36,7 +45,7 @@ public class ReFramedDoubleEntity extends ReFramedEntity {
         super.readNbt(nbt);
 
         BlockState rendered_state = second_state;// keep previous state to check if rerender is needed
-        first_state = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), nbt.getCompound(BLOCKSTATE_KEY + 2));
+        second_state = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), nbt.getCompound(BLOCKSTATE_KEY + 2));
 
         // Force a chunk remesh on the client if the displayed blockstate has changed
         if(world != null && world.isClient && !Objects.equals(rendered_state, second_state)) {

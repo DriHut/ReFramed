@@ -1,6 +1,5 @@
 package fr.adrien1106.reframed.client.model;
 
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
@@ -12,14 +11,17 @@ import java.util.function.Function;
 public abstract class UnbakedRetexturedModel implements UnbakedModel {
 
     protected final Identifier parent;
-    protected final Function<ThemeableBlockEntity, BlockState> state_getter;
 
+    protected int theme_index = 1;
     protected BlockState item_state;
     protected boolean ao = true;
 
-    public UnbakedRetexturedModel(Identifier parent, Function<ThemeableBlockEntity, BlockState> state_getter) {
+    public UnbakedRetexturedModel(Identifier parent) {
         this.parent = parent;
-        this.state_getter = state_getter;
+    }
+
+    public void setThemeIndex(int theme_index) {
+        this.theme_index = theme_index;
     }
 
     @Override

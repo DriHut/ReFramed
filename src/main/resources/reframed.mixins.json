@@ -9,16 +9,18 @@
     "particles.MixinLivingEntity"
   ],
   "client": [
-    "BlockMixin",
-    "BlockRenderInfoMixin",
     "MinecraftAccessor",
     "compat.AthenaBakedModelMixin",
-    "compat.AthenaWrappedGetterMixin",
     "compat.AthenaConnectedBlockModelMixin",
+    "compat.AthenaWrappedGetterMixin",
     "model.WeightedBakedModelAccessor",
     "particles.AccessorParticle",
     "particles.AccessorSpriteBillboardParticle",
-    "particles.MixinBlockDustParticle"
+    "particles.MixinBlockDustParticle",
+    "render.BlockRenderInfoMixin",
+    "render.MultipartBakedModelMixin",
+    "render.TerrainRenderContextMixin",
+    "render.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

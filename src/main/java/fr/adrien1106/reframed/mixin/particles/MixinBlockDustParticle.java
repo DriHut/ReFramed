@@ -1,5 +1,6 @@
 package fr.adrien1106.reframed.mixin.particles;
 
+import fr.adrien1106.reframed.block.ReFramedBlock;
 import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -20,8 +21,11 @@ public class MixinBlockDustParticle {
 	)
 	void modifyParticleSprite(ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, BlockState state, BlockPos pos, CallbackInfo ci) {
 		AccessorParticle a = (AccessorParticle) this;
-		if(a.getRandom().nextBoolean() && clientWorld.getBlockEntity(pos) instanceof ThemeableBlockEntity themeable) {
-			BlockState theme = themeable.getFirstTheme();
+		if(a.getRandom().nextBoolean()
+			&& clientWorld.getBlockEntity(pos) instanceof ThemeableBlockEntity themeable
+			&& state.getBlock() instanceof ReFramedBlock block
+		) {
+			BlockState theme = themeable.getTheme(block.getTopThemeIndex(state));
 			if(theme == null || theme.isAir()) return;
 			
 			Sprite replacement = MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelParticleSprite(theme);

@@ -2,7 +2,6 @@ package fr.adrien1106.reframed.client.model;
 
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.client.ReFramedClient;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -25,25 +24,25 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class UnbakedJsonRetexturedModel extends UnbakedRetexturedModel {
-	public UnbakedJsonRetexturedModel(Identifier parent, Function<ThemeableBlockEntity, BlockState> state_getter) {
-        super(parent, state_getter);
+	public UnbakedJsonRetexturedModel(Identifier parent) {
+        super(parent);
 	}
 	
 	@Nullable
 	@Override
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> spriteLookup, ModelBakeSettings bake_settings, Identifier identifier) {
-		Direction[] DIRECTIONS = RetexturingBakedModel.DIRECTIONS;
+		Direction[] directions = Direction.values();
 		
-		Sprite[] specialSprites = new Sprite[DIRECTIONS.length];
-		for(int i = 0; i < DIRECTIONS.length; i++) {
-			SpriteIdentifier id = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ReFramed.id("reframed_special/" + DIRECTIONS[i].getName()));
-			specialSprites[i] = Objects.requireNonNull(spriteLookup.apply(id), () -> "Couldn't find sprite " + id + " !");
+		Sprite[] sprites = new Sprite[directions.length];
+		for(int i = 0; i < directions.length; i++) {
+			SpriteIdentifier id = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ReFramed.id("reframed_special/" + directions[i].getName()));
+			sprites[i] = Objects.requireNonNull(spriteLookup.apply(id), () -> "Couldn't find sprite " + id + " !");
 		}
 
 		return new RetexturingBakedModel(
 			baker.bake(parent, bake_settings),
 			ReFramedClient.HELPER.getCamoApperanceManager(spriteLookup),
-			state_getter,
+			theme_index,
 			bake_settings,
 			item_state,
 			ao
@@ -61,9 +60,9 @@ public class UnbakedJsonRetexturedModel extends UnbakedRetexturedModel {
 						emitter.fromVanilla(quad, mat, cullFace);
 						
 						QuadUvBounds bounds = QuadUvBounds.read(emitter);
-						for(int i = 0; i < specialSprites.length; i++) {
-							if(bounds.displaysSprite(specialSprites[i])) {
-								bounds.normalizeUv(emitter, specialSprites[i]);
+						for(int i = 0; i < sprites.length; i++) {
+							if(bounds.displaysSprite(sprites[i])) {
+								bounds.normalizeUv(emitter, sprites[i]);
 								emitter.tag(i + 1);
 								break;
 							}

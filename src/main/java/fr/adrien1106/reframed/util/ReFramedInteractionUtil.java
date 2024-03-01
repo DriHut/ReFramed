@@ -28,8 +28,10 @@ import org.jetbrains.annotations.Nullable;
 //For an example of how to use this class, have a look at TemplateBlock.
 //Basically there are several methods that would like to modify the return value of something.
 public class ReFramedInteractionUtil {
+	@Deprecated // TODO remove
 	public static final BooleanProperty LIGHT = BooleanProperty.of("frame_light");
-	
+
+	@Deprecated // TODO remove
 	public static StateManager.Builder<Block, BlockState> appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		return builder.add(LIGHT);
 	}
@@ -37,24 +39,31 @@ public class ReFramedInteractionUtil {
 	//Use this to obtain a Block.Settings that'll make your Template act like the ones in the mod.
 	//(To complete the look, don't forget to tag your blocks with mineable/axe.)
 	private static final AbstractBlock.ContextPredicate NOPE = (blah, blahdey, blahh) -> false;
+
+	// TODO Find better place
 	public static AbstractBlock.Settings configureSettings(AbstractBlock.Settings s) {
 		return s.luminance(ReFramedInteractionUtil::luminance).nonOpaque().sounds(BlockSoundGroup.WOOD).hardness(0.2f).suffocates(NOPE).blockVision(NOPE);
 	}
-	
+
+
+	// TODO Find better place
 	//And if you don't have a Block.Settings to copy off of.
 	public static AbstractBlock.Settings makeSettings() {
 		return configureSettings(AbstractBlock.Settings.create());
 	}
-	
+
+	@Deprecated // TODO remove
 	public static BlockState setDefaultStates(BlockState in) {
 		if(in.contains(LIGHT)) in = in.with(LIGHT, false);
 		return in;
 	}
-	
+
+	@Deprecated // TODO remove
 	public static @Nullable BlockState modifyPlacementState(@Nullable BlockState in, ItemPlacementContext ctx) {
-		return ReFramedEntity.weirdNbtLightLevelStuff(in, ctx.getStack());
+		return ReFramedEntity.getNbtLightLevel(in, ctx.getStack());
 	}
-	
+
+	@Deprecated // TODO remove
 	public static ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if(!(world.getBlockEntity(pos) instanceof ReFramedEntity block_entity)) return ActionResult.PASS;
 		if(!player.canModifyBlocks() || !world.canPlayerModifyAt(player, pos)) return ActionResult.PASS;
@@ -96,14 +105,14 @@ public class ReFramedInteractionUtil {
 			return ActionResult.SUCCESS;
 		}
 		
-		// Changing the theme TODO Move outside
-		if(held.getItem() instanceof BlockItem block_item && block_entity.getFirstTheme().getBlock() == Blocks.AIR) {
+		// Changing the theme
+		if(held.getItem() instanceof BlockItem block_item && block_entity.getTheme(1).getBlock() == Blocks.AIR) {
 			Block block = block_item.getBlock();
 			ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
 			BlockState placementState = block.getPlacementState(ctx);
 			if(placementState != null && Block.isShapeFullCube(placementState.getCollisionShape(world, pos)) && !(block instanceof BlockEntityProvider)) {
 				// TODO FOR SECOND
-				if(!world.isClient) block_entity.setFirstTheme(placementState);
+				if(!world.isClient) block_entity.setTheme(placementState, 1);
 
 				// check for default light emission
 				if (placementState.getLuminance() > 0)
@@ -126,6 +135,7 @@ public class ReFramedInteractionUtil {
 		return ActionResult.PASS;
 	}
 
+	@Deprecated
 	public static void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		if(!state.isOf(newState.getBlock()) &&
 			world.getBlockEntity(pos) instanceof ReFramedEntity frame_entity &&
@@ -133,7 +143,7 @@ public class ReFramedInteractionUtil {
 		) {
 			DefaultedList<ItemStack> drops = DefaultedList.of();
 
-			BlockState theme = frame_entity.getFirstTheme();
+			BlockState theme = frame_entity.getTheme(1);
 			if(theme.getBlock() != Blocks.AIR) drops.add(new ItemStack(theme.getBlock()));
 			
 			if(frame_entity.emitsRedstone() && theme.getWeakRedstonePower(world, pos, Direction.NORTH) == 0)
@@ -146,7 +156,8 @@ public class ReFramedInteractionUtil {
 			ItemScatterer.spawn(world, pos, drops);
 		}
 	}
-	
+
+	@Deprecated
 	public static void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		//Load the BlockEntityTag clientside, which fixes the template briefly showing its default state when placing it.
 		//I'm surprised this doesn't happen by default; the BlockEntityTag stuff is only done serverside.
@@ -155,21 +166,25 @@ public class ReFramedInteractionUtil {
 			if(tag != null) be.readNbt(tag);
 		}
 	}
-	
+
+	@Deprecated
 	//Returns "null" to signal "no opinion". Imagine it like an InteractionResult.PASS.
 	public static @Nullable VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
 		return view.getBlockEntity(pos) instanceof ReFramedEntity be && !be.isSolid() ? VoxelShapes.empty() : null;
 	}
-	
+
+	@Deprecated // TODO remove
 	public static boolean emitsRedstonePower(BlockState state) {
 		//return state.contains(REDSTONE) ? state.get(REDSTONE) : false;
 		return false; //TODO, not available after punting this to BlockEntity. Yarn makes this method sound more important than it is, it's just for dust redirection.
 	}
-	
+
+	@Deprecated // TODO remove
 	public static int getWeakRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
 		return view.getBlockEntity(pos) instanceof ReFramedEntity be && be.emitsRedstone() ? 15 : 0;
 	}
-	
+
+	@Deprecated // TODO remove
 	public static int getStrongRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
 		return view.getBlockEntity(pos) instanceof ReFramedEntity be && be.emitsRedstone() ? 15 : 0;
 	}
