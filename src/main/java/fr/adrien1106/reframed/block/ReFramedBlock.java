@@ -269,7 +269,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 			if (self_theme.isSideInvisible(other_state, side)) return false;
 
 			// Opaque is also simple as each model are rendered one by one
-			if (self_theme.isOpaque()) {
+			if (other_state.isOpaque()) {
 				// no cache section :( because it differs between each instance of the frame
 				VoxelShape self_shape = self_block.getShape(self_state, theme_index).getFace(side);
 				if (self_shape.isEmpty()) return true;
