@@ -25,7 +25,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**
- * TODO self culling, fix other models, better connected textures
+ * TODO self culling, fix other models, better connected textures, preload items, walking sound, state replacement
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
