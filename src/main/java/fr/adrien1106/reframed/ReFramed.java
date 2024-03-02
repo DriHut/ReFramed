@@ -24,11 +24,14 @@ import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+/**
+ * TODO self culling, fix other models, better connected textures
+ */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
-	public static Block CUBE, STAIRS, SLAB, DOUBLE_SLAB, POST, FENCE, FENCE_GATE, DOOR, TRAPDOOR, IRON_DOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE, CANDLE;
+	public static Block CUBE, STAIRS, DOUBLE_STAIRS, SLAB, DOUBLE_SLAB, POST, FENCE, FENCE_GATE, DOOR, TRAPDOOR, IRON_DOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE, CANDLE;
 
 	public static BlockEntityType<ReFramedEntity> REFRAMED_BLOCK_ENTITY;
 	public static BlockEntityType<ReFramedDoubleEntity> REFRAMED_DOUBLE_BLOCK_ENTITY;
@@ -44,6 +47,7 @@ public class ReFramed implements ModInitializer {
 		//and button, because they're redstoney... hopefully this ordering makes sense lol
 		CUBE           = registerReFramed("cube"          , new ReFramedBlock(ReFramedInteractionUtil.makeSettings()));
 		STAIRS         = registerReFramed("stairs"        , new ReFramedStairsBlock(cp(Blocks.OAK_STAIRS)));
+		DOUBLE_STAIRS  = registerReFramed("double_stairs" , new ReFramedDoubleStairsBlock(cp(Blocks.OAK_STAIRS)));
 		SLAB           = registerReFramed("slab"          , new ReFramedSlabBlock(cp(Blocks.OAK_SLAB)));
 		DOUBLE_SLAB    = registerReFramed("double_slab"   , new ReFramedDoubleSlabBlock(cp(Blocks.OAK_SLAB)));
 		POST           = registerReFramed("post"          , new ReFramedPostBlock(cp(Blocks.OAK_FENCE)));

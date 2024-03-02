@@ -1,5 +1,6 @@
 package fr.adrien1106.reframed.client;
 
+import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.client.model.UnbakedAutoRetexturedModel;
 import fr.adrien1106.reframed.client.model.UnbakedDoubleRetexturedModel;
 import fr.adrien1106.reframed.client.model.UnbakedJsonRetexturedModel;
@@ -38,12 +39,12 @@ public class ReFramedClientHelper {
 		return new UnbakedDoubleRetexturedModel(auto(first), auto(second));
 	}
 
-	public void addReFramedModel(Identifier id, UnbakedModel unbaked) {
-		prov.addReFramedModel(id, unbaked);
+	public void addReFramedModel(String id, UnbakedModel unbaked) {
+		prov.addReFramedModel(ReFramed.id(id), unbaked);
 	}
 
-	public void assignItemModel(Identifier model_id, ItemConvertible... item_convertibles) {
-		prov.assignItemModel(model_id, item_convertibles);
+	public void assignItemModel(String id, ItemConvertible... item_convertibles) {
+		prov.assignItemModel(ReFramed.id(id), item_convertibles);
 	}
 
 	public CamoAppearanceManager getCamoApperanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {

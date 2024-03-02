@@ -13,7 +13,7 @@ public class Generator implements DataGeneratorEntrypoint {
     /**
      *  missing DOOR, IRON_DOOR, CANDLE
      */
-    public static List<Block> BLOCKS = List.of(CUBE, STAIRS, SLAB, DOUBLE_SLAB, POST, FENCE, FENCE_GATE, TRAPDOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE);
+    public static List<Block> BLOCKS = List.of(CUBE, STAIRS, DOUBLE_STAIRS, SLAB, DOUBLE_SLAB, POST, FENCE, FENCE_GATE, TRAPDOOR, IRON_TRAPDOOR, PRESSURE_PLATE, BUTTON, LEVER, WALL, CARPET, PANE);
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator data_generator) {
         FabricDataGenerator.Pack myPack = data_generator.createPack();

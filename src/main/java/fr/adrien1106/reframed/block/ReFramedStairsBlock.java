@@ -38,7 +38,7 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 
 	public static final EnumProperty<StairDirection> FACING = EnumProperty.of("facing", StairDirection.class);
 	public static final EnumProperty<StairShape> SHAPE = EnumProperty.of("shape", StairShape.class);
-	private static final List<VoxelShape> VOXEL_LIST = new ArrayList<>(52);
+	public static final List<VoxelShape> VOXEL_LIST = new ArrayList<>(52);
 
 	public ReFramedStairsBlock(Settings settings) {
 		super(settings);
@@ -53,13 +53,16 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighbor_state, WorldAccess world, BlockPos pos, BlockPos moved) {
 		return super.getStateForNeighborUpdate(state, direction, neighbor_state, world, pos, moved)
-			.with(SHAPE, getPlacementShape(state.get(FACING), world, pos));
+			.with(SHAPE, getPlacementShape(state.getBlock(), state.get(FACING), world, pos));
 	}
 
 	@Nullable
 	@Override // Pretty happy of how clean it is (also got it on first try :) )
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		BlockState state = super.getPlacementState(ctx);
+		return getPlacement(super.getPlacementState(ctx), ctx);
+	}
+
+	public static BlockState getPlacement(BlockState state, ItemPlacementContext ctx) {
 		Direction side = ctx.getSide().getOpposite();
 		BlockPos block_pos = ctx.getBlockPos();
 		Vec3d hit_pos = ctx.getHitPos();
@@ -84,20 +87,23 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 		);
 		StairDirection face = StairDirection.getByDirections(side, part_direction);
 
-		return state.with(FACING, face).with(SHAPE, getPlacementShape(face, ctx.getWorld(), block_pos));
+		return state.with(FACING, face).with(SHAPE, getPlacementShape(state.getBlock(), face, ctx.getWorld(), block_pos));
 	}
 
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		super.onStateReplaced(state, world, pos, newState, moved);
 
-		//StairsBlock onStateReplaced is Weird! it doesn't delegate to regular block onStateReplaced!
 		if(!state.isOf(newState.getBlock())) world.removeBlockEntity(pos);
 	}
 
 	/* ---------------------------------- DON'T GO FURTHER IF YOU LIKE HAVING EYES ---------------------------------- */
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return getOutline(state);
+	}
+
+	public static VoxelShape getOutline(BlockState state) {
 		StairShape shape = state.get(SHAPE);
 		StairDirection direction = state.get(FACING);
 		return switch (shape) {
@@ -211,40 +217,40 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 		};
 	}
 
-	private static String getNeighborPos(StairDirection face, Direction direction, Boolean reverse, Direction reference, BlockView world, BlockPos pos) {
+	public static String getNeighborPos(StairDirection face, Direction direction, Boolean reverse, Direction reference, BlockView world, BlockPos pos, Block block) {
 		BlockState block_state = world.getBlockState(
 			pos.offset(reverse ? direction.getOpposite() : direction)
 		);
 
-		if (block_state.getBlock() instanceof ReFramedStairsBlock && block_state.get(FACING).hasDirection(reference)) {
+		if (block_state.isOf(block) && block_state.get(FACING).hasDirection(reference)) {
 			if (block_state.get(FACING).hasDirection(face.getLeftDirection())) return "left";
 			else if (block_state.get(FACING).hasDirection(face.getRightDirection())) return "right";
 		}
 		return "";
 	}
 
-	private static StairShape getPlacementShape(StairDirection face, BlockView world, BlockPos pos) {
+	public static StairShape getPlacementShape(Block block, StairDirection face, BlockView world, BlockPos pos) {
 		StairShape shape = STRAIGHT;
 
-		String sol = getNeighborPos(face, face.getFirstDirection(), true, face.getSecondDirection(), world, pos);
+		String sol = getNeighborPos(face, face.getFirstDirection(), true, face.getSecondDirection(), world, pos, block);
 		switch (sol) {
 			case "right": return INNER_RIGHT;
 			case "left": return INNER_LEFT;
 		}
 
-		sol = getNeighborPos(face, face.getSecondDirection(), true, face.getFirstDirection(), world, pos);
+		sol = getNeighborPos(face, face.getSecondDirection(), true, face.getFirstDirection(), world, pos, block);
 		switch (sol) {
 			case "right": return INNER_RIGHT;
 			case "left": return INNER_LEFT;
 		}
 
-		sol = getNeighborPos(face, face.getFirstDirection(), false, face.getSecondDirection(), world, pos);
+		sol = getNeighborPos(face, face.getFirstDirection(), false, face.getSecondDirection(), world, pos, block);
 		switch (sol) {
 			case "right" -> shape = FIRST_OUTER_RIGHT;
 			case "left" -> shape = FIRST_OUTER_LEFT;
 		}
 
-		sol = getNeighborPos(face, face.getSecondDirection(), false, face.getFirstDirection(), world, pos);
+		sol = getNeighborPos(face, face.getSecondDirection(), false, face.getFirstDirection(), world, pos, block);
 		switch (sol) {
 			case "right" -> {
 				if (shape.equals(STRAIGHT)) shape = SECOND_OUTER_RIGHT;
@@ -261,12 +267,17 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements M
 
 	@Override
 	public MultipartBlockStateSupplier getMultipart() {
-		Identifier straight_id = ReFramed.id("stairs_special");
-		Identifier double_outer_id = ReFramed.id("double_outer_stairs_special");
-		Identifier inner_id = ReFramed.id("inner_stairs_special");
-		Identifier outer_id = ReFramed.id("outer_stairs_special");
-		Identifier outer_side_id = ReFramed.id("outer_side_stairs_special");
-		return MultipartBlockStateSupplier.create(this)
+		return getStairMultipart(this, false);
+	}
+
+	public static MultipartBlockStateSupplier getStairMultipart(Block block, boolean is_double) {
+		String prefix = is_double ? "double_" : "";
+		Identifier straight_id = ReFramed.id(prefix + "stairs_special");
+		Identifier double_outer_id = ReFramed.id(prefix + "outers_stairs_special");
+		Identifier inner_id = ReFramed.id(prefix + "inner_stairs_special");
+		Identifier outer_id = ReFramed.id(prefix + "outer_stairs_special");
+		Identifier outer_side_id = ReFramed.id(prefix + "outer_side_stairs_special");
+		return MultipartBlockStateSupplier.create(block)
 			/* STRAIGHT X AXIS */
 			.with(GBlockstate.when(FACING, DOWN_EAST, SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R0, R0))
