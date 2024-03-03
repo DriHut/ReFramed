@@ -2,6 +2,8 @@ package fr.adrien1106.reframed.mixin;
 
 import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -12,9 +14,17 @@ import java.util.function.Supplier;
 
 public class CompatMixinPlugin implements IMixinConfigPlugin {
 
+    private static final FabricLoader LOADER = FabricLoader.getInstance();
+    private static final Logger LOGGER = LoggerFactory.getLogger("ReFramed MIXIN");
+    private static final List<String> COMPAT_MOD = List.of("athena", "indium", "sodium");
     private static final Map<String, Supplier<Boolean>> CONDITIONS = Map.of(
-        "fr.adrien1106.reframed.mixin.compat.AthenaBakedModelMixin", () -> FabricLoader.getInstance().isModLoaded("athena"),
-        "fr.adrien1106.reframed.mixin.compat.AthenaWrappedGetterMixin", () -> FabricLoader.getInstance().isModLoaded("athena")
+        "fr.adrien1106.reframed.mixin.compat.AthenaBakedModelMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(0)),
+        "fr.adrien1106.reframed.mixin.compat.AthenaWrappedGetterMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(0)),
+        "fr.adrien1106.reframed.mixin.render.TerrainRenderContextMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)),
+        "fr.adrien1106.reframed.mixin.compat.IndiumTerrainRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)),
+        "fr.adrien1106.reframed.mixin.render.BlockRenderInfoMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)),
+        "fr.adrien1106.reframed.mixin.compat.IndiumTerrainBlockRenderInfoMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)),
+        "fr.adrien1106.reframed.mixin.compat.SodiumBlockOcclusionCacheMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(2))
     );
 
 
@@ -44,12 +54,16 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+    public void preApply(String target_class_name, ClassNode target_class, String mixin_class_name, IMixinInfo mixin_info) {
 
     }
 
     @Override
-    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-
+    public void postApply(String target_class, ClassNode target, String mixin_class, IMixinInfo mixin_info) {
+        String mixin_class_name = mixin_class.substring(mixin_class.lastIndexOf('.') + 1);
+        COMPAT_MOD.forEach(mod -> {
+            if (mixin_class_name.toLowerCase().startsWith(mod))
+                LOGGER.info("Loaded compatibility mixin class for mod \"" + mod + "\" (class: " + target_class + ")");
+        });
     }
 }

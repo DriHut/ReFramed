@@ -6,13 +6,17 @@
   "mixins": [
     "WallBlockAccessor",
     "particles.MixinEntity",
-    "particles.MixinLivingEntity"
+    "particles.MixinLivingEntity",
+    "sound.LivingEntityMixin"
   ],
   "client": [
     "MinecraftAccessor",
     "compat.AthenaBakedModelMixin",
     "compat.AthenaConnectedBlockModelMixin",
     "compat.AthenaWrappedGetterMixin",
+    "compat.IndiumTerrainBlockRenderInfoMixin",
+    "compat.IndiumTerrainRenderContextMixin",
+    "compat.SodiumBlockOcclusionCacheMixin",
     "model.WeightedBakedModelAccessor",
     "particles.AccessorParticle",
     "particles.AccessorSpriteBillboardParticle",

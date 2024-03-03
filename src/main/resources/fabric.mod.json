@@ -31,6 +31,8 @@
 		"fabric-api": "*"
 	},
 	"suggest": {
-		"athena": "^${athena_version}"
+		"athena": "^${athena_version}",
+		"sodium": "^${sodium_version}",
+		"indium": "^${indium_version}"
 	}
 }

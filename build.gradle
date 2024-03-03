@@ -72,6 +72,17 @@ repositories {
 	maven {
 		url "https://maven.resourcefulbees.com/repository/maven-public/"
 	}
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 	mavenCentral()
 
 	// Add repositories to retrieve artifacts from in here.
@@ -87,6 +98,12 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Indium and sodium for sodium support
+	modCompileOnly "maven.modrinth:indium:${project.indium_version}+mc${project.minecraft_version}"
+	modCompileOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
+	modRuntimeOnly "maven.modrinth:indium:${project.indium_version}+mc${project.minecraft_version}"
+	modRuntimeOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
 
 	// Athena for connected texture
 	modCompileOnly "earth.terrarium.athena:athena-fabric-${project.minecraft_version}:${project.athena_version}"
@@ -106,6 +123,8 @@ processResources {
 	inputs.property "loader_version", project.loader_version
 	inputs.property "mod_id", project.mod_id
 	inputs.property "athena_version", project.athena_version
+	inputs.property "indium_version", project.indium_version
+	inputs.property "sodium_version", project.sodium_version
 	filteringCharset "UTF-8"
 
 	filesMatching("fabric.mod.json") {

@@ -21,9 +21,9 @@ public abstract class TerrainRenderContextMixin extends AbstractBlockRenderConte
 
     @Inject(method = "tessellateBlock", at = @At(
             value = "INVOKE",
-            target = "Lnet/fabricmc/fabric/impl/client/indigo/renderer/aocalc/AoCalculator;clear()V",
-            shift = At.Shift.AFTER
-        ), cancellable = true)
+            target = "Lnet/fabricmc/fabric/impl/client/indigo/renderer/aocalc/AoCalculator;clear()V"
+        ), remap = false,
+        cancellable = true)
     private void renderMultipleModels(BlockState state, BlockPos pos, BakedModel wrapper, MatrixStack matrixStack, CallbackInfo ci) {
         if (!(wrapper instanceof IMultipartBakedModelMixin wrapped)
             || !(wrapped.getModel(state) instanceof MultiRetexturableModel retexturing_model)) return;

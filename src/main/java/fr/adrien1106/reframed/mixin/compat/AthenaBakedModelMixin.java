@@ -27,9 +27,9 @@ import java.util.*;
 @Mixin(AthenaBakedModel.class)
 public abstract class AthenaBakedModelMixin implements DynamicBakedModel, BakedModel {
 
-    @Shadow @Final private AthenaBlockModel model;
+    @Shadow(remap = false) @Final private AthenaBlockModel model;
 
-    @Shadow @Final private Int2ObjectMap<Sprite> textures;
+    @Shadow(remap = false) @Final private Int2ObjectMap<Sprite> textures;
 
     /**
      * Reuses the emitQuad method to compute the quads to be used by the frame
