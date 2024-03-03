@@ -6,8 +6,7 @@
   "mixins": [
     "WallBlockAccessor",
     "particles.MixinEntity",
-    "particles.MixinLivingEntity",
-    "sound.LivingEntityMixin"
+    "particles.MixinLivingEntity"
   ],
   "client": [
     "MinecraftAccessor",
