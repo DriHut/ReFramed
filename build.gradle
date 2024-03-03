@@ -3,6 +3,7 @@ import fr.altarik.CreateTag
 
 
 plugins {
+	id "com.modrinth.minotaur" version "2.+"
 	id 'fabric-loom' version '1.5-SNAPSHOT'
 	id 'maven-publish'
 }
@@ -102,8 +103,8 @@ dependencies {
 	// Indium and sodium for sodium support
 	modCompileOnly "maven.modrinth:indium:${project.indium_version}+mc${project.minecraft_version}"
 	modCompileOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
-	modRuntimeOnly "maven.modrinth:indium:${project.indium_version}+mc${project.minecraft_version}"
-	modRuntimeOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
+//	modRuntimeOnly "maven.modrinth:indium:${project.indium_version}+mc${project.minecraft_version}"
+//	modRuntimeOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
 
 	// Athena for connected texture
 	modCompileOnly "earth.terrarium.athena:athena-fabric-${project.minecraft_version}:${project.athena_version}"
@@ -187,6 +188,23 @@ publishing {
 			}
 		}
 
+	}
+}
+
+// configure modrinth publication
+modrinth {
+	token = getEnv("MODRINTH_TOKEN", local.getProperty("modrinth_token"))
+	projectId = project.modrinth_id
+	versionNumber = project.mod_version
+	versionName = "${project.archives_base_name} ${project.mod_version}"
+	versionType = project.mod_version.endsWith('SNAPSHOT') ? 'beta' : 'release'
+	uploadFile = remapJar
+	gameVersions = [project.minecraft_version]
+	loaders = ["fabric"]
+	dependencies {
+		required.project "fabric-api"
+		optional.version "b1ZV3DIJ", "${project.athena_version}"
+		optional.version "Orvt0mRa", "${project.indium_version}+mc${project.minecraft_version}"
 	}
 }
 
