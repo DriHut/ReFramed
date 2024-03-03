@@ -2,12 +2,6 @@ name: Publish mod on Modrinth
 
 on: [ push, workflow_dispatch ]
 
-env:
-  MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
