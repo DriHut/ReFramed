@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "fr.adrien1106.reframed.mixin.CompatMixinPlugin",
   "mixins": [
+    "BlockItemMixin",
     "WallBlockAccessor",
     "particles.MixinEntity",
     "particles.MixinLivingEntity"
@@ -23,7 +24,11 @@
     "render.BlockRenderInfoMixin",
     "render.MultipartBakedModelMixin",
     "render.TerrainRenderContextMixin",
-    "render.WorldRendererMixin"
+    "render.WorldRendererMixin",
+    "sound.BlockItemMixin",
+    "sound.EntityMixin",
+    "sound.LivingEntityMixin",
+    "sound.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

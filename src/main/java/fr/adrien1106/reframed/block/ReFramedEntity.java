@@ -35,7 +35,7 @@ public class ReFramedEntity extends BlockEntity implements ThemeableBlockEntity 
 	protected static final byte REDSTONE_MASK = 0b010;
 	protected static final byte SOLIDITY_MASK = 0b100;
 
-	protected static final String BLOCKSTATE_KEY = "s";
+	public static final String BLOCKSTATE_KEY = "s";
 	protected static final String BITFIELD_KEY = "b";
 	
 	public ReFramedEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
