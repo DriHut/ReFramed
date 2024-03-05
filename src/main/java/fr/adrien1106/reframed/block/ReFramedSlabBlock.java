@@ -1,13 +1,18 @@
 package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
+import fr.adrien1106.reframed.generator.BlockStateProvider;
 import fr.adrien1106.reframed.generator.GBlockstate;
-import fr.adrien1106.reframed.generator.MultipartBlockStateProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
+import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeProvider;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -20,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.FACING;
 
-public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements MultipartBlockStateProvider {
+public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 
 	protected static final VoxelShape DOWN = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1f);
 	protected static final VoxelShape UP = VoxelShapes.cuboid(0f, 0.5f, 0f, 1f, 1f, 1f);
@@ -47,7 +52,11 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements Mul
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return switch (state.get(FACING)) {
+		return getSlabShape(state.get(FACING));
+	}
+
+	public static VoxelShape getSlabShape(Direction side) {
+		return switch (side) {
 			case DOWN -> DOWN;
 			case UP -> UP;
 			case NORTH -> NORTH;
@@ -73,5 +82,17 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements Mul
 				GBlockstate.variant(model_id, true, R90, R90))
 			.with(GBlockstate.when(FACING, Direction.EAST),
 				GBlockstate.variant(model_id, true, R90, R270));
+	}
+
+	@Override
+	public void setRecipe(RecipeExporter exporter) {
+		RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE, 2);
+		ShapedRecipeJsonBuilder
+			.create(RecipeCategory.BUILDING_BLOCKS, this, 6)
+			.pattern("III")
+			.input('I', ReFramed.CUBE)
+			.criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
+			.criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
+			.offerTo(exporter);
 	}
 }

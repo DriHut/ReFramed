@@ -1,6 +1,7 @@
 package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
+import fr.adrien1106.reframed.util.BlockProperties;
 import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -87,8 +88,8 @@ public class ReFramedEntity extends BlockEntity implements ThemeableBlockEntity 
 		NbtCompound nbt = BlockItem.getBlockEntityNbt(stack);
 		if(nbt == null) return state;
 		
-		if(state.contains(ReFramedBlock.LIGHT)) {
-			state = state.with(ReFramedBlock.LIGHT,
+		if(state.contains(BlockProperties.LIGHT)) {
+			state = state.with(BlockProperties.LIGHT,
 				((nbt.contains(BITFIELD_KEY)
 					? nbt.getByte(BITFIELD_KEY)
 					: SOLIDITY_MASK)

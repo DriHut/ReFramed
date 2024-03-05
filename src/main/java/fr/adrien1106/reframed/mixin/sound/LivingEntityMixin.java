@@ -19,7 +19,7 @@ public class LivingEntityMixin {
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"
-        ), remap = false
+        )
     )
     private BlockState playCamoFallSound(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);

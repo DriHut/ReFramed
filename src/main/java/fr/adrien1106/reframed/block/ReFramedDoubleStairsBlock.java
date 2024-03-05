@@ -1,12 +1,19 @@
 package fr.adrien1106.reframed.block;
 
-import fr.adrien1106.reframed.generator.MultipartBlockStateProvider;
-import fr.adrien1106.reframed.util.property.StairDirection;
+import fr.adrien1106.reframed.ReFramed;
+import fr.adrien1106.reframed.generator.BlockStateProvider;
+import fr.adrien1106.reframed.util.BlockHelper;
+import fr.adrien1106.reframed.util.property.Corner;
 import fr.adrien1106.reframed.util.property.StairShape;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
+import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeProvider;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
@@ -21,33 +28,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.adrien1106.reframed.block.ReFramedStairsBlock.*;
+import static fr.adrien1106.reframed.util.BlockProperties.CORNER;
+import static fr.adrien1106.reframed.util.BlockProperties.STAIR_SHAPE;
 import static fr.adrien1106.reframed.util.property.StairShape.STRAIGHT;
 
-public class ReFramedDoubleStairsBlock extends ReFramedDoubleBlock implements MultipartBlockStateProvider {
+public class ReFramedDoubleStairsBlock extends ReFramedDoubleBlock implements BlockStateProvider {
 
     private static final List<VoxelShape> COMPLEMENT_LIST = new ArrayList<>(52);
 
     public ReFramedDoubleStairsBlock(Settings settings) {
         super(settings);
-        setDefaultState(getDefaultState().with(FACING, StairDirection.NORTH_DOWN).with(SHAPE, STRAIGHT));
+        setDefaultState(getDefaultState().with(CORNER, Corner.NORTH_DOWN).with(STAIR_SHAPE, STRAIGHT));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(FACING).add(SHAPE));
+        super.appendProperties(builder.add(CORNER, STAIR_SHAPE));
     }
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighbor_state, WorldAccess world, BlockPos pos, BlockPos moved) {
         return super.getStateForNeighborUpdate(state, direction, neighbor_state, world, pos, moved)
-            .with(SHAPE, getPlacementShape(this, state.get(FACING), world, pos));
+            .with(STAIR_SHAPE, BlockHelper.getStairsShape(this, state.get(CORNER), world, pos));
     }
 
 
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return getPlacement(super.getPlacementState(ctx), ctx);
+        Corner face = BlockHelper.getPlacementCorner(ctx);
+        StairShape shape = BlockHelper.getStairsShape(this, face, ctx.getWorld(), ctx.getBlockPos());
+        return super.getPlacementState(ctx).with(CORNER, face).with(STAIR_SHAPE, shape);
     }
 
     @Override
@@ -63,8 +74,8 @@ public class ReFramedDoubleStairsBlock extends ReFramedDoubleBlock implements Mu
     }
 
     private VoxelShape getComplementOutline(BlockState state) {
-        StairShape shape = state.get(SHAPE);
-        StairDirection direction = state.get(FACING);
+        StairShape shape = state.get(STAIR_SHAPE);
+        Corner direction = state.get(CORNER);
         return switch (shape) {
             case STRAIGHT ->
                 switch (direction) {
@@ -179,6 +190,18 @@ public class ReFramedDoubleStairsBlock extends ReFramedDoubleBlock implements Mu
     @Override
     public MultipartBlockStateSupplier getMultipart() {
         return getStairMultipart(this, true);
+    }
+
+    @Override
+    public void setRecipe(RecipeExporter exporter) {
+        RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE);
+        ShapelessRecipeJsonBuilder
+            .create(RecipeCategory.BUILDING_BLOCKS, this)
+            .input(ReFramed.STAIRS)
+            .input(ReFramed.STEP)
+            .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
+            .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
+            .offerTo(exporter);
     }
 
     static {

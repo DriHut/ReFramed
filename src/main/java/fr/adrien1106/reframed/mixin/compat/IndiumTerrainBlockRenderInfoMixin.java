@@ -1,6 +1,6 @@
 package fr.adrien1106.reframed.mixin.compat;
 
-import fr.adrien1106.reframed.block.ReFramedBlock;
+import fr.adrien1106.reframed.util.BlockHelper;
 import fr.adrien1106.reframed.util.IBlockRenderInfoMixin;
 import fr.adrien1106.reframed.util.ThemeableBlockEntity;
 import link.infra.indium.renderer.render.BlockRenderInfo;
@@ -32,7 +32,7 @@ public abstract class IndiumTerrainBlockRenderInfoMixin extends BlockRenderInfo 
         if (!(view.getBlockEntity(pos) instanceof ThemeableBlockEntity
             || view.getBlockEntity(other_pos) instanceof ThemeableBlockEntity))
                 return instance.shouldDrawSide(state, view, pos, face);
-        return ReFramedBlock.shouldDrawSide(state, view, pos, face, other_pos, theme_index);
+        return BlockHelper.shouldDrawSide(state, view, pos, face, other_pos, theme_index);
     }
 
     @Override
