@@ -38,7 +38,6 @@ public abstract class TerrainRenderContextMixin extends AbstractBlockRenderConte
         for (BakedModel model : models) {
             i++;
             aoCalc.clear();
-            // TODO if (state_key.getBlock() instanceof ReFramedDoubleBlock frame_block) frame_block.getRenderOutline(i);
             ((IBlockRenderInfoMixin) blockInfo).prepareForBlock(state, pos, model.useAmbientOcclusion(), i);
             model.emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
         }

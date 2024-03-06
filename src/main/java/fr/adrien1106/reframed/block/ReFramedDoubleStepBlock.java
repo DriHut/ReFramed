@@ -1,11 +1,9 @@
 package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
-import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
+import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
-import fr.adrien1106.reframed.util.blocks.Corner;
-import fr.adrien1106.reframed.util.blocks.StairShape;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,11 +24,11 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-import static fr.adrien1106.reframed.block.ReFramedSlabBlock.*;
+import static fr.adrien1106.reframed.block.ReFramedSlabBlock.getSlabShape;
 import static fr.adrien1106.reframed.block.ReFramedStepBlock.STEP_VOXELS;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
-import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.state.property.Properties.AXIS;
+import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedDoubleStepBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {

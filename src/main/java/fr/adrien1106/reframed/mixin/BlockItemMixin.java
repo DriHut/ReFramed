@@ -23,8 +23,6 @@ import static fr.adrien1106.reframed.block.ReFramedEntity.BLOCKSTATE_KEY;
 @Mixin(BlockItem.class)
 public class BlockItemMixin {
 
-    @Shadow @Final @Deprecated private Block block;
-
     @Inject(
         method = "writeNbtToBlockEntity",
         at = @At(
