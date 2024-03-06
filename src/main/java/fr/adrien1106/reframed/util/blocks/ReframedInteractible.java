@@ -1,4 +1,4 @@
-package fr.adrien1106.reframed.util;
+package fr.adrien1106.reframed.util.blocks;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

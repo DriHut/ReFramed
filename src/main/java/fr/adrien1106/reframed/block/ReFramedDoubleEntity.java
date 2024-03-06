@@ -44,7 +44,7 @@ public class ReFramedDoubleEntity extends ReFramedEntity {
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
 
-        BlockState rendered_state = second_state;// keep previous state to check if rerender is needed
+        BlockState rendered_state = second_state;// keep previous state_key to check if rerender is needed
         second_state = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), nbt.getCompound(BLOCKSTATE_KEY + 2));
 
         // Force a chunk remesh on the client if the displayed blockstate has changed

@@ -1,9 +1,9 @@
 package fr.adrien1106.reframed.mixin.render;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import fr.adrien1106.reframed.util.BlockHelper;
-import fr.adrien1106.reframed.util.IBlockRenderInfoMixin;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.util.mixin.IBlockRenderInfoMixin;
+import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

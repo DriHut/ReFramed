@@ -1,8 +1,8 @@
 package fr.adrien1106.reframed.mixin.compat;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import fr.adrien1106.reframed.util.BlockHelper;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

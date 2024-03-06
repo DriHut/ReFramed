@@ -3,7 +3,9 @@ package fr.adrien1106.reframed.block;
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
-import fr.adrien1106.reframed.util.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.Corner;
+import fr.adrien1106.reframed.util.blocks.StairShape;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -32,9 +34,21 @@ import static net.minecraft.state.property.Properties.AXIS;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedDoubleStepBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {
+    private record ModelCacheKey(Direction facing, Axis axis) {}
+
     public ReFramedDoubleStepBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(FACING, Direction.DOWN).with(AXIS, Axis.X));
+    }
+
+    @Override
+    public Object getModelCacheKey(BlockState state) {
+        return new ModelCacheKey(state.get(FACING), state.get(AXIS));
+    }
+
+    @Override
+    public int getModelStateCount() {
+        return 18;
     }
 
     @Override

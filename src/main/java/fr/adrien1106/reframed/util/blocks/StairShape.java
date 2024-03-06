@@ -1,4 +1,4 @@
-package fr.adrien1106.reframed.util.property;
+package fr.adrien1106.reframed.util.blocks;
 
 import net.minecraft.util.StringIdentifiable;
 

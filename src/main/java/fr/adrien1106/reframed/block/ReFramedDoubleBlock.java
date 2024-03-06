@@ -1,8 +1,8 @@
 package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
-import fr.adrien1106.reframed.util.BlockHelper;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;

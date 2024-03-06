@@ -38,6 +38,16 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements Blo
 		super(settings);
 		setDefaultState(getDefaultState().with(FACING, Direction.DOWN));
 	}
+
+	@Override
+	public Object getModelCacheKey(BlockState state) {
+		return state.get(FACING);
+	}
+
+	@Override
+	public int getModelStateCount() {
+		return 6;
+	}
 	
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

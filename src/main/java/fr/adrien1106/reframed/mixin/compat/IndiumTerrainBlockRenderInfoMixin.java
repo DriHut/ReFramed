@@ -1,8 +1,8 @@
 package fr.adrien1106.reframed.mixin.compat;
 
-import fr.adrien1106.reframed.util.BlockHelper;
-import fr.adrien1106.reframed.util.IBlockRenderInfoMixin;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.util.mixin.IBlockRenderInfoMixin;
+import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import link.infra.indium.renderer.render.BlockRenderInfo;
 import link.infra.indium.renderer.render.TerrainBlockRenderInfo;
 import me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache;

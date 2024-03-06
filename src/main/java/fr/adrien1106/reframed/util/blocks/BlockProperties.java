@@ -1,7 +1,5 @@
-package fr.adrien1106.reframed.util;
+package fr.adrien1106.reframed.util.blocks;
 
-import fr.adrien1106.reframed.util.property.Corner;
-import fr.adrien1106.reframed.util.property.StairShape;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 

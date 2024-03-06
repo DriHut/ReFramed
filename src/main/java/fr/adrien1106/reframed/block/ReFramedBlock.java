@@ -2,7 +2,7 @@ package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.generator.RecipeSetter;
-import fr.adrien1106.reframed.util.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -33,13 +33,30 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static fr.adrien1106.reframed.util.BlockProperties.LIGHT;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
 public class ReFramedBlock extends Block implements BlockEntityProvider, RecipeSetter {
 
 	public ReFramedBlock(Settings settings) {
 		super(settings);
 		setDefaultState(getDefaultState().with(LIGHT, false));
+	}
+
+	/**
+	 * Generates a record for the key so that it replaces the blockstate
+	 * which may have states that returns same models
+	 * @param state - the state_key to generate the key from
+	 * @return a cache key with only relevant properties
+	 */
+	public Object getModelCacheKey(BlockState state) {
+		return "";
+	}
+
+	/**
+	 * @return the amount of models the block can have prevents allocating too much space for a model
+	 */
+	public int getModelStateCount() {
+		return 1;
 	}
 	
 	//For addon devs: override this so your blocks don't end up trying to place my block entity, my BlockEntityType only handles blocks internal to the mod

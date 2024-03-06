@@ -1,7 +1,7 @@
 package fr.adrien1106.reframed;
 
 import fr.adrien1106.reframed.block.*;
-import fr.adrien1106.reframed.util.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -26,7 +26,9 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**
- * TODO self culling, fix other models, better connected textures, preload items, better cache
+ * TODO self culling
+ * TODO fix other models
+ * TODO better connected textures
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";

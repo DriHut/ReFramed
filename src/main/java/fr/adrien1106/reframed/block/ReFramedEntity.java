@@ -1,8 +1,8 @@
 package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
-import fr.adrien1106.reframed.util.BlockProperties;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
+import fr.adrien1106.reframed.util.blocks.BlockProperties;
+import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -27,7 +27,7 @@ import java.util.Objects;
 
 //Keeping the weight of this block entity down, both in terms of memory consumption and NBT sync traffic,
 //is pretty important since players might place a lot of them. There were tons and tons of these at Blanketcon.
-//To that end, most of the state has been crammed into a bitfield.
+//To that end, most of the state_key has been crammed into a bitfield.
 public class ReFramedEntity extends BlockEntity implements ThemeableBlockEntity {
 	protected BlockState first_state = Blocks.AIR.getDefaultState();
 	protected byte bit_field = SOLIDITY_MASK;
@@ -47,7 +47,7 @@ public class ReFramedEntity extends BlockEntity implements ThemeableBlockEntity 
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
 		
-		BlockState rendered_state = first_state; // keep previous state to check if rerender is needed
+		BlockState rendered_state = first_state; // keep previous state_key to check if rerender is needed
 		first_state = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), nbt.getCompound(BLOCKSTATE_KEY + 1));
 		if (nbt.contains(BITFIELD_KEY)) bit_field = nbt.getByte(BITFIELD_KEY);
 		

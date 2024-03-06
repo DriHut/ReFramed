@@ -2,7 +2,7 @@ package fr.adrien1106.reframed.mixin.compat;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import earth.terrarium.athena.api.client.fabric.WrappedGetter;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
+import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;

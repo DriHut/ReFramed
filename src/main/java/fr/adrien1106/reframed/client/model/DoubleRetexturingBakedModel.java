@@ -45,7 +45,7 @@ public class DoubleRetexturingBakedModel extends ForwardingBakedModel implements
     }
 
     @Override
-    public List<BakedModel> models() {
+    public List<ForwardingBakedModel> models() {
         return List.of(model_1, model_2);
     }
 }

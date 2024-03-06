@@ -3,9 +3,9 @@ package fr.adrien1106.reframed.block;
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
-import fr.adrien1106.reframed.util.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.VoxelHelper;
-import fr.adrien1106.reframed.util.property.Corner;
+import fr.adrien1106.reframed.util.blocks.Corner;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,8 +28,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.adrien1106.reframed.util.BlockProperties.CORNER;
-import static fr.adrien1106.reframed.util.property.Corner.*;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
+import static fr.adrien1106.reframed.util.blocks.Corner.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 
 public class ReFramedStepBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
@@ -39,6 +39,16 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock implements Blo
     public ReFramedStepBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(CORNER, Corner.NORTH_DOWN));
+    }
+
+    @Override
+    public Object getModelCacheKey(BlockState state) {
+        return state.get(CORNER);
+    }
+
+    @Override
+    public int getModelStateCount() {
+        return 12;
     }
 
     @Override

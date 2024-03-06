@@ -1,7 +1,7 @@
 package fr.adrien1106.reframed.mixin.particles;
 
 import fr.adrien1106.reframed.block.ReFramedBlock;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
+import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.BlockDustParticle;

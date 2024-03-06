@@ -41,6 +41,7 @@ public class BlockItemMixin {
             || !Block.isShapeFullCube(block.getBlock().getDefaultState().getCollisionShape(world, pos))
         ) return;
         NbtCompound new_comp = new NbtCompound();
+        player.getOffHandStack().decrement(1);
         new_comp.put(BLOCKSTATE_KEY + 1, NbtHelper.fromBlockState(block.getBlock().getDefaultState()));
         compound.set(new_comp);
     }

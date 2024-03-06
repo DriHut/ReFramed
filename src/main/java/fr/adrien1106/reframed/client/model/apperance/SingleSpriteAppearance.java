@@ -7,47 +7,33 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class SingleSpriteAppearance implements CamoAppearance {
+public class SingleSpriteAppearance extends CamoAppearance {
     private final @NotNull Sprite defaultSprite;
-    private final RenderMaterial mat;
-    private final int id;
 
     public SingleSpriteAppearance(@NotNull Sprite defaultSprite, RenderMaterial mat, int id) {
+        super(null, mat, id);
         this.defaultSprite = defaultSprite;
-        this.mat = mat;
-        this.id = id;
     }
 
     @Override
-    public @NotNull RenderMaterial getRenderMaterial(boolean ao) {
-        return mat;
-    }
-
-    @Override
-    public @NotNull List<SpriteProperties> getSprites(Direction dir, long seed) {
+    public @NotNull List<SpriteProperties> getSprites(Direction dir, int model_id) {
         return List.of(new SpriteProperties(defaultSprite, 0, null, false));
     }
 
     @Override
-    public boolean hasColor(Direction dir, long seed, int index) {
+    public boolean hasColor(Direction dir, int model_id, int index) {
         return false;
     }
 
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
-        SingleSpriteAppearance that = (SingleSpriteAppearance) o;
+        if(!(o instanceof SingleSpriteAppearance that)) return false;
         return id == that.id;
     }
 
     @Override
-    public int hashCode() {
-        return id;
-    }
-
-    @Override
     public String toString() {
-        return "SingleSpriteAppearance[defaultSprite=%s, mat=%s, id=%d]".formatted(defaultSprite, mat, id);
+        return "SingleSpriteAppearance[defaultSprite=%s, mat=%s, id=%d]".formatted(defaultSprite, material, id);
     }
 }

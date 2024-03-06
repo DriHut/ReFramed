@@ -5,6 +5,7 @@ import fr.adrien1106.reframed.client.ReFramedClient;
 import fr.adrien1106.reframed.client.model.DynamicBakedModel;
 import fr.adrien1106.reframed.client.model.QuadPosBounds;
 import fr.adrien1106.reframed.mixin.model.WeightedBakedModelAccessor;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
@@ -29,7 +30,6 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -40,20 +40,20 @@ public class CamoAppearanceManager {
 		for(BlendMode blend : BlendMode.values()) {
 			finder.clear().disableDiffuse(false).blendMode(blend);
 			
-			materialsWithoutAo.put(blend, finder.ambientOcclusion(TriState.FALSE).find());
-			materialsWithAo.put(blend, finder.ambientOcclusion(TriState.DEFAULT).find()); //not "true" since that *forces* AO, i just want to *allow* AO
+			materials.put(blend, finder.ambientOcclusion(TriState.FALSE).find());
+			ao_materials.put(blend, finder.ambientOcclusion(TriState.DEFAULT).find()); //not "true" since that *forces* AO, i just want to *allow* AO
 		}
 		
 		Sprite sprite = spriteLookup.apply(DEFAULT_SPRITE_MAIN);
 		if(sprite == null) throw new IllegalStateException("Couldn't locate " + DEFAULT_SPRITE_MAIN + " !");
-		this.default_appearance = new SingleSpriteAppearance(sprite, materialsWithoutAo.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
+		this.default_appearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
 
 		sprite = spriteLookup.apply(DEFAULT_SPRITE_SECONDARY);
 		if(sprite == null) throw new IllegalStateException("Couldn't locate " + DEFAULT_SPRITE_MAIN + " !");
-		this.accent_appearance = new SingleSpriteAppearance(sprite, materialsWithoutAo.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
+		this.accent_appearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
 
 		sprite = spriteLookup.apply(BARRIER_SPRITE_ID);
-		this.barrierItemAppearance = new SingleSpriteAppearance(sprite, materialsWithoutAo.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
+		this.barrierItemAppearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
 	}
 
 	protected static final SpriteIdentifier DEFAULT_SPRITE_MAIN = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier(ReFramed.MODID, "block/framed_block"));
@@ -63,12 +63,16 @@ public class CamoAppearanceManager {
 	private final CamoAppearance default_appearance;
 	private final CamoAppearance accent_appearance;
 	private final CamoAppearance barrierItemAppearance;
-	
-	private final ConcurrentHashMap<BlockState, CamoAppearance> appearanceCache = new ConcurrentHashMap<>(); //Mutable, append-only cache
+
+	private static final Object2ObjectLinkedOpenHashMap<BlockState, CamoAppearance> APPEARANCE_CACHE =
+        new Object2ObjectLinkedOpenHashMap<>(2048, 0.25f) {
+            @Override
+            protected void rehash(int n) {}
+        };
 	private final AtomicInteger serial_number = new AtomicInteger(0); //Mutable
 	
-	private final EnumMap<BlendMode, RenderMaterial> materialsWithAo = new EnumMap<>(BlendMode.class);
-	private final EnumMap<BlendMode, RenderMaterial> materialsWithoutAo = new EnumMap<>(BlendMode.class); //Immutable contents
+	private final EnumMap<BlendMode, RenderMaterial> ao_materials = new EnumMap<>(BlendMode.class);
+	private final EnumMap<BlendMode, RenderMaterial> materials = new EnumMap<>(BlendMode.class); //Immutable contents
 	
 	public CamoAppearance getDefaultAppearance(int appearance) {
 		return appearance == 2 ? accent_appearance: default_appearance;
@@ -81,11 +85,17 @@ public class CamoAppearanceManager {
 		if (model instanceof DynamicBakedModel dynamic_model) {
 			return computeAppearance(dynamic_model.computeQuads(world, state, pos, theme_index), state);
 		}
-		return appearanceCache.computeIfAbsent(state, block_state -> computeAppearance(model, block_state));
+
+		// refresh cache
+		if (APPEARANCE_CACHE.containsKey(state)) return APPEARANCE_CACHE.getAndMoveToFirst(state);
+
+		CamoAppearance appearance = computeAppearance(model, state);
+		APPEARANCE_CACHE.putAndMoveToFirst(state, appearance);
+		return appearance;
 	}
 	
 	public RenderMaterial getCachedMaterial(BlockState state, boolean ao) {
-		Map<BlendMode, RenderMaterial> m = ao ? materialsWithAo : materialsWithoutAo;
+		Map<BlendMode, RenderMaterial> m = ao ? ao_materials : materials;
 		return m.get(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state)));
 	}
 	

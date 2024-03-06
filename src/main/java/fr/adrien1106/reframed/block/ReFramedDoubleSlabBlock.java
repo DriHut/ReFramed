@@ -25,25 +25,36 @@ import static net.minecraft.data.client.VariantSettings.Rotation.R90;
 import static net.minecraft.state.property.Properties.AXIS;
 
 public class ReFramedDoubleSlabBlock extends ReFramedDoubleBlock implements BlockStateProvider {
+
     public ReFramedDoubleSlabBlock(Settings settings) {
         super(settings);
-        setDefaultState(getDefaultState().with(Properties.AXIS, Direction.Axis.Y));
+        setDefaultState(getDefaultState().with(AXIS, Direction.Axis.Y));
+    }
+
+    @Override
+    public Object getModelCacheKey(BlockState state) {
+        return state.get(AXIS);
+    }
+
+    @Override
+    public int getModelStateCount() {
+        return 3;
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(Properties.AXIS));
+        super.appendProperties(builder.add(AXIS));
     }
 
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return super.getPlacementState(ctx).with(Properties.AXIS, ctx.getSide().getAxis());
+        return super.getPlacementState(ctx).with(AXIS, ctx.getSide().getAxis());
     }
 
     @Override
     public VoxelShape getShape(BlockState state, int i) {
-        return switch (state.get(Properties.AXIS)) {
+        return switch (state.get(AXIS)) {
             case Y -> i == 2 ? UP    : DOWN;
             case Z -> i == 2 ? NORTH : SOUTH;
             case X -> i == 2 ? EAST  : WEST;

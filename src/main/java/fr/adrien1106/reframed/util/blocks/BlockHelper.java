@@ -1,9 +1,8 @@
-package fr.adrien1106.reframed.util;
+package fr.adrien1106.reframed.util.blocks;
 
 import fr.adrien1106.reframed.block.ReFramedBlock;
 import fr.adrien1106.reframed.block.ReFramedEntity;
-import fr.adrien1106.reframed.util.property.Corner;
-import fr.adrien1106.reframed.util.property.StairShape;
+import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -30,12 +29,24 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static fr.adrien1106.reframed.util.BlockProperties.CORNER;
-import static fr.adrien1106.reframed.util.BlockProperties.LIGHT;
-import static fr.adrien1106.reframed.util.property.StairShape.*;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
+import static fr.adrien1106.reframed.util.blocks.StairShape.*;
 import static net.minecraft.util.shape.VoxelShapes.combine;
 
 public class BlockHelper {
+
+    // self culling cache TODO move
+    private static final ThreadLocal<Object2ByteLinkedOpenHashMap<CullElement>> INNER_FACE_CULL_MAP = ThreadLocal.withInitial(() -> {
+        Object2ByteLinkedOpenHashMap<CullElement> object2ByteLinkedOpenHashMap = new Object2ByteLinkedOpenHashMap<>(2048, 0.25F) {
+            protected void rehash(int newN) {
+            }
+        };
+        object2ByteLinkedOpenHashMap.defaultReturnValue((byte)0);
+        return object2ByteLinkedOpenHashMap;
+    });
+
+    private record CullElement(BlockState state, int model, Direction side) {}
 
     public static Corner getPlacementCorner(ItemPlacementContext ctx) {
         Direction side = ctx.getSide().getOpposite();

@@ -2,7 +2,7 @@ package fr.adrien1106.reframed.mixin.particles;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import fr.adrien1106.reframed.block.ReFramedBlock;
-import fr.adrien1106.reframed.util.ThemeableBlockEntity;
+import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;

@@ -51,7 +51,7 @@ public class UnbakedJsonRetexturedModel extends UnbakedRetexturedModel {
 				Renderer r = ReFramedClient.HELPER.getFabricRenderer();
 				MeshBuilder builder = r.meshBuilder();
 				QuadEmitter emitter = builder.getEmitter();
-				RenderMaterial mat = tam.getCachedMaterial(state, false);
+				RenderMaterial mat = appearance_manager.getCachedMaterial(state, false);
 				
 				Random rand = Random.create(42);
 

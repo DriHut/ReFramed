@@ -3,10 +3,10 @@ package fr.adrien1106.reframed.block;
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
-import fr.adrien1106.reframed.util.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.VoxelHelper;
-import fr.adrien1106.reframed.util.property.Corner;
-import fr.adrien1106.reframed.util.property.StairShape;
+import fr.adrien1106.reframed.util.blocks.Corner;
+import fr.adrien1106.reframed.util.blocks.StairShape;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -34,18 +34,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static fr.adrien1106.reframed.util.BlockProperties.*;
-import static fr.adrien1106.reframed.util.property.StairShape.*;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.*;
+import static fr.adrien1106.reframed.util.blocks.StairShape.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
-import static fr.adrien1106.reframed.util.property.Corner.*;
+import static fr.adrien1106.reframed.util.blocks.Corner.*;
 
 public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 	
 	public static final List<VoxelShape> VOXEL_LIST = new ArrayList<>(52);
+	private record ModelCacheKey(Corner corner, StairShape shape) {}
 
 	public ReFramedStairsBlock(Settings settings) {
 		super(settings);
 		setDefaultState(getDefaultState().with(CORNER, Corner.NORTH_DOWN).with(STAIR_SHAPE, STRAIGHT));
+	}
+
+	@Override
+	public Object getModelCacheKey(BlockState state) {
+		return new ModelCacheKey(state.get(CORNER), state.get(STAIR_SHAPE));
+	}
+
+	@Override
+	public int getModelStateCount() {
+		return 108; // Has 12 * 9 state combination and 52 models still reduces cache size
 	}
 	
 	@Override

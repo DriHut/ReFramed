@@ -1,6 +1,6 @@
 package fr.adrien1106.reframed.mixin.render;
 
-import fr.adrien1106.reframed.util.IMultipartBakedModelMixin;
+import fr.adrien1106.reframed.util.mixin.IMultipartBakedModelMixin;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.MultipartBakedModel;
