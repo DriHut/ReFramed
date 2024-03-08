@@ -76,4 +76,15 @@ public record QuadPosBounds(float min_x, float max_x, float min_y, float max_y, 
             quad.pos(i, pos);
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof QuadPosBounds other)) return false;
+        return MathHelper.approximatelyEquals(min_x, other.min_x)
+            && MathHelper.approximatelyEquals(min_y, other.min_y)
+            && MathHelper.approximatelyEquals(min_z, other.min_z)
+            && MathHelper.approximatelyEquals(max_x, other.max_x)
+            && MathHelper.approximatelyEquals(max_y, other.max_y)
+            && MathHelper.approximatelyEquals(max_z, other.max_z);
+    }
 }

@@ -28,7 +28,7 @@ public abstract class CamoAppearance {
 		return ao && ao_material != null? ao_material : material;
 	}
 
-	public int transformQuad(QuadEmitter quad, int i, int model_id, boolean ao, boolean uv_lock) {
+	public int transformQuad(QuadEmitter quad, int i, int quad_index, int model_id, boolean ao, boolean uv_lock) {
 		if(quad.tag() == 0) return 0; // Pass the quad through unmodified.
 
 		Direction direction = quad.nominalFace();
@@ -36,6 +36,7 @@ public abstract class CamoAppearance {
 		if (i == -1) i = sprites.size();
 
 		SpriteProperties properties = sprites.get(sprites.size() - i);
+		int tag = i + (quad_index << 8);
 		i--;
 		QuadPosBounds bounds = properties.bounds();
 
@@ -47,7 +48,7 @@ public abstract class CamoAppearance {
 					| properties.flags()
 					| (uv_lock ? MutableQuadView.BAKE_LOCK_UV : 0)
 			);
-			quad.tag(i+1);
+			quad.tag(tag);
 			quad.emit();
 			return i;
 		}
@@ -64,7 +65,7 @@ public abstract class CamoAppearance {
 			MutableQuadView.BAKE_NORMALIZED
 				| MutableQuadView.BAKE_LOCK_UV
 		);
-		quad.tag(i+1);
+		quad.tag(tag);
 		quad.emit();
 		return i;
 	}

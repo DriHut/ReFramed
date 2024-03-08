@@ -8,4 +8,6 @@ public interface IBlockRenderInfoMixin {
     void prepareForBlock(BlockState state, BlockPos pos, boolean ao, int theme_index);
 
     void prepareForBlock(BlockState state, BlockPos pos, long seed, boolean ao, int theme_index);
+
+    int getThemeIndex();
 }

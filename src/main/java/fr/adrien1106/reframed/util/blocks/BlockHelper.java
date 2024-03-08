@@ -1,8 +1,15 @@
 package fr.adrien1106.reframed.util.blocks;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import fr.adrien1106.reframed.block.ReFramedBlock;
 import fr.adrien1106.reframed.block.ReFramedEntity;
-import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
+import fr.adrien1106.reframed.client.ReFramedClient;
+import fr.adrien1106.reframed.client.model.QuadPosBounds;
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -18,14 +25,17 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,17 +46,10 @@ import static net.minecraft.util.shape.VoxelShapes.combine;
 
 public class BlockHelper {
 
-    // self culling cache TODO move
-    private static final ThreadLocal<Object2ByteLinkedOpenHashMap<CullElement>> INNER_FACE_CULL_MAP = ThreadLocal.withInitial(() -> {
-        Object2ByteLinkedOpenHashMap<CullElement> object2ByteLinkedOpenHashMap = new Object2ByteLinkedOpenHashMap<>(2048, 0.25F) {
-            protected void rehash(int newN) {
-            }
-        };
-        object2ByteLinkedOpenHashMap.defaultReturnValue((byte)0);
-        return object2ByteLinkedOpenHashMap;
-    });
+    // self culling cache of the models not made thread local so that it is only computed once
+    private static final Cache<CullElement, Integer[]> INNER_CULL_MAP = CacheBuilder.newBuilder().maximumSize(1024).concurrencyLevel().build();
 
-    private record CullElement(BlockState state, int model, Direction side) {}
+    private record CullElement(Object state_key, int model) {}
 
     public static Corner getPlacementCorner(ItemPlacementContext ctx) {
         Direction side = ctx.getSide().getOpposite();
@@ -69,7 +72,7 @@ public class BlockHelper {
             Math.abs(axis_1.choose(pos.x, pos.y, pos.z)) > Math.abs(axis_2.choose(pos.x, pos.y, pos.z))
                 ? axis_1
                 : axis_2
-        ).get();
+        ).orElse(null);
     }
 
     public static Vec3d getRelativePos(Vec3d pos, BlockPos block_pos) {
@@ -214,6 +217,66 @@ public class BlockHelper {
         }
 
         return ActionResult.PASS;
+    }
+
+    /**
+     * compute which quad might cull with another model quad
+     * @param state - the state of the model
+     * @param models - list of models on the same block
+     */
+    public static void computeInnerCull(BlockState state, List<ForwardingBakedModel> models) {
+        if (!(state.getBlock() instanceof ReFramedBlock frame_block)) return;
+        Object key = frame_block.getModelCacheKey(state);
+        if (INNER_CULL_MAP.asMap().containsKey(new CullElement(key, 1))) return;
+
+        Renderer r = ReFramedClient.HELPER.getFabricRenderer();
+        QuadEmitter quad_emitter = r.meshBuilder().getEmitter();
+        RenderMaterial material = r.materialFinder().clear().find();
+        Random random = Random.create();
+
+        List<List<QuadPosBounds>> model_bounds = models.stream()
+            .map(ForwardingBakedModel::getWrappedModel)
+            .filter(Objects::nonNull)
+            .map(wrapped -> wrapped.getQuads(state, null, random))
+            .map(quads -> quads.stream().map(quad -> {
+                quad_emitter.fromVanilla(quad, material, null);
+                return QuadPosBounds.read(quad_emitter, false);
+            }).toList()).toList();
+
+        Integer[] cull_array;
+        for(int self_id = 1; self_id <= model_bounds.size(); self_id++) {
+            List<QuadPosBounds> self_bounds = model_bounds.get(self_id - 1);
+            cull_array = new Integer[self_bounds.size()];
+            for (int self_quad = 0; self_quad < cull_array.length; self_quad++) {
+                QuadPosBounds self_bound = self_bounds.get(self_quad);
+                for(int other_id = 1; other_id <= model_bounds.size(); other_id++) {
+                    if (other_id == self_id) continue;
+                    if (model_bounds.get(other_id - 1).stream().anyMatch(other_bound -> other_bound.equals(self_bound))) {
+                        cull_array[self_quad] = other_id;
+                        break;
+                    }
+                }
+            }
+            INNER_CULL_MAP.put(new CullElement(key, self_id), cull_array);
+        }
+    }
+
+    public static boolean shouldDrawInnerFace(BlockState state, BlockRenderView view, BlockPos pos, int quad_index, int theme_index) {
+        if ( !(state.getBlock() instanceof ReFramedBlock frame_block)
+            || !(view.getBlockEntity(pos) instanceof ThemeableBlockEntity frame_entity)
+        ) return true;
+        CullElement key = new CullElement(frame_block.getModelCacheKey(state), theme_index);
+        if (!INNER_CULL_MAP.asMap().containsKey(key)) return true;
+
+        // needs to be Integer object because array is initialized with null not 0
+        Integer cull_theme = Objects.requireNonNull(INNER_CULL_MAP.getIfPresent(key))[quad_index];
+        if (cull_theme == null) return true; // no culling possible
+
+        BlockState self_theme = frame_entity.getTheme(theme_index);
+        BlockState other_theme = frame_entity.getTheme(cull_theme);
+
+        if (self_theme.isSideInvisible(other_theme, null)) return false;
+        return !self_theme.isOpaque() || !other_theme.isOpaque();
     }
 
     // Doing this method from scratch as it is simpler to do than injecting everywhere

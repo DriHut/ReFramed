@@ -1,6 +1,7 @@
 package fr.adrien1106.reframed.mixin.render;
 
 import fr.adrien1106.reframed.client.model.MultiRetexturableModel;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.mixin.IBlockRenderInfoMixin;
 import fr.adrien1106.reframed.util.mixin.IMultipartBakedModelMixin;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
@@ -30,10 +31,7 @@ public abstract class TerrainRenderContextMixin extends AbstractBlockRenderConte
             || !(wrapped.getModel(state) instanceof MultiRetexturableModel retexturing_model)) return;
 
         List<ForwardingBakedModel> models = retexturing_model.models();
-//        models.forEach(model ->  // TODO self culling here
-//            model.getWrappedModel().getQuads(state_key, null, blockInfo.randomSupplier.get())
-//                .forEach(quad -> QuadPosBounds.read(getEmitter().fromVanilla(quad.getVertexData(), 0)).min_x())
-//        );
+        BlockHelper.computeInnerCull(state, models);
         int i = 0;
         for (BakedModel model : models) {
             i++;

@@ -30,7 +30,7 @@
 		"fabricloader": "^${loader_version}",
 		"fabric-api": "*"
 	},
-	"suggest": {
+	"suggests": {
 		"athena": "^${athena_version}",
 		"sodium": "^${sodium_version}",
 		"indium": "^${indium_version}"

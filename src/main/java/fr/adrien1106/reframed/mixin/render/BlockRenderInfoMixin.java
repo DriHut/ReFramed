@@ -24,8 +24,7 @@ public abstract class BlockRenderInfoMixin implements IBlockRenderInfoMixin {
     @Shadow public abstract void prepareForBlock(BlockState blockState, BlockPos blockPos, boolean modelAo);
 
     @Shadow public BlockRenderView blockView;
-    @Unique
-    private int theme_index = 1;
+    @Unique private int theme_index = 0;
 
     @ModifyArg(method = "prepareForBlock",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayers;" +
@@ -46,5 +45,10 @@ public abstract class BlockRenderInfoMixin implements IBlockRenderInfoMixin {
     public void prepareForBlock(BlockState state, BlockPos pos, boolean ao, int theme_index) {
         this.theme_index = theme_index;
         prepareForBlock(state, pos, ao);
+    }
+
+    @Override
+    public int getThemeIndex() {
+        return theme_index;
     }
 }

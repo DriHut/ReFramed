@@ -9,10 +9,7 @@ import fr.adrien1106.reframed.client.model.apperance.CamoAppearanceManager;
 import fr.adrien1106.reframed.client.model.apperance.WeightedComputedAppearance;
 import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.mesh.*;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
@@ -27,6 +24,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 public abstract class RetexturingBakedModel extends ForwardingBakedModel {
@@ -167,12 +165,15 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		MeshBuilder builder = ReFramedClient.HELPER.getFabricRenderer().meshBuilder();
 		QuadEmitter emitter = builder.getEmitter();
 
+		AtomicInteger quad_index = new AtomicInteger();
 		getBaseMesh(key.state_key, state).forEach(quad -> {
 			int i = -1;
 			do {
 				emitter.copyFrom(quad);
-				i = key.appearance.transformQuad(emitter, i, key.model_id, ao, uv_lock);
+				i = key.appearance.transformQuad(emitter, i, quad_index.get(), key.model_id, ao, uv_lock);
 			} while (i > 0);
+			// kinda weird to do it like that but other directions don't use the quad_index so it doesn't matter
+			if (quad.cullFace() == null) quad_index.getAndIncrement();
 		});
 
 		return builder.build();
@@ -191,9 +192,10 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 
 		@Override
 		public boolean transform(MutableQuadView quad) {
-			if(quad.tag() == 0) return true;
+			int camo_quad_index = quad.tag() - ((quad.tag() >>> 8) << 8);
+			if(camo_quad_index == 0) return true;
 
-			if(appearance.hasColor(quad.nominalFace(), model_id, quad.tag())) quad.color(tint, tint, tint, tint);
+			if(appearance.hasColor(quad.nominalFace(), model_id, camo_quad_index)) quad.color(tint, tint, tint, tint);
 
 			return true;
 		}

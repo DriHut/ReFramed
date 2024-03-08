@@ -21,9 +21,11 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
         "fr.adrien1106.reframed.mixin.compat.AthenaBakedModelMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(0)),
         "fr.adrien1106.reframed.mixin.compat.AthenaWrappedGetterMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(0)),
         "fr.adrien1106.reframed.mixin.render.TerrainRenderContextMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)),
-        "fr.adrien1106.reframed.mixin.compat.IndiumTerrainRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)),
         "fr.adrien1106.reframed.mixin.render.BlockRenderInfoMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)),
+        "fr.adrien1106.reframed.mixin.render.AbstractBlockRenderContextMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)),
+        "fr.adrien1106.reframed.mixin.compat.IndiumTerrainRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)),
         "fr.adrien1106.reframed.mixin.compat.IndiumTerrainBlockRenderInfoMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)),
+        "fr.adrien1106.reframed.mixin.compat.IndiumAbstractBlockRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)),
         "fr.adrien1106.reframed.mixin.compat.SodiumBlockOcclusionCacheMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(2))
     );
 
