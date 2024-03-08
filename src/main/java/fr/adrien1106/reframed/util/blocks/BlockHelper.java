@@ -6,6 +6,8 @@ import fr.adrien1106.reframed.block.ReFramedBlock;
 import fr.adrien1106.reframed.block.ReFramedEntity;
 import fr.adrien1106.reframed.client.ReFramedClient;
 import fr.adrien1106.reframed.client.model.QuadPosBounds;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -20,6 +22,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Pair;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -32,14 +35,11 @@ import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 import static fr.adrien1106.reframed.util.blocks.StairShape.*;
 import static net.minecraft.util.shape.VoxelShapes.combine;
@@ -48,22 +48,30 @@ public class BlockHelper {
 
     // self culling cache of the models not made thread local so that it is only computed once
     private static final Cache<CullElement, Integer[]> INNER_CULL_MAP = CacheBuilder.newBuilder().maximumSize(1024).build();
-
     private record CullElement(Object state_key, int model) {}
 
     public static Corner getPlacementCorner(ItemPlacementContext ctx) {
         Direction side = ctx.getSide().getOpposite();
         Vec3d pos = getHitPos(ctx.getHitPos(), ctx.getBlockPos());
+        Pair<Direction, Direction> sides = getHitSides(pos, side);
+
+        return Corner.getByDirections(side, sides.getLeft(), sides.getRight());
+    }
+
+    private static Pair<Direction, Direction> getHitSides(Vec3d pos, Direction side) {
+        Iterator<Direction.Axis> axes = Stream.of(Direction.Axis.values())
+            .filter(axis -> !axis.equals(side.getAxis())).iterator();
+        return new Pair<>(getHitDirection(axes.next(), pos), getHitDirection(axes.next(), pos));
+    }
+
+    public static Edge getPlacementEdge(ItemPlacementContext ctx) {
+        Direction side = ctx.getSide().getOpposite();
+        Vec3d pos = getHitPos(ctx.getHitPos(), ctx.getBlockPos());
         Direction.Axis axis = getHitAxis(pos, side);
 
-        Direction part_direction = Direction.from(
-            axis,
-            axis.choose(pos.x, pos.y, pos.z) > 0
-                ? Direction.AxisDirection.POSITIVE
-                : Direction.AxisDirection.NEGATIVE
-        );
+        Direction part_direction = getHitDirection(axis, pos);
 
-        return Corner.getByDirections(side, part_direction);
+        return Edge.getByDirections(side, part_direction);
     }
 
     public static Direction.Axis getHitAxis(Vec3d pos, Direction side) {
@@ -73,6 +81,15 @@ public class BlockHelper {
                 ? axis_1
                 : axis_2
         ).orElse(null);
+    }
+
+    public static Direction getHitDirection(Direction.Axis axis, Vec3d pos) {
+        return Direction.from(
+            axis,
+            axis.choose(pos.x, pos.y, pos.z) > 0
+                ? Direction.AxisDirection.POSITIVE
+                : Direction.AxisDirection.NEGATIVE
+        );
     }
 
     public static Vec3d getRelativePos(Vec3d pos, BlockPos block_pos) {
@@ -92,7 +109,7 @@ public class BlockHelper {
         );
     }
 
-    public static StairShape getStairsShape(Block block, Corner face, BlockView world, BlockPos pos) {
+    public static StairShape getStairsShape(Block block, Edge face, BlockView world, BlockPos pos) {
         StairShape shape = STRAIGHT;
 
         String sol = getNeighborPos(face, face.getFirstDirection(), true, face.getSecondDirection(), world, pos, block);
@@ -128,14 +145,14 @@ public class BlockHelper {
         return shape;
     }
 
-    public static String getNeighborPos(Corner face, Direction direction, Boolean reverse, Direction reference, BlockView world, BlockPos pos, Block block) {
+    public static String getNeighborPos(Edge face, Direction direction, Boolean reverse, Direction reference, BlockView world, BlockPos pos, Block block) {
         BlockState block_state = world.getBlockState(
             pos.offset(reverse ? direction.getOpposite() : direction)
         );
 
-        if (block_state.isOf(block) && block_state.get(CORNER).hasDirection(reference)) {
-            if (block_state.get(CORNER).hasDirection(face.getLeftDirection())) return "left";
-            else if (block_state.get(CORNER).hasDirection(face.getRightDirection())) return "right";
+        if (block_state.isOf(block) && block_state.get(EDGE).hasDirection(reference)) {
+            if (block_state.get(EDGE).hasDirection(face.getLeftDirection())) return "left";
+            else if (block_state.get(EDGE).hasDirection(face.getRightDirection())) return "right";
         }
         return "";
     }
@@ -224,6 +241,7 @@ public class BlockHelper {
      * @param state - the state of the model
      * @param models - list of models on the same block
      */
+    @Environment(EnvType.CLIENT)
     public static void computeInnerCull(BlockState state, List<ForwardingBakedModel> models) {
         if (!(state.getBlock() instanceof ReFramedBlock frame_block)) return;
         Object key = frame_block.getModelCacheKey(state);
@@ -261,6 +279,7 @@ public class BlockHelper {
         }
     }
 
+    @Environment(EnvType.CLIENT)
     public static boolean shouldDrawInnerFace(BlockState state, BlockRenderView view, BlockPos pos, int quad_index, int theme_index) {
         if ( !(state.getBlock() instanceof ReFramedBlock frame_block)
             || !(view.getBlockEntity(pos) instanceof ThemeableBlockEntity frame_entity)
@@ -280,6 +299,7 @@ public class BlockHelper {
     }
 
     // Doing this method from scratch as it is simpler to do than injecting everywhere
+    @Environment(EnvType.CLIENT)
     public static boolean shouldDrawSide(BlockState self_state, BlockView world, BlockPos pos, Direction side, BlockPos other_pos, int theme_index) {
         ThemeableBlockEntity self = world.getBlockEntity(pos) instanceof ThemeableBlockEntity e ? e : null;
         ThemeableBlockEntity other = world.getBlockEntity(other_pos) instanceof ThemeableBlockEntity e ? e : null;
@@ -371,9 +391,5 @@ public class BlockHelper {
                     .map(x -> box.getMin(x) <= axes.get(x) && box.getMax(x) >= axes.get(x))
                     .reduce((prev, current) -> prev && current).orElse(false)
             );
-    }
-
-    public static int luminance(BlockState state) {
-        return state.contains(LIGHT) && state.get(LIGHT) ? 15 : 0;
     }
 }

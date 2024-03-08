@@ -1,5 +1,7 @@
 package fr.adrien1106.reframed.client.model.apperance;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.collection.Weighting;
@@ -9,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@Environment(EnvType.CLIENT)
 public class WeightedComputedAppearance extends CamoAppearance {
     private final List<Weighted.Present<Appearance>> appearances;
     private final int total_weight;

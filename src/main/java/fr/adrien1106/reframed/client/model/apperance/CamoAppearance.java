@@ -1,6 +1,8 @@
 package fr.adrien1106.reframed.client.model.apperance;
 
 import fr.adrien1106.reframed.client.model.QuadPosBounds;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -9,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@Environment(EnvType.CLIENT)
 public abstract class CamoAppearance {
 	protected final int id;
 	protected final RenderMaterial ao_material;

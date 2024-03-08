@@ -1,7 +1,6 @@
 package fr.adrien1106.reframed;
 
 import fr.adrien1106.reframed.block.*;
-import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -25,16 +24,22 @@ import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
+
 /**
- * TODO self culling
- * TODO fix other models
+ * TODO add Hammer from framed ( removes theme ) for sure
+ * TODO add screwdriver ( iterate over theme states ) ?
+ * TODO add blueprint for survival friendly copy paste of a theme.
+ * TODO fix other models ( + half stair )
+ * TODO get better naming for the shapes (will break a lot of already placed blocks)
+ * TODO put more coherence in the double theme orders / directions
  * TODO better connected textures
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
-	public static Block CUBE, STAIRS, DOUBLE_STAIRS, SLAB, DOUBLE_SLAB, STEP, DOUBLE_STEP;
+	public static Block CUBE, SMALL_CUBE, DOUBLE_SMALL_CUBE, STAIRS, DOUBLE_STAIRS, SLAB, DOUBLE_SLAB, STEP, DOUBLE_STEP;
 	public static ItemGroup ITEM_GROUP;
 
 	public static BlockEntityType<ReFramedEntity> REFRAMED_BLOCK_ENTITY;
@@ -44,18 +49,17 @@ public class ReFramed implements ModInitializer {
 	
 	@Override
 	public void onInitialize() {
-		//registerReFramed mutates FRAMES as a side effect, which is a List, so order is preserved
-		//the ordering is used in the creative tab, so they're roughly sorted by encounter order of the
-		//corresponding vanilla block in the "search" creative tab... with the non-vanilla "post" and
-		//"vertical slab" inserted where they fit ...and i moved the lever way up next to the pressureplate
-		//and button, because they're redstoney... hopefully this ordering makes sense lol
-		CUBE           = registerReFramed("cube"          , new ReFramedBlock(cp(Blocks.OAK_PLANKS)));
-		STAIRS         = registerReFramed("stairs"        , new ReFramedStairsBlock(cp(Blocks.OAK_STAIRS)));
-		DOUBLE_STAIRS  = registerReFramed("double_stairs" , new ReFramedDoubleStairsBlock(cp(Blocks.OAK_STAIRS)));
-		SLAB           = registerReFramed("slab"          , new ReFramedSlabBlock(cp(Blocks.OAK_SLAB)));
-		DOUBLE_SLAB    = registerReFramed("double_slab"   , new ReFramedDoubleSlabBlock(cp(Blocks.OAK_SLAB)));
-		STEP           = registerReFramed("step"          , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
-		DOUBLE_STEP    = registerReFramed("double_step"   , new ReFramedDoubleStepBlock(cp(Blocks.OAK_SLAB)));
+		CUBE              = registerReFramed("cube"              , new ReFramedBlock(cp(Blocks.OAK_PLANKS)));
+		SMALL_CUBE        = registerReFramed("small_cube"        , new ReFramedSmallBlock(cp(Blocks.OAK_PLANKS)));
+	  	DOUBLE_SMALL_CUBE = registerReFramed("double_small_cube" , new ReFramedDoubleSmallBlock(cp(Blocks.OAK_PLANKS)));
+		STAIRS            = registerReFramed("stairs"            , new ReFramedStairsBlock(cp(Blocks.OAK_STAIRS)));
+		DOUBLE_STAIRS     = registerReFramed("double_stairs"     , new ReFramedDoubleStairsBlock(cp(Blocks.OAK_STAIRS)));
+//		CUBE              = registerReFramed("half_stairs"       , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
+//		CUBE              = registerReFramed("double_half_stairs", new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
+		SLAB              = registerReFramed("slab"              , new ReFramedSlabBlock(cp(Blocks.OAK_SLAB)));
+		DOUBLE_SLAB       = registerReFramed("double_slab"       , new ReFramedDoubleSlabBlock(cp(Blocks.OAK_SLAB)));
+		STEP              = registerReFramed("step"              , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
+		DOUBLE_STEP       = registerReFramed("double_step"       , new ReFramedDoubleStepBlock(cp(Blocks.OAK_SLAB)));
 
 		REFRAMED_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("camo"),
 			FabricBlockEntityTypeBuilder.create(
@@ -82,7 +86,7 @@ public class ReFramed implements ModInitializer {
 
 	private static AbstractBlock.Settings cp(Block base) {
 		return AbstractBlock.Settings.copy(base)
-			.luminance(BlockHelper::luminance)
+			.luminance(state -> state.contains(LIGHT) && state.get(LIGHT) ? 15 : 0)
 			.nonOpaque()
 			.sounds(BlockSoundGroup.WOOD)
 			.hardness(0.2f)

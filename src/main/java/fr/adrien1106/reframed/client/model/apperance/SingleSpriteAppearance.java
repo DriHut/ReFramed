@@ -1,5 +1,7 @@
 package fr.adrien1106.reframed.client.model.apperance;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
@@ -7,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@Environment(EnvType.CLIENT)
 public class SingleSpriteAppearance extends CamoAppearance {
     private final @NotNull Sprite defaultSprite;
 

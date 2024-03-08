@@ -27,6 +27,8 @@ public class ReFramedClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ReFramed.BLOCKS.toArray(new Block[0]));
 
 		HELPER.addReFramedModel("cube_special"                    , HELPER.auto(new Identifier("block/cube")));
+		HELPER.addReFramedModel("small_cube_special"              , HELPER.auto(ReFramed.id("block/small_cube")));
+		HELPER.addReFramedModel("double_small_cube_special"       , HELPER.autoDouble(ReFramed.id("block/small_cube"), ReFramed.id("block/small_cube_complement")));
 		HELPER.addReFramedModel("slab_special"                    , HELPER.auto(new Identifier("block/slab")));
 		HELPER.addReFramedModel("double_slab_special"             , HELPER.autoDouble(new Identifier("block/slab"), new Identifier("block/slab_top")));
 		HELPER.addReFramedModel("stairs_special"                  , HELPER.auto(ReFramed.id("block/stairs")));
@@ -45,6 +47,8 @@ public class ReFramedClient implements ClientModInitializer {
 
 		//item model assignments (in lieu of models/item/___.json)
 		HELPER.assignItemModel("cube_special"                  , ReFramed.CUBE);
+		HELPER.assignItemModel("small_cube_special"            , ReFramed.SMALL_CUBE);
+		HELPER.assignItemModel("double_small_cube_special"     , ReFramed.DOUBLE_SMALL_CUBE);
 		HELPER.assignItemModel("slab_special"                  , ReFramed.SLAB);
 		HELPER.assignItemModel("double_slab_special"           , ReFramed.DOUBLE_SLAB);
 		HELPER.assignItemModel("stairs_special"                , ReFramed.STAIRS);

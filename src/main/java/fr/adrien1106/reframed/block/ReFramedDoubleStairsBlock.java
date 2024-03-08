@@ -3,7 +3,7 @@ package fr.adrien1106.reframed.block;
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
-import fr.adrien1106.reframed.util.blocks.Corner;
+import fr.adrien1106.reframed.util.blocks.Edge;
 import fr.adrien1106.reframed.util.blocks.StairShape;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
@@ -28,22 +28,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.adrien1106.reframed.block.ReFramedStairsBlock.*;
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
 
 public class ReFramedDoubleStairsBlock extends ReFramedDoubleBlock implements BlockStateProvider {
 
     private static final List<VoxelShape> COMPLEMENT_LIST = new ArrayList<>(52);
-    private record ModelCacheKey(Corner corner, StairShape shape) {}
+    private record ModelCacheKey(Edge edge, StairShape shape) {}
 
     public ReFramedDoubleStairsBlock(Settings settings) {
         super(settings);
-        setDefaultState(getDefaultState().with(CORNER, Corner.NORTH_DOWN).with(STAIR_SHAPE, StairShape.STRAIGHT));
+        setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN).with(STAIR_SHAPE, StairShape.STRAIGHT));
     }
 
     @Override
     public Object getModelCacheKey(BlockState state) {
-        return new ModelCacheKey(state.get(CORNER), state.get(STAIR_SHAPE));
+        return new ModelCacheKey(state.get(EDGE), state.get(STAIR_SHAPE));
     }
 
     @Override
@@ -53,22 +53,22 @@ public class ReFramedDoubleStairsBlock extends ReFramedDoubleBlock implements Bl
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(CORNER, STAIR_SHAPE));
+        super.appendProperties(builder.add(EDGE, STAIR_SHAPE));
     }
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighbor_state, WorldAccess world, BlockPos pos, BlockPos moved) {
         return super.getStateForNeighborUpdate(state, direction, neighbor_state, world, pos, moved)
-            .with(STAIR_SHAPE, BlockHelper.getStairsShape(this, state.get(CORNER), world, pos));
+            .with(STAIR_SHAPE, BlockHelper.getStairsShape(this, state.get(EDGE), world, pos));
     }
 
 
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        Corner face = BlockHelper.getPlacementCorner(ctx);
+        Edge face = BlockHelper.getPlacementEdge(ctx);
         StairShape shape = BlockHelper.getStairsShape(this, face, ctx.getWorld(), ctx.getBlockPos());
-        return super.getPlacementState(ctx).with(CORNER, face).with(STAIR_SHAPE, shape);
+        return super.getPlacementState(ctx).with(EDGE, face).with(STAIR_SHAPE, shape);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ReFramedDoubleStairsBlock extends ReFramedDoubleBlock implements Bl
 
     private VoxelShape getComplementOutline(BlockState state) {
         StairShape shape = state.get(STAIR_SHAPE);
-        Corner direction = state.get(CORNER);
+        Edge direction = state.get(EDGE);
         return switch (shape) {
             case STRAIGHT ->
                 switch (direction) {

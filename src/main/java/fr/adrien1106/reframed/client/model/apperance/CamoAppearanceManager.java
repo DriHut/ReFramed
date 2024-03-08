@@ -6,6 +6,8 @@ import fr.adrien1106.reframed.client.model.DynamicBakedModel;
 import fr.adrien1106.reframed.client.model.QuadPosBounds;
 import fr.adrien1106.reframed.mixin.model.WeightedBakedModelAccessor;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
@@ -33,6 +35,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+@Environment(EnvType.CLIENT)
 public class CamoAppearanceManager {
 
 	public CamoAppearanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {

@@ -1,11 +1,14 @@
 package fr.adrien1106.reframed.client.model;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Vector3f;
 
+@Environment(EnvType.CLIENT)
 public record QuadPosBounds(float min_x, float max_x, float min_y, float max_y, float min_z, float max_z) {
 
     public static QuadPosBounds read(QuadView quad) {

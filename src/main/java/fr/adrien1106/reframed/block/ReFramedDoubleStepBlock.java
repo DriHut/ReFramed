@@ -86,6 +86,11 @@ public class ReFramedDoubleStepBlock extends WaterloggableReFramedDoubleBlock im
     }
 
     @Override
+    public int getTopThemeIndex(BlockState state) {
+        return 2;
+    }
+
+    @Override
     public MultipartBlockStateSupplier getMultipart() {
         Identifier step_id = ReFramed.id("double_step_special");
         Identifier step_side_id = ReFramed.id("double_step_side_special");

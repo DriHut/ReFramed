@@ -5,7 +5,7 @@ import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.VoxelHelper;
-import fr.adrien1106.reframed.util.blocks.Corner;
+import fr.adrien1106.reframed.util.blocks.Edge;
 import fr.adrien1106.reframed.util.blocks.StairShape;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
@@ -37,21 +37,21 @@ import java.util.stream.Stream;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.*;
 import static fr.adrien1106.reframed.util.blocks.StairShape.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
-import static fr.adrien1106.reframed.util.blocks.Corner.*;
+import static fr.adrien1106.reframed.util.blocks.Edge.*;
 
 public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 	
 	public static final List<VoxelShape> VOXEL_LIST = new ArrayList<>(52);
-	private record ModelCacheKey(Corner corner, StairShape shape) {}
+	private record ModelCacheKey(Edge edge, StairShape shape) {}
 
 	public ReFramedStairsBlock(Settings settings) {
 		super(settings);
-		setDefaultState(getDefaultState().with(CORNER, Corner.NORTH_DOWN).with(STAIR_SHAPE, STRAIGHT));
+		setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN).with(STAIR_SHAPE, STRAIGHT));
 	}
 
 	@Override
 	public Object getModelCacheKey(BlockState state) {
-		return new ModelCacheKey(state.get(CORNER), state.get(STAIR_SHAPE));
+		return new ModelCacheKey(state.get(EDGE), state.get(STAIR_SHAPE));
 	}
 
 	@Override
@@ -61,21 +61,21 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements B
 	
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		super.appendProperties(builder.add(CORNER, STAIR_SHAPE));
+		super.appendProperties(builder.add(EDGE, STAIR_SHAPE));
 	}
 
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighbor_state, WorldAccess world, BlockPos pos, BlockPos moved) {
 		return super.getStateForNeighborUpdate(state, direction, neighbor_state, world, pos, moved)
-			.with(STAIR_SHAPE, BlockHelper.getStairsShape(state.getBlock(), state.get(CORNER), world, pos));
+			.with(STAIR_SHAPE, BlockHelper.getStairsShape(state.getBlock(), state.get(EDGE), world, pos));
 	}
 
 	@Nullable
 	@Override // Pretty happy of how clean it is (also got it on first try :) )
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		Corner face = BlockHelper.getPlacementCorner(ctx);
+		Edge face = BlockHelper.getPlacementEdge(ctx);
 		StairShape shape = BlockHelper.getStairsShape(this, face, ctx.getWorld(), ctx.getBlockPos());
-		return super.getPlacementState(ctx).with(CORNER, face).with(STAIR_SHAPE, shape);
+		return super.getPlacementState(ctx).with(EDGE, face).with(STAIR_SHAPE, shape);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements B
 
 	public static VoxelShape getOutline(BlockState state) {
 		StairShape shape = state.get(STAIR_SHAPE);
-		Corner direction = state.get(CORNER);
+		Edge direction = state.get(EDGE);
 		return switch (shape) {
 			case STRAIGHT ->
 				switch (direction) {
@@ -219,217 +219,217 @@ public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements B
 		Identifier outer_side_id = ReFramed.id(prefix + "outer_side_stairs_special");
 		return MultipartBlockStateSupplier.create(block)
 			/* STRAIGHT X AXIS */
-			.with(GBlockstate.when(CORNER, DOWN_EAST, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R0, R0))
-			.with(GBlockstate.when(CORNER, EAST_UP, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R180, R0))
-			.with(GBlockstate.when(CORNER, UP_WEST, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R180, R180))
-			.with(GBlockstate.when(CORNER, WEST_DOWN, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R0, R180))
 			/* STRAIGHT Y AXIS */
-			.with(GBlockstate.when(CORNER, EAST_SOUTH, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R90, R0))
-			.with(GBlockstate.when(CORNER, SOUTH_WEST, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R90, R90))
-			.with(GBlockstate.when(CORNER, WEST_NORTH, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R90, R180))
-			.with(GBlockstate.when(CORNER, NORTH_EAST, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R90, R270))
 			/* STRAIGHT Z AXIS */
-			.with(GBlockstate.when(CORNER, DOWN_SOUTH, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R0, R90))
-			.with(GBlockstate.when(CORNER, NORTH_DOWN, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R0, R270))
-			.with(GBlockstate.when(CORNER, UP_NORTH, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R180, R270))
-			.with(GBlockstate.when(CORNER, SOUTH_UP, STAIR_SHAPE, STRAIGHT),
+			.with(GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, STRAIGHT),
 				GBlockstate.variant(straight_id, true, R180, R90))
 			/* INNER BOTTOM */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_DOWN, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(CORNER, WEST_NORTH, STAIR_SHAPE, INNER_RIGHT),
-			    GBlockstate.when(CORNER, WEST_DOWN, STAIR_SHAPE, INNER_LEFT)),
+				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, INNER_RIGHT),
+			    GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R0, R180))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_DOWN, STAIR_SHAPE, INNER_RIGHT),
-				GBlockstate.when(CORNER, NORTH_EAST, STAIR_SHAPE, INNER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_EAST, STAIR_SHAPE, INNER_LEFT)),
+				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, INNER_RIGHT),
+				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, INNER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R0, R270))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, DOWN_SOUTH, STAIR_SHAPE, INNER_RIGHT),
-				GBlockstate.when(CORNER, EAST_SOUTH, STAIR_SHAPE, INNER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_EAST, STAIR_SHAPE, INNER_RIGHT)),
+				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, INNER_RIGHT),
+				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, INNER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R0, R0))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, DOWN_SOUTH, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(CORNER, SOUTH_WEST, STAIR_SHAPE, INNER_RIGHT),
-				GBlockstate.when(CORNER, WEST_DOWN, STAIR_SHAPE, INNER_RIGHT)),
+				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, INNER_RIGHT),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R0, R90))
 			/* INNER TOP */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, EAST_UP, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(CORNER, NORTH_EAST, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(CORNER, UP_NORTH, STAIR_SHAPE, INNER_RIGHT)),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R180, R0))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, EAST_UP, STAIR_SHAPE, INNER_RIGHT),
-				GBlockstate.when(CORNER, EAST_SOUTH, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(CORNER, SOUTH_UP, STAIR_SHAPE, INNER_RIGHT)),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, INNER_RIGHT),
+				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R180, R90))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, SOUTH_UP, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(CORNER, SOUTH_WEST, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(CORNER, UP_WEST, STAIR_SHAPE, INNER_RIGHT)),
+				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R180, R180))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, UP_NORTH, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(CORNER, WEST_NORTH, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(CORNER, UP_WEST, STAIR_SHAPE, INNER_LEFT)),
+				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R180, R270))
 			/* OUTER BOTTOM */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, DOWN_SOUTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_EAST, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_id, true, R0, R0))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, DOWN_SOUTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(CORNER, WEST_DOWN, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_id, true, R0, R90))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_DOWN, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(CORNER, WEST_DOWN, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_id, true, R0, R180))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_DOWN, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_EAST, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_id, true, R0, R270))
 			/* OUTER TOP */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, UP_NORTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(CORNER, EAST_UP, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_id, true, R180, R0))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, SOUTH_UP, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(CORNER, EAST_UP, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_id, true, R180, R90))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, SOUTH_UP, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(CORNER, UP_WEST, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_id, true, R180, R180))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, UP_NORTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(CORNER, UP_WEST, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_id, true, R180, R270))
 			/* OUTER EAST */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, EAST_SOUTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_EAST, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R0, R0))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, EAST_SOUTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(CORNER, EAST_UP, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R90, R0))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_EAST, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(CORNER, EAST_UP, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R180, R0))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_EAST, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_EAST, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R270, R0))
 			/* OUTER SOUTH */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, SOUTH_WEST, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_SOUTH, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R0, R90))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, SOUTH_WEST, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(CORNER, SOUTH_UP, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R90, R90))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, EAST_SOUTH, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(CORNER, SOUTH_UP, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R180, R90))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, EAST_SOUTH, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_SOUTH, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R270, R90))
 			/* OUTER WEST */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, WEST_NORTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(CORNER, WEST_DOWN, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R0, R180))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, WEST_NORTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(CORNER, UP_WEST, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R90, R180))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, SOUTH_WEST, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(CORNER, UP_WEST, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R180, R180))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, SOUTH_WEST, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(CORNER, WEST_DOWN, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R270, R180))
 			/* OUTER NORTH */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_EAST, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(CORNER, NORTH_DOWN, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, SECOND_OUTER_RIGHT),
+				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R0, R270))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_EAST, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(CORNER, UP_NORTH, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, SECOND_OUTER_LEFT),
+				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R90, R270))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, WEST_NORTH, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(CORNER, UP_NORTH, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, FIRST_OUTER_LEFT),
+				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R180, R270))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, WEST_NORTH, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(CORNER, NORTH_DOWN, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, FIRST_OUTER_RIGHT),
+				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R270, R270))
 			/* OUTER BOTTOM */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, DOWN_SOUTH, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_EAST, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(CORNER, EAST_SOUTH, STAIR_SHAPE, OUTER_RIGHT)),
+				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R0))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, DOWN_SOUTH, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(CORNER, WEST_DOWN, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(CORNER, SOUTH_WEST, STAIR_SHAPE, OUTER_RIGHT)),
+				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R90))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_DOWN, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(CORNER, WEST_DOWN, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(CORNER, WEST_NORTH, STAIR_SHAPE, OUTER_RIGHT)),
+				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R180))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, NORTH_DOWN, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(CORNER, DOWN_EAST, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(CORNER, NORTH_EAST, STAIR_SHAPE, OUTER_RIGHT)),
+				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R270))
 			/* OUTER TOP */
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, UP_NORTH, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(CORNER, EAST_UP, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(CORNER, NORTH_EAST, STAIR_SHAPE, OUTER_LEFT)),
+				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, OUTER_LEFT)),
 				GBlockstate.variant(double_outer_id, true, R180, R0))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, SOUTH_UP, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(CORNER, EAST_UP, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(CORNER, EAST_SOUTH, STAIR_SHAPE, OUTER_LEFT)),
+				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, OUTER_LEFT)),
 				GBlockstate.variant(double_outer_id, true, R180, R90))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, SOUTH_UP, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(CORNER, UP_WEST, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(CORNER, SOUTH_WEST, STAIR_SHAPE, OUTER_LEFT)),
+				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, OUTER_LEFT)),
 				GBlockstate.variant(double_outer_id, true, R180, R180))
 			.with(When.anyOf(
-				GBlockstate.when(CORNER, UP_NORTH, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(CORNER, UP_WEST, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(CORNER, WEST_NORTH, STAIR_SHAPE, OUTER_LEFT)),
+				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, OUTER_LEFT)),
 				GBlockstate.variant(double_outer_id, true, R180, R270));
 	}
 

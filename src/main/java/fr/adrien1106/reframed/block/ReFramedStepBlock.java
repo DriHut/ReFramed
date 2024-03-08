@@ -5,7 +5,7 @@ import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.VoxelHelper;
-import fr.adrien1106.reframed.util.blocks.Corner;
+import fr.adrien1106.reframed.util.blocks.Edge;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,8 +28,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
-import static fr.adrien1106.reframed.util.blocks.Corner.*;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
+import static fr.adrien1106.reframed.util.blocks.Edge.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 
 public class ReFramedStepBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
@@ -38,12 +38,12 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock implements Blo
 
     public ReFramedStepBlock(Settings settings) {
         super(settings);
-        setDefaultState(getDefaultState().with(CORNER, Corner.NORTH_DOWN));
+        setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN));
     }
 
     @Override
     public Object getModelCacheKey(BlockState state) {
-        return state.get(CORNER);
+        return state.get(EDGE);
     }
 
     @Override
@@ -53,18 +53,22 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock implements Blo
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(CORNER));
+        super.appendProperties(builder.add(EDGE));
     }
 
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return super.getPlacementState(ctx).with(CORNER, BlockHelper.getPlacementCorner(ctx));
+        return super.getPlacementState(ctx).with(EDGE, BlockHelper.getPlacementEdge(ctx));
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return switch (state.get(CORNER)) {
+        return getStepShape(state.get(EDGE));
+    }
+
+    public static VoxelShape getStepShape(Edge edge) {
+        return switch (edge) {
             case DOWN_SOUTH ->                        STEP_VOXELS.get(0);
             case NORTH_DOWN ->                        STEP_VOXELS.get(1);
             case UP_NORTH ->                          STEP_VOXELS.get(2);
@@ -85,31 +89,31 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock implements Blo
         Identifier step_id = ReFramed.id("step_special");
         return MultipartBlockStateSupplier.create(this)
             /* X AXIS */
-            .with(GBlockstate.when(CORNER, DOWN_EAST),
+            .with(GBlockstate.when(EDGE, DOWN_EAST),
                 GBlockstate.variant(step_id, true, R0, R0))
-            .with(GBlockstate.when(CORNER, EAST_UP),
+            .with(GBlockstate.when(EDGE, EAST_UP),
                 GBlockstate.variant(step_id, true, R180, R0))
-            .with(GBlockstate.when(CORNER, UP_WEST),
+            .with(GBlockstate.when(EDGE, UP_WEST),
                 GBlockstate.variant(step_id, true, R180, R180))
-            .with(GBlockstate.when(CORNER, WEST_DOWN),
+            .with(GBlockstate.when(EDGE, WEST_DOWN),
                 GBlockstate.variant(step_id, true, R0, R180))
             /* Y AXIS */
-            .with(GBlockstate.when(CORNER, EAST_SOUTH),
+            .with(GBlockstate.when(EDGE, EAST_SOUTH),
                 GBlockstate.variant(step_id, true, R90, R0))
-            .with(GBlockstate.when(CORNER, SOUTH_WEST),
+            .with(GBlockstate.when(EDGE, SOUTH_WEST),
                 GBlockstate.variant(step_id, true, R90, R90))
-            .with(GBlockstate.when(CORNER, WEST_NORTH),
+            .with(GBlockstate.when(EDGE, WEST_NORTH),
                 GBlockstate.variant(step_id, true, R90, R180))
-            .with(GBlockstate.when(CORNER, NORTH_EAST),
+            .with(GBlockstate.when(EDGE, NORTH_EAST),
                 GBlockstate.variant(step_id, true, R90, R270))
             /* Z AXIS */
-            .with(GBlockstate.when(CORNER, DOWN_SOUTH),
+            .with(GBlockstate.when(EDGE, DOWN_SOUTH),
                 GBlockstate.variant(step_id, true, R0, R90))
-            .with(GBlockstate.when(CORNER, NORTH_DOWN),
+            .with(GBlockstate.when(EDGE, NORTH_DOWN),
                 GBlockstate.variant(step_id, true, R0, R270))
-            .with(GBlockstate.when(CORNER, UP_NORTH),
+            .with(GBlockstate.when(EDGE, UP_NORTH),
                 GBlockstate.variant(step_id, true, R180, R270))
-            .with(GBlockstate.when(CORNER, SOUTH_UP),
+            .with(GBlockstate.when(EDGE, SOUTH_UP),
                 GBlockstate.variant(step_id, true, R180, R90));
     }
 

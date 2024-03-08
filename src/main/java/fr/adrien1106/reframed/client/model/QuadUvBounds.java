@@ -1,10 +1,13 @@
 package fr.adrien1106.reframed.client.model;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.MathHelper;
 
+@Environment(EnvType.CLIENT)
 public record QuadUvBounds(float minU, float maxU, float minV, float maxV) {
 	public static QuadUvBounds read(QuadView quad) {
 		float u0 = quad.u(0), u1 = quad.u(1), u2 = quad.u(2), u3 = quad.u(3);
