@@ -115,7 +115,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider, RecipeS
 				&& themes.stream().noneMatch(theme -> theme.getLuminance() != 0))
 					drops.add(new ItemStack(Items.GLOWSTONE_DUST));
 			if(!frame_entity.isSolid()
-				&& themes.stream().anyMatch(theme -> theme.isSolid()))
+				&& themes.stream().anyMatch(AbstractBlockState::isSolid))
 				drops.add(new ItemStack(Items.POPPED_CHORUS_FRUIT));
 
 			ItemScatterer.spawn(world, pos, drops);

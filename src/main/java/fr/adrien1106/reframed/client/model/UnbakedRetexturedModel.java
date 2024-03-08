@@ -14,7 +14,7 @@ public abstract class UnbakedRetexturedModel implements UnbakedModel {
 
     protected int theme_index = 1;
     protected BlockState item_state;
-    protected boolean ao = true;
+    protected final boolean ao = true;
 
     public UnbakedRetexturedModel(Identifier parent) {
         this.parent = parent;

@@ -47,7 +47,7 @@ import static net.minecraft.util.shape.VoxelShapes.combine;
 public class BlockHelper {
 
     // self culling cache of the models not made thread local so that it is only computed once
-    private static final Cache<CullElement, Integer[]> INNER_CULL_MAP = CacheBuilder.newBuilder().maximumSize(1024).concurrencyLevel().build();
+    private static final Cache<CullElement, Integer[]> INNER_CULL_MAP = CacheBuilder.newBuilder().maximumSize(1024).build();
 
     private record CullElement(Object state_key, int model) {}
 
