@@ -108,7 +108,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		}
 		if(theme.getBlock() == Blocks.BARRIER) return;
 		
-		CamoAppearance camo = appearance_manager.getCamoAppearance(world, theme, pos, theme_index);
+		CamoAppearance camo = appearance_manager.getCamoAppearance(world, theme, pos, theme_index, false);
 		long seed = theme.getRenderingSeed(pos);
 		int model_id = 0;
 		if (camo instanceof WeightedComputedAppearance wca) model_id = wca.getAppearanceIndex(seed);
@@ -135,7 +135,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		int tint;
 		BlockState theme = ReFramedEntity.readStateFromItem(stack, theme_index);
 		if(!theme.isAir()) {
-			appearance = appearance_manager.getCamoAppearance(null, theme, null, theme_index);
+			appearance = appearance_manager.getCamoAppearance(null, theme, null, theme_index, true);
 			tint = 0xFF000000 | ((MinecraftAccessor) MinecraftClient.getInstance()).getItemColors().getColor(new ItemStack(theme.getBlock()), 0);
 		} else {
 			appearance = appearance_manager.getDefaultAppearance(theme_index);

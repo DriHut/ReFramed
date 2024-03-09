@@ -1,11 +1,12 @@
 package fr.adrien1106.reframed.client.model.apperance;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.client.ReFramedClient;
 import fr.adrien1106.reframed.client.model.DynamicBakedModel;
 import fr.adrien1106.reframed.client.model.QuadPosBounds;
 import fr.adrien1106.reframed.mixin.model.WeightedBakedModelAccessor;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -67,11 +68,8 @@ public class CamoAppearanceManager {
 	private final CamoAppearance accent_appearance;
 	private final CamoAppearance barrierItemAppearance;
 
-	private static final Object2ObjectLinkedOpenHashMap<BlockState, CamoAppearance> APPEARANCE_CACHE =
-        new Object2ObjectLinkedOpenHashMap<>(2048, 0.25f) {
-            @Override
-            protected void rehash(int n) {}
-        };
+	private static final Cache<BlockState, CamoAppearance> APPEARANCE_CACHE = CacheBuilder.newBuilder().maximumSize(2048).build();
+
 	private final AtomicInteger serial_number = new AtomicInteger(0); //Mutable
 	
 	private final EnumMap<BlendMode, RenderMaterial> ao_materials = new EnumMap<>(BlendMode.class);
@@ -81,19 +79,24 @@ public class CamoAppearanceManager {
 		return appearance == 2 ? accent_appearance: default_appearance;
 	}
 	
-	public CamoAppearance getCamoAppearance(BlockRenderView world, BlockState state, BlockPos pos, int theme_index) {
+	public CamoAppearance getCamoAppearance(BlockRenderView world, BlockState state, BlockPos pos, int theme_index, boolean item) {
 		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 
 		// add support for connected textures and more generally any compatible models injected so that they return baked quads
 		if (model instanceof DynamicBakedModel dynamic_model) {
-			return computeAppearance(dynamic_model.computeQuads(world, state, pos, theme_index), state);
+			// cache items as they get rendered more often
+			if (item && APPEARANCE_CACHE.asMap().containsKey(state)) return APPEARANCE_CACHE.getIfPresent(state);
+
+			CamoAppearance appearance = computeAppearance(dynamic_model.computeQuads(world, state, pos, theme_index), state);
+			if (item) APPEARANCE_CACHE.put(state, appearance);
+			return appearance;
 		}
 
 		// refresh cache
-		if (APPEARANCE_CACHE.containsKey(state)) return APPEARANCE_CACHE.getAndMoveToFirst(state);
+		if (APPEARANCE_CACHE.asMap().containsKey(state)) return APPEARANCE_CACHE.getIfPresent(state);
 
 		CamoAppearance appearance = computeAppearance(model, state);
-		APPEARANCE_CACHE.putAndMoveToFirst(state, appearance);
+		APPEARANCE_CACHE.put(state, appearance);
 		return appearance;
 	}
 	

@@ -30,7 +30,7 @@ import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
  * TODO add Hammer from framed ( removes theme ) for sure
  * TODO add screwdriver ( iterate over theme states ) ?
  * TODO add blueprint for survival friendly copy paste of a theme.
- * TODO fix other models ( + half stair )
+ * TODO fix other models ( + half stair + layers )
  * TODO get better naming for the shapes (will break a lot of already placed blocks)
  * TODO put more coherence in the double theme orders / directions
  * TODO better connected textures

@@ -28,6 +28,7 @@ import static fr.adrien1106.reframed.block.ReFramedStepBlock.getStepShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.Edge.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
+import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedDoubleSmallBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {
 
@@ -58,21 +59,26 @@ public class ReFramedDoubleSmallBlock extends WaterloggableReFramedDoubleBlock i
     }
 
     @Override
+    public VoxelShape getCullingShape(BlockState state, BlockView view, BlockPos pos) {
+        return isGhost(view, pos) ? empty(): getStepShape(state.get(EDGE));
+    }
+
+    @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getStepShape(state.get(EDGE));
     }
 
-    @Override // TODO
+    @Override
     public VoxelShape getShape(BlockState state, int i) {
         return switch (state.get(EDGE)) {
-            case NORTH_DOWN -> SMALL_CUBE_VOXELS.get(i == 1 ? 0 : 3);
+            case NORTH_DOWN -> SMALL_CUBE_VOXELS.get(i == 1 ? 3 : 0);
             case DOWN_SOUTH -> SMALL_CUBE_VOXELS.get(i == 1 ? 1 : 2);
-            case SOUTH_UP ->   SMALL_CUBE_VOXELS.get(i == 1 ? 5 : 6);
+            case SOUTH_UP ->   SMALL_CUBE_VOXELS.get(i == 1 ? 6 : 5);
             case UP_NORTH ->   SMALL_CUBE_VOXELS.get(i == 1 ? 4 : 7);
             case WEST_DOWN ->  SMALL_CUBE_VOXELS.get(i == 1 ? 2 : 3);
             case DOWN_EAST ->  SMALL_CUBE_VOXELS.get(i == 1 ? 0 : 1);
-            case EAST_UP ->    SMALL_CUBE_VOXELS.get(i == 1 ? 4 : 5);
-            case UP_WEST ->    SMALL_CUBE_VOXELS.get(i == 1 ? 6 : 7);
+            case EAST_UP ->    SMALL_CUBE_VOXELS.get(i == 1 ? 5 : 4);
+            case UP_WEST ->    SMALL_CUBE_VOXELS.get(i == 1 ? 7 : 6);
             case WEST_NORTH -> SMALL_CUBE_VOXELS.get(i == 1 ? 3 : 7);
             case NORTH_EAST -> SMALL_CUBE_VOXELS.get(i == 1 ? 0 : 4);
             case EAST_SOUTH -> SMALL_CUBE_VOXELS.get(i == 1 ? 1 : 5);
@@ -82,10 +88,10 @@ public class ReFramedDoubleSmallBlock extends WaterloggableReFramedDoubleBlock i
 
     @Override
     public int getTopThemeIndex(BlockState state) {
-        return super.getTopThemeIndex(state); // TODO
+        return 2;
     }
 
-    @Override // TODO
+    @Override
     public BlockStateSupplier getMultipart() {
         Identifier small_cube_id = ReFramed.id("double_small_cube_special");
         return MultipartBlockStateSupplier.create(this)

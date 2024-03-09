@@ -48,7 +48,7 @@ public class BlockHelper {
 
     // self culling cache of the models not made thread local so that it is only computed once
     private static final Cache<CullElement, Integer[]> INNER_CULL_MAP = CacheBuilder.newBuilder().maximumSize(1024).build();
-    private record CullElement(Object state_key, int model) {}
+    private record CullElement(Block block, Object state_key, int model) {}
 
     public static Corner getPlacementCorner(ItemPlacementContext ctx) {
         Direction side = ctx.getSide().getOpposite();
@@ -172,17 +172,18 @@ public class BlockHelper {
 
                 // check for default light emission
                 if (placement_state.getLuminance() > 0
-                    && themes.stream().noneMatch(theme -> theme.getLuminance() > 0))
-                    if (block_entity.emitsLight()) Block.dropStack(world, pos, new ItemStack(Items.GLOWSTONE_DUST));
-                    else block_entity.toggleLight();
+                    && themes.stream().noneMatch(theme -> theme.getLuminance() > 0)
+                    && !block_entity.emitsLight()
+                )
+                    block_entity.toggleLight();
 
                 world.setBlockState(pos, state.with(LIGHT, block_entity.emitsLight()));
 
                 // check for default redstone emission
                 if (placement_state.getWeakRedstonePower(world, pos, Direction.NORTH) > 0
-                    && themes.stream().noneMatch(theme -> theme.getWeakRedstonePower(world, pos, Direction.NORTH) > 0))
-                    if (block_entity.emitsRedstone()) Block.dropStack(world, pos, new ItemStack(Items.GLOWSTONE_DUST));
-                    else block_entity.toggleRedstone();
+                    && themes.stream().noneMatch(theme -> theme.getWeakRedstonePower(world, pos, Direction.NORTH) > 0)
+                    && !block_entity.emitsRedstone()
+                ) block_entity.toggleRedstone();
 
                 if(!player.isCreative()) held.decrement(1);
                 world.playSound(player, pos, placement_state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1f, 1.1f);
@@ -203,10 +204,6 @@ public class BlockHelper {
         if(state.contains(LIGHT) && held.getItem() == Items.GLOWSTONE_DUST) {
             block_entity.toggleLight();
             world.setBlockState(pos, state.with(LIGHT, block_entity.emitsLight()));
-
-            if(!player.isCreative())
-                if (block_entity.emitsLight()) held.decrement(1);
-                else held.increment(1);
             world.playSound(player, pos, SoundEvents.BLOCK_GLASS_HIT, SoundCategory.BLOCKS, 1f, 1f);
             return ActionResult.SUCCESS;
         }
@@ -214,10 +211,6 @@ public class BlockHelper {
         // frame will emit redstone if applied with redstone torch can deactivate redstone block camo emission
         if(held.getItem() == Items.REDSTONE_TORCH && ext.canAddRedstoneEmission(state, world, pos)) {
             block_entity.toggleRedstone();
-
-            if(!player.isCreative())
-                if (block_entity.emitsRedstone()) held.decrement(1);
-                else held.increment(1);
             world.playSound(player, pos, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 1f, 1f);
             return ActionResult.SUCCESS;
         }
@@ -225,10 +218,6 @@ public class BlockHelper {
         // Frame will lose its collision if applied with popped chorus fruit
         if(held.getItem() == Items.POPPED_CHORUS_FRUIT && ext.canRemoveCollision(state, world, pos)) {
             block_entity.toggleSolidity();
-
-            if(!player.isCreative())
-                if (!block_entity.isSolid()) held.decrement(1);
-                else held.increment(1);
             world.playSound(player, pos, SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.BLOCKS, 1f, 1f);
             return ActionResult.SUCCESS;
         }
@@ -245,7 +234,7 @@ public class BlockHelper {
     public static void computeInnerCull(BlockState state, List<ForwardingBakedModel> models) {
         if (!(state.getBlock() instanceof ReFramedBlock frame_block)) return;
         Object key = frame_block.getModelCacheKey(state);
-        if (INNER_CULL_MAP.asMap().containsKey(new CullElement(key, 1))) return;
+        if (INNER_CULL_MAP.asMap().containsKey(new CullElement(frame_block, key, 1))) return;
 
         Renderer r = ReFramedClient.HELPER.getFabricRenderer();
         QuadEmitter quad_emitter = r.meshBuilder().getEmitter();
@@ -275,7 +264,7 @@ public class BlockHelper {
                     }
                 }
             }
-            INNER_CULL_MAP.put(new CullElement(key, self_id), cull_array);
+            INNER_CULL_MAP.put(new CullElement(frame_block, key, self_id), cull_array);
         }
     }
 
@@ -284,7 +273,7 @@ public class BlockHelper {
         if ( !(state.getBlock() instanceof ReFramedBlock frame_block)
             || !(view.getBlockEntity(pos) instanceof ThemeableBlockEntity frame_entity)
         ) return true;
-        CullElement key = new CullElement(frame_block.getModelCacheKey(state), theme_index);
+        CullElement key = new CullElement(frame_block, frame_block.getModelCacheKey(state), theme_index);
         if (!INNER_CULL_MAP.asMap().containsKey(key)) return true;
 
         // needs to be Integer object because array is initialized with null not 0

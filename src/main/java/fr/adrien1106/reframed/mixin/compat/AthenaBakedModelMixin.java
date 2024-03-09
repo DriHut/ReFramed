@@ -56,8 +56,7 @@ public abstract class AthenaBakedModelMixin implements DynamicBakedModel, BakedM
                     level.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity
                         ? framed_entity.getTheme(theme_index)
                         : state, pos, direction)
-                )
-                .forEach(sprite -> face_quads.computeIfPresent(direction, (d, quads) -> {
+                ).forEach(sprite -> face_quads.computeIfPresent(direction, (d, quads) -> {
                     Sprite texture = textures.get(sprite.sprite());
                     if (texture == null) return quads;
                     emitter.square(direction, sprite.left(), sprite.bottom(), sprite.right(), sprite.top(), sprite.depth());
