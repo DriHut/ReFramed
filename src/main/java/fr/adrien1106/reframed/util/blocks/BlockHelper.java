@@ -4,6 +4,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import fr.adrien1106.reframed.block.ReFramedBlock;
 import fr.adrien1106.reframed.block.ReFramedEntity;
+import fr.adrien1106.reframed.block.ReFramedStairBlock;
+import fr.adrien1106.reframed.block.ReFramedStairsCubeBlock;
 import fr.adrien1106.reframed.client.ReFramedClient;
 import fr.adrien1106.reframed.client.model.QuadPosBounds;
 import net.fabricmc.api.EnvType;
@@ -109,28 +111,28 @@ public class BlockHelper {
         );
     }
 
-    public static StairShape getStairsShape(Block block, Edge face, BlockView world, BlockPos pos) {
+    public static StairShape getStairsShape(Edge face, BlockView world, BlockPos pos) {
         StairShape shape = STRAIGHT;
 
-        String sol = getNeighborPos(face, face.getFirstDirection(), true, face.getSecondDirection(), world, pos, block);
+        String sol = getNeighborPos(face, face.getFirstDirection(), true, face.getSecondDirection(), world, pos);
         switch (sol) {
             case "right": return INNER_RIGHT;
             case "left": return INNER_LEFT;
         }
 
-        sol = getNeighborPos(face, face.getSecondDirection(), true, face.getFirstDirection(), world, pos, block);
+        sol = getNeighborPos(face, face.getSecondDirection(), true, face.getFirstDirection(), world, pos);
         switch (sol) {
             case "right": return INNER_RIGHT;
             case "left": return INNER_LEFT;
         }
 
-        sol = getNeighborPos(face, face.getFirstDirection(), false, face.getSecondDirection(), world, pos, block);
+        sol = getNeighborPos(face, face.getFirstDirection(), false, face.getSecondDirection(), world, pos);
         switch (sol) {
             case "right" -> shape = FIRST_OUTER_RIGHT;
             case "left" -> shape = FIRST_OUTER_LEFT;
         }
 
-        sol = getNeighborPos(face, face.getSecondDirection(), false, face.getFirstDirection(), world, pos, block);
+        sol = getNeighborPos(face, face.getSecondDirection(), false, face.getFirstDirection(), world, pos);
         switch (sol) {
             case "right" -> {
                 if (shape.equals(STRAIGHT)) shape = SECOND_OUTER_RIGHT;
@@ -145,16 +147,21 @@ public class BlockHelper {
         return shape;
     }
 
-    public static String getNeighborPos(Edge face, Direction direction, Boolean reverse, Direction reference, BlockView world, BlockPos pos, Block block) {
+    public static String getNeighborPos(Edge face, Direction direction, Boolean reverse, Direction reference, BlockView world, BlockPos pos) {
         BlockState block_state = world.getBlockState(
             pos.offset(reverse ? direction.getOpposite() : direction)
         );
 
-        if (block_state.isOf(block) && block_state.get(EDGE).hasDirection(reference)) {
+        if (isStair(block_state) && block_state.get(EDGE).hasDirection(reference)) {
             if (block_state.get(EDGE).hasDirection(face.getLeftDirection())) return "left";
             else if (block_state.get(EDGE).hasDirection(face.getRightDirection())) return "right";
         }
         return "";
+    }
+
+    public static boolean isStair(BlockState state) {
+        return state.getBlock() instanceof ReFramedStairBlock
+            || state.getBlock() instanceof ReFramedStairsCubeBlock;
     }
 
     public static ActionResult useCamo(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, int theme_index) {

@@ -59,7 +59,7 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements Bloc
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighbor_state, WorldAccess world, BlockPos pos, BlockPos moved) {
         return super.getStateForNeighborUpdate(state, direction, neighbor_state, world, pos, moved)
-            .with(STAIR_SHAPE, BlockHelper.getStairsShape(this, state.get(EDGE), world, pos));
+            .with(STAIR_SHAPE, BlockHelper.getStairsShape(state.get(EDGE), world, pos));
     }
 
 
@@ -67,7 +67,7 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements Bloc
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         Edge face = BlockHelper.getPlacementEdge(ctx);
-        StairShape shape = BlockHelper.getStairsShape(this, face, ctx.getWorld(), ctx.getBlockPos());
+        StairShape shape = BlockHelper.getStairsShape(face, ctx.getWorld(), ctx.getBlockPos());
         return super.getPlacementState(ctx).with(EDGE, face).with(STAIR_SHAPE, shape);
     }
 

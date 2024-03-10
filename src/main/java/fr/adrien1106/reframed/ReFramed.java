@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
 /**
- * TODO add Hammer from framed ( removes theme ) for sure
+ * TODO add Hammer from framed ( removes theme )                           -> for v1.5.5
  * TODO add screwdriver ( iterate over theme states ) ?
- * TODO add blueprint for survival friendly copy paste of a theme.
- * TODO fix other models ( + half stair + layers )
- * TODO get better naming for the shapes (will break a lot of already placed blocks)
- * TODO put more coherence in the double theme orders / directions
- * TODO better connected textures
+ * TODO add blueprint for survival friendly copy paste of a theme.         -> for v1.5.5
+ * TODO add minecraft models like wall fence etc                           -> for v1.6
+ * TODO ( + half stair + layers )                                          -> priority for v1.5
+ * TODO put more coherence in the double theme orders / directions         -> maybe v1.6 ?
+ * TODO better connected textures                                          -> maybe v1.6 ?
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
@@ -57,6 +57,7 @@ public class ReFramed implements ModInitializer {
 //		CUBE              = registerReFramed("half_stair"          , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
 //		CUBE              = registerReFramed("half_stairs_stair"   , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
 //		CUBE              = registerReFramed("half_stairs_slab"    , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
+//		CUBE              = registerReFramed("layer"               , new ReFramedBlock(cp(Blocks.OAK_SLAB))); // TODO
 		SLAB              = registerReFramed("slab"              , new ReFramedSlabBlock(cp(Blocks.OAK_SLAB)));
 		SLABS_CUBE        = registerReFramed("slabs_cube"        , new ReFramedSlabsCubeBlock(cp(Blocks.OAK_SLAB)));
 		STEP              = registerReFramed("step"              , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
