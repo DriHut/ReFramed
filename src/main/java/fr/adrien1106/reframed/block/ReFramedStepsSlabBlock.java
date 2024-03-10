@@ -31,10 +31,10 @@ import static net.minecraft.state.property.Properties.AXIS;
 import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 
-public class ReFramedDoubleStepBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {
+public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {
     private record ModelCacheKey(Direction facing, Axis axis) {}
 
-    public ReFramedDoubleStepBlock(Settings settings) {
+    public ReFramedStepsSlabBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(FACING, Direction.DOWN).with(AXIS, Axis.X));
     }

@@ -23,9 +23,9 @@ import static net.minecraft.data.client.VariantSettings.Rotation.R0;
 import static net.minecraft.data.client.VariantSettings.Rotation.R90;
 import static net.minecraft.state.property.Properties.AXIS;
 
-public class ReFramedDoubleSlabBlock extends ReFramedDoubleBlock implements BlockStateProvider {
+public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock implements BlockStateProvider {
 
-    public ReFramedDoubleSlabBlock(Settings settings) {
+    public ReFramedSlabsCubeBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(AXIS, Direction.Axis.Y));
     }

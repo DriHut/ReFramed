@@ -48,13 +48,13 @@ public class ReFramedClient implements ClientModInitializer {
 		//item model assignments (in lieu of models/item/___.json)
 		HELPER.assignItemModel("cube_special"                  , ReFramed.CUBE);
 		HELPER.assignItemModel("small_cube_special"            , ReFramed.SMALL_CUBE);
-		HELPER.assignItemModel("double_small_cube_special"     , ReFramed.DOUBLE_SMALL_CUBE);
+		HELPER.assignItemModel("double_small_cube_special"     , ReFramed.SMALL_CUBES_STEP);
 		HELPER.assignItemModel("slab_special"                  , ReFramed.SLAB);
-		HELPER.assignItemModel("double_slab_special"           , ReFramed.DOUBLE_SLAB);
-		HELPER.assignItemModel("stairs_special"                , ReFramed.STAIRS);
-		HELPER.assignItemModel("double_stairs_special"         , ReFramed.DOUBLE_STAIRS);
+		HELPER.assignItemModel("double_slab_special"           , ReFramed.SLABS_CUBE);
+		HELPER.assignItemModel("stairs_special"                , ReFramed.STAIR);
+		HELPER.assignItemModel("double_stairs_special"         , ReFramed.STAIRS_CUBE);
 		HELPER.assignItemModel("step_special"                  , ReFramed.STEP);
-		HELPER.assignItemModel("double_step_special"           , ReFramed.DOUBLE_STEP);
+		HELPER.assignItemModel("double_step_special"           , ReFramed.STEPS_SLAB);
 	}
 	
 	private void privateInit() {

@@ -39,7 +39,7 @@ public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
-	public static Block CUBE, SMALL_CUBE, DOUBLE_SMALL_CUBE, STAIRS, DOUBLE_STAIRS, SLAB, DOUBLE_SLAB, STEP, DOUBLE_STEP;
+	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, STAIRS_CUBE, SLAB, SLABS_CUBE, STEP, STEPS_SLAB;
 	public static ItemGroup ITEM_GROUP;
 
 	public static BlockEntityType<ReFramedEntity> REFRAMED_BLOCK_ENTITY;
@@ -50,16 +50,17 @@ public class ReFramed implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		CUBE              = registerReFramed("cube"              , new ReFramedBlock(cp(Blocks.OAK_PLANKS)));
-		SMALL_CUBE        = registerReFramed("small_cube"        , new ReFramedSmallBlock(cp(Blocks.OAK_PLANKS)));
-	  	DOUBLE_SMALL_CUBE = registerReFramed("double_small_cube" , new ReFramedDoubleSmallBlock(cp(Blocks.OAK_PLANKS)));
-		STAIRS            = registerReFramed("stairs"            , new ReFramedStairsBlock(cp(Blocks.OAK_STAIRS)));
-		DOUBLE_STAIRS     = registerReFramed("double_stairs"     , new ReFramedDoubleStairsBlock(cp(Blocks.OAK_STAIRS)));
-//		CUBE              = registerReFramed("half_stairs"       , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
-//		CUBE              = registerReFramed("double_half_stairs", new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
+		SMALL_CUBE        = registerReFramed("small_cube"        , new ReFramedSmallCubeBlock(cp(Blocks.OAK_PLANKS)));
+	  	SMALL_CUBES_STEP  = registerReFramed("small_cubes_step"  , new ReFramedSmallCubesStepBlock(cp(Blocks.OAK_PLANKS)));
+		STAIR             = registerReFramed("stair"             , new ReFramedStairBlock(cp(Blocks.OAK_STAIRS)));
+		STAIRS_CUBE       = registerReFramed("stairs_cube"       , new ReFramedStairsCubeBlock(cp(Blocks.OAK_STAIRS)));
+//		CUBE              = registerReFramed("half_stair"          , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
+//		CUBE              = registerReFramed("half_stairs_stair"   , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
+//		CUBE              = registerReFramed("half_stairs_slab"    , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
 		SLAB              = registerReFramed("slab"              , new ReFramedSlabBlock(cp(Blocks.OAK_SLAB)));
-		DOUBLE_SLAB       = registerReFramed("double_slab"       , new ReFramedDoubleSlabBlock(cp(Blocks.OAK_SLAB)));
+		SLABS_CUBE        = registerReFramed("slabs_cube"        , new ReFramedSlabsCubeBlock(cp(Blocks.OAK_SLAB)));
 		STEP              = registerReFramed("step"              , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
-		DOUBLE_STEP       = registerReFramed("double_step"       , new ReFramedDoubleStepBlock(cp(Blocks.OAK_SLAB)));
+		STEPS_SLAB        = registerReFramed("steps_slab"        , new ReFramedStepsSlabBlock(cp(Blocks.OAK_SLAB)));
 
 		REFRAMED_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("camo"),
 			FabricBlockEntityTypeBuilder.create(

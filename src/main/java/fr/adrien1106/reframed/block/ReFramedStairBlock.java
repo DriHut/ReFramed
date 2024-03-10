@@ -39,12 +39,12 @@ import static fr.adrien1106.reframed.util.blocks.StairShape.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static fr.adrien1106.reframed.util.blocks.Edge.*;
 
-public class ReFramedStairsBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
+public class ReFramedStairBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 	
 	public static final List<VoxelShape> VOXEL_LIST = new ArrayList<>(52);
 	private record ModelCacheKey(Edge edge, StairShape shape) {}
 
-	public ReFramedStairsBlock(Settings settings) {
+	public ReFramedStairBlock(Settings settings) {
 		super(settings);
 		setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN).with(STAIR_SHAPE, STRAIGHT));
 	}

@@ -1,6 +1,6 @@
-package fr.adrien1106.reframed;
+package fr.adrien1106.reframed.block;
 
-import fr.adrien1106.reframed.block.WaterloggableReFramedDoubleBlock;
+import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
 import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
@@ -23,16 +23,16 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-import static fr.adrien1106.reframed.block.ReFramedSmallBlock.SMALL_CUBE_VOXELS;
+import static fr.adrien1106.reframed.block.ReFramedSmallCubeBlock.SMALL_CUBE_VOXELS;
 import static fr.adrien1106.reframed.block.ReFramedStepBlock.getStepShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.Edge.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 
-public class ReFramedDoubleSmallBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {
+public class ReFramedSmallCubesStepBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {
 
-    public ReFramedDoubleSmallBlock(Settings settings) {
+    public ReFramedSmallCubesStepBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN));
     }

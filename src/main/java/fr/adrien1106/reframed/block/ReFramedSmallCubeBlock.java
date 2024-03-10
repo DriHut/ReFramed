@@ -32,11 +32,11 @@ import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
 import static fr.adrien1106.reframed.util.blocks.Corner.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 
-public class ReFramedSmallBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
+public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 
     public static final List<VoxelShape> SMALL_CUBE_VOXELS = new ArrayList<>(8);
 
-    public ReFramedSmallBlock(Settings settings) {
+    public ReFramedSmallCubeBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(CORNER, NORTH_EAST_DOWN));
     }

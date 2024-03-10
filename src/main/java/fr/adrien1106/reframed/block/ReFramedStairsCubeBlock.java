@@ -27,16 +27,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.adrien1106.reframed.block.ReFramedStairsBlock.*;
+import static fr.adrien1106.reframed.block.ReFramedStairBlock.*;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
 
-public class ReFramedDoubleStairsBlock extends ReFramedDoubleBlock implements BlockStateProvider {
+public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements BlockStateProvider {
 
     private static final List<VoxelShape> COMPLEMENT_LIST = new ArrayList<>(52);
     private record ModelCacheKey(Edge edge, StairShape shape) {}
 
-    public ReFramedDoubleStairsBlock(Settings settings) {
+    public ReFramedStairsCubeBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN).with(STAIR_SHAPE, StairShape.STRAIGHT));
     }
@@ -207,7 +207,7 @@ public class ReFramedDoubleStairsBlock extends ReFramedDoubleBlock implements Bl
         RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE);
         ShapelessRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, this)
-            .input(ReFramed.STAIRS)
+            .input(ReFramed.STAIR)
             .input(ReFramed.STEP)
             .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
             .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
