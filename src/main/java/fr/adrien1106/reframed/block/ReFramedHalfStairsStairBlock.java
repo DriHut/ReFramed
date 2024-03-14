@@ -6,6 +6,7 @@ import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.blocks.Corner;
 import fr.adrien1106.reframed.util.blocks.Edge;
+import fr.adrien1106.reframed.util.blocks.StairShape;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -20,22 +21,22 @@ import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-import static fr.adrien1106.reframed.block.ReFramedSmallCubeBlock.SMALL_CUBE_VOXELS;
-import static fr.adrien1106.reframed.block.ReFramedStepBlock.getStepShape;
+import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.HALF_STAIR_VOXELS;
+import static fr.adrien1106.reframed.block.ReFramedStairBlock.getStairShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.Edge.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 
-public class ReFramedSmallCubesStepBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {
-
-    public ReFramedSmallCubesStepBlock(Settings settings) {
+public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {
+    public ReFramedHalfStairsStairBlock(Settings settings) {
         super(settings);
-        setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN));
+        setDefaultState(getDefaultState().with(EDGE, NORTH_DOWN));
     }
 
     @Override
@@ -61,24 +62,27 @@ public class ReFramedSmallCubesStepBlock extends WaterloggableReFramedDoubleBloc
 
     @Override
     public VoxelShape getCullingShape(BlockState state, BlockView view, BlockPos pos) {
-        return isGhost(view, pos) ? empty(): getStepShape(state.get(EDGE));
+        return isGhost(view, pos) ? empty(): getStairShape(state.get(EDGE), StairShape.STRAIGHT);
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return getStepShape(state.get(EDGE));
+        return getStairShape(state.get(EDGE), StairShape.STRAIGHT);
     }
 
     @Override
     public VoxelShape getShape(BlockState state, int i) {
         Edge edge = state.get(EDGE);
-        return SMALL_CUBE_VOXELS[Corner.getByDirections(
+        Direction side = i == 1
+            ? edge.getRightDirection()
+            : edge.getLeftDirection();
+        Corner corner = Corner.getByDirections(
             edge.getFirstDirection(),
             edge.getSecondDirection(),
-            i == 1
-                ? edge.getRightDirection()
-                : edge.getLeftDirection()
-        ).getID()];
+            side
+
+        );
+        return HALF_STAIR_VOXELS[corner.getID() * 3 + corner.getDirectionIndex(side)];
     }
 
     @Override
@@ -88,44 +92,45 @@ public class ReFramedSmallCubesStepBlock extends WaterloggableReFramedDoubleBloc
 
     @Override
     public BlockStateSupplier getMultipart() {
-        Identifier model_id = ReFramed.id("small_cubes_step_special");
-        Identifier reverse_model_id = ReFramed.id("small_cubes_step_reverse_special");
+        Identifier model_id = ReFramed.id("half_stairs_stair_down_special");
+        Identifier side_model_id = ReFramed.id("half_stairs_stair_side_special");
+        Identifier reverse_model_id = ReFramed.id("half_stairs_stair_reverse_special");
         return MultipartBlockStateSupplier.create(this)
             /* X AXIS */
-            .with(GBlockstate.when(EDGE, DOWN_EAST),
-                GBlockstate.variant(reverse_model_id, true, R0, R0))
-            .with(GBlockstate.when(EDGE, EAST_UP),
-                GBlockstate.variant(model_id, true, R180, R0))
-            .with(GBlockstate.when(EDGE, UP_WEST),
-                GBlockstate.variant(reverse_model_id, true, R180, R180))
-            .with(GBlockstate.when(EDGE, WEST_DOWN),
-                GBlockstate.variant(model_id, true, R0, R180))
-            /* Y AXIS */
-            .with(GBlockstate.when(EDGE, EAST_SOUTH),
-                GBlockstate.variant(model_id, true, R90, R0))
-            .with(GBlockstate.when(EDGE, SOUTH_WEST),
-                GBlockstate.variant(model_id, true, R90, R90))
-            .with(GBlockstate.when(EDGE, WEST_NORTH),
-                GBlockstate.variant(model_id, true, R90, R180))
-            .with(GBlockstate.when(EDGE, NORTH_EAST),
-                GBlockstate.variant(model_id, true, R90, R270))
-            /* Z AXIS */
-            .with(GBlockstate.when(EDGE, DOWN_SOUTH),
-                GBlockstate.variant(reverse_model_id, true, R0, R90))
             .with(GBlockstate.when(EDGE, NORTH_DOWN),
-                GBlockstate.variant(model_id, true, R0, R270))
-            .with(GBlockstate.when(EDGE, UP_NORTH),
-                GBlockstate.variant(reverse_model_id, true, R180, R270))
+                GBlockstate.variant(side_model_id, true, R90, R180))
+            .with(GBlockstate.when(EDGE, DOWN_SOUTH),
+                GBlockstate.variant(side_model_id, true, R0, R180))
             .with(GBlockstate.when(EDGE, SOUTH_UP),
-                GBlockstate.variant(model_id, true, R180, R90));
+                GBlockstate.variant(side_model_id, true, R270, R180))
+            .with(GBlockstate.when(EDGE, UP_NORTH),
+                GBlockstate.variant(side_model_id, true, R180, R180))
+            /* Y AXIS */
+            .with(GBlockstate.when(EDGE, NORTH_EAST),
+                GBlockstate.variant(model_id, true, R0, R0))
+            .with(GBlockstate.when(EDGE, EAST_SOUTH),
+                GBlockstate.variant(model_id, true, R0, R90))
+            .with(GBlockstate.when(EDGE, SOUTH_WEST),
+                GBlockstate.variant(model_id, true, R0, R180))
+            .with(GBlockstate.when(EDGE, WEST_NORTH),
+                GBlockstate.variant(model_id, true, R0, R270))
+            /* Z AXIS */
+            .with(GBlockstate.when(EDGE, DOWN_EAST),
+                GBlockstate.variant(side_model_id, true, R0, R90))
+            .with(GBlockstate.when(EDGE, EAST_UP),
+                GBlockstate.variant(reverse_model_id, true, R180, R270))
+            .with(GBlockstate.when(EDGE, UP_WEST),
+                GBlockstate.variant(side_model_id, true, R180, R90))
+            .with(GBlockstate.when(EDGE, WEST_DOWN),
+                GBlockstate.variant(reverse_model_id, true, R0, R270));
     }
 
     @Override
     public void setRecipe(RecipeExporter exporter) {
-        RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE, 4);
+        RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE, 2);
         ShapelessRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, this)
-            .input(ReFramed.SMALL_CUBE, 2)
+            .input(ReFramed.HALF_STAIR, 2)
             .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
             .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
             .offerTo(exporter);

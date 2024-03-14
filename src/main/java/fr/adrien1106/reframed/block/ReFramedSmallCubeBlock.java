@@ -19,22 +19,19 @@ import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
 import static fr.adrien1106.reframed.util.blocks.Corner.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 
 public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 
-    public static final List<VoxelShape> SMALL_CUBE_VOXELS = new ArrayList<>(8);
+    public static final VoxelShape[] SMALL_CUBE_VOXELS;
 
     public ReFramedSmallCubeBlock(Settings settings) {
         super(settings);
@@ -63,16 +60,7 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock implement
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return switch (state.get(CORNER)) {
-            case NORTH_EAST_DOWN -> SMALL_CUBE_VOXELS.get(0);
-            case EAST_SOUTH_DOWN -> SMALL_CUBE_VOXELS.get(1);
-            case SOUTH_WEST_DOWN -> SMALL_CUBE_VOXELS.get(2);
-            case WEST_NORTH_DOWN -> SMALL_CUBE_VOXELS.get(3);
-            case NORTH_EAST_UP ->   SMALL_CUBE_VOXELS.get(4);
-            case EAST_SOUTH_UP ->   SMALL_CUBE_VOXELS.get(5);
-            case SOUTH_WEST_UP ->   SMALL_CUBE_VOXELS.get(6);
-            case WEST_NORTH_UP ->   SMALL_CUBE_VOXELS.get(7);
-        };
+        return SMALL_CUBE_VOXELS[state.get(CORNER).getID()];
     }
 
     @Override
@@ -111,14 +99,15 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock implement
     static {
         final VoxelShape SMALL_CUBE = VoxelShapes.cuboid(.5f, 0f, 0f, 1f, .5f, .5f);
 
-        SMALL_CUBE_VOXELS.add(SMALL_CUBE);
-        SMALL_CUBE_VOXELS.add(VoxelHelper.rotateClockwise(SMALL_CUBE, Direction.Axis.Y));
-        SMALL_CUBE_VOXELS.add(VoxelHelper.rotateClockwise(VoxelHelper.rotateClockwise(SMALL_CUBE, Direction.Axis.Y), Direction.Axis.Y));
-        SMALL_CUBE_VOXELS.add(VoxelHelper.rotateCounterClockwise(SMALL_CUBE, Direction.Axis.Y));
+        SMALL_CUBE_VOXELS = VoxelListBuilder.create(SMALL_CUBE, 8)
+            .add(VoxelHelper::rotateY)
+            .add(VoxelHelper::rotateY)
+            .add(VoxelHelper::rotateY)
 
-        SMALL_CUBE_VOXELS.add(VoxelHelper.mirror(SMALL_CUBE, Direction.Axis.Y));
-        SMALL_CUBE_VOXELS.add(VoxelHelper.mirror(VoxelHelper.rotateClockwise(SMALL_CUBE, Direction.Axis.Y), Direction.Axis.Y));
-        SMALL_CUBE_VOXELS.add(VoxelHelper.mirror(VoxelHelper.rotateClockwise(VoxelHelper.rotateClockwise(SMALL_CUBE, Direction.Axis.Y), Direction.Axis.Y), Direction.Axis.Y));
-        SMALL_CUBE_VOXELS.add(VoxelHelper.mirror(VoxelHelper.rotateCounterClockwise(SMALL_CUBE, Direction.Axis.Y), Direction.Axis.Y));
+            .add(SMALL_CUBE, VoxelHelper::mirrorY)
+            .add(VoxelHelper::rotateY)
+            .add(VoxelHelper::rotateY)
+            .add(VoxelHelper::rotateY)
+            .build();
     }
 }

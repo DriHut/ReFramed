@@ -15,25 +15,21 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
-import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static fr.adrien1106.reframed.block.ReFramedStairBlock.*;
+import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
 
 public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements BlockStateProvider {
 
-    private static final List<VoxelShape> COMPLEMENT_LIST = new ArrayList<>(52);
+    private static final VoxelShape[] STAIRS_CUBE_VOXELS = VoxelListBuilder.buildFrom(STAIR_VOXELS);
     private record ModelCacheKey(Edge edge, StairShape shape) {}
 
     public ReFramedStairsCubeBlock(Settings settings) {
@@ -80,121 +76,9 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements Bloc
 
     @Override
     public VoxelShape getShape(BlockState state, int i) {
-        return i == 2 ? getComplementOutline(state) : getOutline(state);
-    }
-
-    private VoxelShape getComplementOutline(BlockState state) {
+        Edge edge = state.get(EDGE);
         StairShape shape = state.get(STAIR_SHAPE);
-        Edge direction = state.get(EDGE);
-        return switch (shape) {
-            case STRAIGHT ->
-                switch (direction) {
-                    case DOWN_SOUTH ->                        COMPLEMENT_LIST.get(0);
-                    case NORTH_DOWN ->                        COMPLEMENT_LIST.get(1);
-                    case UP_NORTH ->                          COMPLEMENT_LIST.get(2);
-                    case SOUTH_UP ->                          COMPLEMENT_LIST.get(3);
-                    case DOWN_EAST ->                         COMPLEMENT_LIST.get(4);
-                    case WEST_DOWN ->                         COMPLEMENT_LIST.get(5);
-                    case UP_WEST ->                           COMPLEMENT_LIST.get(6);
-                    case EAST_UP ->                           COMPLEMENT_LIST.get(7);
-                    case NORTH_EAST ->                        COMPLEMENT_LIST.get(8);
-                    case EAST_SOUTH ->                        COMPLEMENT_LIST.get(9);
-                    case SOUTH_WEST ->                        COMPLEMENT_LIST.get(10);
-                    case WEST_NORTH ->                        COMPLEMENT_LIST.get(11);
-                };
-            case INNER_LEFT ->
-                switch (direction) {
-                    case WEST_DOWN, NORTH_DOWN ->             COMPLEMENT_LIST.get(44);
-                    case DOWN_EAST ->                         COMPLEMENT_LIST.get(45);
-                    case DOWN_SOUTH ->                        COMPLEMENT_LIST.get(47);
-                    case UP_WEST, UP_NORTH, WEST_NORTH ->     COMPLEMENT_LIST.get(48);
-                    case EAST_UP, NORTH_EAST ->               COMPLEMENT_LIST.get(49);
-                    case EAST_SOUTH ->                        COMPLEMENT_LIST.get(50);
-                    case SOUTH_UP, SOUTH_WEST ->              COMPLEMENT_LIST.get(51);
-                };
-            case INNER_RIGHT ->
-                switch (direction) {
-                    case WEST_NORTH ->                        COMPLEMENT_LIST.get(44);
-                    case NORTH_DOWN, NORTH_EAST ->            COMPLEMENT_LIST.get(45);
-                    case DOWN_EAST, DOWN_SOUTH, EAST_SOUTH -> COMPLEMENT_LIST.get(46);
-                    case WEST_DOWN, SOUTH_WEST ->             COMPLEMENT_LIST.get(47);
-                    case UP_NORTH ->                          COMPLEMENT_LIST.get(49);
-                    case EAST_UP, SOUTH_UP ->                 COMPLEMENT_LIST.get(50);
-                    case UP_WEST ->                           COMPLEMENT_LIST.get(51);
-                };
-            case OUTER_LEFT ->
-                switch (direction) {
-                    case DOWN_EAST ->                         COMPLEMENT_LIST.get(43);
-                    case WEST_DOWN, NORTH_DOWN ->             COMPLEMENT_LIST.get(42);
-                    case DOWN_SOUTH ->                        COMPLEMENT_LIST.get(41);
-                    case EAST_UP, NORTH_EAST ->               COMPLEMENT_LIST.get(39);
-                    case UP_WEST, UP_NORTH, WEST_NORTH ->     COMPLEMENT_LIST.get(38);
-                    case SOUTH_UP, SOUTH_WEST ->              COMPLEMENT_LIST.get(37);
-                    case EAST_SOUTH ->                        COMPLEMENT_LIST.get(36);
-                };
-            case OUTER_RIGHT ->
-                switch (direction) {
-                    case NORTH_DOWN, NORTH_EAST ->            COMPLEMENT_LIST.get(43);
-                    case WEST_NORTH ->                        COMPLEMENT_LIST.get(42);
-                    case WEST_DOWN, SOUTH_WEST ->             COMPLEMENT_LIST.get(41);
-                    case DOWN_EAST, DOWN_SOUTH, EAST_SOUTH -> COMPLEMENT_LIST.get(40);
-                    case UP_NORTH ->                          COMPLEMENT_LIST.get(39);
-                    case UP_WEST ->                           COMPLEMENT_LIST.get(37);
-                    case EAST_UP, SOUTH_UP ->                 COMPLEMENT_LIST.get(36);
-                };
-            case FIRST_OUTER_LEFT ->
-                switch (direction) {
-                    case WEST_DOWN, NORTH_DOWN ->             COMPLEMENT_LIST.get(14);
-                    case SOUTH_UP ->                          COMPLEMENT_LIST.get(17);
-                    case EAST_UP ->                           COMPLEMENT_LIST.get(19);
-                    case EAST_SOUTH ->                        COMPLEMENT_LIST.get(20);
-                    case DOWN_SOUTH ->                        COMPLEMENT_LIST.get(22);
-                    case UP_NORTH, WEST_NORTH ->              COMPLEMENT_LIST.get(25);
-                    case SOUTH_WEST ->                        COMPLEMENT_LIST.get(28);
-                    case UP_WEST ->                           COMPLEMENT_LIST.get(31);
-                    case DOWN_EAST ->                         COMPLEMENT_LIST.get(34);
-                    case NORTH_EAST ->                        COMPLEMENT_LIST.get(35);
-                };
-            case FIRST_OUTER_RIGHT ->
-                switch (direction) {
-                    case NORTH_DOWN ->                        COMPLEMENT_LIST.get(15);
-                    case SOUTH_UP, EAST_UP ->                 COMPLEMENT_LIST.get(16);
-                    case WEST_DOWN ->                         COMPLEMENT_LIST.get(13);
-                    case DOWN_SOUTH, EAST_SOUTH ->            COMPLEMENT_LIST.get(23);
-                    case UP_NORTH ->                          COMPLEMENT_LIST.get(24);
-                    case WEST_NORTH ->                        COMPLEMENT_LIST.get(26);
-                    case UP_WEST ->                           COMPLEMENT_LIST.get(28);
-                    case SOUTH_WEST ->                        COMPLEMENT_LIST.get(29);
-                    case DOWN_EAST ->                         COMPLEMENT_LIST.get(33);
-                    case NORTH_EAST ->                        COMPLEMENT_LIST.get(34);
-                };
-            case SECOND_OUTER_LEFT ->
-                switch (direction) {
-                    case DOWN_EAST ->                         COMPLEMENT_LIST.get(15);
-                    case DOWN_SOUTH ->                        COMPLEMENT_LIST.get(13);
-                    case UP_WEST, UP_NORTH ->                 COMPLEMENT_LIST.get(18);
-                    case SOUTH_UP, SOUTH_WEST ->              COMPLEMENT_LIST.get(21);
-                    case NORTH_EAST ->                        COMPLEMENT_LIST.get(24);
-                    case NORTH_DOWN ->                        COMPLEMENT_LIST.get(26);
-                    case WEST_DOWN ->                         COMPLEMENT_LIST.get(30);
-                    case WEST_NORTH ->                        COMPLEMENT_LIST.get(31);
-                    case EAST_SOUTH ->                        COMPLEMENT_LIST.get(32);
-                    case EAST_UP ->                           COMPLEMENT_LIST.get(35);
-                };
-            case SECOND_OUTER_RIGHT ->
-                switch (direction) {
-                    case DOWN_SOUTH, DOWN_EAST ->             COMPLEMENT_LIST.get(12);
-                    case UP_WEST ->                           COMPLEMENT_LIST.get(17);
-                    case UP_NORTH ->                          COMPLEMENT_LIST.get(19);
-                    case SOUTH_UP ->                          COMPLEMENT_LIST.get(20);
-                    case SOUTH_WEST ->                        COMPLEMENT_LIST.get(22);
-                    case NORTH_EAST, NORTH_DOWN ->            COMPLEMENT_LIST.get(27);
-                    case WEST_DOWN ->                         COMPLEMENT_LIST.get(29);
-                    case WEST_NORTH ->                        COMPLEMENT_LIST.get(30);
-                    case EAST_UP ->                           COMPLEMENT_LIST.get(32);
-                    case EAST_SOUTH ->                        COMPLEMENT_LIST.get(33);
-                };
-        };
+        return i == 2 ? STAIRS_CUBE_VOXELS[edge.getID() * 9 + shape.getID()] : getStairShape(edge, shape);
     }
 
     @Override
@@ -212,9 +96,5 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements Bloc
             .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
             .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
             .offerTo(exporter);
-    }
-
-    static {
-        VOXEL_LIST.forEach(shape -> COMPLEMENT_LIST.add(VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(), shape, BooleanBiFunction.ONLY_FIRST)));
     }
 }

@@ -4,6 +4,7 @@ import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
 import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.Edge;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,7 +26,7 @@ import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
 import static fr.adrien1106.reframed.block.ReFramedSlabBlock.getSlabShape;
-import static fr.adrien1106.reframed.block.ReFramedStepBlock.STEP_VOXELS;
+import static fr.adrien1106.reframed.block.ReFramedStepBlock.getStepShape;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.AXIS;
 import static net.minecraft.state.property.Properties.FACING;
@@ -75,14 +76,14 @@ public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock imp
     @Override
     public VoxelShape getShape(BlockState state, int i) {
         Axis axis = state.get(AXIS);
-        return STEP_VOXELS.get(switch (state.get(FACING)) {
-            case DOWN ->  axis == Axis.Z ? (i == 1 ? 0 : 1): (i == 1 ? 4  : 5 );
-            case UP ->    axis == Axis.Z ? (i == 1 ? 3 : 2): (i == 1 ? 7  : 6 );
-            case NORTH -> axis == Axis.Y ? (i == 1 ? 1 : 2): (i == 1 ? 11 : 8 );
-            case SOUTH -> axis == Axis.Y ? (i == 1 ? 0 : 3): (i == 1 ? 9  : 10);
-            case EAST ->  axis == Axis.Y ? (i == 1 ? 4 : 7): (i == 1 ? 8  : 9 );
-            case WEST ->  axis == Axis.Y ? (i == 1 ? 5 : 6): (i == 1 ? 10 : 11);
-        });
+        return getStepShape(Edge.getByDirections(
+            state.get(FACING),
+            switch (axis) {
+                case X -> i == 1 ? Direction.WEST : Direction.EAST;
+                case Y -> i == 1 ? Direction.DOWN : Direction.UP;
+                case Z -> i == 1 ? Direction.SOUTH : Direction.NORTH;
+            }
+        ));
     }
 
     @Override
@@ -92,24 +93,24 @@ public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock imp
 
     @Override
     public MultipartBlockStateSupplier getMultipart() {
-        Identifier step_id = ReFramed.id("double_step_special");
-        Identifier step_side_id = ReFramed.id("double_step_side_special");
+        Identifier step_id = ReFramed.id("steps_slab_special");
+        Identifier step_side_id = ReFramed.id("steps_slab_side_special");
         return MultipartBlockStateSupplier.create(this)
             .with(GBlockstate.when(FACING, Direction.DOWN, AXIS, Axis.X),
-                GBlockstate.variant(step_id, true, R0, R0))
+                GBlockstate.variant(step_id, true, R0, R180))
             .with(GBlockstate.when(FACING, Direction.DOWN, AXIS, Axis.Z),
                 GBlockstate.variant(step_id, true, R0, R90))
             .with(GBlockstate.when(FACING, Direction.UP, AXIS, Axis.X),
-                GBlockstate.variant(step_id, true, R180, R0))
+                GBlockstate.variant(step_id, true, R180, R180))
             .with(GBlockstate.when(FACING, Direction.UP, AXIS, Axis.Z),
                 GBlockstate.variant(step_id, true, R180, R90))
 
             .with(GBlockstate.when(FACING, Direction.EAST, AXIS, Axis.Z),
-                GBlockstate.variant(step_side_id, true, R0, R0))
+                GBlockstate.variant(step_side_id, true, R180, R0))
             .with(GBlockstate.when(FACING, Direction.EAST, AXIS, Axis.Y),
                 GBlockstate.variant(step_side_id, true, R90, R0))
             .with(GBlockstate.when(FACING, Direction.SOUTH, AXIS, Axis.X),
-                GBlockstate.variant(step_side_id, true, R0, R90))
+                GBlockstate.variant(step_side_id, true, R180, R90))
             .with(GBlockstate.when(FACING, Direction.SOUTH, AXIS, Axis.Y),
                 GBlockstate.variant(step_side_id, true, R90, R90))
             .with(GBlockstate.when(FACING, Direction.WEST, AXIS, Axis.Z),

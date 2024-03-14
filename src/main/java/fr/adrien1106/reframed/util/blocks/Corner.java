@@ -64,4 +64,34 @@ public enum Corner implements StringIdentifiable {
             .filter(value -> value.name().equals(name))
             .findFirst().orElse(Corner.NORTH_EAST_DOWN);
     }
+
+    public int getDirectionIndex(Direction side) {
+        return side == second_direction ? 1 : side == third_direction ? 2 : 0;
+    }
+
+    public Direction getDirection(int index) {
+        return index == 1 ? second_direction : index == 2 ? third_direction : first_direction;
+    }
+
+    public Corner getOpposite() {
+        return getByDirections(first_direction.getOpposite(), second_direction.getOpposite(), third_direction.getOpposite());
+    }
+
+    /**
+     * @param index - an index of the direction to keep and use as reference
+     * @return the opposite corner on same direction plane
+     */
+    public Corner getOpposite(int index) {
+        return getOpposite(getDirection(index));
+    }
+
+    /**
+     * @param direction - a direction to keep and use as reference
+     * @return the opposite corner on same direction plane
+     */
+    public Corner getOpposite(Direction direction) {
+        Direction other_1 = first_direction == direction ? second_direction : first_direction;
+        Direction other_2 = second_direction == direction || first_direction == direction ? third_direction : second_direction;
+        return getByDirections(direction, other_1.getOpposite(), other_2.getOpposite());
+    }
 }

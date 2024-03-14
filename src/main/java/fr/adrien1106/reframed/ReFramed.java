@@ -31,15 +31,13 @@ import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
  * TODO add screwdriver ( iterate over theme states ) ?
  * TODO add blueprint for survival friendly copy paste of a theme.         -> for v1.5.5
  * TODO add minecraft models like wall fence etc                           -> for v1.6
- * TODO ( + half stair + layers )                                          -> priority for v1.5
- * TODO put more coherence in the double theme orders / directions         -> maybe v1.6 ?
  * TODO better connected textures                                          -> maybe v1.6 ?
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
-	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, STAIRS_CUBE, SLAB, SLABS_CUBE, STEP, STEPS_SLAB;
+	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, HALF_STAIR, STAIRS_CUBE, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, SLAB, SLABS_CUBE, STEP, STEPS_SLAB, LAYER;
 	public static ItemGroup ITEM_GROUP;
 
 	public static BlockEntityType<ReFramedEntity> REFRAMED_BLOCK_ENTITY;
@@ -54,10 +52,10 @@ public class ReFramed implements ModInitializer {
 	  	SMALL_CUBES_STEP  = registerReFramed("small_cubes_step"  , new ReFramedSmallCubesStepBlock(cp(Blocks.OAK_PLANKS)));
 		STAIR             = registerReFramed("stair"             , new ReFramedStairBlock(cp(Blocks.OAK_STAIRS)));
 		STAIRS_CUBE       = registerReFramed("stairs_cube"       , new ReFramedStairsCubeBlock(cp(Blocks.OAK_STAIRS)));
-//		CUBE              = registerReFramed("half_stair"          , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
-//		CUBE              = registerReFramed("half_stairs_stair"   , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
-//		CUBE              = registerReFramed("half_stairs_slab"    , new ReFramedBlock(cp(Blocks.OAK_STAIRS))); // TODO
-//		CUBE              = registerReFramed("layer"               , new ReFramedBlock(cp(Blocks.OAK_SLAB))); // TODO
+		HALF_STAIR        = registerReFramed("half_stair"        , new ReFramedHalfStairBlock(cp(Blocks.OAK_STAIRS)));
+		HALF_STAIRS_SLAB  = registerReFramed("half_stairs_slab"  , new ReFramedHalfStairsSlabBlock(cp(Blocks.OAK_STAIRS)));
+		HALF_STAIRS_STAIR = registerReFramed("half_stairs_stair" , new ReFramedHalfStairsStairBlock(cp(Blocks.OAK_STAIRS)));
+		LAYER             = registerReFramed("layer"             , new ReFramedLayerBlock(cp(Blocks.OAK_SLAB)));
 		SLAB              = registerReFramed("slab"              , new ReFramedSlabBlock(cp(Blocks.OAK_SLAB)));
 		SLABS_CUBE        = registerReFramed("slabs_cube"        , new ReFramedSlabsCubeBlock(cp(Blocks.OAK_SLAB)));
 		STEP              = registerReFramed("step"              , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
