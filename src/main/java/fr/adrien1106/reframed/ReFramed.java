@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
 /**
+ * TODO make block pairable by right click                                 -> for v1.6
  * TODO add Hammer from framed ( removes theme )                           -> for v1.5.5
  * TODO add screwdriver ( iterate over theme states ) ?
  * TODO add blueprint for survival friendly copy paste of a theme.         -> for v1.5.5
@@ -76,7 +77,7 @@ public class ReFramed implements ModInitializer {
 					.filter(block -> block instanceof ReFramedDoubleBlock)
 					.toArray(Block[]::new)).build(null)
 		);
-		
+
 		ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, id("tab"), FabricItemGroup.builder()
 			.displayName(Text.translatable("itemGroup.reframed.tab"))
 			.icon(() -> new ItemStack(SLAB))
