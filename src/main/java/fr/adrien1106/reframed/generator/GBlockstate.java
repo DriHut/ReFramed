@@ -38,7 +38,9 @@ public class GBlockstate extends FabricModelProvider {
     }
 
     @Override
-    public void generateItemModels(ItemModelGenerator itemModelGenerator) {}
+    public void generateItemModels(ItemModelGenerator model_generator) {
+        ReFramed.ITEMS.forEach(item -> model_generator.register(item, Models.GENERATED));
+    }
 
     public static BlockStateVariant variant(Identifier model, boolean uv_lock, VariantSettings.Rotation x, VariantSettings.Rotation y) {
         BlockStateVariant variant = BlockStateVariant.create().put(VariantSettings.MODEL, model);

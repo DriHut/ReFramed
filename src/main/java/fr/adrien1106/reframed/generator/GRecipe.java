@@ -15,5 +15,8 @@ public class GRecipe extends FabricRecipeProvider {
         ReFramed.BLOCKS.forEach(block -> {
             if (block instanceof RecipeSetter provider) provider.setRecipe(exporter);
         });
+        ReFramed.ITEMS.forEach(item -> {
+            if (item instanceof RecipeSetter provider) provider.setRecipe(exporter);
+        });
     }
 }

@@ -18,6 +18,7 @@ public class GLanguage extends FabricLanguageProvider {
         builder.add(Registries.ITEM_GROUP.getKey(ReFramed.ITEM_GROUP).get(), "Frames");
         builder.add("advancements.reframed.description", "Get all the frame types.");
         ReFramed.BLOCKS.forEach(block -> builder.add(block, beautify(Registries.BLOCK.getId(block).getPath()) + " Frame"));
+        ReFramed.ITEMS.forEach(block -> builder.add(block, beautify(Registries.ITEM.getId(block).getPath())));
     }
 
     private static String beautify(String name) {

@@ -167,8 +167,8 @@ public class BlockHelper {
     public static ActionResult useCamo(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, int theme_index) {
         if(!(world.getBlockEntity(pos) instanceof ReFramedEntity block_entity)) return ActionResult.PASS;
 
-        // Changing the theme
         ItemStack held = player.getStackInHand(hand);
+        // Changing the theme
         if(held.getItem() instanceof BlockItem block_item && block_entity.getTheme(theme_index).getBlock() == Blocks.AIR) {
             Block block = block_item.getBlock();
             ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));

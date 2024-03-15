@@ -8,7 +8,7 @@
 		"Adrien1106"
 	],
 	"contact": {},
-	"license": "MIT",
+	"license": "MIT AND LGPL-3.0",
 	"icon": "assets/reframed-icon.png",
 	"environment": "*",
 	"entrypoints": {

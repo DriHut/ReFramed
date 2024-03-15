@@ -105,7 +105,7 @@ public class ReFramedClient implements ClientModInitializer {
 		//supporting code for the TemplatesModelProvider
 		ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> PROVIDER); //block models
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(rm -> PROVIDER); //item models
-		
+
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 			@Override public Identifier getFabricId() { return ReFramed.id("dump-caches"); }
 			@Override public void reload(ResourceManager blah) { PROVIDER.dumpCache(); }

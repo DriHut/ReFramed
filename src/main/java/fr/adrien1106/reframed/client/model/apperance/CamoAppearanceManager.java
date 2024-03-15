@@ -39,6 +39,12 @@ import java.util.function.Function;
 @Environment(EnvType.CLIENT)
 public class CamoAppearanceManager {
 
+
+	protected static final SpriteIdentifier DEFAULT_SPRITE_MAIN = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier(ReFramed.MODID, "block/framed_block"));
+	protected static final SpriteIdentifier DEFAULT_SPRITE_SECONDARY = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier(ReFramed.MODID, "block/framed_accent_block"));
+	private static final SpriteIdentifier BARRIER_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:item/barrier"));
+	private static final Cache<BlockState, CamoAppearance> APPEARANCE_CACHE = CacheBuilder.newBuilder().maximumSize(2048).build();
+
 	public CamoAppearanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
 		MaterialFinder finder = ReFramedClient.HELPER.getFabricRenderer().materialFinder();
 		for(BlendMode blend : BlendMode.values()) {
@@ -59,22 +65,20 @@ public class CamoAppearanceManager {
 		sprite = spriteLookup.apply(BARRIER_SPRITE_ID);
 		this.barrierItemAppearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
 	}
-
-	protected static final SpriteIdentifier DEFAULT_SPRITE_MAIN = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier(ReFramed.MODID, "block/framed_block"));
-	protected static final SpriteIdentifier DEFAULT_SPRITE_SECONDARY = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier(ReFramed.MODID, "block/framed_accent_block"));
-	private static final SpriteIdentifier BARRIER_SPRITE_ID = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:item/barrier"));
 	
 	private final CamoAppearance default_appearance;
 	private final CamoAppearance accent_appearance;
 	private final CamoAppearance barrierItemAppearance;
 
-	private static final Cache<BlockState, CamoAppearance> APPEARANCE_CACHE = CacheBuilder.newBuilder().maximumSize(2048).build();
-
 	private final AtomicInteger serial_number = new AtomicInteger(0); //Mutable
 	
 	private final EnumMap<BlendMode, RenderMaterial> ao_materials = new EnumMap<>(BlendMode.class);
 	private final EnumMap<BlendMode, RenderMaterial> materials = new EnumMap<>(BlendMode.class); //Immutable contents
-	
+
+	public static void dumpCahe() {
+		APPEARANCE_CACHE.invalidateAll();
+	}
+
 	public CamoAppearance getDefaultAppearance(int appearance) {
 		return appearance == 2 ? accent_appearance: default_appearance;
 	}

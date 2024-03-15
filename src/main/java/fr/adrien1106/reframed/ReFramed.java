@@ -1,6 +1,10 @@
 package fr.adrien1106.reframed;
 
 import fr.adrien1106.reframed.block.*;
+import fr.adrien1106.reframed.item.ReFramedHammerItem;
+import fr.adrien1106.reframed.item.ReFramedBlueprintItem;
+import fr.adrien1106.reframed.item.ReFramedBlueprintWrittenItem;
+import fr.adrien1106.reframed.item.ReFramedScrewdriverItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -8,10 +12,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
@@ -22,15 +23,12 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
 /**
  * TODO make block pairable by right click                                 -> for v1.6
- * TODO add Hammer from framed ( removes theme )                           -> for v1.5.5
- * TODO add screwdriver ( iterate over theme states ) ?
- * TODO add blueprint for survival friendly copy paste of a theme.         -> for v1.5.5
  * TODO add minecraft models like wall fence etc                           -> for v1.6
  * TODO better connected textures                                          -> maybe v1.6 ?
  */
@@ -39,6 +37,10 @@ public class ReFramed implements ModInitializer {
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
 	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, HALF_STAIR, STAIRS_CUBE, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, SLAB, SLABS_CUBE, STEP, STEPS_SLAB, LAYER;
+
+	public static final ArrayList<Item> ITEMS = new ArrayList<>();
+	public static Item HAMMER, SCREWDRIVER, BLUEPRINT, BLUEPRINT_WRITTEN;
+
 	public static ItemGroup ITEM_GROUP;
 
 	public static BlockEntityType<ReFramedEntity> REFRAMED_BLOCK_ENTITY;
@@ -48,19 +50,24 @@ public class ReFramed implements ModInitializer {
 	
 	@Override
 	public void onInitialize() {
-		CUBE              = registerReFramed("cube"              , new ReFramedBlock(cp(Blocks.OAK_PLANKS)));
-		SMALL_CUBE        = registerReFramed("small_cube"        , new ReFramedSmallCubeBlock(cp(Blocks.OAK_PLANKS)));
-	  	SMALL_CUBES_STEP  = registerReFramed("small_cubes_step"  , new ReFramedSmallCubesStepBlock(cp(Blocks.OAK_PLANKS)));
-		STAIR             = registerReFramed("stair"             , new ReFramedStairBlock(cp(Blocks.OAK_STAIRS)));
-		STAIRS_CUBE       = registerReFramed("stairs_cube"       , new ReFramedStairsCubeBlock(cp(Blocks.OAK_STAIRS)));
-		HALF_STAIR        = registerReFramed("half_stair"        , new ReFramedHalfStairBlock(cp(Blocks.OAK_STAIRS)));
-		HALF_STAIRS_SLAB  = registerReFramed("half_stairs_slab"  , new ReFramedHalfStairsSlabBlock(cp(Blocks.OAK_STAIRS)));
-		HALF_STAIRS_STAIR = registerReFramed("half_stairs_stair" , new ReFramedHalfStairsStairBlock(cp(Blocks.OAK_STAIRS)));
-		LAYER             = registerReFramed("layer"             , new ReFramedLayerBlock(cp(Blocks.OAK_SLAB)));
-		SLAB              = registerReFramed("slab"              , new ReFramedSlabBlock(cp(Blocks.OAK_SLAB)));
-		SLABS_CUBE        = registerReFramed("slabs_cube"        , new ReFramedSlabsCubeBlock(cp(Blocks.OAK_SLAB)));
-		STEP              = registerReFramed("step"              , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
-		STEPS_SLAB        = registerReFramed("steps_slab"        , new ReFramedStepsSlabBlock(cp(Blocks.OAK_SLAB)));
+		CUBE              = registerBlock("cube"              , new ReFramedBlock(cp(Blocks.OAK_PLANKS)));
+		SMALL_CUBE        = registerBlock("small_cube"        , new ReFramedSmallCubeBlock(cp(Blocks.OAK_PLANKS)));
+	  	SMALL_CUBES_STEP  = registerBlock("small_cubes_step"  , new ReFramedSmallCubesStepBlock(cp(Blocks.OAK_PLANKS)));
+		STAIR             = registerBlock("stair"             , new ReFramedStairBlock(cp(Blocks.OAK_STAIRS)));
+		STAIRS_CUBE       = registerBlock("stairs_cube"       , new ReFramedStairsCubeBlock(cp(Blocks.OAK_STAIRS)));
+		HALF_STAIR        = registerBlock("half_stair"        , new ReFramedHalfStairBlock(cp(Blocks.OAK_STAIRS)));
+		HALF_STAIRS_SLAB  = registerBlock("half_stairs_slab"  , new ReFramedHalfStairsSlabBlock(cp(Blocks.OAK_STAIRS)));
+		HALF_STAIRS_STAIR = registerBlock("half_stairs_stair" , new ReFramedHalfStairsStairBlock(cp(Blocks.OAK_STAIRS)));
+		LAYER             = registerBlock("layer"             , new ReFramedLayerBlock(cp(Blocks.OAK_SLAB)));
+		SLAB              = registerBlock("slab"              , new ReFramedSlabBlock(cp(Blocks.OAK_SLAB)));
+		SLABS_CUBE        = registerBlock("slabs_cube"        , new ReFramedSlabsCubeBlock(cp(Blocks.OAK_SLAB)));
+		STEP              = registerBlock("step"              , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
+		STEPS_SLAB        = registerBlock("steps_slab"        , new ReFramedStepsSlabBlock(cp(Blocks.OAK_SLAB)));
+
+		HAMMER            = registerItem("hammer"             , new ReFramedHammerItem(new Item.Settings().maxCount(1)));
+		SCREWDRIVER       = registerItem("screwdriver"        , new ReFramedScrewdriverItem(new Item.Settings().maxCount(1)));
+		BLUEPRINT         = registerItem("blueprint"          , new ReFramedBlueprintItem(new Item.Settings()));
+		BLUEPRINT_WRITTEN = registerItem("blueprint_written"  , new ReFramedBlueprintWrittenItem(new Item.Settings().maxCount(1)));
 
 		REFRAMED_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("camo"),
 			FabricBlockEntityTypeBuilder.create(
@@ -81,7 +88,12 @@ public class ReFramed implements ModInitializer {
 		ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, id("tab"), FabricItemGroup.builder()
 			.displayName(Text.translatable("itemGroup.reframed.tab"))
 			.icon(() -> new ItemStack(SLAB))
-			.entries((ctx, e) -> e.addAll(BLOCKS.stream().map(ItemStack::new).collect(Collectors.toList()))).build()
+			.entries((ctx, e) -> e.addAll(
+				Stream.concat(
+					ITEMS.stream().filter(item -> item != BLUEPRINT_WRITTEN),
+					BLOCKS.stream().map(Block::asItem)
+				).map(Item::getDefaultStack).toList())
+			).build()
 		);
 	}
 
@@ -94,8 +106,15 @@ public class ReFramed implements ModInitializer {
 			.suffocates((a,b,c) -> false)
 			.blockVision((a,b,c) -> false);
 	}
+
+	private static <I extends Item> I registerItem(String path, I item) {
+		Identifier id = id(path);
+		Registry.register(Registries.ITEM, id, item);
+		ITEMS.add(item);
+		return item;
+	}
 	
-	private static <B extends Block> B registerReFramed(String path, B block) {
+	private static <B extends Block> B registerBlock(String path, B block) {
 		Identifier id = id(path);
 		
 		Registry.register(Registries.BLOCK, id, block);

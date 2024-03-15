@@ -70,6 +70,7 @@ public class ReFramedModelProvider implements ModelResourceProvider, ModelVarian
 	}
 	
 	public void dumpCache() {
+		CamoAppearanceManager.dumpCahe();
 		appearanceManager = null; //volatile write
 	}
 	

@@ -31,8 +31,11 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
         return ReFramed.REFRAMED_DOUBLE_BLOCK_ENTITY.instantiate(pos, state);
     }
 
-    protected int getHitShape(BlockState state, BlockHitResult hit) {
-        Direction side = hit.getSide();
+    public int getHitShape(BlockState state, BlockHitResult hit) {
+        return getHitShape(state, hit.getPos(), hit.getBlockPos(), hit.getSide());
+    }
+
+    public int getHitShape(BlockState state, Vec3d hit, BlockPos pos, Direction side) {
         VoxelShape first_shape = getShape(state, 1);
         VoxelShape second_shape = getShape(state, 2);
 
@@ -40,10 +43,9 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
         if (isFaceFullSquare(first_shape, side)) return 1;
         if (isFaceFullSquare(second_shape, side)) return 2;
 
-        Vec3d pos = BlockHelper.getRelativePos(hit.getPos(), hit.getBlockPos());
-//        System.out.println(side.getAxis().choose(hit.getPos().x, hit.getPos().y, hit.getPos().z));
-        if (BlockHelper.cursorMatchesFace(first_shape, pos)) return 1;
-        if (BlockHelper.cursorMatchesFace(second_shape, pos)) return 2;
+        Vec3d rel = BlockHelper.getRelativePos(hit, pos);
+        if (BlockHelper.cursorMatchesFace(first_shape, rel)) return 1;
+        if (BlockHelper.cursorMatchesFace(second_shape, rel)) return 2;
         return 0;
     }
 
