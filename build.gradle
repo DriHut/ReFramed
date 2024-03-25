@@ -118,11 +118,7 @@ dependencies {
 	modRuntimeOnly "com.teamresourceful.resourcefullib:resourcefullib-fabric-${project.minecraft_version}:2.4.7"
 	modRuntimeOnly "earth.terrarium.chipped:Chipped-fabric-${project.minecraft_version}:3.1.2"
 
-	// Special Model Loader for Cocricot compatibility
-	modCompileOnly "maven.modrinth:ajFw7VkX:dYbsug6P" // Special Model Loader
-//	modRuntimeOnly "maven.modrinth:ajFw7VkX:dYbsug6P"
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
+	// Fabric API.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
