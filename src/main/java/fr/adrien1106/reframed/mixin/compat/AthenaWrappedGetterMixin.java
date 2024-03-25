@@ -13,10 +13,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(WrappedGetter.class)
 public class AthenaWrappedGetterMixin {
 
-    @Redirect(method = "query",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/BlockRenderView;" +
-            "getBlockState(Lnet/minecraft/util/math/BlockPos;)" +
-            "Lnet/minecraft/block/BlockState;"))
+    @Redirect(
+        method = "query",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/BlockRenderView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"
+        )
+    ) // TODO better connected textures
     private BlockState queryCamoState(BlockRenderView world, BlockPos pos, @Local(argsOnly = true) BlockState reference_state) {
         // get Any that will connect or return any other (/!\ isOf is an uncertain check)
         if (world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity)

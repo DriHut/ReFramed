@@ -33,3 +33,4 @@ local.properties
 *-autosave.kra
 *.kra~
 /src/generated/
+/libs/

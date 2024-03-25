@@ -110,9 +110,17 @@ dependencies {
 	modCompileOnly "earth.terrarium.athena:athena-fabric-${project.minecraft_version}:${project.athena_version}"
 	modRuntimeOnly "earth.terrarium.athena:athena-fabric-${project.minecraft_version}:${project.athena_version}"
 
+	// Continuity for connectedTextures
+	modCompileOnly "maven.modrinth:continuity:${project.continuity_version}"
+	modRuntimeOnly "maven.modrinth:continuity:${project.continuity_version}"
+
 	// Chipped to test athena implementation
 	modRuntimeOnly "com.teamresourceful.resourcefullib:resourcefullib-fabric-${project.minecraft_version}:2.4.7"
 	modRuntimeOnly "earth.terrarium.chipped:Chipped-fabric-${project.minecraft_version}:3.1.2"
+
+	// Special Model Loader for Cocricot compatibility
+	modCompileOnly "maven.modrinth:ajFw7VkX:dYbsug6P" // Special Model Loader
+//	modRuntimeOnly "maven.modrinth:ajFw7VkX:dYbsug6P"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -126,6 +134,7 @@ processResources {
 	inputs.property "athena_version", project.athena_version
 	inputs.property "indium_version", project.indium_version
 	inputs.property "sodium_version", project.sodium_version
+	inputs.property "continuity_version", project.continuity_version
 	filteringCharset "UTF-8"
 
 	filesMatching("fabric.mod.json") {

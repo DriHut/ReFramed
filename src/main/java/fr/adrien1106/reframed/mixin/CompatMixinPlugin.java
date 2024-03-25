@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,24 +17,27 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
 
     private static final FabricLoader LOADER = FabricLoader.getInstance();
     private static final Logger LOGGER = LoggerFactory.getLogger("ReFramed MIXIN");
-    private static final List<String> COMPAT_MOD = List.of("athena", "indium", "sodium");
-    private static final Map<String, Supplier<Boolean>> CONDITIONS = Map.of(
-        "fr.adrien1106.reframed.mixin.compat.AthenaBakedModelMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(0)),
-        "fr.adrien1106.reframed.mixin.compat.AthenaWrappedGetterMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(0)),
-        "fr.adrien1106.reframed.mixin.render.TerrainRenderContextMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)),
-        "fr.adrien1106.reframed.mixin.render.BlockRenderInfoMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)),
-        "fr.adrien1106.reframed.mixin.render.AbstractBlockRenderContextMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)),
-        "fr.adrien1106.reframed.mixin.compat.IndiumTerrainRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)),
-        "fr.adrien1106.reframed.mixin.compat.IndiumTerrainBlockRenderInfoMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)),
-        "fr.adrien1106.reframed.mixin.compat.IndiumAbstractBlockRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)),
-        "fr.adrien1106.reframed.mixin.compat.SodiumBlockOcclusionCacheMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(2))
-    );
+    private static final List<String> COMPAT_MOD = List.of("athena", "indium", "sodium", "special-model-loader", "continuity");
+    private static final Map<String, Supplier<Boolean>> CONDITIONS = new HashMap<>();
+    static {
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AthenaBakedModelMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(0)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AthenaWrappedGetterMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(0)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.render.TerrainRenderContextMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.render.BlockRenderInfoMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.render.AbstractBlockRenderContextMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.IndiumTerrainRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.IndiumTerrainBlockRenderInfoMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.IndiumAbstractBlockRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.SodiumBlockOcclusionCacheMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(2)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityConnectionPredicateMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityCTMBakedModelMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityCTMQuadTransformMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityModelWrappingHandlerMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
+    }
 
 
     @Override
-    public void onLoad(String mixin_package) {
-
-    }
+    public void onLoad(String mixin_package) {}
 
     @Override
     public String getRefMapperConfig() {
@@ -46,9 +50,7 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public void acceptTargets(Set<String> mine, Set<String> others) {
-
-    }
+    public void acceptTargets(Set<String> mine, Set<String> others) {}
 
     @Override
     public List<String> getMixins() {
@@ -56,9 +58,7 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public void preApply(String target_class_name, ClassNode target_class, String mixin_class_name, IMixinInfo mixin_info) {
-
-    }
+    public void preApply(String target_class_name, ClassNode target_class, String mixin_class_name, IMixinInfo mixin_info) {}
 
     @Override
     public void postApply(String target_class, ClassNode target, String mixin_class, IMixinInfo mixin_info) {

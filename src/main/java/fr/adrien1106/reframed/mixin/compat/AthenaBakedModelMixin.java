@@ -5,7 +5,7 @@ import earth.terrarium.athena.api.client.fabric.WrappedGetter;
 import earth.terrarium.athena.api.client.models.AthenaBlockModel;
 import fr.adrien1106.reframed.client.ReFramedClient;
 import fr.adrien1106.reframed.client.model.DynamicBakedModel;
-import fr.adrien1106.reframed.compat.RebakedAthenaModel;
+import fr.adrien1106.reframed.compat.RebakedModel;
 import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -18,6 +18,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,27 +36,27 @@ public abstract class AthenaBakedModelMixin implements DynamicBakedModel, BakedM
      * Reuses the emitQuad method to compute the quads to be used by the frame
      *
      * @param level - the world
-     * @param state - the current block camo
+     * @param origin_state - the current block camo
      * @param pos   - the block position
      * @return - the rebakedmodel containing the computed quads
      */
     @Override
-    public BakedModel computeQuads(BlockRenderView level, BlockState state, BlockPos pos, int theme_index) {
+    public BakedModel computeQuads(@Nullable BlockRenderView level, BlockState origin_state, @Nullable BlockPos pos, int theme_index) {
         Map<Direction, List<BakedQuad>> face_quads = new HashMap<>();
         Renderer r = ReFramedClient.HELPER.getFabricRenderer();
         QuadEmitter emitter = r.meshBuilder().getEmitter();
 
         WrappedGetter getter = new WrappedGetter(level);
+        BlockState state = level != null && pos != null
+            && level.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity
+            ? framed_entity.getTheme(theme_index)
+            : origin_state;
         Arrays.stream(Direction.values()).forEach(direction -> {
             face_quads.put(direction, new ArrayList<>());
 
             (level == null || pos == null
                 ? model.getDefaultQuads(direction).get(direction)
-                : model.getQuads(
-                    getter,
-                    level.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity
-                        ? framed_entity.getTheme(theme_index)
-                        : state, pos, direction)
+                : model.getQuads(getter, state, pos, direction)
                 ).forEach(sprite -> face_quads.computeIfPresent(direction, (d, quads) -> {
                     Sprite texture = textures.get(sprite.sprite());
                     if (texture == null) return quads;
@@ -76,6 +77,6 @@ public abstract class AthenaBakedModelMixin implements DynamicBakedModel, BakedM
                 }));
         });
 
-        return new RebakedAthenaModel(face_quads);
+        return new RebakedModel(face_quads);
     }
 }

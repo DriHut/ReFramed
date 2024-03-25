@@ -1,7 +1,7 @@
 package fr.adrien1106.reframed.mixin.compat;
 
 import fr.adrien1106.reframed.client.model.MultiRetexturableModel;
-import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.client.util.RenderHelper;
 import fr.adrien1106.reframed.util.mixin.IBlockRenderInfoMixin;
 import fr.adrien1106.reframed.util.mixin.IMultipartBakedModelMixin;
 import link.infra.indium.renderer.render.AbstractBlockRenderContext;
@@ -32,7 +32,7 @@ public abstract class IndiumTerrainRenderContextMixin extends AbstractBlockRende
             || !(wrapped.getModel(ctx.state()) instanceof MultiRetexturableModel retexturing_model)) return;
 
         List<ForwardingBakedModel> models = retexturing_model.models();
-        BlockHelper.computeInnerCull(ctx.state(), models);
+        RenderHelper.computeInnerCull(ctx.state(), models);
         int i = 0;
         for (BakedModel model : models) {
             i++;

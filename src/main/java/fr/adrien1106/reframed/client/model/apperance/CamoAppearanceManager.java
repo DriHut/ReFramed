@@ -6,6 +6,7 @@ import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.client.ReFramedClient;
 import fr.adrien1106.reframed.client.model.DynamicBakedModel;
 import fr.adrien1106.reframed.client.model.QuadPosBounds;
+import fr.adrien1106.reframed.compat.RebakedModel;
 import fr.adrien1106.reframed.mixin.model.WeightedBakedModelAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -86,14 +87,18 @@ public class CamoAppearanceManager {
 	public CamoAppearance getCamoAppearance(BlockRenderView world, BlockState state, BlockPos pos, int theme_index, boolean item) {
 		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 
-		// add support for connected textures and more generally any compatible models injected so that they return baked quads
+		// add support for connected textures that uses dynamic baking
 		if (model instanceof DynamicBakedModel dynamic_model) {
 			// cache items as they get rendered more often
 			if (item && APPEARANCE_CACHE.asMap().containsKey(state)) return APPEARANCE_CACHE.getIfPresent(state);
 
-			CamoAppearance appearance = computeAppearance(dynamic_model.computeQuads(world, state, pos, theme_index), state);
-			if (item) APPEARANCE_CACHE.put(state, appearance);
-			return appearance;
+			model = dynamic_model.computeQuads(world, state, pos, theme_index);
+			// if model isn't rebaked its just wrapped (i.e. not dynamic and may be cached)
+			if (model instanceof RebakedModel) {
+				CamoAppearance appearance = computeAppearance(model, state);
+				if (item) APPEARANCE_CACHE.put(state, appearance);
+				return appearance;
+			}
 		}
 
 		// refresh cache

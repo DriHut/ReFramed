@@ -12,10 +12,10 @@ import net.minecraft.util.math.random.Random;
 import java.util.List;
 import java.util.Map;
 
-public class RebakedAthenaModel implements BakedModel {
+public class RebakedModel implements BakedModel {
     protected final Map<Direction, List<BakedQuad>> face_quads;
 
-    public RebakedAthenaModel(Map<Direction, List<BakedQuad>> face_quads) {
+    public RebakedModel(Map<Direction, List<BakedQuad>> face_quads) {
         this.face_quads = face_quads;
     }
 
@@ -26,7 +26,7 @@ public class RebakedAthenaModel implements BakedModel {
 
     @Override
     public boolean useAmbientOcclusion() {
-        return false;
+        return true;
     }
 
     @Override
@@ -51,11 +51,11 @@ public class RebakedAthenaModel implements BakedModel {
 
     @Override
     public ModelTransformation getTransformation() {
-        return null;
+        return ModelTransformation.NONE;
     }
 
     @Override
     public ModelOverrideList getOverrides() {
-        return null;
+        return ModelOverrideList.EMPTY;
     }
 }

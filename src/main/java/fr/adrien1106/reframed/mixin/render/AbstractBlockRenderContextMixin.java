@@ -1,7 +1,7 @@
 package fr.adrien1106.reframed.mixin.render;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.client.util.RenderHelper;
 import fr.adrien1106.reframed.util.mixin.IBlockRenderInfoMixin;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.AbstractBlockRenderContext;
@@ -31,6 +31,6 @@ public abstract class AbstractBlockRenderContextMixin {
     private boolean shouldDrawInnerQuad(AbstractBlockRenderContext instance, Direction face, @Local(argsOnly = true) MutableQuadViewImpl quad) {
         if (face != null || quad.tag() == 0 || !(blockInfo instanceof IBlockRenderInfoMixin info) || info.getThemeIndex() == 0) return isFaceCulled(face);
 
-        return !BlockHelper.shouldDrawInnerFace(blockInfo.blockState, blockInfo.blockView, blockInfo.blockPos, quad.tag() >>> 8, info.getThemeIndex());
+        return !RenderHelper.shouldDrawInnerFace(blockInfo.blockState, blockInfo.blockView, blockInfo.blockPos, quad.tag() >>> 8, info.getThemeIndex());
     }
 }

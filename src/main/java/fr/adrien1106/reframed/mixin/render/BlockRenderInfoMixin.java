@@ -1,7 +1,7 @@
 package fr.adrien1106.reframed.mixin.render;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.client.util.RenderHelper;
 import fr.adrien1106.reframed.util.mixin.IBlockRenderInfoMixin;
 import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
@@ -37,7 +37,7 @@ public abstract class BlockRenderInfoMixin implements IBlockRenderInfoMixin {
 
     @Redirect(method = "shouldDrawFace", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;shouldDrawSide(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/util/math/BlockPos;)Z"))
     private boolean shouldDrawAdjacentCamoSide(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos other_pos) {
-        return BlockHelper.shouldDrawSide(state, world, pos, side, other_pos, theme_index);
+        return RenderHelper.shouldDrawSide(state, world, pos, side, other_pos, theme_index);
     }
 
     @Override
