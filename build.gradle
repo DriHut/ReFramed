@@ -210,6 +210,7 @@ modrinth {
 		required.project "fabric-api"
 		optional.version "b1ZV3DIJ", "${project.athena_version}"
 		optional.version "Orvt0mRa", "${project.indium_version}+mc${project.minecraft_version}"
+		optional.version "1IjD5062", "${project.continuity_version}"
 	}
 }
 
