@@ -93,13 +93,13 @@ public class ReFramedSmallCubesStepBlock extends WaterloggableReFramedDoubleBloc
         return MultipartBlockStateSupplier.create(this)
             /* X AXIS */
             .with(GBlockstate.when(EDGE, DOWN_EAST),
-                GBlockstate.variant(reverse_model_id, true, R0, R0))
+                GBlockstate.variant(model_id, true, R0, R0))
             .with(GBlockstate.when(EDGE, EAST_UP),
-                GBlockstate.variant(model_id, true, R180, R0))
+                GBlockstate.variant(reverse_model_id, true, R180, R0))
             .with(GBlockstate.when(EDGE, UP_WEST),
-                GBlockstate.variant(reverse_model_id, true, R180, R180))
+                GBlockstate.variant(model_id, true, R180, R180))
             .with(GBlockstate.when(EDGE, WEST_DOWN),
-                GBlockstate.variant(model_id, true, R0, R180))
+                GBlockstate.variant(reverse_model_id, true, R0, R180))
             /* Y AXIS */
             .with(GBlockstate.when(EDGE, EAST_SOUTH),
                 GBlockstate.variant(model_id, true, R90, R0))

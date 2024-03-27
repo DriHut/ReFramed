@@ -11,6 +11,7 @@ import net.minecraft.data.client.MultipartBlockStateSupplier;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
@@ -22,7 +23,10 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
+import static net.minecraft.state.property.Properties.AXIS;
 import static net.minecraft.state.property.Properties.FACING;
 
 public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
@@ -53,10 +57,24 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements Blo
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		super.appendProperties(builder.add(FACING));
 	}
-	
+
+	@Override
+	public boolean canReplace(BlockState state, ItemPlacementContext context) {
+		return !(
+			context.getPlayer().isSneaking()
+			|| !(context.getStack().getItem() instanceof BlockItem block_item)
+			|| block_item.getBlock() != this
+		);
+	}
+
 	@Nullable
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		BlockState current_state = ctx.getWorld().getBlockState(ctx.getBlockPos());
+		if (current_state.isOf(this))
+			return ReFramed.SLABS_CUBE.getDefaultState()
+				.with(AXIS, current_state.get(FACING).getAxis());
+
 		return super.getPlacementState(ctx).with(FACING, ctx.getSide().getOpposite());
 	}
 
@@ -74,6 +92,12 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements Blo
 			case EAST -> EAST;
 			case WEST -> WEST;
 		};
+	}
+
+	@Override
+	public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
+		if (new_state.isOf(ReFramed.SLABS_CUBE)) return Map.of(1, state.get(FACING).getDirection() == Direction.AxisDirection.POSITIVE ? 2 : 1);
+		return super.getThemeMap(state, new_state);
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import net.minecraft.data.client.When;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
@@ -30,6 +31,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
@@ -64,17 +66,35 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock implements Bl
 	}
 
 	@Override
+	public boolean canReplace(BlockState state, ItemPlacementContext context) {
+		return !(
+			context.getPlayer().isSneaking()
+			|| !(context.getStack().getItem() instanceof BlockItem block_item)
+			|| block_item.getBlock() != ReFramed.STEP
+		);
+	}
+
+	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighbor_state, WorldAccess world, BlockPos pos, BlockPos moved) {
 		return super.getStateForNeighborUpdate(state, direction, neighbor_state, world, pos, moved)
 			.with(STAIR_SHAPE, BlockHelper.getStairsShape(state.get(EDGE), world, pos));
 	}
 
 	@Nullable
-	@Override // Pretty happy of how clean it is (also got it on first try :) )
+	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		Edge face = BlockHelper.getPlacementEdge(ctx);
-		StairShape shape = BlockHelper.getStairsShape(face, ctx.getWorld(), ctx.getBlockPos());
-		return super.getPlacementState(ctx).with(EDGE, face).with(STAIR_SHAPE, shape);
+		BlockState current_state = ctx.getWorld().getBlockState(ctx.getBlockPos());
+		if (current_state.isOf(ReFramed.STEP)) {
+			Edge edge = current_state.get(EDGE).opposite();
+			StairShape shape = BlockHelper.getStairsShape(edge, ctx.getWorld(), ctx.getBlockPos());
+			return ReFramed.STAIRS_CUBE.getDefaultState()
+				.with(EDGE, edge)
+				.with(STAIR_SHAPE, shape);
+		}
+
+		Edge edge = BlockHelper.getPlacementEdge(ctx);
+		StairShape shape = BlockHelper.getStairsShape(edge, ctx.getWorld(), ctx.getBlockPos());
+		return super.getPlacementState(ctx).with(EDGE, edge).with(STAIR_SHAPE, shape);
 	}
 
 	@Override
@@ -91,6 +111,12 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock implements Bl
 
 	public static VoxelShape getStairShape(Edge edge, StairShape shape) {
 		return STAIR_VOXELS[edge.getID() * 9 + shape.getID()];
+	}
+
+	@Override
+	public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
+		if (new_state.isOf(ReFramed.STAIRS_CUBE)) return Map.of(1, 1);
+		return super.getThemeMap(state, new_state);
 	}
 
 	@Override
@@ -137,94 +163,94 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock implements Bl
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, INNER_RIGHT),
 				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, INNER_RIGHT),
-			    GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, INNER_LEFT)),
+			    GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R0, R180))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, INNER_LEFT),
 				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, INNER_RIGHT),
-				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, INNER_LEFT)),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R0, R270))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, INNER_LEFT),
 				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, INNER_RIGHT),
-				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, INNER_RIGHT)),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R0, R0))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, INNER_RIGHT),
 				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, INNER_RIGHT),
-				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, INNER_RIGHT)),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R0, R90))
 			/* INNER TOP */
 			.with(When.anyOf(
-				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, INNER_LEFT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, INNER_RIGHT),
 				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, INNER_LEFT),
 				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R180, R0))
 			.with(When.anyOf(
-				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, INNER_RIGHT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, INNER_LEFT),
 				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, INNER_LEFT),
 				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R180, R90))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, INNER_RIGHT),
 				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, INNER_RIGHT)),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, INNER_LEFT)),
 				GBlockstate.variant(inner_id, true, R180, R180))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, INNER_RIGHT),
 				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, INNER_LEFT),
-				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, INNER_LEFT)),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, INNER_RIGHT)),
 				GBlockstate.variant(inner_id, true, R180, R270))
 			/* OUTER BOTTOM */
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_id, true, R0, R0))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_id, true, R0, R90))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_id, true, R0, R180))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_id, true, R0, R270))
 			/* OUTER TOP */
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_id, true, R180, R0))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_id, true, R180, R90))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_id, true, R180, R180))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_id, true, R180, R270))
 			/* OUTER EAST */
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R0, R0))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R90, R0))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R180, R0))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R270, R0))
 			/* OUTER SOUTH */
 			.with(When.anyOf(
@@ -246,19 +272,19 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock implements Bl
 			/* OUTER WEST */
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, SECOND_OUTER_RIGHT),
-				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, SECOND_OUTER_LEFT)),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R0, R180))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, SECOND_OUTER_LEFT),
-				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, FIRST_OUTER_LEFT)),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
 				GBlockstate.variant(outer_side_id, true, R90, R180))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, FIRST_OUTER_LEFT),
-				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, FIRST_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, FIRST_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R180, R180))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, FIRST_OUTER_RIGHT),
-				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, SECOND_OUTER_RIGHT)),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, SECOND_OUTER_LEFT)),
 				GBlockstate.variant(outer_side_id, true, R270, R180))
 			/* OUTER NORTH */
 			.with(When.anyOf(
@@ -280,43 +306,43 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock implements Bl
 			/* OUTER BOTTOM */
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, OUTER_LEFT),
 				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R0))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, DOWN_SOUTH, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, OUTER_LEFT),
 				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R90))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, WEST_DOWN, STAIR_SHAPE, OUTER_RIGHT),
 				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R180))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, NORTH_DOWN, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, DOWN_EAST, STAIR_SHAPE, OUTER_RIGHT),
 				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, OUTER_RIGHT)),
 				GBlockstate.variant(double_outer_id, true, R0, R270))
 			/* OUTER TOP */
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, OUTER_RIGHT),
 				GBlockstate.when(EDGE, NORTH_EAST, STAIR_SHAPE, OUTER_LEFT)),
 				GBlockstate.variant(double_outer_id, true, R180, R0))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, OUTER_LEFT),
-				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, EAST_UP, STAIR_SHAPE, OUTER_LEFT),
 				GBlockstate.when(EDGE, EAST_SOUTH, STAIR_SHAPE, OUTER_LEFT)),
 				GBlockstate.variant(double_outer_id, true, R180, R90))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, SOUTH_UP, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, OUTER_RIGHT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, OUTER_LEFT),
 				GBlockstate.when(EDGE, SOUTH_WEST, STAIR_SHAPE, OUTER_LEFT)),
 				GBlockstate.variant(double_outer_id, true, R180, R180))
 			.with(When.anyOf(
 				GBlockstate.when(EDGE, UP_NORTH, STAIR_SHAPE, OUTER_RIGHT),
-				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, OUTER_LEFT),
+				GBlockstate.when(EDGE, UP_WEST, STAIR_SHAPE, OUTER_RIGHT),
 				GBlockstate.when(EDGE, WEST_NORTH, STAIR_SHAPE, OUTER_LEFT)),
 				GBlockstate.variant(double_outer_id, true, R180, R270));
 	}
@@ -382,51 +408,51 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock implements Bl
 			.add(25, VoxelHelper::rotateCX).add(26, VoxelHelper::rotateCX)
 			// WEST_DOWN
 			.add(0, VoxelHelper::rotateCY)
-			.add(10).add(1)
-			.add(12).add(3)
-			.add(16).add(5)
-			.add(7, VoxelHelper::rotateCY).add(8, VoxelHelper::rotateCY)
+			.add(1).add(10)
+			.add(3).add(12)
+			.add(5).add(16)
+			.add(8, VoxelHelper::rotateCY).add(7, VoxelHelper::rotateCY)
 			// DOWN_EAST
 			.add(36, VoxelHelper::rotateZ)
-			.add(11).add(2)
-			.add(13).add(4)
+			.add(2).add(11)
+			.add(4).add(13)
 			.add(41, VoxelHelper::rotateZ).add(42, VoxelHelper::rotateZ)
-			.add(17).add(6)
+			.add(6).add(17)
 			// EAST_UP
 			.add(45, VoxelHelper::rotateZ)
-			.add(20).add(29)
-			.add(22).add(31)
-			.add(24).add(35)
+			.add(29).add(20)
+			.add(31).add(22)
+			.add(35).add(24)
 			.add(52, VoxelHelper::rotateZ).add(53, VoxelHelper::rotateZ)
 			// UP_WEST
 			.add(54, VoxelHelper::rotateZ)
-			.add(19).add(28)
-			.add(21).add(30)
+			.add(28).add(19)
+			.add(30).add(21)
 			.add(59, VoxelHelper::rotateZ).add(60, VoxelHelper::rotateZ)
-			.add(23).add(34)
+			.add(34).add(23)
 			// WEST_NORTH
 			.add(0, VoxelHelper::rotateCZ)
 			.add(1).add(28)
 			.add(3).add(30)
 			.add(7).add(32)
-			.add(44).add(69)
+			.add(43).add(68)
 			// NORTH_EAST
 			.add(72, VoxelHelper::rotateY)
 			.add(2).add(29)
 			.add(4).add(31)
-			.add(51).add(62)
+			.add(50).add(61)
 			.add(8).add(33)
 			// EAST_SOUTH
 			.add(81, VoxelHelper::rotateY)
 			.add(11).add(20)
 			.add(13).add(22)
 			.add(15).add(26)
-			.add(50).add(61)
+			.add(51).add(62)
 			// SOUTH_WEST
 			.add(90, VoxelHelper::rotateY)
 			.add(10).add(19)
 			.add(12).add(21)
-			.add(43).add(68)
+			.add(44).add(69)
 			.add(14).add(25)
 			.build();
 	}

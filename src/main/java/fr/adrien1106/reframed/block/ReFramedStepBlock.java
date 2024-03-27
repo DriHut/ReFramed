@@ -15,19 +15,27 @@ import net.minecraft.data.client.MultipartBlockStateSupplier;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
 import static fr.adrien1106.reframed.util.blocks.Edge.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
+import static net.minecraft.state.property.Properties.AXIS;
+import static net.minecraft.state.property.Properties.FACING;
 
 public class ReFramedStepBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 
@@ -53,9 +61,68 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock implements Blo
         super.appendProperties(builder.add(EDGE));
     }
 
+    @Override
+    public boolean canReplace(BlockState state, ItemPlacementContext context) {
+        Edge edge = state.get(EDGE);
+        return !(
+            context.getPlayer().isSneaking()
+            || !(context.getStack().getItem() instanceof BlockItem block_item)
+            || (
+                block_item.getBlock() != ReFramed.STAIR
+                && !(
+                    block_item.getBlock() == this
+                    && !(
+                        (edge.isSide(context.getSide()) || edge.hasDirection(context.getSide()))
+                        && BlockHelper.cursorMatchesFace(
+                            getOutlineShape(state, context.getWorld(), context.getBlockPos(), null),
+                            BlockHelper.getRelativePos(context.getHitPos(), context.getBlockPos())
+                        )
+                    )
+                    && ((ReFramedStepsSlabBlock) ReFramed.STEPS_SLAB)
+                        .matchesAnyOutline(
+                            context.getHitPos(),
+                            context.getBlockPos(),
+                            FACING,
+                            edge.getFirstDirection(),
+                            edge.getSecondDirection()
+                        )
+                )
+            )
+        );
+    }
+
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockPos pos = ctx.getBlockPos();
+        BlockState current_state = ctx.getWorld().getBlockState(pos);
+        if (current_state.isOf(ReFramed.STAIR))
+            return ReFramed.STAIRS_CUBE.getDefaultState()
+                .with(EDGE, current_state.get(EDGE))
+                .with(STAIR_SHAPE, current_state.get(STAIR_SHAPE));
+
+
+        if (current_state.isOf(this)) {
+            Vec3d hit = ctx.getHitPos();
+            Edge edge = current_state.get(EDGE);
+            Direction dir = edge.getFirstDirection();
+            ReFramedStepsSlabBlock block = ((ReFramedStepsSlabBlock) ReFramed.STEPS_SLAB);
+            BlockState state = block.getDefaultState()
+                .with(FACING, dir)
+                .with(AXIS, edge.getOtherDirection(dir).getAxis());
+            if (!block.matchesShape(
+                hit, pos,
+                state,
+                edge.getOtherDirection(dir).getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+            )) {
+                dir = edge.getSecondDirection();
+                state = state
+                    .with(FACING, dir)
+                    .with(AXIS, edge.getOtherDirection(dir).getAxis());
+            }
+            return state;
+        }
+
         return super.getPlacementState(ctx).with(EDGE, BlockHelper.getPlacementEdge(ctx));
     }
 
@@ -66,6 +133,19 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock implements Blo
 
     public static VoxelShape getStepShape(Edge edge) {
         return STEP_VOXELS[edge.getID()];
+    }
+
+    @Override
+    public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
+        if (new_state.isOf(ReFramed.STAIRS_CUBE)) return Map.of(1, 2);
+        if (new_state.isOf(ReFramed.STEPS_SLAB))
+            return Map.of(
+                1,
+                state.get(EDGE)
+                    .getOtherDirection(new_state.get(FACING))
+                    .getDirection() == Direction.AxisDirection.POSITIVE ? 2 : 1
+            );
+        return super.getThemeMap(state, new_state);
     }
 
     @Override

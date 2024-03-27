@@ -19,8 +19,7 @@ import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import static fr.adrien1106.reframed.block.ReFramedSlabBlock.*;
-import static net.minecraft.data.client.VariantSettings.Rotation.R0;
-import static net.minecraft.data.client.VariantSettings.Rotation.R90;
+import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.AXIS;
 
 public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock implements BlockStateProvider {
@@ -55,15 +54,14 @@ public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock implements Block
     public VoxelShape getShape(BlockState state, int i) {
         return switch (state.get(AXIS)) {
             case Y -> i == 2 ? UP    : DOWN;
-            case Z -> i == 2 ? NORTH : SOUTH;
+            case Z -> i == 2 ? SOUTH : NORTH;
             case X -> i == 2 ? EAST  : WEST;
         };
     }
 
     @Override
     public int getTopThemeIndex(BlockState state) {
-        // when the side is shared just return one
-        return state.get(AXIS) == Direction.Axis.Y ? 2: super.getTopThemeIndex(state);
+        return 2;
     }
 
     @Override
@@ -73,7 +71,7 @@ public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock implements Block
             .with(GBlockstate.when(AXIS, Direction.Axis.Y),
                 GBlockstate.variant(model_id, true, R0, R0))
             .with(GBlockstate.when(AXIS, Direction.Axis.Z),
-                GBlockstate.variant(model_id, true, R90, R0))
+                GBlockstate.variant(model_id, true, R270, R0))
             .with(GBlockstate.when(AXIS, Direction.Axis.X),
                 GBlockstate.variant(model_id, true, R90, R90));
     }

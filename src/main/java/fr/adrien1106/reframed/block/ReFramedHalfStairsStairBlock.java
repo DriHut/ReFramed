@@ -116,13 +116,13 @@ public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlo
                 GBlockstate.variant(model_id, true, R0, R270))
             /* Z AXIS */
             .with(GBlockstate.when(EDGE, DOWN_EAST),
-                GBlockstate.variant(side_model_id, true, R0, R90))
+                GBlockstate.variant(reverse_model_id, true, R0, R90))
             .with(GBlockstate.when(EDGE, EAST_UP),
-                GBlockstate.variant(reverse_model_id, true, R180, R270))
+                GBlockstate.variant(side_model_id, true, R180, R270))
             .with(GBlockstate.when(EDGE, UP_WEST),
-                GBlockstate.variant(side_model_id, true, R180, R90))
+                GBlockstate.variant(reverse_model_id, true, R180, R90))
             .with(GBlockstate.when(EDGE, WEST_DOWN),
-                GBlockstate.variant(reverse_model_id, true, R0, R270));
+                GBlockstate.variant(side_model_id, true, R0, R270));
     }
 
     @Override

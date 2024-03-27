@@ -15,7 +15,9 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.Registries;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -31,8 +33,12 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
+import static fr.adrien1106.reframed.block.ReFramedEntity.BLOCKSTATE_KEY;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
 public class ReFramedBlock extends Block implements BlockEntityProvider, RecipeSetter {
@@ -97,7 +103,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider, RecipeS
 	
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		if(!state.isOf(newState.getBlock()) &&
+		if(!(newState.getBlock() instanceof ReFramedBlock) &&
 			world.getBlockEntity(pos) instanceof ReFramedEntity frame_entity &&
 			world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)
 		) {
@@ -122,14 +128,52 @@ public class ReFramedBlock extends Block implements BlockEntityProvider, RecipeS
 		}
 		super.onStateReplaced(state, world, pos, newState, moved);
 	}
-	
-	@Override
-	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-		if(world.isClient && world.getBlockEntity(pos) instanceof ReFramedEntity be) {
-			NbtCompound tag = BlockItem.getBlockEntityNbt(stack);
-			if(tag != null) be.readNbt(tag);
+
+	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, BlockState old_state, BlockEntity old_entity) {
+		if (!(world.getBlockEntity(pos) instanceof ReFramedEntity frame_entity)) {
+			onPlaced(world, pos, state, placer, stack);
+			return;
 		}
-		super.onPlaced(world, pos, state, placer, stack);
+
+		// apply state change keeping the old information
+		if (old_state.getBlock() instanceof ReFramedBlock old_frame_block
+			&& old_entity instanceof ReFramedEntity old_frame_entity) {
+			Map<Integer, Integer> theme_map = old_frame_block.getThemeMap(old_state, state);
+			theme_map.forEach((self, other) ->
+				frame_entity.setTheme(old_frame_entity.getTheme(self), other)
+			);
+
+			// apply any changes needed to keep previous properties
+			if (old_frame_entity.emitsLight() && !frame_entity.emitsLight()) {
+				frame_entity.toggleLight();
+				world.setBlockState(pos, state.with(LIGHT, true));
+			}
+			if (old_frame_entity.emitsRedstone() && !frame_entity.emitsRedstone()) {
+				frame_entity.toggleRedstone();
+				world.updateNeighbors(pos, this);
+			}
+			if (old_frame_entity.isSolid() && !frame_entity.isSolid()) frame_entity.toggleSolidity();
+
+			// apply themes from item
+			NbtCompound tag = BlockItem.getBlockEntityNbt(stack);
+			if(tag != null) {
+				// determine a list of themes than can be used
+				Iterator<Integer> free_themes = IntStream
+					.rangeClosed(1, frame_entity.getThemes().size())
+					.filter(value -> !theme_map.containsValue(value))
+					.iterator();
+				// apply all the themes possible from item
+				for (int i = 1; tag.contains(BLOCKSTATE_KEY + i) && free_themes.hasNext(); i++) {
+					BlockState theme = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag.getCompound(BLOCKSTATE_KEY + i));
+					if (theme == null || theme.getBlock() == Blocks.AIR) continue;
+					frame_entity.setTheme(theme, free_themes.next());
+				}
+			}
+		} else if(world.isClient) { // prevents flashing with default texture before server sends the update
+			NbtCompound tag = BlockItem.getBlockEntityNbt(stack);
+			if(tag != null) frame_entity.readNbt(tag);
+		}
+		onPlaced(world, pos, state, placer, stack);
 	}
 	
 	@Override
@@ -165,8 +209,21 @@ public class ReFramedBlock extends Block implements BlockEntityProvider, RecipeS
 		return getWeakRedstonePower(state, view, pos, dir);
 	}
 
+	/**
+	 * @param state - the block state to get the top theme index from
+	 * @return the index of the top theme to use for the block
+	 */
 	public int getTopThemeIndex(BlockState state) {
 		return 1;
+	}
+
+	/**
+	 * @param state     - the block state of the block that is being replaced
+	 * @param new_state - the block state of the block that is replacing the block
+	 * @return a map of the theme indexes to map when changing state so that the themes are preserved
+	 */
+	public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
+		return Map.of();
 	}
 
 	@Override

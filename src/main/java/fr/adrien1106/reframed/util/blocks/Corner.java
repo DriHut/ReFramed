@@ -37,6 +37,18 @@ public enum Corner implements StringIdentifiable {
         return asString();
     }
 
+    public Direction getFirstDirection() {
+        return first_direction;
+    }
+
+    public Direction getSecondDirection() {
+        return second_direction;
+    }
+
+    public Direction getThirdDirection() {
+        return third_direction;
+    }
+
     public boolean hasDirection(Direction direction) {
         return this.first_direction.equals(direction)
             || this.second_direction.equals(direction)
@@ -93,5 +105,18 @@ public enum Corner implements StringIdentifiable {
         Direction other_1 = first_direction == direction ? second_direction : first_direction;
         Direction other_2 = second_direction == direction || first_direction == direction ? third_direction : second_direction;
         return getByDirections(direction, other_1.getOpposite(), other_2.getOpposite());
+    }
+
+    public Edge getEdge(Direction direction) {
+        return Edge.getByDirections(
+            first_direction == direction ? second_direction : first_direction,
+            second_direction == direction || first_direction == direction ? third_direction : second_direction
+        );
+    }
+
+    public Direction getOtherDirection(Edge edge) {
+        if (edge.getFirstDirection() != second_direction && edge.getSecondDirection() != second_direction) return second_direction;
+        if (edge.getFirstDirection() != third_direction && edge.getSecondDirection() != third_direction) return third_direction;
+        return first_direction;
     }
 }

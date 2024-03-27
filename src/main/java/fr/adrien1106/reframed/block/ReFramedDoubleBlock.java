@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -47,6 +48,29 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
         if (BlockHelper.cursorMatchesFace(first_shape, rel)) return 1;
         if (BlockHelper.cursorMatchesFace(second_shape, rel)) return 2;
         return 0;
+    }
+
+    @SafeVarargs
+    public final <T extends Comparable<T>> boolean matchesAnyOutline(Vec3d hit, BlockPos pos, Property<T> property, T... values) {
+        for (T value : values)
+            if (matchesOutline(hit, pos, property, value)) return true;
+        return false;
+    }
+
+    public <T extends Comparable<T>> boolean matchesOutline(Vec3d hit, BlockPos pos, Property<T> property, T value) {
+        Vec3d rel = BlockHelper.getRelativePos(hit, pos);
+        return BlockHelper.cursorMatchesFace(
+            getOutlineShape(getDefaultState().with(property, value), null, null, null),
+            rel
+        );
+    }
+
+    public <T extends Comparable<T>> boolean matchesShape(Vec3d hit, BlockPos pos, BlockState state, int i) {
+        Vec3d rel = BlockHelper.getRelativePos(hit, pos);
+        return BlockHelper.cursorMatchesFace(
+            getShape(state, i),
+            rel
+        );
     }
 
     @Override

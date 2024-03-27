@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
 /**
- * TODO make block pairable by right click                                 -> for v1.6
  * TODO Dynamic Ambient Occlusion                                          -> for v1.6
  * TODO add minecraft models like wall fence etc                           -> for v1.6
  * TODO better connected textures                                          -> maybe v1.6 ?

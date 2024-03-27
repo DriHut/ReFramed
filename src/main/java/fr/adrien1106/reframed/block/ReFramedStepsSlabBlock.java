@@ -81,7 +81,7 @@ public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock imp
             switch (axis) {
                 case X -> i == 1 ? Direction.WEST : Direction.EAST;
                 case Y -> i == 1 ? Direction.DOWN : Direction.UP;
-                case Z -> i == 1 ? Direction.SOUTH : Direction.NORTH;
+                case Z -> i == 1 ? Direction.NORTH : Direction.SOUTH;
             }
         ));
     }
@@ -99,14 +99,14 @@ public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock imp
             .with(GBlockstate.when(FACING, Direction.DOWN, AXIS, Axis.X),
                 GBlockstate.variant(step_id, true, R0, R180))
             .with(GBlockstate.when(FACING, Direction.DOWN, AXIS, Axis.Z),
-                GBlockstate.variant(step_id, true, R0, R90))
+                GBlockstate.variant(step_id, true, R0, R270))
             .with(GBlockstate.when(FACING, Direction.UP, AXIS, Axis.X),
                 GBlockstate.variant(step_id, true, R180, R180))
             .with(GBlockstate.when(FACING, Direction.UP, AXIS, Axis.Z),
-                GBlockstate.variant(step_id, true, R180, R90))
+                GBlockstate.variant(step_id, true, R180, R270))
 
             .with(GBlockstate.when(FACING, Direction.EAST, AXIS, Axis.Z),
-                GBlockstate.variant(step_side_id, true, R180, R0))
+                GBlockstate.variant(step_side_id, true, R0, R0))
             .with(GBlockstate.when(FACING, Direction.EAST, AXIS, Axis.Y),
                 GBlockstate.variant(step_side_id, true, R90, R0))
             .with(GBlockstate.when(FACING, Direction.SOUTH, AXIS, Axis.X),
@@ -114,7 +114,7 @@ public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock imp
             .with(GBlockstate.when(FACING, Direction.SOUTH, AXIS, Axis.Y),
                 GBlockstate.variant(step_side_id, true, R90, R90))
             .with(GBlockstate.when(FACING, Direction.WEST, AXIS, Axis.Z),
-                GBlockstate.variant(step_side_id, true, R0, R180))
+                GBlockstate.variant(step_side_id, true, R180, R180))
             .with(GBlockstate.when(FACING, Direction.WEST, AXIS, Axis.Y),
                 GBlockstate.variant(step_side_id, true, R90, R180))
             .with(GBlockstate.when(FACING, Direction.NORTH, AXIS, Axis.X),

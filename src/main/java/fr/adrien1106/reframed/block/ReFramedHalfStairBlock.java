@@ -15,20 +15,23 @@ import net.minecraft.data.client.MultipartBlockStateSupplier;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER_FACE;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.*;
 import static fr.adrien1106.reframed.util.blocks.Corner.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 
@@ -59,7 +62,31 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock implement
     }
 
     @Override
+    public boolean canReplace(BlockState state, ItemPlacementContext context) {
+        return !(
+            context.getPlayer().isSneaking()
+                || !(context.getStack().getItem() instanceof BlockItem block_item)
+                || (
+                    block_item.getBlock() != this
+                    && block_item.getBlock() != ReFramed.SMALL_CUBE
+                )
+        );
+    }
+
+    @Override
     public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockState current_state = ctx.getWorld().getBlockState(ctx.getBlockPos());
+        if (current_state.isOf(ReFramed.SMALL_CUBE)) {
+            Corner corner = current_state.get(CORNER).getOpposite(ctx.getSide().getOpposite());
+            return ReFramed.HALF_STAIRS_SLAB.getDefaultState()
+                .with(CORNER, corner)
+                .with(CORNER_FACE, corner.getDirectionIndex(ctx.getSide().getOpposite()));
+        }
+
+        if (current_state.isOf(this))
+            return ReFramed.HALF_STAIRS_STAIR.getDefaultState()
+                .with(EDGE, current_state.get(CORNER).getEdge(current_state.get(CORNER).getDirection(current_state.get(CORNER_FACE))));
+
         Corner corner = BlockHelper.getPlacementCorner(ctx);
         return super.getPlacementState(ctx)
             .with(CORNER, corner)
@@ -69,6 +96,19 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock implement
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return HALF_STAIR_VOXELS[state.get(CORNER_FACE) + state.get(CORNER).getID() * 3];
+    }
+
+    @Override
+    public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
+        if (new_state.isOf(ReFramed.HALF_STAIRS_SLAB)) return Map.of(1, 1);
+        if (new_state.isOf(ReFramed.HALF_STAIRS_STAIR))
+            return Map.of(
+                1,
+                state.get(CORNER)
+                    .getDirection(state.get(CORNER_FACE))
+                    .getDirection() == Direction.AxisDirection.POSITIVE ? 2 : 1
+            );
+        return super.getThemeMap(state, new_state);
     }
 
     @Override

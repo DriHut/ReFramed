@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class WaterloggableReFramedDoubleBlock extends ReFramedDoubleBlock implements Waterloggable {
     public WaterloggableReFramedDoubleBlock(Settings settings) {
         super(settings);
+        setDefaultState(getDefaultState().with(Properties.WATERLOGGED, false));
     }
 
     @Override
