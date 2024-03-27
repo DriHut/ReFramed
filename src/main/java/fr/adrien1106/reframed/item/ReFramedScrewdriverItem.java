@@ -65,7 +65,7 @@ public class ReFramedScrewdriverItem extends Item implements RecipeSetter {
     @Override
     public void setRecipe(RecipeExporter exporter) {
         ShapedRecipeJsonBuilder
-            .create(RecipeCategory.BUILDING_BLOCKS, this)
+            .create(RecipeCategory.TOOLS, this)
             .pattern("  I")
             .pattern(" I ")
             .pattern("C  ")

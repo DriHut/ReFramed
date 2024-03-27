@@ -56,7 +56,7 @@ public class ReFramedHammerItem extends Item implements RecipeSetter {
     @Override
     public void setRecipe(RecipeExporter exporter) {
         ShapedRecipeJsonBuilder
-            .create(RecipeCategory.BUILDING_BLOCKS, this)
+            .create(RecipeCategory.TOOLS, this)
             .pattern(" CI")
             .pattern(" ~C")
             .pattern("~  ")

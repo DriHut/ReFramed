@@ -43,7 +43,7 @@ public class ReFramedBlueprintItem extends Item implements RecipeSetter {
     @Override
     public void setRecipe(RecipeExporter exporter) {
         ShapedRecipeJsonBuilder
-            .create(RecipeCategory.BUILDING_BLOCKS, this, 3)
+            .create(RecipeCategory.TOOLS, this, 3)
             .pattern("PI")
             .pattern("PP")
             .input('P', Items.PAPER)
