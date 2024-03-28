@@ -37,7 +37,7 @@ public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
-	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, HALF_STAIR, STAIRS_CUBE, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, SLAB, SLABS_CUBE, STEP, STEPS_SLAB, LAYER;
+	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, HALF_STAIR, STAIRS_CUBE, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, SLAB, SLABS_CUBE, STEP, STEPS_SLAB, LAYER, PILLAR;
 
 	public static final ArrayList<Item> ITEMS = new ArrayList<>();
 	public static Item HAMMER, SCREWDRIVER, BLUEPRINT, BLUEPRINT_WRITTEN;
@@ -64,6 +64,7 @@ public class ReFramed implements ModInitializer {
 		SLABS_CUBE        = registerBlock("slabs_cube"        , new ReFramedSlabsCubeBlock(cp(Blocks.OAK_SLAB)));
 		STEP              = registerBlock("step"              , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
 		STEPS_SLAB        = registerBlock("steps_slab"        , new ReFramedStepsSlabBlock(cp(Blocks.OAK_SLAB)));
+		PILLAR            = registerBlock("pillar"            , new ReFramedPillarBlock(cp(Blocks.OAK_FENCE)));
 
 		HAMMER            = registerItem("hammer"             , new ReFramedHammerItem(new Item.Settings().maxCount(1)));
 		SCREWDRIVER       = registerItem("screwdriver"        , new ReFramedScrewdriverItem(new Item.Settings().maxCount(1)));

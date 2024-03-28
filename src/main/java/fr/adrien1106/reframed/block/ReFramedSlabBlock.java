@@ -63,7 +63,16 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock implements Blo
 		return !(
 			context.getPlayer().isSneaking()
 			|| !(context.getStack().getItem() instanceof BlockItem block_item)
-			|| block_item.getBlock() != this
+			|| !(
+				block_item.getBlock() == this
+				&& ((ReFramedSlabsCubeBlock) ReFramed.SLABS_CUBE)
+					.matchesShape(
+						context.getHitPos(),
+						context.getBlockPos(),
+						ReFramed.SLABS_CUBE.getDefaultState().with(AXIS, state.get(FACING).getAxis()),
+						state.get(FACING).getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+					)
+			)
 		);
 	}
 

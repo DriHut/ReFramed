@@ -34,6 +34,7 @@ import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.*;
 import static fr.adrien1106.reframed.util.blocks.Corner.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
+import static net.minecraft.state.property.Properties.WATERLOGGED;
 
 public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 
@@ -79,22 +80,29 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock implement
                     )
                     && !(
                         block_item.getBlock() == this
-                        && !(
-                            corner.hasDirection(context.getSide())
-                            && BlockHelper.cursorMatchesFace(
-                                getOutlineShape(state, context.getWorld(), context.getBlockPos(), null),
-                                BlockHelper.getRelativePos(context.getHitPos(), context.getBlockPos())
-                            )
+                        && (
+                            ((ReFramedSmallCubesStepBlock) ReFramed.SMALL_CUBES_STEP)
+                                .matchesShape(
+                                    context.getHitPos(),
+                                    context.getBlockPos(),
+                                    ReFramed.SMALL_CUBES_STEP.getDefaultState().with(EDGE, corner.getEdge(corner.getFirstDirection())),
+                                    corner.getFirstDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+                                )
+                            || ((ReFramedSmallCubesStepBlock) ReFramed.SMALL_CUBES_STEP)
+                                .matchesShape(
+                                    context.getHitPos(),
+                                    context.getBlockPos(),
+                                    ReFramed.SMALL_CUBES_STEP.getDefaultState().with(EDGE, corner.getEdge(corner.getSecondDirection())),
+                                    corner.getSecondDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+                                )
+                            || ((ReFramedSmallCubesStepBlock) ReFramed.SMALL_CUBES_STEP)
+                                .matchesShape(
+                                    context.getHitPos(),
+                                    context.getBlockPos(),
+                                    ReFramed.SMALL_CUBES_STEP.getDefaultState().with(EDGE, corner.getEdge(corner.getThirdDirection())),
+                                    corner.getThirdDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+                                )
                         )
-                        && ((ReFramedSmallCubesStepBlock) ReFramed.SMALL_CUBES_STEP)
-                            .matchesAnyOutline(
-                                context.getHitPos(),
-                                context.getBlockPos(),
-                                EDGE,
-                                corner.getEdge(corner.getFirstDirection()),
-                                corner.getEdge(corner.getSecondDirection()),
-                                corner.getEdge(corner.getThirdDirection())
-                            )
                 )
             )
         );
@@ -107,23 +115,27 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock implement
         if (current_state.isOf(ReFramed.HALF_STAIR))
             return ReFramed.HALF_STAIRS_SLAB.getDefaultState()
                 .with(CORNER, current_state.get(CORNER))
-                .with(CORNER_FACE, current_state.get(CORNER_FACE));
+                .with(CORNER_FACE, current_state.get(CORNER_FACE))
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
 
 
         if (current_state.isOf(this)) {
             Vec3d hit = ctx.getHitPos();
             Corner corner = current_state.get(CORNER);
             ReFramedSmallCubesStepBlock block = ((ReFramedSmallCubesStepBlock) ReFramed.SMALL_CUBES_STEP);
-            BlockState state = block.getDefaultState().with(EDGE, corner.getEdge(corner.getFirstDirection()));
-            if (!block.matchesShape(
+            BlockState state = block.getDefaultState()
+                .with(EDGE, corner.getEdge(corner.getFirstDirection()))
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
+            if (block.matchesShape(
                 hit, pos, state,
                 corner.getFirstDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
-            )) state = state.with(EDGE, corner.getEdge(corner.getSecondDirection()));
-            if (!block.matchesShape(
+            )) return state;
+            state = state.with(EDGE, corner.getEdge(corner.getSecondDirection()));
+            if (block.matchesShape(
                 hit, pos, state,
                 corner.getSecondDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
-            )) state = state.with(EDGE, corner.getEdge(corner.getThirdDirection()));
-            return state;
+            )) return state;
+            return state.with(EDGE, corner.getEdge(corner.getThirdDirection()));
         }
 
         return super.getPlacementState(ctx).with(CORNER, BlockHelper.getPlacementCorner(ctx));

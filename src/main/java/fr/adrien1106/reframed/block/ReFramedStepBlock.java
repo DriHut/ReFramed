@@ -34,8 +34,8 @@ import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
 import static fr.adrien1106.reframed.util.blocks.Edge.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
-import static net.minecraft.state.property.Properties.AXIS;
-import static net.minecraft.state.property.Properties.FACING;
+import static net.minecraft.state.property.Properties.*;
+import static net.minecraft.state.property.Properties.WATERLOGGED;
 
 public class ReFramedStepBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 
@@ -68,24 +68,39 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock implements Blo
             context.getPlayer().isSneaking()
             || !(context.getStack().getItem() instanceof BlockItem block_item)
             || (
-                block_item.getBlock() != ReFramed.STAIR
-                && !(
-                    block_item.getBlock() == this
-                    && !(
-                        (edge.isSide(context.getSide()) || edge.hasDirection(context.getSide()))
-                        && BlockHelper.cursorMatchesFace(
-                            getOutlineShape(state, context.getWorld(), context.getBlockPos(), null),
-                            BlockHelper.getRelativePos(context.getHitPos(), context.getBlockPos())
-                        )
-                    )
-                    && ((ReFramedStepsSlabBlock) ReFramed.STEPS_SLAB)
-                        .matchesAnyOutline(
+                !(
+                    block_item.getBlock() == ReFramed.STAIR
+                    && ((ReFramedStairsCubeBlock) ReFramed.STAIRS_CUBE)
+                        .matchesShape(
                             context.getHitPos(),
                             context.getBlockPos(),
-                            FACING,
-                            edge.getFirstDirection(),
-                            edge.getSecondDirection()
+                            ReFramed.STAIRS_CUBE.getDefaultState().with(EDGE, edge.opposite()),
+                            1
                         )
+
+                )
+                && !(
+                    block_item.getBlock() == this
+                    && (
+                        ((ReFramedStepsSlabBlock) ReFramed.STEPS_SLAB)
+                            .matchesShape(
+                                context.getHitPos(),
+                                context.getBlockPos(),
+                                ReFramed.STEPS_SLAB.getDefaultState()
+                                    .with(FACING, edge.getFirstDirection())
+                                    .with(AXIS, edge.getSecondDirection().getAxis()),
+                                edge.getSecondDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+                            )
+                        || ((ReFramedStepsSlabBlock) ReFramed.STEPS_SLAB)
+                            .matchesShape(
+                                context.getHitPos(),
+                                context.getBlockPos(),
+                                ReFramed.STEPS_SLAB.getDefaultState()
+                                    .with(FACING, edge.getSecondDirection())
+                                    .with(AXIS, edge.getFirstDirection().getAxis()),
+                                edge.getFirstDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+                            )
+                    )
                 )
             )
         );
@@ -109,7 +124,8 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock implements Blo
             ReFramedStepsSlabBlock block = ((ReFramedStepsSlabBlock) ReFramed.STEPS_SLAB);
             BlockState state = block.getDefaultState()
                 .with(FACING, dir)
-                .with(AXIS, edge.getOtherDirection(dir).getAxis());
+                .with(AXIS, edge.getOtherDirection(dir).getAxis())
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
             if (!block.matchesShape(
                 hit, pos,
                 state,

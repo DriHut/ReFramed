@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
@@ -52,8 +53,12 @@ public class ReFramedLayerBlock extends ReFramedSlabBlock {
     }
 
     @Override
-    public boolean canReplace(BlockState state, ItemPlacementContext ctx) {
-        return !(!state.isOf(this) || ctx.getPlayer().isSneaking() || state.get(LAYERS) == 8);
+    public boolean canReplace(BlockState state, ItemPlacementContext context) {
+        return !(
+            context.getPlayer().isSneaking()
+            || !(context.getStack().getItem() instanceof BlockItem block_item)
+            || !(block_item.getBlock() == this && state.get(LAYERS) < 8)
+        );
     }
 
     @Override

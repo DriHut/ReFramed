@@ -70,7 +70,16 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock implements Bl
 		return !(
 			context.getPlayer().isSneaking()
 			|| !(context.getStack().getItem() instanceof BlockItem block_item)
-			|| block_item.getBlock() != ReFramed.STEP
+			|| !(
+				block_item.getBlock() == ReFramed.STEP
+				&& ((ReFramedStairsCubeBlock) ReFramed.STAIRS_CUBE)
+					.matchesShape(
+						context.getHitPos(),
+						context.getBlockPos(),
+						state,
+						2
+					)
+			)
 		);
 	}
 

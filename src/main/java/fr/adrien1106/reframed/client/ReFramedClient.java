@@ -73,6 +73,8 @@ public class ReFramedClient implements ClientModInitializer {
 		HELPER.addReFramedModel("layer_6_special"                   , HELPER.auto(new Identifier("block/snow_height12")));
 		HELPER.addReFramedModel("layer_7_special"                   , HELPER.auto(new Identifier("block/snow_height14")));
 		HELPER.addReFramedModel("layer_8_special"                   , HELPER.auto(new Identifier("block/cube")));
+		// PILLAR
+		HELPER.addReFramedModel("pillar_special"                    , HELPER.auto(ReFramed.id("block/pillar")));
 
 		//item model assignments (in lieu of models/item/___.json)
 		HELPER.assignItemModel("cube_special"                  , ReFramed.CUBE);
@@ -88,6 +90,7 @@ public class ReFramedClient implements ClientModInitializer {
 		HELPER.assignItemModel("step_special"                  , ReFramed.STEP);
 		HELPER.assignItemModel("steps_slab_special"            , ReFramed.STEPS_SLAB);
 		HELPER.assignItemModel("layer_1_special"               , ReFramed.LAYER);
+		HELPER.assignItemModel("pillar_special"                , ReFramed.PILLAR);
 	}
 	
 	private void privateInit() {
