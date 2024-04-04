@@ -101,7 +101,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Indium and sodium for sodium support
-	modCompileOnly "maven.modrinth:indium:${project.indium_version}+mc${project.minecraft_version}"
+	modCompileOnly "maven.modrinth:indium:${project.indium_version}"
 	modCompileOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
 //	modRuntimeOnly "maven.modrinth:indium:${project.indium_version}+mc${project.minecraft_version}"
 //	modRuntimeOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
@@ -115,8 +115,8 @@ dependencies {
 	modRuntimeOnly "maven.modrinth:continuity:${project.continuity_version}"
 
 	// Chipped to test athena implementation
-	modRuntimeOnly "com.teamresourceful.resourcefullib:resourcefullib-fabric-${project.minecraft_version}:2.4.7"
-	modRuntimeOnly "earth.terrarium.chipped:Chipped-fabric-${project.minecraft_version}:3.1.2"
+	modRuntimeOnly "com.teamresourceful.resourcefullib:resourcefullib-fabric-${project.minecraft_version}:2.1.24"
+	modRuntimeOnly "earth.terrarium.chipped:Chipped-fabric-${project.minecraft_version}:3.0.4"
 
 	// Fabric API.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

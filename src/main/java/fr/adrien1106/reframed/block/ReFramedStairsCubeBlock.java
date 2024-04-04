@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemPlacementContext;
@@ -21,6 +21,8 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 import static fr.adrien1106.reframed.block.ReFramedStairBlock.*;
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
@@ -87,7 +89,7 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements Bloc
     }
 
     @Override
-    public void setRecipe(RecipeExporter exporter) {
+    public void setRecipe(Consumer<RecipeJsonProvider> exporter) {
         RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE);
         ShapelessRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, this)

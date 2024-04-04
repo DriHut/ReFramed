@@ -6,7 +6,7 @@ import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
@@ -170,7 +171,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider, RecipeS
 	}
 
 	@Override
-	public void setRecipe(RecipeExporter exporter) {
+	public void setRecipe(Consumer<RecipeJsonProvider> exporter) {
 		ShapedRecipeJsonBuilder
 			.create(RecipeCategory.BUILDING_BLOCKS, this)
 			.pattern("III")
