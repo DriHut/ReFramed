@@ -9,7 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.data.client.BlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemPlacementContext;
@@ -19,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.HALF_STAIR_VOXELS;
 import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.getHalfStairMultipart;
@@ -90,7 +92,7 @@ public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBloc
     }
 
     @Override
-    public void setRecipe(RecipeExporter exporter) {
+    public void setRecipe(Consumer<RecipeJsonProvider> exporter) {
         RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE, 2);
         ShapelessRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, this)

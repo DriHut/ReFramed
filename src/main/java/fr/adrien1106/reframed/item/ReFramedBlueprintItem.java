@@ -5,7 +5,7 @@ import fr.adrien1106.reframed.block.ReFramedEntity;
 import fr.adrien1106.reframed.generator.RecipeSetter;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Blocks;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,6 +17,8 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.function.Consumer;
 
 public class ReFramedBlueprintItem extends Item implements RecipeSetter {
     public ReFramedBlueprintItem(Settings settings) {
@@ -41,7 +43,7 @@ public class ReFramedBlueprintItem extends Item implements RecipeSetter {
     }
 
     @Override
-    public void setRecipe(RecipeExporter exporter) {
+    public void setRecipe(Consumer<RecipeJsonProvider> exporter) {
         ShapedRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, this, 3)
             .pattern("PI")
