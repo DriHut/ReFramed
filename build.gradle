@@ -103,7 +103,7 @@ dependencies {
 	// Indium and sodium for sodium support
 	modCompileOnly "maven.modrinth:indium:${project.indium_version}"
 	modCompileOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
-//	modRuntimeOnly "maven.modrinth:indium:${project.indium_version}+mc${project.minecraft_version}"
+//	modRuntimeOnly "maven.modrinth:indium:"
 //	modRuntimeOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
 
 	// Athena for connected texture
@@ -200,8 +200,8 @@ publishing {
 modrinth {
 	token = getEnv("MODRINTH_TOKEN", local.getProperty("modrinth_token"))
 	projectId = project.modrinth_id
-	versionNumber = project.mod_version
-	versionName = "${project.archives_base_name} ${project.mod_version}"
+	versionNumber = "${project.mod_version}-${project.minecraft_version}"
+	versionName = "${project.archives_base_name} ${project.mod_version}-${project.minecraft_version}"
 	versionType = project.mod_version.endsWith('SNAPSHOT') ? 'beta' : 'release'
 	uploadFile = remapJar
 	gameVersions = [project.minecraft_version]
@@ -209,7 +209,7 @@ modrinth {
 	dependencies {
 		required.project "fabric-api"
 		optional.version "b1ZV3DIJ", "${project.athena_version}"
-		optional.version "Orvt0mRa", "${project.indium_version}+mc${project.minecraft_version}"
+		optional.version "Orvt0mRa", "${project.indium_version}"
 	}
 }
 

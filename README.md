@@ -1,4 +1,6 @@
 # ReFramed
+## Info
+Backport of the FramedBlocks mod to Fabric 1.20.1 by [RemagOfficial](https://github.com/RemagOfficial).
 ## Overview
 This Project is an unofficial port of [FramedBlocks](https://github.com/XFactHD/FramedBlocks) 
 forked from [Templates 2](https://github.com/quat1024/templates-mod). 
