@@ -4,13 +4,18 @@ import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
 import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.util.VoxelHelper;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.data.client.BlockStateSupplier;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
+import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeProvider;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -90,6 +95,19 @@ public class ReFramedPillarBlock extends WaterloggableReFramedBlock implements B
                 GBlockstate.variant(model_id, true, R0, R0))
             .with(GBlockstate.when(AXIS, Direction.Axis.Z),
                 GBlockstate.variant(model_id, true, R90, R0));
+    }
+
+    @Override
+    public void setRecipe(RecipeExporter exporter) {
+        RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE, 4);
+        ShapedRecipeJsonBuilder
+            .create(RecipeCategory.BUILDING_BLOCKS, this, 8)
+            .pattern("I")
+            .pattern("I")
+            .input('I', ReFramed.CUBE)
+            .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
+            .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
+            .offerTo(exporter);
     }
 
     static {

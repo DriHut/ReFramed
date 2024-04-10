@@ -210,8 +210,8 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock implement
         RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE, 2);
         ShapedRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, this, 4)
-            .pattern("I  ")
-            .pattern("II ")
+            .pattern("I ")
+            .pattern("II")
             .input('I', ReFramed.CUBE)
             .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
             .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))

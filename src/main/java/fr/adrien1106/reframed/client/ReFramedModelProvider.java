@@ -44,7 +44,7 @@ public class ReFramedModelProvider implements ModelResourceProvider, ModelVarian
 	
 	/// camo appearance manager cache
 	
-	public CamoAppearanceManager getCamoApperanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
+	public CamoAppearanceManager getCamoAppearanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
 		//This is kind of needlessly sketchy using the "volatile double checked locking" pattern.
 		//I'd like all frame models to use the same CamoApperanceManager, despite the model
 		//baking process happening concurrently on several threads, but I also don't want to

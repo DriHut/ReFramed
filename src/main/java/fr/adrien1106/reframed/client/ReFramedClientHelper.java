@@ -40,15 +40,15 @@ public class ReFramedClientHelper {
 	}
 
 	public void addReFramedModel(String id, UnbakedModel unbaked) {
-		prov.addReFramedModel(ReFramed.id(id), unbaked);
+		prov.addReFramedModel(ReFramed.id(id + "_special"), unbaked);
 	}
 
 	public void assignItemModel(String id, ItemConvertible... item_convertibles) {
-		prov.assignItemModel(ReFramed.id(id), item_convertibles);
+		prov.assignItemModel(ReFramed.id(id + "_special"), item_convertibles);
 	}
 
-	public CamoAppearanceManager getCamoApperanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
-		return prov.getCamoApperanceManager(spriteLookup);
+	public CamoAppearanceManager getCamoAppearanceManager(Function<SpriteIdentifier, Sprite> spriteLookup) {
+		return prov.getCamoAppearanceManager(spriteLookup);
 	}
 
 	public @NotNull Renderer getFabricRenderer() {

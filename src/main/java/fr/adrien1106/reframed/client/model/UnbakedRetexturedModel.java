@@ -20,8 +20,9 @@ public abstract class UnbakedRetexturedModel implements UnbakedModel {
         this.parent = parent;
     }
 
-    public void setThemeIndex(int theme_index) {
+    public UnbakedRetexturedModel setThemeIndex(int theme_index) {
         this.theme_index = theme_index;
+        return this;
     }
 
     @Override
