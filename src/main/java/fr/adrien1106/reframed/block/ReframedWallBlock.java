@@ -2,8 +2,6 @@ package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.generator.BlockStateProvider;
-import fr.adrien1106.reframed.util.blocks.Corner;
-import fr.adrien1106.reframed.util.blocks.WallShape;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -16,9 +14,6 @@ import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
-
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.*;
-import static net.minecraft.state.property.Properties.AXIS;
 
 public class ReframedWallBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
 
