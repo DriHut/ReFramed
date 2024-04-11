@@ -28,10 +28,11 @@ import java.util.stream.Stream;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
 /**
- * TODO Dynamic Ambient Occlusion                                          -> for v1.6
- * TODO add minecraft models like wall fence etc                           -> for v1.6
- * TODO better connected textures                                          -> maybe v1.6 ?
- * TODO support continuity overlays                                        -> not scheduled
+ * TODO Dynamic Ambient Occlusion                                            -> for v1.6
+ * TODO add minecraft models like wall fence etc                             -> for v1.6
+ * TODO better connected textures                                            -> maybe v1.6 ?
+ * TODO support continuity overlays                                          -> not scheduled
+ * TODO better state caching per models (e.g. wall only has 3 max per model) -> not scheduled
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";

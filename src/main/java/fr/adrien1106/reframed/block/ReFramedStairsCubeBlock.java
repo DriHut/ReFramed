@@ -1,19 +1,11 @@
 package fr.adrien1106.reframed.block;
 
-import fr.adrien1106.reframed.ReFramed;
-import fr.adrien1106.reframed.generator.BlockStateProvider;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.blocks.Edge;
 import fr.adrien1106.reframed.util.blocks.StairShape;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.RecipeProvider;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -27,7 +19,7 @@ import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
 
-public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements BlockStateProvider {
+public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
 
     private static final VoxelShape[] STAIRS_CUBE_VOXELS = VoxelListBuilder.buildFrom(STAIR_VOXELS);
     private record ModelCacheKey(Edge edge, StairShape shape) {}
@@ -79,22 +71,5 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements Bloc
         Edge edge = state.get(EDGE);
         StairShape shape = state.get(STAIR_SHAPE);
         return i == 2 ? STAIRS_CUBE_VOXELS[edge.getID() * 9 + shape.getID()] : getStairShape(edge, shape);
-    }
-
-    @Override
-    public MultipartBlockStateSupplier getMultipart() {
-        return getStairMultipart(this, true);
-    }
-
-    @Override
-    public void setRecipe(RecipeExporter exporter) {
-        RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE);
-        ShapelessRecipeJsonBuilder
-            .create(RecipeCategory.BUILDING_BLOCKS, this)
-            .input(ReFramed.STAIR)
-            .input(ReFramed.STEP)
-            .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
-            .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
-            .offerTo(exporter);
     }
 }

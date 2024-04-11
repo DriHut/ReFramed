@@ -1,13 +1,9 @@
 package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
-import fr.adrien1106.reframed.generator.RecipeSetter;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -16,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.Registries;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
@@ -41,7 +36,7 @@ import java.util.stream.IntStream;
 import static fr.adrien1106.reframed.block.ReFramedEntity.BLOCKSTATE_KEY;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
-public class ReFramedBlock extends Block implements BlockEntityProvider, RecipeSetter {
+public class ReFramedBlock extends Block implements BlockEntityProvider {
 
 	public ReFramedBlock(Settings settings) {
 		super(settings);
@@ -224,19 +219,5 @@ public class ReFramedBlock extends Block implements BlockEntityProvider, RecipeS
 	 */
 	public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
 		return Map.of();
-	}
-
-	@Override
-	public void setRecipe(RecipeExporter exporter) {
-		ShapedRecipeJsonBuilder
-			.create(RecipeCategory.BUILDING_BLOCKS, this)
-			.pattern("III")
-			.pattern("I~I")
-			.pattern("III")
-			.input('I', Items.BAMBOO)
-			.input('~', Items.STRING)
-			.criterion(FabricRecipeProvider.hasItem(Items.BAMBOO), FabricRecipeProvider.conditionsFromItem(Items.BAMBOO))
-			.criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
-			.offerTo(exporter);
 	}
 }

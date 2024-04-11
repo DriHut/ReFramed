@@ -1,17 +1,39 @@
 package fr.adrien1106.reframed.generator;
 
 import fr.adrien1106.reframed.ReFramed;
+import fr.adrien1106.reframed.block.*;
+import fr.adrien1106.reframed.generator.block.*;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.block.Block;
 import net.minecraft.data.client.*;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static net.minecraft.data.client.VariantSettings.Rotation.R0;
 
 public class GBlockstate extends FabricModelProvider {
+    private static final Map<Class<? extends Block>, BlockStateProvider> providers = new HashMap<>();
+    static {
+        providers.put(ReFramedHalfStairBlock.class, new HalfStair());
+        providers.put(ReFramedHalfStairsSlabBlock.class, new HalfStairsSlab());
+        providers.put(ReFramedHalfStairsStairBlock.class, new HalfStairsStair());
+        providers.put(ReFramedLayerBlock.class, new Layer());
+        providers.put(ReFramedPillarBlock.class, new Pillar());
+        providers.put(ReFramedSlabBlock.class, new Slab());
+        providers.put(ReFramedSlabsCubeBlock.class, new SlabsCube());
+        providers.put(ReFramedSmallCubeBlock.class, new SmallCube());
+        providers.put(ReFramedSmallCubesStepBlock.class, new SmallCubesStep());
+        providers.put(ReFramedStairBlock.class, new Stair());
+        providers.put(ReFramedStairsCubeBlock.class, new StairsCube());
+        providers.put(ReFramedStepBlock.class, new Step());
+        providers.put(ReFramedStepsSlabBlock.class, new StepsSlab());
+        providers.put(ReframedWallBlock.class, new Wall());
+    }
 
     public GBlockstate(FabricDataOutput output) {
         super(output);
@@ -23,7 +45,7 @@ public class GBlockstate extends FabricModelProvider {
             .forEach(model_generator::excludeFromSimpleItemModelGeneration);
         ReFramed.BLOCKS.stream()
             .map(block -> {
-                if (block instanceof BlockStateProvider multipart_block) return multipart_block.getMultipart();
+                if (providers.containsKey(block.getClass())) return providers.get(block.getClass()).getMultipart(block);
                 return VariantsBlockStateSupplier.create(
                     block,
                     GBlockstate.variant(
@@ -54,11 +76,57 @@ public class GBlockstate extends FabricModelProvider {
         return When.create().set(property_1, value_1);
     }
 
-    public static <T extends Comparable<T>, U extends Comparable<U>>  When when(Property<T> property_1, T value_1, Property<U> property_2, U value_2) {
-        return When.allOf(when(property_1, value_1), when(property_2, value_2));
+    public static <T extends Comparable<T>,
+        U extends Comparable<U>>  When when(Property<T> property_1, T value_1,
+                                            Property<U> property_2, U value_2) {
+        return When.allOf(
+            when(property_1, value_1),
+            when(property_2, value_2)
+        );
     }
 
-    public static <T extends Comparable<T>, U extends Comparable<U>, V extends Comparable<V>> When when(Property<T> property_1, T value_1, Property<U> property_2, U value_2, Property<V> property_3, V value_3) {
-        return When.allOf(when(property_1, value_1), when(property_2, value_2), when(property_3, value_3));
+    public static <T extends Comparable<T>,
+        U extends Comparable<U>,
+        V extends Comparable<V>> When when(Property<T> property_1, T value_1,
+                                           Property<U> property_2, U value_2,
+                                           Property<V> property_3, V value_3) {
+        return When.allOf(
+            when(property_1, value_1),
+            when(property_2, value_2),
+            when(property_3, value_3)
+        );
+    }
+
+    public static <T extends Comparable<T>,
+        U extends Comparable<U>,
+        V extends Comparable<V>,
+        W extends Comparable<W>> When when(Property<T> property_1, T value_1,
+                                           Property<U> property_2, U value_2,
+                                           Property<V> property_3, V value_3,
+                                           Property<W> property_4, W value_4) {
+        return When.allOf(
+            when(property_1, value_1),
+            when(property_2, value_2),
+            when(property_3, value_3),
+            when(property_4, value_4)
+        );
+    }
+
+    public static <T extends Comparable<T>,
+        U extends Comparable<U>,
+        V extends Comparable<V>,
+        W extends Comparable<W>,
+        X extends Comparable<X>> When when(Property<T> property_1, T value_1,
+                                           Property<U> property_2, U value_2,
+                                           Property<V> property_3, V value_3,
+                                           Property<W> property_4, W value_4,
+                                           Property<X> property_5, X value_5) {
+        return When.allOf(
+            when(property_1, value_1),
+            when(property_2, value_2),
+            when(property_3, value_3),
+            when(property_4, value_4),
+            when(property_5, value_5)
+        );
     }
 }

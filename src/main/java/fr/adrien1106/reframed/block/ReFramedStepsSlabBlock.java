@@ -1,22 +1,12 @@
 package fr.adrien1106.reframed.block;
 
-import fr.adrien1106.reframed.ReFramed;
-import fr.adrien1106.reframed.generator.BlockStateProvider;
-import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.blocks.Edge;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.RecipeProvider;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
@@ -32,7 +22,7 @@ import static net.minecraft.state.property.Properties.AXIS;
 import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 
-public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock implements BlockStateProvider {
+public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock {
     private record ModelCacheKey(Direction facing, Axis axis) {}
 
     public ReFramedStepsSlabBlock(Settings settings) {
@@ -89,48 +79,5 @@ public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock imp
     @Override
     public int getTopThemeIndex(BlockState state) {
         return 2;
-    }
-
-    @Override
-    public MultipartBlockStateSupplier getMultipart() {
-        Identifier step_id = ReFramed.id("steps_slab_special");
-        Identifier step_side_id = ReFramed.id("steps_slab_side_special");
-        return MultipartBlockStateSupplier.create(this)
-            .with(GBlockstate.when(FACING, Direction.DOWN, AXIS, Axis.X),
-                GBlockstate.variant(step_id, true, R0, R180))
-            .with(GBlockstate.when(FACING, Direction.DOWN, AXIS, Axis.Z),
-                GBlockstate.variant(step_id, true, R0, R270))
-            .with(GBlockstate.when(FACING, Direction.UP, AXIS, Axis.X),
-                GBlockstate.variant(step_id, true, R180, R180))
-            .with(GBlockstate.when(FACING, Direction.UP, AXIS, Axis.Z),
-                GBlockstate.variant(step_id, true, R180, R270))
-
-            .with(GBlockstate.when(FACING, Direction.EAST, AXIS, Axis.Z),
-                GBlockstate.variant(step_side_id, true, R0, R0))
-            .with(GBlockstate.when(FACING, Direction.EAST, AXIS, Axis.Y),
-                GBlockstate.variant(step_side_id, true, R90, R0))
-            .with(GBlockstate.when(FACING, Direction.SOUTH, AXIS, Axis.X),
-                GBlockstate.variant(step_side_id, true, R180, R90))
-            .with(GBlockstate.when(FACING, Direction.SOUTH, AXIS, Axis.Y),
-                GBlockstate.variant(step_side_id, true, R90, R90))
-            .with(GBlockstate.when(FACING, Direction.WEST, AXIS, Axis.Z),
-                GBlockstate.variant(step_side_id, true, R180, R180))
-            .with(GBlockstate.when(FACING, Direction.WEST, AXIS, Axis.Y),
-                GBlockstate.variant(step_side_id, true, R90, R180))
-            .with(GBlockstate.when(FACING, Direction.NORTH, AXIS, Axis.X),
-                GBlockstate.variant(step_side_id, true, R0, R270))
-            .with(GBlockstate.when(FACING, Direction.NORTH, AXIS, Axis.Y),
-                GBlockstate.variant(step_side_id, true, R90, R270));
-    }
-
-    @Override
-    public void setRecipe(RecipeExporter exporter) {
-        RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE, 2);
-        ShapelessRecipeJsonBuilder
-            .create(RecipeCategory.BUILDING_BLOCKS, this)
-            .input(ReFramed.STEP, 2)
-            .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
-            .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
-            .offerTo(exporter);
     }
 }

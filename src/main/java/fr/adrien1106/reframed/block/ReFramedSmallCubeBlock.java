@@ -1,25 +1,15 @@
 package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
-import fr.adrien1106.reframed.generator.BlockStateProvider;
-import fr.adrien1106.reframed.generator.GBlockstate;
 import fr.adrien1106.reframed.util.VoxelHelper;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.blocks.Corner;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.data.client.BlockStateSupplier;
-import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.RecipeProvider;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -36,7 +26,7 @@ import static fr.adrien1106.reframed.util.blocks.Corner.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 
-public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock implements BlockStateProvider {
+public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock {
 
     public static final VoxelShape[] SMALL_CUBE_VOXELS;
 
@@ -157,39 +147,6 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock implement
                     .getDirection() == Direction.AxisDirection.POSITIVE ? 2 : 1
             );
         return super.getThemeMap(state, new_state);
-    }
-
-    @Override
-    public BlockStateSupplier getMultipart() {
-        Identifier small_cube_id = ReFramed.id("small_cube_special");
-        return MultipartBlockStateSupplier.create(this)
-            .with(GBlockstate.when(CORNER, NORTH_EAST_DOWN),
-                GBlockstate.variant(small_cube_id, true, R0, R0))
-            .with(GBlockstate.when(CORNER, EAST_SOUTH_DOWN),
-                GBlockstate.variant(small_cube_id, true, R0, R90))
-            .with(GBlockstate.when(CORNER, SOUTH_WEST_DOWN),
-                GBlockstate.variant(small_cube_id, true, R0, R180))
-            .with(GBlockstate.when(CORNER, WEST_NORTH_DOWN),
-                GBlockstate.variant(small_cube_id, true, R0, R270))
-            .with(GBlockstate.when(CORNER, EAST_SOUTH_UP),
-                GBlockstate.variant(small_cube_id, true, R180, R0))
-            .with(GBlockstate.when(CORNER, SOUTH_WEST_UP),
-                GBlockstate.variant(small_cube_id, true, R180, R90))
-            .with(GBlockstate.when(CORNER, WEST_NORTH_UP),
-                GBlockstate.variant(small_cube_id, true, R180, R180))
-            .with(GBlockstate.when(CORNER, NORTH_EAST_UP),
-                GBlockstate.variant(small_cube_id, true, R180, R270));
-    }
-
-    @Override
-    public void setRecipe(RecipeExporter exporter) {
-        RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE, 8);
-        ShapelessRecipeJsonBuilder
-            .create(RecipeCategory.BUILDING_BLOCKS, this, 8)
-            .input(ReFramed.CUBE)
-            .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
-            .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
-            .offerTo(exporter);
     }
 
     static {

@@ -1,19 +1,9 @@
 package fr.adrien1106.reframed.block;
 
-import fr.adrien1106.reframed.ReFramed;
-import fr.adrien1106.reframed.generator.BlockStateProvider;
-import fr.adrien1106.reframed.generator.GBlockstate;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.RecipeProvider;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +12,7 @@ import static fr.adrien1106.reframed.block.ReFramedSlabBlock.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.AXIS;
 
-public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock implements BlockStateProvider {
+public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock {
 
     public ReFramedSlabsCubeBlock(Settings settings) {
         super(settings);
@@ -62,28 +52,5 @@ public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock implements Block
     @Override
     public int getTopThemeIndex(BlockState state) {
         return 2;
-    }
-
-    @Override
-    public MultipartBlockStateSupplier getMultipart() {
-        Identifier model_id = ReFramed.id("double_slab_special");
-        return MultipartBlockStateSupplier.create(this)
-            .with(GBlockstate.when(AXIS, Direction.Axis.Y),
-                GBlockstate.variant(model_id, true, R0, R0))
-            .with(GBlockstate.when(AXIS, Direction.Axis.Z),
-                GBlockstate.variant(model_id, true, R270, R0))
-            .with(GBlockstate.when(AXIS, Direction.Axis.X),
-                GBlockstate.variant(model_id, true, R90, R90));
-    }
-
-    @Override
-    public void setRecipe(RecipeExporter exporter) {
-        RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE);
-        ShapelessRecipeJsonBuilder
-            .create(RecipeCategory.BUILDING_BLOCKS, this)
-            .input(ReFramed.SLAB, 2)
-            .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
-            .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
-            .offerTo(exporter);
     }
 }

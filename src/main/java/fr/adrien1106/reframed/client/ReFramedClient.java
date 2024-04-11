@@ -78,37 +78,28 @@ public class ReFramedClient implements ClientModInitializer {
 		// WALL
 		HELPER.addReFramedModel("wall_inventory"            , HELPER.auto(ReFramed.id("block/wall/inventory/default")));
 		// --------------------- pillar
-		HELPER.addReFramedModel("wall_core"                 , HELPER.auto(ReFramed.id("block/wall/pillar/core"))); // shares AXIS only
-		HELPER.addReFramedModel("wall_pillar_none"          , HELPER.auto(ReFramed.id("block/wall/pillar/none"))); // only shape_none (4 * 3 axis)
-		HELPER.addReFramedModel("wall_pillar_negative"      , HELPER.auto(ReFramed.id("block/wall/pillar/bottom")));
-		HELPER.addReFramedModel("wall_pillar_both"          , HELPER.auto(ReFramed.id("block/wall/pillar/both")));
-		HELPER.addReFramedModel("wall_pillar_positive"      , HELPER.auto(ReFramed.id("block/wall/pillar/top")));
-		HELPER.addReFramedModel("wall_pillar_middle"        , HELPER.auto(ReFramed.id("block/wall/pillar/middle")));
+		HELPER.addReFramedModel("wall_core"                 , HELPER.auto(ReFramed.id("block/wall/pillar/core")));
+		HELPER.addReFramedModel("wall_pillar_low"           , HELPER.auto(ReFramed.id("block/wall/pillar/low")));
+		HELPER.addReFramedModel("wall_pillar_tall"          , HELPER.auto(ReFramed.id("block/wall/pillar/tall")));
+		HELPER.addReFramedModel("wall_pillar_none"          , HELPER.auto(ReFramed.id("block/wall/pillar/none")));
 		// --------------------- side
-		HELPER.addReFramedModel("wall_side_negative"        , HELPER.auto(ReFramed.id("block/wall/side/bottom")));
-		HELPER.addReFramedModel("wall_side_both"            , HELPER.auto(ReFramed.id("block/wall/side/both")));
-		HELPER.addReFramedModel("wall_side_positive"        , HELPER.auto(ReFramed.id("block/wall/side/top")));
-		HELPER.addReFramedModel("wall_side_middle"          , HELPER.auto(ReFramed.id("block/wall/side/middle")));
+		HELPER.addReFramedModel("wall_side_low"             , HELPER.auto(ReFramed.id("block/wall/side/low")));
+		HELPER.addReFramedModel("wall_side_tall"            , HELPER.auto(ReFramed.id("block/wall/side/tall")));
 		// --------------------- junction
-		HELPER.addReFramedModel("wall_junction_negative"    , HELPER.auto(ReFramed.id("block/wall/junction/bottom"))); // (4 * 3) possible
-		HELPER.addReFramedModel("wall_junction_both"        , HELPER.auto(ReFramed.id("block/wall/junction/both")));
-		HELPER.addReFramedModel("wall_junction_positive"    , HELPER.auto(ReFramed.id("block/wall/junction/top")));
-		HELPER.addReFramedModel("wall_junction_middle"      , HELPER.auto(ReFramed.id("block/wall/junction/middle")));
-		// --------------------- junction_c
-		HELPER.addReFramedModel("wall_junction_negative_c"  , HELPER.auto(ReFramed.id("block/wall/junction/bottom_c")));
-		HELPER.addReFramedModel("wall_junction_both_c"      , HELPER.auto(ReFramed.id("block/wall/junction/both_c")));
-		HELPER.addReFramedModel("wall_junction_positive_c"  , HELPER.auto(ReFramed.id("block/wall/junction/top_c")));
-		HELPER.addReFramedModel("wall_junction_middle_c"    , HELPER.auto(ReFramed.id("block/wall/junction/middle_c")));
+		HELPER.addReFramedModel("wall_low_e"                , HELPER.auto(ReFramed.id("block/wall/junction/low")));
+		HELPER.addReFramedModel("wall_tall_e"               , HELPER.auto(ReFramed.id("block/wall/junction/tall")));
 		// --------------------- junction_i
-		HELPER.addReFramedModel("wall_junction_negative_i"  , HELPER.auto(ReFramed.id("block/wall/junction/bottom_i")));
-		HELPER.addReFramedModel("wall_junction_both_i"      , HELPER.auto(ReFramed.id("block/wall/junction/both_i")));
-		HELPER.addReFramedModel("wall_junction_positive_i"  , HELPER.auto(ReFramed.id("block/wall/junction/top_i")));
-		HELPER.addReFramedModel("wall_junction_middle_i"    , HELPER.auto(ReFramed.id("block/wall/junction/middle_i")));
+		HELPER.addReFramedModel("wall_low_i"                , HELPER.auto(ReFramed.id("block/wall/junction/low_i")));
+		HELPER.addReFramedModel("wall_tall_i"               , HELPER.auto(ReFramed.id("block/wall/junction/tall_i")));
+		HELPER.addReFramedModel("wall_low_tall_i"           , HELPER.auto(ReFramed.id("block/wall/junction/low_tall_i")));
+		// --------------------- junction_c
+		HELPER.addReFramedModel("wall_low_c"                , HELPER.auto(ReFramed.id("block/wall/junction/low_c")));
+		HELPER.addReFramedModel("wall_tall_c"               , HELPER.auto(ReFramed.id("block/wall/junction/tall_c")));
+		HELPER.addReFramedModel("wall_low_tall_c"           , HELPER.auto(ReFramed.id("block/wall/junction/low_tall_c")));
+		HELPER.addReFramedModel("wall_tall_low_c"           , HELPER.auto(ReFramed.id("block/wall/junction/tall_low_c")));
 		// --------------------- junction_t
-		HELPER.addReFramedModel("wall_junction_negative_t"  , HELPER.auto(ReFramed.id("block/wall/junction/bottom_t")));
-		HELPER.addReFramedModel("wall_junction_both_t"      , HELPER.auto(ReFramed.id("block/wall/junction/both_t")));
-		HELPER.addReFramedModel("wall_junction_positive_t"  , HELPER.auto(ReFramed.id("block/wall/junction/top_t")));
-		HELPER.addReFramedModel("wall_junction_middle_t"    , HELPER.auto(ReFramed.id("block/wall/junction/middle_t")));
+		HELPER.addReFramedModel("wall_low_t"                , HELPER.auto(ReFramed.id("block/wall/junction/low_t")));
+		HELPER.addReFramedModel("wall_tall_t"               , HELPER.auto(ReFramed.id("block/wall/junction/tall_t")));
 		// --------------------- junction_x
 		HELPER.addReFramedModel("wall_junction_negative_x"  , HELPER.auto(ReFramed.id("block/wall/junction/bottom_x"))); // (Axis only)
 		HELPER.addReFramedModel("wall_junction_both_x"      , HELPER.auto(ReFramed.id("block/wall/junction/both_x")));
