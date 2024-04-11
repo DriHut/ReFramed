@@ -22,8 +22,6 @@ import java.util.Map;
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
-import static fr.adrien1106.reframed.util.blocks.Edge.*;
-import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.*;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 

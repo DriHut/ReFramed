@@ -14,7 +14,6 @@ import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
-import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.state.property.Properties.LAYERS;
 

@@ -19,7 +19,6 @@ import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.HALF_STAIR_VOX
 import static fr.adrien1106.reframed.block.ReFramedStairBlock.getStairShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.Edge.*;
-import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlock {

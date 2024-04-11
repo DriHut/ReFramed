@@ -27,9 +27,7 @@ import java.util.stream.Stream;
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
-import static fr.adrien1106.reframed.util.blocks.Edge.*;
 import static fr.adrien1106.reframed.util.blocks.StairShape.*;
-import static net.minecraft.data.client.VariantSettings.Rotation.*;
 
 public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	public static final VoxelShape[] STAIR_VOXELS;

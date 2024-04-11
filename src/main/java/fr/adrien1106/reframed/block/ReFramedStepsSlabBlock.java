@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import static fr.adrien1106.reframed.block.ReFramedSlabBlock.getSlabShape;
 import static fr.adrien1106.reframed.block.ReFramedStepBlock.getStepShape;
-import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.AXIS;
 import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.util.shape.VoxelShapes.empty;

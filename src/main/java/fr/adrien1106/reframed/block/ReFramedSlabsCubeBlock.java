@@ -9,7 +9,6 @@ import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import static fr.adrien1106.reframed.block.ReFramedSlabBlock.*;
-import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.AXIS;
 
 public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock {

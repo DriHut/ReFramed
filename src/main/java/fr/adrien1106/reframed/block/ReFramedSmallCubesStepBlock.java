@@ -16,8 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import static fr.adrien1106.reframed.block.ReFramedSmallCubeBlock.SMALL_CUBE_VOXELS;
 import static fr.adrien1106.reframed.block.ReFramedStepBlock.getStepShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
-import static fr.adrien1106.reframed.util.blocks.Edge.*;
-import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedSmallCubesStepBlock extends WaterloggableReFramedDoubleBlock {
