@@ -46,22 +46,33 @@ public class Wall implements RecipeSetter, TagGetter, BlockStateProvider {
 
     @Override
     public BlockStateSupplier getMultipart(Block block) {
-        Identifier side_low = ReFramed.id("wall_side_low_special");
-        Identifier side_tall = ReFramed.id("wall_side_tall_special");
-        Identifier pillar_low = ReFramed.id("wall_pillar_low_special");
-        Identifier pillar_tall = ReFramed.id("wall_pillar_tall_special");
-        Identifier pillar_none = ReFramed.id("wall_pillar_none_special");
-        Identifier low_e = ReFramed.id("wall_low_e_special");
-        Identifier tall_e = ReFramed.id("wall_tall_e_special");
-        Identifier low_i = ReFramed.id("wall_low_i_special");
-        Identifier tall_i = ReFramed.id("wall_tall_i_special");
-        Identifier low_tall_i = ReFramed.id("wall_low_tall_i_special");
-        Identifier low_c = ReFramed.id("wall_low_c_special");
-        Identifier tall_c = ReFramed.id("wall_tall_c_special");
-        Identifier low_tall_c = ReFramed.id("wall_low_tall_c_special");
-        Identifier tall_low_c = ReFramed.id("wall_tall_low_c_special");
-        Identifier low_t = ReFramed.id("wall_low_t_special");
-        Identifier tall_t = ReFramed.id("wall_tall_t_special");
+        Identifier
+            side_low = ReFramed.id("wall_side_low_special"),
+            side_tall = ReFramed.id("wall_side_tall_special"),
+            pillar_low = ReFramed.id("wall_pillar_low_special"),
+            pillar_tall = ReFramed.id("wall_pillar_tall_special"),
+            pillar_none = ReFramed.id("wall_pillar_none_special"),
+            low_e = ReFramed.id("wall_low_e_special"),
+            tall_e = ReFramed.id("wall_tall_e_special"),
+            low_i = ReFramed.id("wall_low_i_special"),
+            tall_i = ReFramed.id("wall_tall_i_special"),
+            low_tall_i = ReFramed.id("wall_low_tall_i_special"),
+            low_c = ReFramed.id("wall_low_c_special"),
+            tall_c = ReFramed.id("wall_tall_c_special"),
+            low_tall_c = ReFramed.id("wall_low_tall_c_special"),
+            tall_low_c = ReFramed.id("wall_tall_low_c_special"),
+            low_t = ReFramed.id("wall_low_t_special"),
+            tall_t = ReFramed.id("wall_tall_t_special"),
+            tall_low_c_t = ReFramed.id("wall_tall_low_c_t_special"),
+            tall_i_low_t = ReFramed.id("wall_tall_i_low_t_special"),
+            low_i_tall_t = ReFramed.id("wall_low_i_tall_t_special"),
+            low_tall_c_t = ReFramed.id("wall_low_tall_c_t_special"),
+            low_c_tall_t = ReFramed.id("wall_low_c_tall_t_special"),
+            tall_c_low_t = ReFramed.id("wall_tall_c_low_t_special"),
+            tall_i_low_i_x = ReFramed.id("wall_tall_i_low_i_x_special"),
+            tall_low_t_x = ReFramed.id("wall_tall_low_t_x_special"),
+            tall_c_low_c_x = ReFramed.id("wall_tall_c_low_c_x_special"),
+            tall_t_low_x = ReFramed.id("wall_tall_t_low_x_special");
         return MultipartBlockStateSupplier.create(block)
             // PILLAR CORE
             .with(GBlockstate.when(UP, true),
@@ -441,6 +452,337 @@ public class Wall implements RecipeSetter, TagGetter, BlockStateProvider {
                     WEST_WALL_SHAPE, TALL,
                     UP, false
                 ),
-                GBlockstate.variant(tall_t, true, R0, R270));
+                GBlockstate.variant(tall_t, true, R0, R270))
+            // JUNCTION TALL LOW C T
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, NONE,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_low_c_t, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, NONE,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_low_c_t, true, R0, R90))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, NONE,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_low_c_t, true, R0, R180))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, NONE,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_low_c_t, true, R0, R270))
+            // JUNCTION TALL I LOW T
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, NONE,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_i_low_t, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, NONE,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_i_low_t, true, R0, R90))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, NONE,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_i_low_t, true, R0, R180))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, NONE,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_i_low_t, true, R0, R270))
+            // JUNCTION LOW I TALL T
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, NONE,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(low_i_tall_t, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, NONE,
+                    UP, false
+                ),
+                GBlockstate.variant(low_i_tall_t, true, R0, R90))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, NONE,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(low_i_tall_t, true, R0, R180))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, NONE,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(low_i_tall_t, true, R0, R270))
+            // JUNCTION LOW TALL C T
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, NONE,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(low_tall_c_t, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, NONE,
+                    UP, false
+                ),
+                GBlockstate.variant(low_tall_c_t, true, R0, R90))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, NONE,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(low_tall_c_t, true, R0, R180))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, NONE,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(low_tall_c_t, true, R0, R270))
+            // JUNCTION LOW C TALL T
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, NONE,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(low_c_tall_t, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, NONE,
+                    UP, false
+                ),
+                GBlockstate.variant(low_c_tall_t, true, R0, R90))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, NONE,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(low_c_tall_t, true, R0, R180))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, NONE,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(low_c_tall_t, true, R0, R270))
+            // JUNCTION TALL C LOW T
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, NONE,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_c_low_t, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, NONE,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_c_low_t, true, R0, R90))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, NONE,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_c_low_t, true, R0, R180))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, NONE,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_c_low_t, true, R0, R270))
+            // JUNCTION X
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(ReFramed.id("wall_low_x_special"), true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(ReFramed.id("wall_tall_x_special"), true, R0, R0))
+            // JUNCTION I X
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_i_low_i_x, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_i_low_i_x, true, R0, R90))
+            // JUNCTION TALL LOW T X
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_low_t_x, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_low_t_x, true, R0, R90))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_low_t_x, true, R0, R180))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_low_t_x, true, R0, R270))
+            // JUNCTION TALL C LOW C X
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_c_low_c_x, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_c_low_c_x, true, R0, R90))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_c_low_c_x, true, R0, R180))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_c_low_c_x, true, R0, R270))
+            // JUNCTION TALL C LOW C X
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, LOW,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_t_low_x, true, R0, R0))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, LOW,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_t_low_x, true, R0, R90))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, LOW,
+                    EAST_WALL_SHAPE, TALL,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_t_low_x, true, R0, R180))
+            .with(GBlockstate.when(
+                    NORTH_WALL_SHAPE, TALL,
+                    EAST_WALL_SHAPE, LOW,
+                    SOUTH_WALL_SHAPE, TALL,
+                    WEST_WALL_SHAPE, TALL,
+                    UP, false
+                ),
+                GBlockstate.variant(tall_t_low_x, true, R0, R270));
     }
 }

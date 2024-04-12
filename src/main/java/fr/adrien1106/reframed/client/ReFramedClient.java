@@ -100,11 +100,19 @@ public class ReFramedClient implements ClientModInitializer {
 		// --------------------- junction_t
 		HELPER.addReFramedModel("wall_low_t"                , HELPER.auto(ReFramed.id("block/wall/junction/low_t")));
 		HELPER.addReFramedModel("wall_tall_t"               , HELPER.auto(ReFramed.id("block/wall/junction/tall_t")));
+		HELPER.addReFramedModel("wall_tall_low_c_t"         , HELPER.auto(ReFramed.id("block/wall/junction/tall_low_c_t")));
+		HELPER.addReFramedModel("wall_tall_i_low_t"         , HELPER.auto(ReFramed.id("block/wall/junction/tall_i_low_t")));
+		HELPER.addReFramedModel("wall_low_i_tall_t"         , HELPER.auto(ReFramed.id("block/wall/junction/low_i_tall_t")));
+		HELPER.addReFramedModel("wall_low_tall_c_t"         , HELPER.auto(ReFramed.id("block/wall/junction/low_tall_c_t")));
+		HELPER.addReFramedModel("wall_low_c_tall_t"         , HELPER.auto(ReFramed.id("block/wall/junction/low_c_tall_t")));
+		HELPER.addReFramedModel("wall_tall_c_low_t"         , HELPER.auto(ReFramed.id("block/wall/junction/tall_c_low_t")));
 		// --------------------- junction_x
-		HELPER.addReFramedModel("wall_junction_negative_x"  , HELPER.auto(ReFramed.id("block/wall/junction/bottom_x"))); // (Axis only)
-		HELPER.addReFramedModel("wall_junction_both_x"      , HELPER.auto(ReFramed.id("block/wall/junction/both_x")));
-		HELPER.addReFramedModel("wall_junction_positive_x"  , HELPER.auto(ReFramed.id("block/wall/junction/top_x")));
-		HELPER.addReFramedModel("wall_junction_middle_x"    , HELPER.auto(ReFramed.id("block/wall/junction/middle_x")));
+		HELPER.addReFramedModel("wall_low_x"                , HELPER.auto(ReFramed.id("block/wall/junction/low_x")));
+		HELPER.addReFramedModel("wall_tall_x"               , HELPER.auto(ReFramed.id("block/wall/junction/tall_x")));
+		HELPER.addReFramedModel("wall_tall_i_low_i_x"       , HELPER.auto(ReFramed.id("block/wall/junction/tall_i_low_i_x")));
+		HELPER.addReFramedModel("wall_tall_low_t_x"         , HELPER.auto(ReFramed.id("block/wall/junction/tall_low_t_x")));
+		HELPER.addReFramedModel("wall_tall_c_low_c_x"         , HELPER.auto(ReFramed.id("block/wall/junction/tall_c_low_c_x")));
+		HELPER.addReFramedModel("wall_tall_t_low_x"         , HELPER.auto(ReFramed.id("block/wall/junction/tall_t_low_x")));
 
 
 		//item model assignments (in lieu of models/item/___.json)
