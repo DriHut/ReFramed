@@ -14,6 +14,7 @@ import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -23,8 +24,8 @@ import java.util.function.Function;
 
 public class UnbakedAutoRetexturedModel extends UnbakedRetexturedModel {
 
-	public UnbakedAutoRetexturedModel(Identifier parent) {
-		super(parent);
+	public UnbakedAutoRetexturedModel(Identifier parent, int state_count, Property<?>... properties) {
+		super(parent, state_count, properties);
 		item_state = Blocks.AIR.getDefaultState();
 	}
 	
@@ -37,7 +38,8 @@ public class UnbakedAutoRetexturedModel extends UnbakedRetexturedModel {
 			theme_index,
 			bake_settings,
 			item_state,
-			ao
+			state_count,
+			properties
 		) {
 			protected Mesh convertModel(BlockState state) {
 				Renderer r = ReFramedClient.HELPER.getFabricRenderer();

@@ -35,11 +35,6 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
     }
 
     @Override
-    public int getModelStateCount() {
-        return 108; // Has 12 * 9 state combination and 52 models still reduces cache size
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(EDGE, STAIR_SHAPE));
     }

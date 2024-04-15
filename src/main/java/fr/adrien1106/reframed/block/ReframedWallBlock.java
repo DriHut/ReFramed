@@ -50,11 +50,6 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public int getModelStateCount() {
-        return 162;
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(UP, EAST_WALL_SHAPE, NORTH_WALL_SHAPE, SOUTH_WALL_SHAPE, WEST_WALL_SHAPE));
     }

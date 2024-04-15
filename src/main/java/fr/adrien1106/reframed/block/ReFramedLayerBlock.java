@@ -33,11 +33,6 @@ public class ReFramedLayerBlock extends ReFramedSlabBlock {
     }
 
     @Override
-    public int getModelStateCount() {
-        return 48;
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(LAYERS));
     }

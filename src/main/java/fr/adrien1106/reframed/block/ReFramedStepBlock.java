@@ -40,11 +40,6 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public int getModelStateCount() {
-        return 12;
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(EDGE));
     }

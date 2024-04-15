@@ -52,13 +52,6 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	public Object getModelCacheKey(BlockState state) {
 		return "";
 	}
-
-	/**
-	 * @return the amount of models the block can have prevents allocating too much space for a model
-	 */
-	public int getModelStateCount() {
-		return 1;
-	}
 	
 	//For addon devs: override this so your blocks don't end up trying to place my block entity, my BlockEntityType only handles blocks internal to the mod
 	//Just make your own BlockEntityType, it's fine, you can even use the same ReFramedEntity class

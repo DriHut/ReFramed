@@ -40,11 +40,6 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public int getModelStateCount() {
-        return 8;
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(CORNER));
     }

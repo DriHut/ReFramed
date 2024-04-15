@@ -47,6 +47,12 @@ public class WeightedComputedAppearance extends CamoAppearance {
     }
 
     @Override
+    public boolean getAO(int model_id) {
+        return getAppearance(model_id).use_ao();
+    }
+
+
+    @Override
     public boolean equals(Object o) {
         if(this == o) return true;
         if(!(o instanceof WeightedComputedAppearance that)) return false;

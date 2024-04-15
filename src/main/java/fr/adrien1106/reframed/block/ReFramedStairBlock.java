@@ -42,11 +42,6 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	public Object getModelCacheKey(BlockState state) {
 		return new ModelCacheKey(state.get(EDGE), state.get(STAIR_SHAPE));
 	}
-
-	@Override
-	public int getModelStateCount() {
-		return 108; // Has 12 * 9 state combination and 52 models still reduces cache size
-	}
 	
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

@@ -35,11 +35,6 @@ public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBloc
     }
 
     @Override
-    public int getModelStateCount() {
-        return 24;
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(CORNER,CORNER_FACE));
     }

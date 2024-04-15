@@ -26,12 +26,13 @@ public abstract class CamoAppearance {
 
 	public abstract @NotNull List<SpriteProperties> getSprites(Direction dir, int model_id);
 	public abstract boolean hasColor(Direction dir, int model_id, int index);
+	public abstract boolean getAO(int model_id);
 
 	public @NotNull RenderMaterial getRenderMaterial(boolean ao) {
 		return ao && ao_material != null? ao_material : material;
 	}
 
-	public int transformQuad(QuadEmitter quad, int i, int quad_index, int model_id, boolean ao, boolean uv_lock) {
+	public int transformQuad(QuadEmitter quad, int i, int quad_index, int model_id, boolean uv_lock) {
 		if(quad.tag() == 0) return 0; // Pass the quad through unmodified.
 
 		Direction direction = quad.nominalFace();
@@ -44,7 +45,7 @@ public abstract class CamoAppearance {
 		QuadPosBounds bounds = properties.bounds();
 
 		if (bounds == null) { // sprite applies anywhere e.g. default behaviour
-			quad.material(getRenderMaterial(ao));
+			quad.material(getRenderMaterial(getAO(model_id)));
 			quad.spriteBake(
 				properties.sprite(),
 				MutableQuadView.BAKE_NORMALIZED
@@ -61,7 +62,7 @@ public abstract class CamoAppearance {
 		if (!bounds.matches(origin_bounds)) return i;
 
 		// apply new quad shape
-		quad.material(getRenderMaterial(ao));
+		quad.material(getRenderMaterial(getAO(model_id)));
 		bounds.intersection(origin_bounds, direction.getAxis()).apply(quad, origin_bounds);
 		quad.spriteBake( // seems to work without the flags and break with it
 			properties.sprite(),

@@ -64,12 +64,12 @@ public class CamoAppearanceManager {
 		this.accent_appearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
 
 		sprite = spriteLookup.apply(BARRIER_SPRITE_ID);
-		this.barrierItemAppearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
+		this.barrier_appearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
 	}
 	
 	private final CamoAppearance default_appearance;
 	private final CamoAppearance accent_appearance;
-	private final CamoAppearance barrierItemAppearance;
+	private final CamoAppearance barrier_appearance;
 
 	private final AtomicInteger serial_number = new AtomicInteger(0); //Mutable
 	
@@ -119,7 +119,7 @@ public class CamoAppearanceManager {
 	// The results are going to be the same, apart from their serialNumbers differing (= their equals & hashCode differing).
 	// Tiny amount of wasted space in some caches if CamoAppearances are used as a map key, then. IMO it's not a critical issue.
 	private CamoAppearance computeAppearance(BakedModel model, BlockState state, boolean is_dynamic) {
-		if(state.getBlock() == Blocks.BARRIER) return barrierItemAppearance;
+		if(state.getBlock() == Blocks.BARRIER) return barrier_appearance;
 
 		if (!(model instanceof WeightedBakedModelAccessor weighted_model)) {
 			return new ComputedAppearance(
@@ -175,7 +175,7 @@ public class CamoAppearanceManager {
 			});
 		});
 
-		return new Appearance(sprites);
+		return new Appearance(sprites, model.useAmbientOcclusion());
 	}
 
 	private static int getBakeFlags(QuadEmitter emitter, Sprite sprite) {

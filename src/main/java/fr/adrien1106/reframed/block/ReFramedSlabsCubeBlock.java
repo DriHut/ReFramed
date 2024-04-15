@@ -24,11 +24,6 @@ public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock {
     }
 
     @Override
-    public int getModelStateCount() {
-        return 3;
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(AXIS));
     }

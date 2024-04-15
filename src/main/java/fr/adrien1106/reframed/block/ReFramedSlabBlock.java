@@ -37,11 +37,6 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
 	public Object getModelCacheKey(BlockState state) {
 		return state.get(FACING);
 	}
-
-	@Override
-	public int getModelStateCount() {
-		return 6;
-	}
 	
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

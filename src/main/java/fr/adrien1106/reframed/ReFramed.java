@@ -32,7 +32,7 @@ import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
  * TODO add minecraft models like wall fence etc                             -> for v1.6
  * TODO better connected textures                                            -> maybe v1.6 ?
  * TODO support continuity overlays                                          -> not scheduled
- * TODO better state caching per models (e.g. wall only has 3 max per model) -> not scheduled
+ * TODO fence remove collision if popped chorus                              -> asap
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";

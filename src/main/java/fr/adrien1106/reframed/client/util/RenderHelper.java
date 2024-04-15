@@ -31,7 +31,6 @@ import static net.minecraft.util.shape.VoxelShapes.combine;
 @Environment(EnvType.CLIENT)
 public class RenderHelper {
 
-
     // self culling cache of the models not made thread local so that it is only computed once
     private static final Cache<CullElement, Integer[]> INNER_CULL_MAP = CacheBuilder.newBuilder().maximumSize(1024).build();
     private record CullElement(Block block, Object state_key, int model) {}
