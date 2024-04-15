@@ -114,7 +114,9 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		if (camo instanceof WeightedComputedAppearance wca) model_id = wca.getAppearanceIndex(seed);
 
 		int tint = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(theme, world, pos, 0);
-		Mesh untintedMesh = getRetexturedMesh(new MeshCacheKey(frame_block.getModelCacheKey(state), camo, model_id), state);
+		MeshCacheKey key = new MeshCacheKey(frame_block.getModelCacheKey(state), camo, model_id);
+		// do not clutter the cache with single-use meshes
+		Mesh untintedMesh = camo.hashCode() == -1 ? transformMesh(key, state) : getRetexturedMesh(key, state);
 		
 		//The specific tint might vary a lot; imagine grass color smoothly changing. Trying to bake the tint into
 		//the cached mesh will pollute it with a ton of single-use meshes with only slightly different colors.
