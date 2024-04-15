@@ -79,9 +79,12 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
 
         boolean side_full = other_state.isSideSolidFullSquare(world, moved, dir.getOpposite());
         if (shouldConnectTo(other_state, side_full, dir.getOpposite())) {
+            Property<WallShape> wall_shape = getWallShape(dir);
             new_state = new_state.with(
-                getWallShape(dir),
-                fs || shouldUseTall(WALL_VOXELS[dir.ordinal() + 3], top_shape)
+                wall_shape,
+                fs
+                    || (top_state.contains(wall_shape) && top_state.get(wall_shape) != WallShape.NONE)
+                    || shouldUseTall(WALL_VOXELS[dir.ordinal() + 3], top_shape)
                     ? WallShape.TALL
                     : WallShape.LOW
             );
@@ -102,9 +105,12 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
             BlockState neighbor = world.getBlockState(offset);
             boolean side_full = neighbor.isSideSolidFullSquare(world, offset, dir.getOpposite());
             if (shouldConnectTo(neighbor, side_full, dir.getOpposite())) {
+                Property<WallShape> wall_shape = getWallShape(dir);
                 state = state.with(
-                    getWallShape(dir),
-                    fs || shouldUseTall(WALL_VOXELS[dir.ordinal() + 3], top_shape)
+                    wall_shape,
+                    fs
+                        || (top_state.contains(wall_shape) && top_state.get(wall_shape) != WallShape.NONE)
+                        || shouldUseTall(WALL_VOXELS[dir.ordinal() + 3], top_shape)
                         ? WallShape.TALL
                         : WallShape.LOW
                 );
@@ -133,6 +139,7 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
+        if (isGhost(view, pos)) return VoxelShapes.empty();
         VoxelShape shape = state.get(UP) ? WALL_VOXELS[9]: VoxelShapes.empty();
         for (Direction dir : Direction.Type.HORIZONTAL) {
             if (state.get(getWallShape(dir)) != WallShape.NONE)

@@ -15,7 +15,6 @@ public abstract class UnbakedRetexturedModel implements UnbakedModel {
 
     protected int theme_index = 1;
     protected BlockState item_state;
-    protected final boolean ao = true;
     protected final int state_count;
     protected final Property<?>[] properties;
 

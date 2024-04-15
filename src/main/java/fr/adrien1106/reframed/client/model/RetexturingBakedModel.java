@@ -2,10 +2,8 @@ package fr.adrien1106.reframed.client.model;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import fr.adrien1106.reframed.block.ReFramedBlock;
 import fr.adrien1106.reframed.block.ReFramedEntity;
 import fr.adrien1106.reframed.client.ReFramedClient;
-import fr.adrien1106.reframed.client.util.RenderHelper;
 import fr.adrien1106.reframed.mixin.MinecraftAccessor;
 import fr.adrien1106.reframed.client.model.apperance.CamoAppearance;
 import fr.adrien1106.reframed.client.model.apperance.CamoAppearanceManager;
