@@ -69,12 +69,12 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return getCullingShape(state, view, pos);
+        return isGhost(view, pos) ? empty() : fullCube();
     }
 
     @Override
     public VoxelShape getCullingShape(BlockState state, BlockView view, BlockPos pos) {
-        return isGhost(view, pos) ? empty() : fullCube();
+        return getCollisionShape(state, view, pos, ShapeContext.absent());
     }
 
     @Override

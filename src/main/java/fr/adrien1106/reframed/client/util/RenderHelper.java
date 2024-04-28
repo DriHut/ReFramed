@@ -33,18 +33,18 @@ import static net.minecraft.util.shape.VoxelShapes.combine;
 public class RenderHelper {
 
     // self culling cache of the models not made thread local so that it is only computed once
-    private static final Cache<CullElement, Integer[]> INNER_CULL_MAP = CacheBuilder.newBuilder().maximumSize(1024).build();
-    private record CullElement(Block block, Object state_key, int model) {}
+    private static final Cache<CullElement, Integer[]> INNER_CULL_MAP = CacheBuilder.newBuilder().build();
+    private record CullElement(Block block, Object state_key, int model) { }
 
     /**
      * compute which quad might cull with another model quad
-     * @param state - the state of the model
+     * @param state  - the state of the model
      * @param models - list of models on the same block
+     * @param hash   - the hash of main model
      */
-    public static void computeInnerCull(BlockState state, List<RetexturingBakedModel> models) {
+    public static void computeInnerCull(BlockState state, List<RetexturingBakedModel> models, int hash) {
         if (!(state.getBlock() instanceof ReFramedBlock frame_block)) return;
-        Object key = frame_block.getModelCacheKey(state);
-        if (INNER_CULL_MAP.asMap().containsKey(new CullElement(frame_block, key, 1))) return;
+        if (INNER_CULL_MAP.asMap().containsKey(new CullElement(frame_block, hash, 1))) return;
 
         Renderer r = ReFramedClient.HELPER.getFabricRenderer();
         QuadEmitter quad_emitter = r.meshBuilder().getEmitter();
@@ -61,12 +61,12 @@ public class RenderHelper {
             }).toList()).toList();
 
         Integer[] cull_array;
-        for(int self_id = 1; self_id <= model_bounds.size(); self_id++) {
+        for (int self_id = 1; self_id <= model_bounds.size(); self_id++) {
             List<QuadPosBounds> self_bounds = model_bounds.get(self_id - 1);
             cull_array = new Integer[self_bounds.size()];
             for (int self_quad = 0; self_quad < cull_array.length; self_quad++) {
                 QuadPosBounds self_bound = self_bounds.get(self_quad);
-                for(int other_id = 1; other_id <= model_bounds.size(); other_id++) {
+                for (int other_id = 1; other_id <= model_bounds.size(); other_id++) {
                     if (other_id == self_id) continue;
                     if (model_bounds.get(other_id - 1).stream().anyMatch(other_bound -> other_bound.equals(self_bound))) {
                         cull_array[self_quad] = other_id;
@@ -74,15 +74,15 @@ public class RenderHelper {
                     }
                 }
             }
-            INNER_CULL_MAP.put(new CullElement(frame_block, key, self_id), cull_array);
+            INNER_CULL_MAP.put(new CullElement(frame_block, hash, self_id), cull_array);
         }
     }
 
-    public static boolean shouldDrawInnerFace(BlockState state, BlockRenderView view, BlockPos pos, int quad_index, int theme_index) {
-        if ( !(state.getBlock() instanceof ReFramedBlock frame_block)
+    public static boolean shouldDrawInnerFace(BlockState state, BlockRenderView view, BlockPos pos, int quad_index, int theme_index, int hash) {
+        if (!(state.getBlock() instanceof ReFramedBlock frame_block)
             || !(view.getBlockEntity(pos) instanceof ThemeableBlockEntity frame_entity)
         ) return true;
-        CullElement key = new CullElement(frame_block, frame_block.getModelCacheKey(state), theme_index);
+        CullElement key = new CullElement(frame_block, hash, theme_index);
         if (!INNER_CULL_MAP.asMap().containsKey(key)) return true;
 
         // needs to be Integer object because array is initialized with null not 0

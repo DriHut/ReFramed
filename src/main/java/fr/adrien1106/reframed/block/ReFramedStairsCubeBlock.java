@@ -22,16 +22,10 @@ import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
 public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
 
     private static final VoxelShape[] STAIRS_CUBE_VOXELS = VoxelListBuilder.buildFrom(STAIR_VOXELS);
-    private record ModelCacheKey(Edge edge, StairShape shape) {}
 
     public ReFramedStairsCubeBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN).with(STAIR_SHAPE, StairShape.STRAIGHT));
-    }
-
-    @Override
-    public Object getModelCacheKey(BlockState state) {
-        return new ModelCacheKey(state.get(EDGE), state.get(STAIR_SHAPE));
     }
 
     @Override

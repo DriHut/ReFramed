@@ -42,16 +42,6 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 		super(settings);
 		setDefaultState(getDefaultState().with(LIGHT, false));
 	}
-
-	/**
-	 * Generates a record for the key so that it replaces the blockstate
-	 * which may have states that returns same models
-	 * @param state - the state_key to generate the key from
-	 * @return a cache key with only relevant properties
-	 */
-	public Object getModelCacheKey(BlockState state) {
-		return "";
-	}
 	
 	//For addon devs: override this so your blocks don't end up trying to place my block entity, my BlockEntityType only handles blocks internal to the mod
 	//Just make your own BlockEntityType, it's fine, you can even use the same ReFramedEntity class

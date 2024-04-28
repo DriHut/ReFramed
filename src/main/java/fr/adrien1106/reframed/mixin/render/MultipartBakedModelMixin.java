@@ -19,7 +19,7 @@ public class MultipartBakedModelMixin implements IMultipartBakedModelMixin {
     @Shadow @Final private List<Pair<Predicate<BlockState>, BakedModel>> components;
 
     @Override
-    public BakedModel getModel(BlockState state) {
-        return components.stream().map(pair -> pair.getLeft().test(state) ? pair.getRight(): null).filter(Objects::nonNull).findAny().orElse(null);
+    public List<BakedModel> getModels(BlockState state) {
+        return components.stream().map(pair -> pair.getLeft().test(state) ? pair.getRight(): null).filter(Objects::nonNull).toList();
     }
 }

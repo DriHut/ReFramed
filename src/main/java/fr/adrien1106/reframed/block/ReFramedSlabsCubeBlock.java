@@ -19,11 +19,6 @@ public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock {
     }
 
     @Override
-    public Object getModelCacheKey(BlockState state) {
-        return state.get(AXIS);
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(AXIS));
     }

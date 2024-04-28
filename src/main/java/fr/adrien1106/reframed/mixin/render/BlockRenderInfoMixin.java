@@ -25,6 +25,7 @@ public abstract class BlockRenderInfoMixin implements IBlockRenderInfoMixin {
 
     @Shadow public BlockRenderView blockView;
     @Unique private int theme_index = 0;
+    @Unique private int model_hash = 0;
 
     @ModifyArg(method = "prepareForBlock",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayers;" +
@@ -42,13 +43,19 @@ public abstract class BlockRenderInfoMixin implements IBlockRenderInfoMixin {
 
     @Override
     @Unique
-    public void prepareForBlock(BlockState state, BlockPos pos, boolean ao, int theme_index) {
+    public void prepareForBlock(BlockState state, BlockPos pos, boolean ao, int theme_index, int model_hash) {
         this.theme_index = theme_index;
+        this.model_hash = model_hash;
         prepareForBlock(state, pos, ao);
     }
 
     @Override
     public int getThemeIndex() {
         return theme_index;
+    }
+
+    @Override
+    public int getModelHash() {
+        return model_hash;
     }
 }

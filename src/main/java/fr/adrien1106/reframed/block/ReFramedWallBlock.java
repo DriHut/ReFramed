@@ -15,19 +15,20 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static net.minecraft.state.property.Properties.*;
 
-public class ReframedWallBlock extends WaterloggableReFramedBlock {
+public class ReFramedWallBlock extends WaterloggableReFramedBlock {
 
     public static final VoxelShape[] WALL_VOXELS;
 
-    private record ModelCacheKey(boolean up, WallShape east, WallShape north, WallShape west, WallShape south) {}
-
-    public ReframedWallBlock(Settings settings) {
+    public ReFramedWallBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState()
             .with(UP, true)
@@ -35,17 +36,6 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
             .with(NORTH_WALL_SHAPE, WallShape.NONE)
             .with(WEST_WALL_SHAPE, WallShape.NONE)
             .with(SOUTH_WALL_SHAPE, WallShape.NONE)
-        );
-    }
-
-    @Override
-    public Object getModelCacheKey(BlockState state) {
-        return new ModelCacheKey(
-            state.get(UP),
-            state.get(EAST_WALL_SHAPE),
-            state.get(NORTH_WALL_SHAPE),
-            state.get(WEST_WALL_SHAPE),
-            state.get(SOUTH_WALL_SHAPE)
         );
     }
 
@@ -61,34 +51,13 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
         BlockState top_state = dir == Direction.UP? other_state: world.getBlockState(pos.up());
         boolean fs = top_state.isSideSolidFullSquare(world, pos.up(), Direction.DOWN);
         VoxelShape top_shape = fs ? null : top_state.getCollisionShape(world, pos.up()).getFace(Direction.DOWN);
-        if (dir == Direction.UP) {
-            for (Direction d : Direction.Type.HORIZONTAL) {
-                Property<WallShape> wall_shape = getWallShape(d);
-                if (state.get(wall_shape) == WallShape.NONE) continue;
-                new_state = new_state.with(
-                    wall_shape,
-                    fs
-                        || (top_state.contains(wall_shape) && top_state.get(wall_shape) != WallShape.NONE)
-                        || shouldUseTall(WALL_VOXELS[dir.ordinal() + 3], top_shape)
-                        ? WallShape.TALL
-                        : WallShape.LOW
-                );
-            }
-            return new_state.with(UP, shouldHavePost(new_state, top_state, top_shape));
-        }
 
-        boolean side_full = other_state.isSideSolidFullSquare(world, moved, dir.getOpposite());
-        if (shouldConnectTo(other_state, side_full, dir.getOpposite())) {
-            Property<WallShape> wall_shape = getWallShape(dir);
-            new_state = new_state.with(
-                wall_shape,
-                fs
-                    || (top_state.contains(wall_shape) && top_state.get(wall_shape) != WallShape.NONE)
-                    || shouldUseTall(WALL_VOXELS[dir.ordinal() + 3], top_shape)
-                    ? WallShape.TALL
-                    : WallShape.LOW
-            );
-        } else new_state = new_state.with(getWallShape(dir), WallShape.NONE);
+        Map<Direction, BlockState> neighbors = Direction.Type.HORIZONTAL.stream()
+            .collect(Collectors.toMap(d -> d, d -> {
+                if (d == dir) return other_state;
+                return world.getBlockState(pos.offset(d));
+            }));
+        new_state = getWallState(new_state, top_state, neighbors, top_shape, fs, world, pos);
         return new_state.with(UP, shouldHavePost(new_state, top_state, top_shape));
     }
 
@@ -97,25 +66,14 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
         BlockState state = super.getPlacementState(ctx);
         World world = ctx.getWorld();
         BlockPos pos = ctx.getBlockPos();
+
         BlockState top_state = world.getBlockState(pos.up());
         boolean fs = top_state.isSideSolidFullSquare(world, pos.up(), Direction.DOWN);
         VoxelShape top_shape = fs ? null : top_state.getCollisionShape(world, pos.up()).getFace(Direction.DOWN);
-        for (Direction dir : Direction.Type.HORIZONTAL) {
-            BlockPos offset = pos.offset(dir);
-            BlockState neighbor = world.getBlockState(offset);
-            boolean side_full = neighbor.isSideSolidFullSquare(world, offset, dir.getOpposite());
-            if (shouldConnectTo(neighbor, side_full, dir.getOpposite())) {
-                Property<WallShape> wall_shape = getWallShape(dir);
-                state = state.with(
-                    wall_shape,
-                    fs
-                        || (top_state.contains(wall_shape) && top_state.get(wall_shape) != WallShape.NONE)
-                        || shouldUseTall(WALL_VOXELS[dir.ordinal() + 3], top_shape)
-                        ? WallShape.TALL
-                        : WallShape.LOW
-                );
-            }
-        }
+
+        Map<Direction, BlockState> neighbors = Direction.Type.HORIZONTAL.stream()
+            .collect(Collectors.toMap(d -> d, d -> world.getBlockState(pos.offset(d))));
+        state = getWallState(state, top_state, neighbors, top_shape, fs, world, pos);
         return state.with(UP, shouldHavePost(state, top_state, top_shape));
     }
 
@@ -148,9 +106,29 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
         return shape;
     }
 
-    private static boolean shouldHavePost(BlockState state, BlockState top_state, VoxelShape top_shape) {
+    public static BlockState getWallState(BlockState state, BlockState top_state, Map<Direction, BlockState> neighbors, VoxelShape top_shape, boolean fs, WorldView world, BlockPos pos) {
+        for (Direction dir : Direction.Type.HORIZONTAL) {
+            BlockPos offset = pos.offset(dir);
+            BlockState neighbor = neighbors.get(dir);
+            boolean side_full = neighbor.isSideSolidFullSquare(world, offset, dir.getOpposite());
+            Property<WallShape> wall_shape = getWallShape(dir);
+            if (shouldConnectTo(neighbor, side_full, dir.getOpposite())) {
+                state = state.with(
+                    wall_shape,
+                    fs
+                        || (top_state.contains(wall_shape) && top_state.get(wall_shape) != WallShape.NONE)
+                        || shouldUseTall(WALL_VOXELS[dir.ordinal() + 3], top_shape)
+                        ? WallShape.TALL
+                        : WallShape.LOW
+                );
+            } else state = state.with(wall_shape, WallShape.NONE);
+        }
+        return state;
+    }
+
+    public static boolean shouldHavePost(BlockState state, BlockState top_state, VoxelShape top_shape) {
         // above has post
-        if (top_state.contains(NORTH_WALL_SHAPE) && top_state.get(UP)) return true;
+        if ((top_state.contains(UP) && top_state.get(UP)) || (!top_state.contains(UP) && top_state.contains(NORTH_WALL_SHAPE))) return true;
 
         if (Stream.of(Direction.SOUTH, Direction.EAST) // Opposites are different
             .anyMatch(dir -> state.get(getWallShape(dir)) != state.get(getWallShape(dir.getOpposite())))
@@ -160,23 +138,22 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
         if (Direction.Type.HORIZONTAL.stream().allMatch(dir -> state.get(getWallShape(dir)) == WallShape.NONE))
             return true;
 
-        // tall Matching sides
+        // Matching sides
         if (Stream.of(Direction.SOUTH, Direction.EAST)
             .anyMatch(dir ->
-                   state.get(getWallShape(dir))               == WallShape.TALL
-                && state.get(getWallShape(dir.getOpposite())) == WallShape.TALL
+                   state.get(getWallShape(dir)) == state.get(getWallShape(dir.getOpposite()))
             )) return false;
 
         return top_state.isIn(BlockTags.WALL_POST_OVERRIDE) || top_shape == null || shouldUseTall(WALL_VOXELS[0], top_shape);
     }
 
-    private static boolean shouldConnectTo(BlockState state, boolean side_full, Direction side) {
+    public static boolean shouldConnectTo(BlockState state, boolean side_full, Direction side) {
         Block block = state.getBlock();
         boolean bl = block instanceof FenceGateBlock && FenceGateBlock.canWallConnect(state, side);
         return state.isIn(BlockTags.WALLS) || !WallBlock.cannotConnect(state) && side_full || block instanceof PaneBlock || bl;
     }
 
-    private static boolean shouldUseTall(VoxelShape self_shape, VoxelShape other_shape) {
+    public static boolean shouldUseTall(VoxelShape self_shape, VoxelShape other_shape) {
         return !VoxelShapes.matchesAnywhere(
             self_shape,
             other_shape,
@@ -184,7 +161,7 @@ public class ReframedWallBlock extends WaterloggableReFramedBlock {
         );
     }
 
-    private static Property<WallShape> getWallShape(Direction dir) {
+    public static Property<WallShape> getWallShape(Direction dir) {
         return switch (dir) {
             case EAST -> EAST_WALL_SHAPE;
             case NORTH -> NORTH_WALL_SHAPE;

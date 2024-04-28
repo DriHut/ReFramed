@@ -29,16 +29,9 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
 
     public static final VoxelShape[] HALF_STAIR_VOXELS;
 
-    private record ModelCacheKey(Corner corner, int face) {}
-
     public ReFramedHalfStairBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(CORNER, NORTH_EAST_DOWN).with(CORNER_FACE, 0));
-    }
-
-    @Override
-    public Object getModelCacheKey(BlockState state) {
-        return new ModelCacheKey(state.get(CORNER), state.get(CORNER_FACE));
     }
 
     @Override

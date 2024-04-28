@@ -28,11 +28,6 @@ public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlo
     }
 
     @Override
-    public Object getModelCacheKey(BlockState state) {
-        return state.get(EDGE);
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(EDGE));
     }
@@ -44,7 +39,7 @@ public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlo
     }
 
     @Override
-    public VoxelShape getCullingShape(BlockState state, BlockView view, BlockPos pos) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
         return isGhost(view, pos) ? empty(): getStairShape(state.get(EDGE), StairShape.STRAIGHT);
     }
 

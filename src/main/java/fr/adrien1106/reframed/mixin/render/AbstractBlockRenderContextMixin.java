@@ -35,6 +35,6 @@ public abstract class AbstractBlockRenderContextMixin {
             || info.getThemeIndex() == 0
         ) return isFaceCulled(face);
 
-        return !RenderHelper.shouldDrawInnerFace(blockInfo.blockState, blockInfo.blockView, blockInfo.blockPos, quad.tag() >>> 8, info.getThemeIndex());
+        return !RenderHelper.shouldDrawInnerFace(blockInfo.blockState, blockInfo.blockView, blockInfo.blockPos, quad.tag() >>> 8, info.getThemeIndex(), info.getModelHash());
     }
 }

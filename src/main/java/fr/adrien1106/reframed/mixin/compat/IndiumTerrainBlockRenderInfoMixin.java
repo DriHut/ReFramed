@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class IndiumTerrainBlockRenderInfoMixin extends BlockRenderInfo implements IBlockRenderInfoMixin {
 
     @Unique private int theme_index = 0;
+    @Unique private int model_hash = 0;
 
     @Redirect(
         method = "shouldDrawFaceInner",
@@ -36,13 +37,19 @@ public abstract class IndiumTerrainBlockRenderInfoMixin extends BlockRenderInfo 
     }
 
     @Override
-    public void prepareForBlock(BlockState blockState, BlockPos blockPos, long seed, boolean modelAo, int theme_index) {
+    public void prepareForBlock(BlockState blockState, BlockPos blockPos, long seed, boolean modelAo, int theme_index, int model_hash) {
         this.theme_index = theme_index;
+        this.model_hash = model_hash;
         prepareForBlock(blockState, blockPos, seed, modelAo);
     }
 
     @Override
     public int getThemeIndex() {
         return theme_index;
+    }
+
+    @Override
+    public int getModelHash() {
+        return model_hash;
     }
 }

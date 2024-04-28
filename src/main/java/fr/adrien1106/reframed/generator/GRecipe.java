@@ -34,7 +34,8 @@ public class GRecipe extends FabricRecipeProvider {
         providers.put(ReFramedStairsCubeBlock.class, new StairsCube());
         providers.put(ReFramedStepBlock.class, new Step());
         providers.put(ReFramedStepsSlabBlock.class, new StepsSlab());
-        providers.put(ReframedWallBlock.class, new Wall());
+        providers.put(ReFramedPillarsWallBlock.class, new PillarsWall());
+        providers.put(ReFramedWallBlock.class, new Wall());
         providers.put(ReFramedBlueprintItem.class, new Blueprint());
         providers.put(ReFramedHammerItem.class, new Hammer());
         providers.put(ReFramedScrewdriverItem.class, new Screwdriver());

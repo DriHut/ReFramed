@@ -20,38 +20,28 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public abstract class RetexturingBakedModel extends ForwardingBakedModel {
-	public RetexturingBakedModel(BakedModel base_model, CamoAppearanceManager tam, int theme_index, ModelBakeSettings settings, BlockState item_state, int model_count, Property<?>... properties) {
+	public RetexturingBakedModel(BakedModel base_model, CamoAppearanceManager tam, int theme_index, ModelBakeSettings settings, BlockState item_state) {
 		this.wrapped = base_model; //field from the superclass; vanilla getQuads etc. will delegate through to this
 
 		this.appearance_manager = tam;
 		this.theme_index = theme_index;
 		this.uv_lock = settings.isUvLocked();
 		this.item_state = item_state;
-		this.properties = properties;
-
-		BASE_MESH_CACHE = new Object2ObjectLinkedOpenHashMap<>(model_count, 0.25f) {
-			@Override
-			protected void rehash(int v) {}
-		};
 	}
 
 	protected final CamoAppearanceManager appearance_manager;
 	protected final int theme_index;
 	protected final boolean uv_lock;
 	protected final BlockState item_state;
-	protected final Property<?>[] properties;
 
 	protected record MeshCacheKey(Object state_key, CamoAppearance appearance, int model_id) {}
 	/** cache that store retextured models */
@@ -59,7 +49,11 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	protected final Cache<MeshCacheKey, Mesh> RETEXTURED_MESH_CACHE = CacheBuilder.newBuilder().maximumSize(256).build();
 
 	/** cache that stores the base meshes which has the size of the amount of models */
-	protected final Object2ObjectLinkedOpenHashMap<Object, Mesh> BASE_MESH_CACHE;
+	protected final Object2ObjectLinkedOpenHashMap<Object, Mesh> BASE_MESH_CACHE =
+		new Object2ObjectLinkedOpenHashMap<>(2, 0.25f) {
+			@Override
+			protected void rehash(int v) {}
+		};
 
 	protected static final Direction[] DIRECTIONS_AND_NULL;
 	static {
@@ -87,16 +81,19 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	public Sprite getParticleSprite() {
 		return appearance_manager.getDefaultAppearance(theme_index).getSprites(Direction.UP, 0).get(0).sprite();
 	}
-	
+
+	public int getThemeIndex() {
+		return theme_index;
+	}
+
 	@Override
 	public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
 		BlockState theme = (world.getBlockEntity(pos) instanceof ThemeableBlockEntity s) ? s.getTheme(theme_index) : null;
 		QuadEmitter quad_emitter = context.getEmitter();
-		List<?> model_key = Stream.of(properties).map(state::get).toList();
 		if(theme == null || theme.isAir()) {
 			getRetexturedMesh(
 				new MeshCacheKey(
-					model_key,
+					hashCode(),
 					appearance_manager.getDefaultAppearance(theme_index),
 					0
 				),
@@ -112,7 +109,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		if (camo instanceof WeightedComputedAppearance wca) model_id = wca.getAppearanceIndex(seed);
 
 		int tint = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(theme, world, pos, 0);
-		MeshCacheKey key = new MeshCacheKey(model_key, camo, model_id);
+		MeshCacheKey key = new MeshCacheKey(hashCode(), camo, model_id);
 		// do not clutter the cache with single-use meshes
 		Mesh untintedMesh = camo.hashCode() == -1 ? transformMesh(key, state) : getRetexturedMesh(key, state);
 		

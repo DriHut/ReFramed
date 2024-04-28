@@ -8,7 +8,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
@@ -20,16 +19,10 @@ import static net.minecraft.state.property.Properties.LAYERS;
 public class ReFramedLayerBlock extends ReFramedSlabBlock {
 
     public static final VoxelShape[] LAYER_VOXELS;
-    private record ModelCacheKey(Direction face, int layer) {}
 
     public ReFramedLayerBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(LAYERS, 1));
-    }
-
-    @Override
-    public Object getModelCacheKey(BlockState state) {
-        return new ModelCacheKey(state.get(FACING), state.get(LAYERS));
     }
 
     @Override

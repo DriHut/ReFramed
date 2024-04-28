@@ -35,11 +35,6 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public Object getModelCacheKey(BlockState state) {
-        return state.get(EDGE);
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder.add(EDGE));
     }

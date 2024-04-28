@@ -2,7 +2,6 @@ package fr.adrien1106.reframed.client.model;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
@@ -15,13 +14,9 @@ public abstract class UnbakedRetexturedModel implements UnbakedModel {
 
     protected int theme_index = 1;
     protected BlockState item_state;
-    protected final int state_count;
-    protected final Property<?>[] properties;
 
-    public UnbakedRetexturedModel(Identifier parent, int state_count, Property<?>... properties) {
+    public UnbakedRetexturedModel(Identifier parent) {
         this.parent = parent;
-        this.state_count = state_count;
-        this.properties = properties;
     }
 
     public UnbakedRetexturedModel setThemeIndex(int theme_index) {

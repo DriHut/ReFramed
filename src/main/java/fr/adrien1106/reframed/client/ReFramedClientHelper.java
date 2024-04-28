@@ -13,7 +13,6 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,18 +27,18 @@ public class ReFramedClientHelper {
 	private final ReFramedModelProvider prov;
 
 
-	public UnbakedRetexturedModel auto(Identifier parent, int model_count, Property<?>... properties) {
-		return new UnbakedAutoRetexturedModel(parent, model_count, properties);
+	public UnbakedRetexturedModel auto(Identifier parent) {
+		return new UnbakedAutoRetexturedModel(parent);
 	}
 
-	public UnbakedRetexturedModel json(Identifier parent, int model_count, Property<?>... properties) {
-		return new UnbakedJsonRetexturedModel(parent, model_count, properties);
+	public UnbakedRetexturedModel json(Identifier parent) {
+		return new UnbakedJsonRetexturedModel(parent);
 	}
 
-	public UnbakedModel autoDouble(Identifier first, Identifier second, int model_count, Property<?>... properties) {
+	public UnbakedModel autoDouble(Identifier first, Identifier second) {
 		return new UnbakedDoubleRetexturedModel(
-			auto(first, model_count, properties),
-			auto(second, model_count, properties)
+			auto(first),
+			auto(second)
 		);
 	}
 

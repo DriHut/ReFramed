@@ -22,16 +22,9 @@ import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBlock {
 
-    private record ModelCacheKey(Corner corner, int face) {}
-
     public ReFramedHalfStairsSlabBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(CORNER, NORTH_EAST_DOWN).with(CORNER_FACE, 0));
-    }
-
-    @Override
-    public Object getModelCacheKey(BlockState state) {
-        return new ModelCacheKey(state.get(CORNER), state.get(CORNER_FACE));
     }
 
     @Override
@@ -48,7 +41,7 @@ public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBloc
     }
 
     @Override
-    public VoxelShape getCullingShape(BlockState state, BlockView view, BlockPos pos) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
         return isGhost(view, pos) ? empty(): getSlabShape(state.get(CORNER).getDirection(state.get(CORNER_FACE)));
     }
 

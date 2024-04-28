@@ -32,11 +32,6 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
 		super(settings);
 		setDefaultState(getDefaultState().with(FACING, Direction.DOWN));
 	}
-
-	@Override
-	public Object getModelCacheKey(BlockState state) {
-		return state.get(FACING);
-	}
 	
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

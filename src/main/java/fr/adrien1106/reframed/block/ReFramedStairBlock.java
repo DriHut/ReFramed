@@ -31,16 +31,10 @@ import static fr.adrien1106.reframed.util.blocks.StairShape.*;
 
 public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	public static final VoxelShape[] STAIR_VOXELS;
-	private record ModelCacheKey(Edge edge, StairShape shape) {}
 
 	public ReFramedStairBlock(Settings settings) {
 		super(settings);
 		setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN).with(STAIR_SHAPE, STRAIGHT));
-	}
-
-	@Override
-	public Object getModelCacheKey(BlockState state) {
-		return new ModelCacheKey(state.get(EDGE), state.get(STAIR_SHAPE));
 	}
 	
 	@Override

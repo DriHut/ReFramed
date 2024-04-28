@@ -16,7 +16,8 @@ import java.util.concurrent.CompletableFuture;
 public class GBlockTag extends BlockTagProvider {
     private static final Map<Class<? extends Block>, TagGetter> providers = new HashMap<>();
     static {
-        providers.put(ReframedWallBlock.class, new Wall());
+        providers.put(ReFramedPillarsWallBlock.class, new PillarsWall());
+        providers.put(ReFramedWallBlock.class, new Wall());
     }
 
     public GBlockTag(FabricDataOutput output, CompletableFuture<WrapperLookup> registries) {

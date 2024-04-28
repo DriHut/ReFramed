@@ -15,7 +15,6 @@ import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -25,8 +24,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class UnbakedJsonRetexturedModel extends UnbakedRetexturedModel {
-	public UnbakedJsonRetexturedModel(Identifier parent, int state_count, Property<?>... properties) {
-        super(parent, state_count, properties);
+	public UnbakedJsonRetexturedModel(Identifier parent) {
+        super(parent);
 	}
 	
 	@Nullable
@@ -45,9 +44,7 @@ public class UnbakedJsonRetexturedModel extends UnbakedRetexturedModel {
 			ReFramedClient.HELPER.getCamoAppearanceManager(spriteLookup),
 			theme_index,
 			bake_settings,
-			item_state,
-			state_count,
-			properties
+			item_state
 		) {
 			protected Mesh convertModel(BlockState state) {
 				Renderer r = ReFramedClient.HELPER.getFabricRenderer();
