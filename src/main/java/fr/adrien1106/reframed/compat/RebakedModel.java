@@ -14,9 +14,11 @@ import java.util.Map;
 
 public class RebakedModel implements BakedModel {
     protected final Map<Direction, List<BakedQuad>> face_quads;
+    protected boolean ambient_occlusion = true;
 
-    public RebakedModel(Map<Direction, List<BakedQuad>> face_quads) {
+    public RebakedModel(Map<Direction, List<BakedQuad>> face_quads, boolean ambient_occlusion) {
         this.face_quads = face_quads;
+        this.ambient_occlusion = ambient_occlusion;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class RebakedModel implements BakedModel {
 
     @Override
     public boolean useAmbientOcclusion() {
-        return true;
+        return ambient_occlusion;
     }
 
     @Override

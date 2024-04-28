@@ -32,6 +32,8 @@ public abstract class AthenaBakedModelMixin implements DynamicBakedModel, BakedM
 
     @Shadow(remap = false) @Final private Int2ObjectMap<Sprite> textures;
 
+    @Shadow public abstract boolean useAmbientOcclusion();
+
     /**
      * Reuses the emitQuad method to compute the quads to be used by the frame
      *
@@ -77,6 +79,6 @@ public abstract class AthenaBakedModelMixin implements DynamicBakedModel, BakedM
                 }));
         });
 
-        return new RebakedModel(face_quads);
+        return new RebakedModel(face_quads, useAmbientOcclusion());
     }
 }

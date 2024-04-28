@@ -5,6 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import fr.adrien1106.reframed.block.ReFramedBlock;
 import fr.adrien1106.reframed.client.ReFramedClient;
 import fr.adrien1106.reframed.client.model.QuadPosBounds;
+import fr.adrien1106.reframed.client.model.RetexturingBakedModel;
 import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -40,7 +41,7 @@ public class RenderHelper {
      * @param state - the state of the model
      * @param models - list of models on the same block
      */
-    public static void computeInnerCull(BlockState state, List<ForwardingBakedModel> models) {
+    public static void computeInnerCull(BlockState state, List<RetexturingBakedModel> models) {
         if (!(state.getBlock() instanceof ReFramedBlock frame_block)) return;
         Object key = frame_block.getModelCacheKey(state);
         if (INNER_CULL_MAP.asMap().containsKey(new CullElement(frame_block, key, 1))) return;

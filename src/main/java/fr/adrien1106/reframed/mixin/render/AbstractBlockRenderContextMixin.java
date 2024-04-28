@@ -29,7 +29,11 @@ public abstract class AbstractBlockRenderContextMixin {
         )
     )
     private boolean shouldDrawInnerQuad(AbstractBlockRenderContext instance, Direction face, @Local(argsOnly = true) MutableQuadViewImpl quad) {
-        if (face != null || quad.tag() == 0 || !(blockInfo instanceof IBlockRenderInfoMixin info) || info.getThemeIndex() == 0) return isFaceCulled(face);
+        if (face != null
+            || quad.tag() == 0
+            || !(blockInfo instanceof IBlockRenderInfoMixin info)
+            || info.getThemeIndex() == 0
+        ) return isFaceCulled(face);
 
         return !RenderHelper.shouldDrawInnerFace(blockInfo.blockState, blockInfo.blockView, blockInfo.blockPos, quad.tag() >>> 8, info.getThemeIndex());
     }

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface MultiRetexturableModel {
 
-    List<ForwardingBakedModel> models();
+    List<RetexturingBakedModel> models();
 }

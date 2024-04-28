@@ -17,8 +17,8 @@ import java.util.function.Supplier;
 @Environment(EnvType.CLIENT)
 public class DoubleRetexturingBakedModel extends ForwardingBakedModel implements MultiRetexturableModel {
 
-    private final ForwardingBakedModel model_1, model_2;
-    public DoubleRetexturingBakedModel(ForwardingBakedModel model_1, ForwardingBakedModel model_2) {
+    private final RetexturingBakedModel model_1, model_2;
+    public DoubleRetexturingBakedModel(RetexturingBakedModel model_1, RetexturingBakedModel model_2) {
         this.wrapped = model_1.getWrappedModel();
         this.model_1 = model_1;
         this.model_2 = model_2;
@@ -44,7 +44,7 @@ public class DoubleRetexturingBakedModel extends ForwardingBakedModel implements
     }
 
     @Override
-    public List<ForwardingBakedModel> models() {
+    public List<RetexturingBakedModel> models() {
         return List.of(model_1, model_2);
     }
 }

@@ -153,7 +153,14 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			context.popTransform();
 		}
 	}
-	
+
+	public boolean useAmbientOcclusion(BlockRenderView view, BlockPos pos) {
+		if (!(view.getBlockEntity(pos) instanceof ThemeableBlockEntity frame_entity)) return false;
+		CamoAppearance appearance = appearance_manager
+			.getCamoAppearance(view, frame_entity.getTheme(theme_index), pos, theme_index, false);
+		return appearance.getAO(theme_index);
+	}
+
 	protected Mesh getRetexturedMesh(MeshCacheKey key, BlockState state) {
 		if (RETEXTURED_MESH_CACHE.asMap().containsKey(key)) return RETEXTURED_MESH_CACHE.getIfPresent(key);
 		Mesh mesh = transformMesh(key, state);
