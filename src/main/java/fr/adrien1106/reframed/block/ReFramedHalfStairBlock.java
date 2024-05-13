@@ -10,6 +10,8 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -99,6 +101,20 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return HALF_STAIR_VOXELS[state.get(CORNER_FACE) + state.get(CORNER).getID() * 3];
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
+        Corner corner = state.get(CORNER).rotate(rotation);
+        Direction face = state.get(CORNER).getDirection(state.get(CORNER_FACE));
+        return state.with(CORNER, corner).with(CORNER_FACE, corner.getDirectionIndex(rotation.rotate(face)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
+        Corner corner = state.get(CORNER).mirror(mirror);
+        Direction face = state.get(CORNER).getDirection(state.get(CORNER_FACE));
+        return state.with(CORNER, corner).with(CORNER_FACE, corner.getDirectionIndex(mirror.apply(face)));
     }
 
     @Override

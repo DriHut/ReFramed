@@ -7,6 +7,8 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -104,6 +106,20 @@ public class ReFramedWallBlock extends WaterloggableReFramedBlock {
                 shape = VoxelShapes.union(shape, WALL_VOXELS[8 + dir.ordinal()]);
         }
         return shape;
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
+        return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
+                s.with(getWallShape(rotation.rotate(dir)), state.get(getWallShape(dir)))
+            , (prev, next) -> next);
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
+        return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
+                s.with(getWallShape(mirror.apply(dir)), state.get(getWallShape(dir)))
+            , (prev, next) -> next);
     }
 
     public static BlockState getWallState(BlockState state, BlockState top_state, Map<Direction, BlockState> neighbors, VoxelShape top_shape, boolean fs, WorldView world, BlockPos pos) {

@@ -6,6 +6,8 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.enums.WallShape;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -101,6 +103,20 @@ public class ReFramedPillarsWallBlock extends WaterloggableReFramedDoubleBlock {
                 shape = VoxelShapes.union(shape, WALL_VOXELS[1 + (wall_shape.ordinal()-1) * 4 + (dir.ordinal() - 2)]);
         }
         return shape;
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
+        return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
+            s.with(getWallShape(rotation.rotate(dir)), state.get(getWallShape(dir)))
+        , (prev, next) -> next);
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
+        return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
+                s.with(getWallShape(mirror.apply(dir)), state.get(getWallShape(dir)))
+            , (prev, next) -> next);
     }
 
     @Override

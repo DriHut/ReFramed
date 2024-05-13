@@ -1,5 +1,7 @@
 package fr.adrien1106.reframed.util.blocks;
 
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 
@@ -118,5 +120,21 @@ public enum Corner implements StringIdentifiable {
         if (edge.getFirstDirection() != second_direction && edge.getSecondDirection() != second_direction) return second_direction;
         if (edge.getFirstDirection() != third_direction && edge.getSecondDirection() != third_direction) return third_direction;
         return first_direction;
+    }
+
+    public Corner rotate(BlockRotation rotation) {
+        return getByDirections(
+            rotation.rotate(first_direction),
+            rotation.rotate(second_direction),
+            rotation.rotate(third_direction)
+        );
+    }
+
+    public Corner mirror(BlockMirror mirror) {
+        return getByDirections(
+            mirror.apply(first_direction),
+            mirror.apply(second_direction),
+            mirror.apply(third_direction)
+        );
     }
 }

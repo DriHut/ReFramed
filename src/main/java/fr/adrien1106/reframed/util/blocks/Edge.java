@@ -1,5 +1,7 @@
 package fr.adrien1106.reframed.util.blocks;
 
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 
@@ -48,11 +50,17 @@ public enum Edge implements StringIdentifiable {
     public Direction getSecondDirection() {
         return second_direction;
     }
+
     public Direction getRightDirection() {
         return Direction.from(axis, Direction.AxisDirection.NEGATIVE);
     }
+
     public Direction getLeftDirection() {
         return Direction.from(axis, Direction.AxisDirection.POSITIVE);
+    }
+
+    public Direction getFace() {
+        return first_direction == Direction.UP || first_direction == Direction.DOWN ? second_direction : first_direction;
     }
 
     public boolean hasDirection(Direction direction) {
@@ -96,5 +104,19 @@ public enum Edge implements StringIdentifiable {
         return Arrays.stream(Edge.values())
             .filter(value -> value.name().equals(name))
             .findFirst().orElse(Edge.NORTH_DOWN);
+    }
+
+    public Edge rotate(BlockRotation rotation) {
+        return getByDirections(
+            rotation.rotate(first_direction),
+            rotation.rotate(second_direction)
+        );
+    }
+
+    public Edge mirror(BlockMirror mirror) {
+        return getByDirections(
+            mirror.apply(first_direction),
+            mirror.apply(second_direction)
+        );
     }
 }

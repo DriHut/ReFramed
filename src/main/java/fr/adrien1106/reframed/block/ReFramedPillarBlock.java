@@ -4,16 +4,15 @@ import fr.adrien1106.reframed.util.VoxelHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 import static net.minecraft.state.property.Properties.AXIS;
 
@@ -32,19 +31,7 @@ public class ReFramedPillarBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public boolean canReplace(BlockState state, ItemPlacementContext context) {
-        return !(context.getPlayer().isSneaking()
-            || !(context.getStack().getItem() instanceof BlockItem block_item)
-            || !(
-                block_item.getBlock() == this
-                && state.get(AXIS) != context.getSide().getAxis()
-            )
-        );
-    }
-
-    @Override
     public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
-        // TODO: PILLARS WALL
         return super.getPlacementState(ctx).with(AXIS, ctx.getSide().getAxis());
     }
 
@@ -58,9 +45,13 @@ public class ReFramedPillarBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
-//        if (new_state.getBlock() == ReFramed.PILLARS_WALL) return Map.of(1, 1); // TODO: PILLARS WALL
-        return super.getThemeMap(state, new_state);
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
+        return state.with(AXIS, rotation.rotate(Direction.get(Direction.AxisDirection.POSITIVE, state.get(AXIS))).getAxis());
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
+        return state.with(AXIS, mirror.apply(Direction.get(Direction.AxisDirection.POSITIVE, state.get(AXIS))).getAxis());
     }
 
     static {

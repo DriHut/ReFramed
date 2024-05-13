@@ -11,6 +11,8 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -93,6 +95,31 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return getStairShape(state.get(EDGE), state.get(STAIR_SHAPE));
+	}
+
+	@Override
+	public BlockState rotate(BlockState state, BlockRotation rotation) {
+		Edge prev_edge = state.get(EDGE);
+		Edge edge = prev_edge.rotate(rotation);
+        if (prev_edge.getAxis() == Direction.Axis.Y) return state.with(EDGE, edge);
+
+        if (prev_edge.getFace().getDirection() == edge.getFace().getDirection()) // 90° rotations
+            state = state.with(STAIR_SHAPE, state.get(STAIR_SHAPE).mirror());
+        else state = state.with(STAIR_SHAPE, state.get(STAIR_SHAPE).flip());
+
+        if (prev_edge.getAxis() == edge.getAxis()) // 180° rotation
+            state = state.with(STAIR_SHAPE, state.get(STAIR_SHAPE).mirror());
+
+		return state.with(EDGE, edge);
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, BlockMirror mirror) {
+		Edge prev_edge = state.get(EDGE);
+		Edge edge = prev_edge.mirror(mirror);
+		return state
+            .with(STAIR_SHAPE, prev_edge == edge ? state.get(STAIR_SHAPE).mirror() : state.get(STAIR_SHAPE).flip())
+            .with(EDGE, edge);
 	}
 
 	public static VoxelShape getStairShape(Edge edge, StairShape shape) {
