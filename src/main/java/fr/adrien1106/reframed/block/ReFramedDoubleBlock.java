@@ -79,7 +79,7 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!canUse(world, pos, player)) return superUse(state, world, pos, player, hand, hit);
+        if (!canUse(world, pos, player)) return ActionResult.PASS;
         ActionResult result = BlockHelper.useUpgrade(state, world, pos, player, hand);
         if (result.isAccepted()) return result;
         return BlockHelper.useCamo(state, world, pos, player, hand, hit, getHitShape(state, hit));

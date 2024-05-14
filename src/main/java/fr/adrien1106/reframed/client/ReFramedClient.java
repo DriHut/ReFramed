@@ -117,6 +117,19 @@ public class ReFramedClient implements ClientModInitializer {
 		HELPER.addReFramedModel("pillars_wall_inventory"    , HELPER.autoDouble(ReFramed.id("block/pillar"), ReFramed.id("block/wall/full/inventory/sides")));
 		HELPER.addReFramedModel("pillars_wall_low"          , HELPER.autoDouble(ReFramed.id("block/wall/full/pillar/low"), ReFramed.id("block/wall/full/side/low")));
 		HELPER.addReFramedModel("pillars_wall_tall"         , HELPER.autoDouble(ReFramed.id("block/wall/full/pillar/tall"), ReFramed.id("block/wall/full/side/tall")));
+        // PANE
+        HELPER.addReFramedModel("pane_inventory"            , HELPER.auto(ReFramed.id("block/pane")));
+        HELPER.addReFramedModel("pane_post"                 , HELPER.auto(new Identifier("block/glass_pane_post")));
+        HELPER.addReFramedModel("pane_side"                 , HELPER.auto(new Identifier("block/glass_pane_side")));
+        HELPER.addReFramedModel("pane_side_alt"             , HELPER.auto(new Identifier("block/glass_pane_side_alt")));
+        HELPER.addReFramedModel("pane_noside"               , HELPER.auto(new Identifier("block/glass_pane_noside")));
+        HELPER.addReFramedModel("pane_noside_alt"           , HELPER.auto(new Identifier("block/glass_pane_noside_alt")));
+        // TRAPDOOR
+        HELPER.addReFramedModel("trapdoor_open"             , HELPER.auto(new Identifier("block/oak_trapdoor_open")));
+        HELPER.addReFramedModel("trapdoor_bottom"           , HELPER.auto(new Identifier("block/oak_trapdoor_bottom")));
+        HELPER.addReFramedModel("trapdoor_top"              , HELPER.auto(new Identifier("block/oak_trapdoor_top")));
+        // DOOR
+        HELPER.addReFramedModel("door_inventory"            , HELPER.auto(ReFramed.id("block/door")));
 
 
 		//item model assignments (in lieu of models/item/___.json)
@@ -136,10 +149,13 @@ public class ReFramedClient implements ClientModInitializer {
 		HELPER.assignItemModel("pillar"                , ReFramed.PILLAR);
 		HELPER.assignItemModel("pillars_wall_inventory", ReFramed.PILLARS_WALL);
 		HELPER.assignItemModel("wall_inventory"        , ReFramed.WALL);
+        HELPER.assignItemModel("pane_inventory"        , ReFramed.PANE);
+        HELPER.assignItemModel("trapdoor_bottom"       , ReFramed.TRAPDOOR);
+        HELPER.assignItemModel("door_inventory"        , ReFramed.DOOR);
 	}
 	
 	private void privateInit() {
-		//set up some magic to force chunk rerenders when you change a template (see TemplateEntity)
+		//set up some magic to force chunk re-renders when you change a template (see TemplateEntity)
 		ReFramed.chunkRerenderProxy = (world, pos) -> {
 			if(world == MinecraftClient.getInstance().world) {
 				MinecraftClient.getInstance().worldRenderer.scheduleBlockRender(

@@ -42,9 +42,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 		super(settings);
 		setDefaultState(getDefaultState().with(LIGHT, false));
 	}
-	
-	//For addon devs: override this so your blocks don't end up trying to place my block entity, my BlockEntityType only handles blocks internal to the mod
-	//Just make your own BlockEntityType, it's fine, you can even use the same ReFramedEntity class
+
 	@Override
 	public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 		return ReFramed.REFRAMED_BLOCK_ENTITY.instantiate(pos, state);
@@ -63,16 +61,11 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!canUse(world, pos, player)) return superUse(state, world, pos, player, hand, hit);
+		if (!canUse(world, pos, player)) return ActionResult.PASS;
 		ActionResult result = BlockHelper.useUpgrade(state, world, pos, player, hand);
 		if (result.isAccepted()) return result;
 		return BlockHelper.useCamo(state, world, pos, player, hand, hit, 1);
 
-	}
-
-	// don't like this but might be useful
-	protected ActionResult superUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		return super.onUse(state, world, pos, player, hand, hit);
 	}
 
 	protected boolean canUse(World world, BlockPos pos, PlayerEntity player) {

@@ -22,11 +22,8 @@ or based on preferences add the person(s) to the project
 ### What Shapes are planed to be added
 Currently, the list of shapes to be added is pretty simple as the mod is still under development:
 - Fence
-- Pane
 - Button
 - Pressure Plate
-- Trapdoor
-- Door
 - Carpet (maybe redundant with Layer)
 - Post
 - Half Slab (maybe redundant with Layer)

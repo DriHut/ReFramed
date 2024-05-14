@@ -37,7 +37,7 @@ public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
-	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, HALF_STAIR, STAIRS_CUBE, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, SLAB, SLABS_CUBE, STEP, STEPS_SLAB, LAYER, PILLAR, PILLARS_WALL, WALL;
+	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, HALF_STAIR, STAIRS_CUBE, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, SLAB, SLABS_CUBE, STEP, STEPS_SLAB, LAYER, PILLAR, PILLARS_WALL, WALL, PANE, TRAPDOOR, DOOR;
 
 	public static final ArrayList<Item> ITEMS = new ArrayList<>();
 	public static Item HAMMER, SCREWDRIVER, BLUEPRINT, BLUEPRINT_WRITTEN;
@@ -67,6 +67,9 @@ public class ReFramed implements ModInitializer {
 		PILLAR            = registerBlock("pillar"            , new ReFramedPillarBlock(cp(Blocks.OAK_FENCE)));
 		PILLARS_WALL      = registerBlock("pillars_wall"      , new ReFramedPillarsWallBlock(cp(Blocks.OAK_FENCE)));
 		WALL              = registerBlock("wall"              , new ReFramedWallBlock(cp(Blocks.OAK_FENCE)));
+        PANE              = registerBlock("pane"              , new ReFramedPaneBlock(cp(Blocks.OAK_FENCE)));
+        TRAPDOOR          = registerBlock("trapdoor"          , new ReFramedTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR)));
+        DOOR              = registerBlock("door"              , new ReFramedDoorBlock(cp(Blocks.OAK_DOOR)));
 
 		HAMMER            = registerItem("hammer"             , new ReFramedHammerItem(new Item.Settings().maxCount(1)));
 		SCREWDRIVER       = registerItem("screwdriver"        , new ReFramedScrewdriverItem(new Item.Settings().maxCount(1)));
