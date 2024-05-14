@@ -4,7 +4,6 @@ import fr.adrien1106.reframed.ReFramed;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancement.Advancement;
-import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.AdvancementRewards;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
@@ -21,7 +20,7 @@ public class GAdvancement extends FabricAdvancementProvider {
     }
 
     @Override
-    public void generateAdvancement(Consumer<AdvancementEntry> consumer) {
+    public void generateAdvancement(Consumer<Advancement> consumer) {
         Advancement.Builder builder = Advancement.Builder.create()
             .display(
                 Items.CAKE,

@@ -8,12 +8,14 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.data.client.BlockStateSupplier;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.util.Identifier;
+
+import java.util.function.Consumer;
 
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
 import static fr.adrien1106.reframed.util.blocks.Corner.*;
@@ -23,7 +25,7 @@ import static net.minecraft.data.client.VariantSettings.Rotation.*;
 public class SmallCube implements RecipeSetter, BlockStateProvider {
 
     @Override
-    public void setRecipe(RecipeExporter exporter, ItemConvertible convertible) {
+    public void setRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible convertible) {
         RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, convertible, ReFramed.CUBE, 8);
         ShapelessRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, convertible, 8)

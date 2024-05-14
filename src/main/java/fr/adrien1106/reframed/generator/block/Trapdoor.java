@@ -9,7 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.data.client.BlockStateSupplier;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.ItemConvertible;
@@ -17,13 +17,15 @@ import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
+import java.util.function.Consumer;
+
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.*;
 
 public class Trapdoor implements RecipeSetter, BlockStateProvider {
 
     @Override
-    public void setRecipe(RecipeExporter exporter, ItemConvertible convertible) {
+    public void setRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible convertible) {
         RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, convertible, ReFramed.CUBE, 2);
         ShapedRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, convertible, 2)

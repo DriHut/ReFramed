@@ -11,11 +11,12 @@ import fr.adrien1106.reframed.item.ReFramedHammerItem;
 import fr.adrien1106.reframed.item.ReFramedScrewdriverItem;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.item.ItemConvertible;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class GRecipe extends FabricRecipeProvider {
     private static final Map<Class<? extends ItemConvertible>, RecipeSetter> providers = new HashMap<>();
@@ -49,7 +50,7 @@ public class GRecipe extends FabricRecipeProvider {
     }
 
     @Override
-    public void generate(RecipeExporter exporter) {
+    public void generate(Consumer<RecipeJsonProvider> exporter) {
         ReFramed.BLOCKS.forEach(block -> {
             if (providers.containsKey(block.getClass())) providers.get(block.getClass()).setRecipe(exporter, block);
         });

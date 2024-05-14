@@ -7,7 +7,6 @@ import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
@@ -21,10 +20,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
-import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.BiConsumer;
 
 import static net.minecraft.state.property.Properties.*;
 
@@ -104,16 +100,6 @@ public class ReFramedTrapdoorBlock extends WaterloggableReFramedBlock {
             case LAND, AIR -> state.get(OPEN);
             case WATER -> state.get(WATERLOGGED);
         };
-    }
-
-    @Override
-    public void onExploded(BlockState state, World world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stack_merger) {
-        if (explosion.getDestructionType() == Explosion.DestructionType.TRIGGER_BLOCK
-                && !world.isClient()
-                && !state.get(POWERED)
-        ) flip(state, world, pos, null);
-
-        super.onExploded(state, world, pos, explosion, stack_merger);
     }
 
     private void flip(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player) {

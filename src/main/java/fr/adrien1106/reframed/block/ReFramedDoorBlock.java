@@ -29,10 +29,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.event.GameEvent;
-import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.BiConsumer;
 
 import static net.minecraft.state.property.Properties.*;
 
@@ -112,7 +109,7 @@ public class ReFramedDoorBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         if (!world.isClient() && (player.isCreative() || !player.canHarvest(state))) {
             DoubleBlockHalf half = state.get(DOUBLE_BLOCK_HALF);
             BlockPos other_pos = half == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
@@ -123,7 +120,7 @@ public class ReFramedDoorBlock extends WaterloggableReFramedBlock {
             }
         }
 
-        return super.onBreak(world, pos, state, player);
+        super.onBreak(world, pos, state, player);
     }
 
     @Override
@@ -167,16 +164,6 @@ public class ReFramedDoorBlock extends WaterloggableReFramedBlock {
             case LAND, AIR -> state.get(OPEN);
             case WATER -> false;
         };
-    }
-
-    @Override
-    public void onExploded(BlockState state, World world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stack_merger) {
-        if (explosion.getDestructionType() == Explosion.DestructionType.TRIGGER_BLOCK
-                && !world.isClient()
-                && !state.get(POWERED)
-        ) flip(state, world, pos, null);
-
-        super.onExploded(state, world, pos, explosion, stack_merger);
     }
 
     private void flip(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player) {

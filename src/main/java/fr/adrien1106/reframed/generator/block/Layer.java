@@ -7,13 +7,15 @@ import fr.adrien1106.reframed.generator.RecipeSetter;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+
+import java.util.function.Consumer;
 
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
 import static net.minecraft.state.property.Properties.FACING;
@@ -22,7 +24,7 @@ import static net.minecraft.state.property.Properties.LAYERS;
 public class Layer implements RecipeSetter, BlockStateProvider {
 
     @Override
-    public void setRecipe(RecipeExporter exporter, ItemConvertible convertible) {
+    public void setRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible convertible) {
         RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, convertible, ReFramed.CUBE, 8);
         ShapedRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, convertible, 16)

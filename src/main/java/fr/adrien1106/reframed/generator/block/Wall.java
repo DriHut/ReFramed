@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.data.client.BlockStateSupplier;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.ItemConvertible;
@@ -19,6 +19,7 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static net.minecraft.block.enums.WallShape.*;
 import static net.minecraft.data.client.VariantSettings.Rotation.*;
@@ -27,7 +28,7 @@ import static net.minecraft.state.property.Properties.*;
 public class Wall implements RecipeSetter, TagGetter, BlockStateProvider {
 
     @Override
-    public void setRecipe(RecipeExporter exporter, ItemConvertible convertible) {
+    public void setRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible convertible) {
         RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, convertible, ReFramed.CUBE, 1);
         ShapedRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, convertible, 4)
