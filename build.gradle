@@ -106,11 +106,11 @@ dependencies {
 //	modRuntimeOnly "maven.modrinth:indium:${project.indium_version}+mc${project.minecraft_version}"
 //	modRuntimeOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
 
-	// Athena for connected texture
+	// Athena for connected textures
 	modCompileOnly "earth.terrarium.athena:athena-fabric-${project.minecraft_version}:${project.athena_version}"
 	modRuntimeOnly "earth.terrarium.athena:athena-fabric-${project.minecraft_version}:${project.athena_version}"
 
-	// Continuity for connectedTextures
+	// Continuity for connected textures
 	modCompileOnly "maven.modrinth:continuity:${project.continuity_version}"
 	modRuntimeOnly "maven.modrinth:continuity:${project.continuity_version}"
 
@@ -200,8 +200,8 @@ publishing {
 modrinth {
 	token = getEnv("MODRINTH_TOKEN", local.getProperty("modrinth_token"))
 	projectId = project.modrinth_id
-	versionNumber = project.mod_version
-	versionName = "${project.archives_base_name} ${project.mod_version}"
+	versionNumber = "${project.mod_version}-${project.minecraft_version}"
+	versionName = "${project.archives_base_name} ${project.mod_version}-${project.minecraft_version}"
 	versionType = project.mod_version.endsWith('SNAPSHOT') ? 'beta' : 'release'
 	uploadFile = remapJar
 	gameVersions = [project.minecraft_version]
