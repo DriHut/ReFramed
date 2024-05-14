@@ -89,6 +89,6 @@ public abstract class ContinuityCTMBakedModelMixin extends ForwardingBakedModel 
         transform.getProcessingContext().reset(); // reset instead of outputting to emitter
         transform.invokeReset();
 
-        return new RebakedModel(face_quads);
+        return new RebakedModel(face_quads, useAmbientOcclusion());
     }
 }

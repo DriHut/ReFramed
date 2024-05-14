@@ -1,0 +1,19 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"particle": "#side"
+	},
+	"elements": [
+		{
+			"from": [5, 0, 4],
+			"to": [11, 14, 12],
+			"faces": {
+				"east": {"uv": [4, 2, 12, 16], "texture": "#side"},
+				"west": {"uv": [4, 2, 12, 16], "texture": "#side"},
+				"up": {"uv": [5, 4, 11, 12], "texture": "#top"},
+				"down": {"uv": [5, 4, 11, 12], "texture": "#bottom", "cullface": "down"}
+			}
+		}
+	]
+}

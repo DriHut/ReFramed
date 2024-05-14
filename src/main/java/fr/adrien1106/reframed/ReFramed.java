@@ -28,17 +28,16 @@ import java.util.stream.Stream;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
 /**
- * TODO make block pairable by right click                                 -> for v1.6
- * TODO Dynamic Ambient Occlusion                                          -> for v1.6
- * TODO add minecraft models like wall fence etc                           -> for v1.6
- * TODO better connected textures                                          -> maybe v1.6 ?
- * TODO support continuity overlays                                        -> not scheduled
+ * TODO Dynamic Ambient Occlusion                                            -> for v1.6
+ * TODO add minecraft models like wall fence etc                             -> for v1.6
+ * TODO better connected textures                                            -> maybe v1.6 ?
+ * TODO support continuity overlays                                          -> not scheduled
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
-	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, HALF_STAIR, STAIRS_CUBE, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, SLAB, SLABS_CUBE, STEP, STEPS_SLAB, LAYER;
+	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, HALF_STAIR, STAIRS_CUBE, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, SLAB, SLABS_CUBE, STEP, STEPS_SLAB, LAYER, PILLAR, PILLARS_WALL, WALL, PANE, TRAPDOOR, DOOR;
 
 	public static final ArrayList<Item> ITEMS = new ArrayList<>();
 	public static Item HAMMER, SCREWDRIVER, BLUEPRINT, BLUEPRINT_WRITTEN;
@@ -65,6 +64,12 @@ public class ReFramed implements ModInitializer {
 		SLABS_CUBE        = registerBlock("slabs_cube"        , new ReFramedSlabsCubeBlock(cp(Blocks.OAK_SLAB)));
 		STEP              = registerBlock("step"              , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
 		STEPS_SLAB        = registerBlock("steps_slab"        , new ReFramedStepsSlabBlock(cp(Blocks.OAK_SLAB)));
+		PILLAR            = registerBlock("pillar"            , new ReFramedPillarBlock(cp(Blocks.OAK_FENCE)));
+		PILLARS_WALL      = registerBlock("pillars_wall"      , new ReFramedPillarsWallBlock(cp(Blocks.OAK_FENCE)));
+		WALL              = registerBlock("wall"              , new ReFramedWallBlock(cp(Blocks.OAK_FENCE)));
+        PANE              = registerBlock("pane"              , new ReFramedPaneBlock(cp(Blocks.OAK_FENCE)));
+        TRAPDOOR          = registerBlock("trapdoor"          , new ReFramedTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR)));
+        DOOR              = registerBlock("door"              , new ReFramedDoorBlock(cp(Blocks.OAK_DOOR)));
 
 		HAMMER            = registerItem("hammer"             , new ReFramedHammerItem(new Item.Settings().maxCount(1)));
 		SCREWDRIVER       = registerItem("screwdriver"        , new ReFramedScrewdriverItem(new Item.Settings().maxCount(1)));

@@ -2,17 +2,11 @@ package fr.adrien1106.reframed.item;
 
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.block.ReFramedDoubleBlock;
-import fr.adrien1106.reframed.generator.RecipeSetter;
 import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Properties;
@@ -21,9 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.util.function.Consumer;
-
-public class ReFramedScrewdriverItem extends Item implements RecipeSetter {
+public class ReFramedScrewdriverItem extends Item {
 
     public ReFramedScrewdriverItem(Settings settings) {
         super(settings);
@@ -62,19 +54,5 @@ public class ReFramedScrewdriverItem extends Item implements RecipeSetter {
         ), theme_index);
         ReFramed.chunkRerenderProxy.accept(world, pos);
         return ActionResult.SUCCESS;
-    }
-
-    @Override
-    public void setRecipe(Consumer<RecipeJsonProvider> exporter) {
-        ShapedRecipeJsonBuilder
-            .create(RecipeCategory.BUILDING_BLOCKS, this)
-            .pattern("  I")
-            .pattern(" I ")
-            .pattern("C  ")
-            .input('I', Items.IRON_INGOT)
-            .input('C', ReFramed.CUBE)
-            .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
-            .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
-            .offerTo(exporter);
     }
 }

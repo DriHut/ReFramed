@@ -16,7 +16,6 @@ public class ComputedAppearance extends CamoAppearance {
         super(ao_material, material, id);
         this.appearance = appearance;
     }
-
     @Override
     public @NotNull List<SpriteProperties> getSprites(Direction dir, int model_id) {
         return appearance.sprites().get(dir);
@@ -28,6 +27,12 @@ public class ComputedAppearance extends CamoAppearance {
         if (index != 0) index = properties.size() - index;
         return properties.get(index).has_colors();
     }
+
+    @Override
+    public boolean getAO(int model_id) {
+        return appearance.use_ao();
+    }
+
 
     @Override
     public boolean equals(Object o) {

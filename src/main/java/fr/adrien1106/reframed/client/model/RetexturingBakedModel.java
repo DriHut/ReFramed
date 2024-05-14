@@ -1,6 +1,7 @@
 package fr.adrien1106.reframed.client.model;
 
-import fr.adrien1106.reframed.block.ReFramedBlock;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import fr.adrien1106.reframed.block.ReFramedEntity;
 import fr.adrien1106.reframed.client.ReFramedClient;
 import fr.adrien1106.reframed.mixin.MinecraftAccessor;
@@ -28,39 +29,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 public abstract class RetexturingBakedModel extends ForwardingBakedModel {
-	public RetexturingBakedModel(BakedModel base_model, CamoAppearanceManager tam, int theme_index, ModelBakeSettings settings, BlockState item_state, boolean ao) {
+	public RetexturingBakedModel(BakedModel base_model, CamoAppearanceManager tam, int theme_index, ModelBakeSettings settings, BlockState item_state) {
 		this.wrapped = base_model; //field from the superclass; vanilla getQuads etc. will delegate through to this
 
 		this.appearance_manager = tam;
 		this.theme_index = theme_index;
 		this.uv_lock = settings.isUvLocked();
 		this.item_state = item_state;
-		this.ao = ao;
-
-		int cache_size = 64; // default is 64 why don't ask me and it should get overwritten
-		if (item_state.getBlock() instanceof ReFramedBlock frame_block) cache_size = frame_block.getModelStateCount() + 1;
-		BASE_MESH_CACHE = new Object2ObjectLinkedOpenHashMap<>(cache_size, 0.25f) {
-			@Override
-			protected void rehash(int v) {}
-		};
 	}
 
 	protected final CamoAppearanceManager appearance_manager;
 	protected final int theme_index;
 	protected final boolean uv_lock;
-	protected final boolean ao;
 	protected final BlockState item_state;
 
 	protected record MeshCacheKey(Object state_key, CamoAppearance appearance, int model_id) {}
 	/** cache that store retextured models */
-	protected final Object2ObjectLinkedOpenHashMap<MeshCacheKey, Mesh> RETEXTURED_MESH_CACHE =
-		new Object2ObjectLinkedOpenHashMap<>(128, 0.25f) {
+	// self culling cache of the models not made thread local so that it is only computed once
+	protected final Cache<MeshCacheKey, Mesh> RETEXTURED_MESH_CACHE = CacheBuilder.newBuilder().maximumSize(256).build();
+
+	/** cache that stores the base meshes which has the size of the amount of models */
+	protected final Object2ObjectLinkedOpenHashMap<Object, Mesh> BASE_MESH_CACHE =
+		new Object2ObjectLinkedOpenHashMap<>(2, 0.25f) {
 			@Override
 			protected void rehash(int v) {}
 		};
-
-	/** cache that stores the base meshes which has the size of the amount of models */
-	protected final Object2ObjectLinkedOpenHashMap<Object, Mesh> BASE_MESH_CACHE;
 
 	protected static final Direction[] DIRECTIONS_AND_NULL;
 	static {
@@ -88,17 +81,19 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	public Sprite getParticleSprite() {
 		return appearance_manager.getDefaultAppearance(theme_index).getSprites(Direction.UP, 0).get(0).sprite();
 	}
-	
+
+	public int getThemeIndex() {
+		return theme_index;
+	}
+
 	@Override
 	public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		// skip render if block not a frame (which should always be the case
-		if (!(state.getBlock() instanceof ReFramedBlock frame_block)) return;
 		BlockState theme = (world.getBlockEntity(pos) instanceof ThemeableBlockEntity s) ? s.getTheme(theme_index) : null;
 		QuadEmitter quad_emitter = context.getEmitter();
 		if(theme == null || theme.isAir()) {
 			getRetexturedMesh(
 				new MeshCacheKey(
-					frame_block.getModelCacheKey(state),
+					hashCode(),
 					appearance_manager.getDefaultAppearance(theme_index),
 					0
 				),
@@ -114,7 +109,9 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		if (camo instanceof WeightedComputedAppearance wca) model_id = wca.getAppearanceIndex(seed);
 
 		int tint = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(theme, world, pos, 0);
-		Mesh untintedMesh = getRetexturedMesh(new MeshCacheKey(frame_block.getModelCacheKey(state), camo, model_id), state);
+		MeshCacheKey key = new MeshCacheKey(hashCode(), camo, model_id);
+		// do not clutter the cache with single-use meshes
+		Mesh untintedMesh = camo.hashCode() == -1 ? transformMesh(key, state) : getRetexturedMesh(key, state);
 		
 		//The specific tint might vary a lot; imagine grass color smoothly changing. Trying to bake the tint into
 		//the cached mesh will pollute it with a ton of single-use meshes with only slightly different colors.
@@ -153,11 +150,18 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			context.popTransform();
 		}
 	}
-	
+
+	public boolean useAmbientOcclusion(BlockRenderView view, BlockPos pos) {
+		if (!(view.getBlockEntity(pos) instanceof ThemeableBlockEntity frame_entity)) return false;
+		CamoAppearance appearance = appearance_manager
+			.getCamoAppearance(view, frame_entity.getTheme(theme_index), pos, theme_index, false);
+		return appearance.getAO(theme_index);
+	}
+
 	protected Mesh getRetexturedMesh(MeshCacheKey key, BlockState state) {
-		if (RETEXTURED_MESH_CACHE.containsKey(key)) return RETEXTURED_MESH_CACHE.getAndMoveToFirst(key);
+		if (RETEXTURED_MESH_CACHE.asMap().containsKey(key)) return RETEXTURED_MESH_CACHE.getIfPresent(key);
 		Mesh mesh = transformMesh(key, state);
-		RETEXTURED_MESH_CACHE.putAndMoveToFirst(key, mesh);
+		RETEXTURED_MESH_CACHE.put(key, mesh);
 		return mesh;
 	}
 	
@@ -170,7 +174,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 			int i = -1;
 			do {
 				emitter.copyFrom(quad);
-				i = key.appearance.transformQuad(emitter, i, quad_index.get(), key.model_id, ao, uv_lock);
+				i = key.appearance.transformQuad(emitter, i, quad_index.get(), key.model_id, uv_lock);
 			} while (i > 0);
 			// kinda weird to do it like that but other directions don't use the quad_index so it doesn't matter
 			if (quad.cullFace() == null) quad_index.getAndIncrement();

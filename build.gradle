@@ -4,7 +4,7 @@ import fr.altarik.CreateTag
 
 plugins {
 	id "com.modrinth.minotaur" version "2.+"
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'fabric-loom' version '1.6-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -14,7 +14,7 @@ try {
 	local.load(new FileInputStream(rootProject.file("local.properties")))
 } catch (IOException ignored) {}
 
-version = project.mod_version + "-" + project.minecraft_version
+version = project.mod_version
 group = project.maven_group
 
 
@@ -102,15 +102,15 @@ dependencies {
 
 	// Indium and sodium for sodium support
 	modCompileOnly "maven.modrinth:indium:${project.indium_version}"
-	modCompileOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
-//	modRuntimeOnly "maven.modrinth:indium:"
-//	modRuntimeOnly "maven.modrinth:sodium:mc${project.minecraft_version}-${project.sodium_version}"
+	modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
+	modRuntimeOnly "maven.modrinth:indium:${project.indium_version}"
+	modRuntimeOnly "maven.modrinth:sodium:${project.sodium_version}"
 
-	// Athena for connected texture
+	// Athena for connected textures
 	modCompileOnly "earth.terrarium.athena:athena-fabric-${project.minecraft_version}:${project.athena_version}"
 	modRuntimeOnly "earth.terrarium.athena:athena-fabric-${project.minecraft_version}:${project.athena_version}"
 
-	// Continuity for connectedTextures
+	// Continuity for connected textures
 	modCompileOnly "maven.modrinth:continuity:${project.continuity_version}"
 	modRuntimeOnly "maven.modrinth:continuity:${project.continuity_version}"
 
@@ -210,6 +210,7 @@ modrinth {
 		required.project "fabric-api"
 		optional.version "b1ZV3DIJ", "${project.athena_version}"
 		optional.version "Orvt0mRa", "${project.indium_version}"
+		optional.version "1IjD5062", "${project.continuity_version}"
 	}
 }
 

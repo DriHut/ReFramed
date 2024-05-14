@@ -33,11 +33,10 @@ public class UnbakedAutoRetexturedModel extends UnbakedRetexturedModel {
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> texture_getter, ModelBakeSettings bake_settings, Identifier identifier) {
 		return new RetexturingBakedModel(
 			baker.bake(parent, bake_settings),
-			ReFramedClient.HELPER.getCamoApperanceManager(texture_getter),
+			ReFramedClient.HELPER.getCamoAppearanceManager(texture_getter),
 			theme_index,
 			bake_settings,
-			item_state,
-			ao
+			item_state
 		) {
 			protected Mesh convertModel(BlockState state) {
 				Renderer r = ReFramedClient.HELPER.getFabricRenderer();

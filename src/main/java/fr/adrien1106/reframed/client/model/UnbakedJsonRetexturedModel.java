@@ -41,11 +41,10 @@ public class UnbakedJsonRetexturedModel extends UnbakedRetexturedModel {
 
 		return new RetexturingBakedModel(
 			baker.bake(parent, bake_settings),
-			ReFramedClient.HELPER.getCamoApperanceManager(spriteLookup),
+			ReFramedClient.HELPER.getCamoAppearanceManager(spriteLookup),
 			theme_index,
 			bake_settings,
-			item_state,
-			ao
+			item_state
 		) {
 			protected Mesh convertModel(BlockState state) {
 				Renderer r = ReFramedClient.HELPER.getFabricRenderer();

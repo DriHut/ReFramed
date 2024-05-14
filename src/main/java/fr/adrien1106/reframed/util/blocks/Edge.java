@@ -1,5 +1,7 @@
 package fr.adrien1106.reframed.util.blocks;
 
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 
@@ -48,19 +50,17 @@ public enum Edge implements StringIdentifiable {
     public Direction getSecondDirection() {
         return second_direction;
     }
+
     public Direction getRightDirection() {
-        return switch (axis) {
-            case X -> Direction.WEST;
-            case Y -> Direction.DOWN;
-            case Z -> Direction.SOUTH;
-        };
+        return Direction.from(axis, Direction.AxisDirection.NEGATIVE);
     }
+
     public Direction getLeftDirection() {
-        return switch (axis) {
-            case X -> Direction.EAST;
-            case Y -> Direction.UP;
-            case Z -> Direction.NORTH;
-        };
+        return Direction.from(axis, Direction.AxisDirection.POSITIVE);
+    }
+
+    public Direction getFace() {
+        return first_direction == Direction.UP || first_direction == Direction.DOWN ? second_direction : first_direction;
     }
 
     public boolean hasDirection(Direction direction) {
@@ -68,14 +68,30 @@ public enum Edge implements StringIdentifiable {
             || this.second_direction.equals(direction);
     }
 
+    public Direction.Axis getAxis() {
+        return this.axis;
+    }
+
     public int getID() {
         return this.ID;
+    }
+
+    public Edge opposite() {
+        return getByDirections(first_direction.getOpposite(), second_direction.getOpposite());
     }
 
     public static Edge getByDirections(Direction direction_1, Direction direction_2) {
         return Arrays.stream(Edge.values())
             .filter(value -> value.hasDirection(direction_1) && value.hasDirection(direction_2))
             .findFirst().orElse(Edge.NORTH_DOWN);
+    }
+
+    public boolean isSide(Direction side) {
+        return getRightDirection() == side || getLeftDirection() == side;
+    }
+
+    public Direction getOtherDirection(Direction direction) {
+        return first_direction == direction ? second_direction : first_direction;
     }
 
     public static Edge fromId(int id) {
@@ -88,5 +104,19 @@ public enum Edge implements StringIdentifiable {
         return Arrays.stream(Edge.values())
             .filter(value -> value.name().equals(name))
             .findFirst().orElse(Edge.NORTH_DOWN);
+    }
+
+    public Edge rotate(BlockRotation rotation) {
+        return getByDirections(
+            rotation.rotate(first_direction),
+            rotation.rotate(second_direction)
+        );
+    }
+
+    public Edge mirror(BlockMirror mirror) {
+        return getByDirections(
+            mirror.apply(first_direction),
+            mirror.apply(second_direction)
+        );
     }
 }

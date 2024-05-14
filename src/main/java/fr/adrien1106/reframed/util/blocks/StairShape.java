@@ -48,4 +48,31 @@ public enum StairShape implements StringIdentifiable {
             .findFirst().orElse(StairShape.STRAIGHT);
     }
 
+    public StairShape mirror() {
+        return switch (this) {
+            case STRAIGHT -> STRAIGHT;
+            case INNER_RIGHT -> INNER_LEFT;
+            case INNER_LEFT -> INNER_RIGHT;
+            case OUTER_RIGHT -> OUTER_LEFT;
+            case OUTER_LEFT -> OUTER_RIGHT;
+            case FIRST_OUTER_RIGHT -> FIRST_OUTER_LEFT;
+            case FIRST_OUTER_LEFT -> FIRST_OUTER_RIGHT;
+            case SECOND_OUTER_RIGHT -> SECOND_OUTER_LEFT;
+            case SECOND_OUTER_LEFT -> SECOND_OUTER_RIGHT;
+        };
+    }
+
+    public StairShape flip() {
+        return switch (this) {
+            case STRAIGHT -> STRAIGHT;
+            case INNER_RIGHT -> INNER_RIGHT;
+            case INNER_LEFT -> INNER_LEFT;
+            case OUTER_RIGHT -> OUTER_RIGHT;
+            case OUTER_LEFT -> OUTER_LEFT;
+            case FIRST_OUTER_RIGHT -> SECOND_OUTER_RIGHT;
+            case FIRST_OUTER_LEFT -> SECOND_OUTER_LEFT;
+            case SECOND_OUTER_RIGHT -> FIRST_OUTER_RIGHT;
+            case SECOND_OUTER_LEFT -> FIRST_OUTER_LEFT;
+        };
+    }
 }

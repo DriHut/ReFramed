@@ -49,6 +49,14 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
         return 0;
     }
 
+    public boolean matchesShape(Vec3d hit, BlockPos pos, BlockState state, int i) {
+        Vec3d rel = BlockHelper.getRelativePos(hit, pos);
+        return BlockHelper.cursorMatchesFace(
+            getShape(state, i),
+            rel
+        );
+    }
+
     @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity
@@ -61,17 +69,17 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return getCullingShape(state, view, pos);
-    }
-
-    @Override
-    public VoxelShape getCullingShape(BlockState state, BlockView view, BlockPos pos) {
         return isGhost(view, pos) ? empty() : fullCube();
     }
 
     @Override
+    public VoxelShape getCullingShape(BlockState state, BlockView view, BlockPos pos) {
+        return getCollisionShape(state, view, pos, ShapeContext.absent());
+    }
+
+    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!canUse(world, pos, player)) return superUse(state, world, pos, player, hand, hit);
+        if (!canUse(world, pos, player)) return ActionResult.PASS;
         ActionResult result = BlockHelper.useUpgrade(state, world, pos, player, hand);
         if (result.isAccepted()) return result;
         return BlockHelper.useCamo(state, world, pos, player, hand, hit, getHitShape(state, hit));

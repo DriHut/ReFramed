@@ -130,14 +130,14 @@ public class BlockHelper {
         return shape;
     }
 
-    public static String getNeighborPos(Edge face, Direction direction, Boolean reverse, Direction reference, BlockView world, BlockPos pos) {
+    public static String getNeighborPos(Edge edge, Direction direction, Boolean reverse, Direction reference, BlockView world, BlockPos pos) {
         BlockState block_state = world.getBlockState(
             pos.offset(reverse ? direction.getOpposite() : direction)
         );
 
         if (isStair(block_state) && block_state.get(EDGE).hasDirection(reference)) {
-            if (block_state.get(EDGE).hasDirection(face.getLeftDirection())) return "left";
-            else if (block_state.get(EDGE).hasDirection(face.getRightDirection())) return "right";
+            if (block_state.get(EDGE).hasDirection(edge.getLeftDirection())) return "left";
+            else if (block_state.get(EDGE).hasDirection(edge.getRightDirection())) return "right";
         }
         return "";
     }

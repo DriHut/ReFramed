@@ -1,6 +1,5 @@
 package fr.adrien1106.reframed.client.model;
 
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -41,8 +40,8 @@ public class UnbakedDoubleRetexturedModel implements UnbakedModel {
     @Override
     public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> texture_getter, ModelBakeSettings model_bake_settings, Identifier identifier) {
         return new DoubleRetexturingBakedModel(
-            (ForwardingBakedModel) model_1.bake(baker, texture_getter, model_bake_settings, identifier),
-            (ForwardingBakedModel) model_2.bake(baker, texture_getter, model_bake_settings, identifier)
+            (RetexturingBakedModel) model_1.bake(baker, texture_getter, model_bake_settings, identifier),
+            (RetexturingBakedModel) model_2.bake(baker, texture_getter, model_bake_settings, identifier)
         );
     }
 }

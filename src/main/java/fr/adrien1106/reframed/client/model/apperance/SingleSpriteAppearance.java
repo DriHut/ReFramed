@@ -36,6 +36,12 @@ public class SingleSpriteAppearance extends CamoAppearance {
     }
 
     @Override
+    public boolean getAO(int model_id) {
+        return false;
+    }
+
+
+    @Override
     public String toString() {
         return "SingleSpriteAppearance[defaultSprite=%s, mat=%s, id=%d]".formatted(defaultSprite, material, id);
     }

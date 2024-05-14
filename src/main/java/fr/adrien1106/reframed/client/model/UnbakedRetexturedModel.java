@@ -14,14 +14,14 @@ public abstract class UnbakedRetexturedModel implements UnbakedModel {
 
     protected int theme_index = 1;
     protected BlockState item_state;
-    protected final boolean ao = true;
 
     public UnbakedRetexturedModel(Identifier parent) {
         this.parent = parent;
     }
 
-    public void setThemeIndex(int theme_index) {
+    public UnbakedRetexturedModel setThemeIndex(int theme_index) {
         this.theme_index = theme_index;
+        return this;
     }
 
     @Override

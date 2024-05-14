@@ -1,20 +1,14 @@
 package fr.adrien1106.reframed.block;
 
-import fr.adrien1106.reframed.ReFramed;
-import fr.adrien1106.reframed.generator.BlockStateProvider;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import fr.adrien1106.reframed.util.blocks.Edge;
 import fr.adrien1106.reframed.util.blocks.StairShape;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.data.client.MultipartBlockStateSupplier;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.data.server.recipe.RecipeProvider;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -22,31 +16,18 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 import static fr.adrien1106.reframed.block.ReFramedStairBlock.*;
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
 
-public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements BlockStateProvider {
+public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
 
     private static final VoxelShape[] STAIRS_CUBE_VOXELS = VoxelListBuilder.buildFrom(STAIR_VOXELS);
-    private record ModelCacheKey(Edge edge, StairShape shape) {}
 
     public ReFramedStairsCubeBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN).with(STAIR_SHAPE, StairShape.STRAIGHT));
-    }
-
-    @Override
-    public Object getModelCacheKey(BlockState state) {
-        return new ModelCacheKey(state.get(EDGE), state.get(STAIR_SHAPE));
-    }
-
-    @Override
-    public int getModelStateCount() {
-        return 108; // Has 12 * 9 state combination and 52 models still reduces cache size
     }
 
     @Override
@@ -69,6 +50,32 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements Bloc
         return super.getPlacementState(ctx).with(EDGE, face).with(STAIR_SHAPE, shape);
     }
 
+
+    @Override
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
+        Edge prev_edge = state.get(EDGE);
+        Edge edge = prev_edge.rotate(rotation);
+        if (prev_edge.getAxis() == Direction.Axis.Y) return state.with(EDGE, edge);
+
+        if (prev_edge.getFace().getDirection() == edge.getFace().getDirection()) // 90° rotations
+            state = state.with(STAIR_SHAPE, state.get(STAIR_SHAPE).mirror());
+        else state = state.with(STAIR_SHAPE, state.get(STAIR_SHAPE).flip());
+
+        if (prev_edge.getAxis() == edge.getAxis()) // 180° rotation
+            state = state.with(STAIR_SHAPE, state.get(STAIR_SHAPE).mirror());
+
+        return state.with(EDGE, edge);
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
+        Edge prev_edge = state.get(EDGE);
+        Edge edge = prev_edge.mirror(mirror);
+        return state
+            .with(STAIR_SHAPE, prev_edge == edge ? state.get(STAIR_SHAPE).mirror() : state.get(STAIR_SHAPE).flip())
+            .with(EDGE, edge);
+    }
+
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         super.onStateReplaced(state, world, pos, newState, moved);
@@ -81,22 +88,5 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock implements Bloc
         Edge edge = state.get(EDGE);
         StairShape shape = state.get(STAIR_SHAPE);
         return i == 2 ? STAIRS_CUBE_VOXELS[edge.getID() * 9 + shape.getID()] : getStairShape(edge, shape);
-    }
-
-    @Override
-    public MultipartBlockStateSupplier getMultipart() {
-        return getStairMultipart(this, true);
-    }
-
-    @Override
-    public void setRecipe(Consumer<RecipeJsonProvider> exporter) {
-        RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, this, ReFramed.CUBE);
-        ShapelessRecipeJsonBuilder
-            .create(RecipeCategory.BUILDING_BLOCKS, this)
-            .input(ReFramed.STAIR)
-            .input(ReFramed.STEP)
-            .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
-            .criterion(FabricRecipeProvider.hasItem(this), FabricRecipeProvider.conditionsFromItem(this))
-            .offerTo(exporter);
     }
 }

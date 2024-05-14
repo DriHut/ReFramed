@@ -64,12 +64,12 @@ public class CamoAppearanceManager {
 		this.accent_appearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
 
 		sprite = spriteLookup.apply(BARRIER_SPRITE_ID);
-		this.barrierItemAppearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
+		this.barrier_appearance = new SingleSpriteAppearance(sprite, materials.get(BlendMode.CUTOUT), serial_number.getAndIncrement());
 	}
 	
 	private final CamoAppearance default_appearance;
 	private final CamoAppearance accent_appearance;
-	private final CamoAppearance barrierItemAppearance;
+	private final CamoAppearance barrier_appearance;
 
 	private final AtomicInteger serial_number = new AtomicInteger(0); //Mutable
 	
@@ -95,7 +95,7 @@ public class CamoAppearanceManager {
 			model = dynamic_model.computeQuads(world, state, pos, theme_index);
 			// if model isn't rebaked its just wrapped (i.e. not dynamic and may be cached)
 			if (model instanceof RebakedModel) {
-				CamoAppearance appearance = computeAppearance(model, state);
+				CamoAppearance appearance = computeAppearance(model, state, !item);
 				if (item) APPEARANCE_CACHE.put(state, appearance);
 				return appearance;
 			}
@@ -104,7 +104,7 @@ public class CamoAppearanceManager {
 		// refresh cache
 		if (APPEARANCE_CACHE.asMap().containsKey(state)) return APPEARANCE_CACHE.getIfPresent(state);
 
-		CamoAppearance appearance = computeAppearance(model, state);
+		CamoAppearance appearance = computeAppearance(model, state, false);
 		APPEARANCE_CACHE.put(state, appearance);
 		return appearance;
 	}
@@ -118,15 +118,15 @@ public class CamoAppearanceManager {
 	// The computeIfAbsent map update will work without corrupting the map, but there will be some "wasted effort" computing the value twice.
 	// The results are going to be the same, apart from their serialNumbers differing (= their equals & hashCode differing).
 	// Tiny amount of wasted space in some caches if CamoAppearances are used as a map key, then. IMO it's not a critical issue.
-	private CamoAppearance computeAppearance(BakedModel model, BlockState state) {
-		if(state.getBlock() == Blocks.BARRIER) return barrierItemAppearance;
+	private CamoAppearance computeAppearance(BakedModel model, BlockState state, boolean is_dynamic) {
+		if(state.getBlock() == Blocks.BARRIER) return barrier_appearance;
 
 		if (!(model instanceof WeightedBakedModelAccessor weighted_model)) {
 			return new ComputedAppearance(
 				getAppearance(model),
 				getCachedMaterial(state, true),
 				getCachedMaterial(state, false),
-				serial_number.getAndIncrement()
+				is_dynamic ? -1 : serial_number.getAndIncrement()
 			);
 		}
 		List<Weighted.Present<Appearance>> appearances = weighted_model.getModels().stream()
@@ -137,7 +137,7 @@ public class CamoAppearanceManager {
 			appearances,
 			getCachedMaterial(state, true),
 			getCachedMaterial(state, false),
-			serial_number.getAndIncrement()
+			is_dynamic ? -1 : serial_number.getAndIncrement()
 		);
 	}
 
@@ -175,7 +175,7 @@ public class CamoAppearanceManager {
 			});
 		});
 
-		return new Appearance(sprites);
+		return new Appearance(sprites, model.useAmbientOcclusion());
 	}
 
 	private static int getBakeFlags(QuadEmitter emitter, Sprite sprite) {
