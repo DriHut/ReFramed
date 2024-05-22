@@ -43,6 +43,7 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
 
     @Override
     public boolean canReplace(BlockState state, ItemPlacementContext context) {
+        if (context.getPlayer() == null) return false;
         Direction dir = state.get(CORNER).getDirection(state.get(CORNER_FACE));
         return !(
             context.getPlayer().isSneaking()

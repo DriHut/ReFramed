@@ -43,6 +43,7 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
 
     @Override
     public boolean canReplace(BlockState state, ItemPlacementContext context) {
+        if (context.getPlayer() == null) return false;
         Edge edge = state.get(EDGE);
         return !(
             context.getPlayer().isSneaking()
