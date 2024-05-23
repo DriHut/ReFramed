@@ -17,7 +17,7 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
 
     private static final FabricLoader LOADER = FabricLoader.getInstance();
     private static final Logger LOGGER = LoggerFactory.getLogger("ReFramed MIXIN");
-    private static final List<String> COMPAT_MOD = List.of("athena", "indium", "sodium", "special-model-loader", "continuity");
+    private static final List<String> COMPAT_MOD = List.of("athena", "indium", "sodium", "special-model-loader", "continuity", "axiom");
     private static final Map<String, Supplier<Boolean>> CONDITIONS = new HashMap<>();
     static {
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AthenaBakedModelMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(0)));
@@ -33,6 +33,7 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityCTMBakedModelMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityCTMQuadTransformMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityModelWrappingHandlerMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomClientBlockEntitySerializerMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
     }
 
 

@@ -15,6 +15,7 @@
     "compat.AthenaBakedModelMixin",
     "compat.AthenaConnectedBlockModelMixin",
     "compat.AthenaWrappedGetterMixin",
+    "compat.AxiomClientBlockEntitySerializerMixin",
     "compat.ContinuityConnectionPredicateMixin",
     "compat.ContinuityCTMBakedModelMixin",
     "compat.ContinuityCTMQuadTransformMixin",

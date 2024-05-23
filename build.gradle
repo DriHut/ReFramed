@@ -118,6 +118,9 @@ dependencies {
 	modRuntimeOnly "com.teamresourceful.resourcefullib:resourcefullib-fabric-${project.minecraft_version}:2.4.7"
 	modRuntimeOnly "earth.terrarium.chipped:Chipped-fabric-${project.minecraft_version}:3.1.2"
 
+	// Axiom for blueprint support
+	modCompileOnly "maven.modrinth:N6n5dqoA:nvx3oDkz"
+
 	// Fabric API.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
