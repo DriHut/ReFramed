@@ -84,6 +84,9 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+    maven {
+        url = "https://jitpack.io"
+    }
 	mavenCentral()
 
 	// Add repositories to retrieve artifacts from in here.
@@ -120,6 +123,7 @@ dependencies {
 
 	// Axiom for blueprint support
 	modCompileOnly "maven.modrinth:N6n5dqoA:nvx3oDkz"
+    modCompileOnly "com.github.moulberry:AxiomClientAPI:1.0.5.3"
 
 	// Fabric API.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

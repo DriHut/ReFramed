@@ -33,7 +33,14 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityCTMBakedModelMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityCTMQuadTransformMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityModelWrappingHandlerMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomChunkedBlockRegionMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomClientBlockEntitySerializerMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomClipboardMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomCloneBuilderToolMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomPlacementMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomMoveBuilderToolMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomScale3xMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomRotSpriteMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
     }
 
 
