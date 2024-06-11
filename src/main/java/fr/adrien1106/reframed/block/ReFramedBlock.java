@@ -9,7 +9,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
@@ -84,16 +83,6 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 			themes.forEach(theme -> {
 				if(theme.getBlock() != Blocks.AIR) drops.add(new ItemStack(theme.getBlock()));
 			});
-
-			if(frame_entity.emitsRedstone()
-				&& themes.stream().noneMatch(theme -> theme.getWeakRedstonePower(world, pos, Direction.NORTH) != 0))
-					drops.add(new ItemStack(Items.REDSTONE_TORCH));
-			if(frame_entity.emitsLight()
-				&& themes.stream().noneMatch(theme -> theme.getLuminance() != 0))
-					drops.add(new ItemStack(Items.GLOWSTONE_DUST));
-			if(!frame_entity.isSolid()
-				&& themes.stream().anyMatch(AbstractBlockState::isSolid))
-				drops.add(new ItemStack(Items.POPPED_CHORUS_FRUIT));
 
 			ItemScatterer.spawn(world, pos, drops);
 		}

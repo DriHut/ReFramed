@@ -6,6 +6,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -13,6 +15,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static net.minecraft.state.property.Properties.FACING;
@@ -25,6 +29,16 @@ public class ReFramedLayerBlock extends ReFramedSlabBlock {
     public ReFramedLayerBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState().with(LAYERS, 1));
+    }
+
+    @Override
+    public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
+        List<ItemStack> drops = super.getDroppedStacks(state, builder);
+        drops.forEach((stack) -> {
+            if (stack.getItem() instanceof BlockItem bi && bi.getBlock() instanceof ReFramedLayerBlock)
+                stack.setCount(state.get(LAYERS));
+        });
+        return drops;
     }
 
     @Override

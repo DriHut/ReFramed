@@ -2,6 +2,7 @@ package fr.adrien1106.reframed.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import fr.adrien1106.reframed.block.ReFramedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,6 +10,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,8 +34,12 @@ public class BlockItemMixin {
     private static void placeBlockWithOffHandCamo(World world, PlayerEntity player, BlockPos pos, ItemStack stack, CallbackInfoReturnable<Boolean> cir, @Local LocalRef<NbtCompound> compound) {
         if (compound.get() != null
             || player.getOffHandStack().isEmpty()
+            || player.getMainHandStack().isEmpty()
+            || !(player.getMainHandStack().getItem() instanceof BlockItem frame)
+            || !(frame.getBlock() instanceof ReFramedBlock)
             || !(player.getOffHandStack().getItem() instanceof BlockItem block)
             || block.getBlock() instanceof BlockEntityProvider
+            || (world.getBlockState(pos).contains(Properties.LAYERS) && world.getBlockState(pos).get(Properties.LAYERS) > 1)
             || !Block.isShapeFullCube(block.getBlock().getDefaultState().getCollisionShape(world, pos))
         ) return;
         NbtCompound new_comp = new NbtCompound();
