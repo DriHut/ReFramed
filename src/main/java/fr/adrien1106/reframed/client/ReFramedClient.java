@@ -134,6 +134,16 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.addReFramedModel("button_inventory"          , HELPER.auto(new Identifier("block/button_inventory")));
         HELPER.addReFramedModel("button"                    , HELPER.auto(new Identifier("block/button")));
         HELPER.addReFramedModel("button_pressed"            , HELPER.auto(new Identifier("block/button_pressed")));
+        // POST
+        HELPER.addReFramedModel("post"                      , HELPER.auto(ReFramed.id("block/post")));
+        // FENCE
+        HELPER.addReFramedModel("fence_inventory"           , HELPER.auto(ReFramed.id("block/fence/inventory")));
+        HELPER.addReFramedModel("fence_core"                , HELPER.auto(ReFramed.id("block/fence/core")));
+        HELPER.addReFramedModel("fence_side_off"            , HELPER.auto(ReFramed.id("block/fence/side_off")));
+        HELPER.addReFramedModel("fence_side_on"             , HELPER.auto(ReFramed.id("block/fence/side_on")));
+        // POST FENCE
+        HELPER.addReFramedModel("post_fence_inventory"      , HELPER.autoDouble(ReFramed.id("block/post"), ReFramed.id("block/fence/full/inventory")));
+        HELPER.addReFramedModel("post_fence_side"           , HELPER.autoDouble(ReFramed.id("block/fence/full/side_core"), ReFramed.id("block/fence/full/side_bars")));
 
 
 		//item model assignments (in lieu of models/item/___.json)
@@ -157,6 +167,9 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.assignItemModel("trapdoor_bottom"       , ReFramed.TRAPDOOR);
         HELPER.assignItemModel("door_inventory"        , ReFramed.DOOR);
         HELPER.assignItemModel("button_inventory"      , ReFramed.BUTTON);
+        HELPER.assignItemModel("post"                  , ReFramed.POST);
+        HELPER.assignItemModel("fence_inventory"       , ReFramed.FENCE);
+        HELPER.assignItemModel("post_fence_inventory"  , ReFramed.POST_FENCE);
 	}
 	
 	private void privateInit() {

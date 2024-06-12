@@ -10,11 +10,11 @@ import net.minecraft.world.BlockView;
 
 import static net.minecraft.state.property.Properties.AXIS;
 
-public class ReFramedPillarBlock extends PillarReFramedBlock {
+public class ReFramedPostBlock extends PillarReFramedBlock {
 
-    public static final VoxelShape[] PILLAR_VOXELS;
+    public static final VoxelShape[] POST_VOXELS;
 
-    public ReFramedPillarBlock(Settings settings) {
+    public ReFramedPostBlock(Settings settings) {
         super(settings);
     }
 
@@ -24,12 +24,12 @@ public class ReFramedPillarBlock extends PillarReFramedBlock {
     }
 
     public static VoxelShape getPillarShape(Direction.Axis axis) {
-        return PILLAR_VOXELS[axis.ordinal()];
+        return POST_VOXELS[axis.ordinal()];
     }
 
     static {
-        final VoxelShape PILLAR = createCuboidShape(0, 4, 4, 16, 12, 12);
-        PILLAR_VOXELS = VoxelHelper.VoxelListBuilder.create(PILLAR, 3)
+        final VoxelShape POST = createCuboidShape(0, 6, 6, 16, 10, 10);
+        POST_VOXELS = VoxelHelper.VoxelListBuilder.create(POST, 3)
             .add(VoxelHelper::rotateZ)
             .add(VoxelHelper::rotateX)
             .build();

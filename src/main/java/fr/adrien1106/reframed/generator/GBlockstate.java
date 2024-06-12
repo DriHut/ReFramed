@@ -38,6 +38,9 @@ public class GBlockstate extends FabricModelProvider {
         providers.put(ReFramedTrapdoorBlock.class, new Trapdoor());
         providers.put(ReFramedDoorBlock.class, new Door());
         providers.put(ReFramedButtonBlock.class, new Button());
+        providers.put(ReFramedPostBlock.class, new Post());
+        providers.put(ReFramedFenceBlock.class, new Fence());
+        providers.put(ReFramedPostFenceBlock.class, new PostFence());
     }
 
     public GBlockstate(FabricDataOutput output) {

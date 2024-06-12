@@ -1,0 +1,17 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"particle": "#side"
+	},
+	"elements": [
+		{
+			"from": [7, 0, 7],
+			"to": [9, 16, 9],
+			"faces": {
+				"up": {"uv": [7, 7, 9, 9], "texture": "#top", "cullface": "up"},
+				"down": {"uv": [7, 7, 9, 9], "texture": "#bottom", "cullface": "down"}
+			}
+		}
+	]
+}
