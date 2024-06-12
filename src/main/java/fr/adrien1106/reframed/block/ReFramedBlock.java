@@ -72,8 +72,8 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	}
 	
 	@Override
-	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		if(!(newState.getBlock() instanceof ReFramedBlock) &&
+	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
+		if(!(new_state.getBlock() instanceof ReFramedBlock) &&
 			world.getBlockEntity(pos) instanceof ReFramedEntity frame_entity &&
 			world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)
 		) {
@@ -86,7 +86,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 
 			ItemScatterer.spawn(world, pos, drops);
 		}
-		super.onStateReplaced(state, world, pos, newState, moved);
+		super.onStateReplaced(state, world, pos, new_state, moved);
 	}
 
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, BlockState old_state, BlockEntity old_entity) {

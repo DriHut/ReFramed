@@ -130,6 +130,10 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.addReFramedModel("trapdoor_top"              , HELPER.auto(new Identifier("block/oak_trapdoor_top")));
         // DOOR
         HELPER.addReFramedModel("door_inventory"            , HELPER.auto(ReFramed.id("block/door")));
+        // BUTTON
+        HELPER.addReFramedModel("button_inventory"          , HELPER.auto(new Identifier("block/button_inventory")));
+        HELPER.addReFramedModel("button"                    , HELPER.auto(new Identifier("block/button")));
+        HELPER.addReFramedModel("button_pressed"            , HELPER.auto(new Identifier("block/button_pressed")));
 
 
 		//item model assignments (in lieu of models/item/___.json)
@@ -152,6 +156,7 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.assignItemModel("pane_inventory"        , ReFramed.PANE);
         HELPER.assignItemModel("trapdoor_bottom"       , ReFramed.TRAPDOOR);
         HELPER.assignItemModel("door_inventory"        , ReFramed.DOOR);
+        HELPER.assignItemModel("button_inventory"      , ReFramed.BUTTON);
 	}
 	
 	private void privateInit() {

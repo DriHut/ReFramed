@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 
 import static fr.adrien1106.reframed.block.ReFramedEntity.BLOCKSTATE_KEY;
 
-@Mixin(ChunkedBlockRegion.class)
+@Mixin(ChunkedBlockRegion.class) // TODO: Look here for better rotation/flip support
 public class AxiomChunkedBlockRegionMixin implements IAxiomChunkedBlockRegionMixin {
 
     @Shadow
