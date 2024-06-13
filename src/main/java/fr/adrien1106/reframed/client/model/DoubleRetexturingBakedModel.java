@@ -45,7 +45,10 @@ public class DoubleRetexturingBakedModel extends ForwardingBakedModel implements
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {}
+    public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+        model_1.emitBlockQuads(world, state, pos, randomSupplier, context);
+        model_2.emitBlockQuads(world, state, pos, randomSupplier, context);
+    }
 
     @Override // models are emitted here because no checks are done on items
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {

@@ -12,7 +12,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.function.BooleanBiFunction;
@@ -52,8 +51,6 @@ public class RenderHelper {
         Random random = Random.create();
 
         List<List<QuadPosBounds>> model_bounds = models.stream()
-            .map(ForwardingBakedModel::getWrappedModel)
-            .filter(Objects::nonNull)
             .map(wrapped -> wrapped.getQuads(state, null, random))
             .map(quads -> quads.stream().map(quad -> {
                 quad_emitter.fromVanilla(quad, material, null);
@@ -98,12 +95,17 @@ public class RenderHelper {
 
     // Doing this method from scratch as it is simpler to do than injecting everywhere
     public static boolean shouldDrawSide(BlockState self_state, BlockView world, BlockPos pos, Direction side, BlockPos other_pos, int theme_index) {
-        ThemeableBlockEntity self = world.getBlockEntity(pos) instanceof ThemeableBlockEntity e ? e : null;
-        ThemeableBlockEntity other = world.getBlockEntity(other_pos) instanceof ThemeableBlockEntity e ? e : null;
         BlockState other_state = world.getBlockState(other_pos);
+        ThemeableBlockEntity self = world.getBlockEntity(pos) instanceof ThemeableBlockEntity e
+            && self_state.getBlock() instanceof ReFramedBlock
+            ? e : null;
+        ThemeableBlockEntity other = world.getBlockEntity(other_pos) instanceof ThemeableBlockEntity e
+            && other_state.getBlock() instanceof ReFramedBlock
+            ? e : null;
 
         // normal behaviour
-        if (self == null && other == null) return Block.shouldDrawSide(self_state, world, pos, side, other_pos);
+        if (theme_index == 0 || (self == null && other == null))
+            return Block.shouldDrawSide(self_state, world, pos, side, other_pos);
 
         // self is a normal Block
         if (self == null && other_state.getBlock() instanceof ReFramedBlock other_block) {

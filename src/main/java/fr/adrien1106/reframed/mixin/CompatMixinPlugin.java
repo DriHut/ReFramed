@@ -26,8 +26,10 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
         CONDITIONS.put("fr.adrien1106.reframed.mixin.render.BlockRenderInfoMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.render.AbstractBlockRenderContextMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.IndiumTerrainRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)));
-        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.IndiumTerrainBlockRenderInfoMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.IndiumAbstractBlockRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.IndiumBlockRenderInfoMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.IndiumNonTerrainBlockRenderContextMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(1)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.render.BlockRenderContextMixin", () -> !LOADER.isModLoaded(COMPAT_MOD.get(1)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.SodiumBlockOcclusionCacheMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(2)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityConnectionPredicateMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.ContinuityCTMBakedModelMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(4)));
@@ -38,6 +40,7 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomClipboardMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomCloneBuilderToolMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomPlacementMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
+        CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomMappedBlockAndTintGetterMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomMoveBuilderToolMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomScale3xMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));
         CONDITIONS.put("fr.adrien1106.reframed.mixin.compat.AxiomRotSpriteMixin", () -> LOADER.isModLoaded(COMPAT_MOD.get(5)));

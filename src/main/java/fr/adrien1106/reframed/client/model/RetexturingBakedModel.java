@@ -125,6 +125,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	@Override
 	public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
 		BlockState theme = (world.getBlockEntity(pos) instanceof ThemeableBlockEntity s) ? s.getTheme(theme_index) : null;
+
 		QuadEmitter quad_emitter = context.getEmitter();
 		if(theme == null || theme.isAir()) {
 			getRetexturedMesh(
