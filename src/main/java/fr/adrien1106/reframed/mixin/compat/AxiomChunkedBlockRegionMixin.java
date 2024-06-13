@@ -7,9 +7,11 @@ import fr.adrien1106.reframed.client.model.MultiRetexturableModel;
 import fr.adrien1106.reframed.client.model.RetexturingBakedModel;
 import fr.adrien1106.reframed.util.mixin.IAxiomChunkedBlockRegionMixin;
 import fr.adrien1106.reframed.util.mixin.IMultipartBakedModelMixin;
+import fr.adrien1106.reframed.util.mixin.ThemedBlockEntity;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.block.BlockRenderManager;
@@ -39,10 +41,12 @@ import java.util.stream.Stream;
 import static fr.adrien1106.reframed.block.ReFramedEntity.BLOCKSTATE_KEY;
 
 @Mixin(ChunkedBlockRegion.class) // TODO: Look here for better rotation/flip support
-public class AxiomChunkedBlockRegionMixin implements IAxiomChunkedBlockRegionMixin {
+public abstract class AxiomChunkedBlockRegionMixin implements IAxiomChunkedBlockRegionMixin {
 
     @Shadow
     private static void renderBlock(BufferBuilder blockBuilder, BlockRenderManager renderManager, BlockPos.Mutable blockPos, Random rand, MatrixStack matrices, BlockRenderView blockAndTintGetter, Matrix4f currentPoseMatrix, Matrix4f basePoseMatrix, int x, int y, int z, BlockState dataState, boolean useAmbientOcclusion) {}
+
+    @Shadow public abstract BlockState getBlockState(BlockPos pos);
 
     @Unique
     private IntMatrix transform;
@@ -93,6 +97,26 @@ public class AxiomChunkedBlockRegionMixin implements IAxiomChunkedBlockRegionMix
             }
         }
         renderBlock(buffer, renderer, pos, rand, matrices, world, current_pos, base_pos, x, y, z, state, use_ao);
+    }
+
+    @Inject(
+        method = "getBlockEntity",
+        at = @At("HEAD"),
+        remap = false,
+        cancellable = true
+    )
+    private void onGetBlockEntity(BlockPos pos, CallbackInfoReturnable<BlockEntity> cir) {
+        if (inverse_transform == null) return;
+        long key = BlockPos.asLong(
+            inverse_transform.transformX(pos.getX(), pos.getY(), pos.getZ()),
+            inverse_transform.transformY(pos.getX(), pos.getY(), pos.getZ()),
+            inverse_transform.transformZ(pos.getX(), pos.getY(), pos.getZ())
+        );
+        NbtCompound compound;
+        if (!block_entities.containsKey(key)
+            || !(compound = block_entities.get(key).decompress()).contains(BLOCKSTATE_KEY + 1)
+        ) return;
+        cir.setReturnValue(new ThemedBlockEntity(compound, pos, getBlockState(pos)));
     }
 
     @Inject(
