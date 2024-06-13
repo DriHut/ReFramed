@@ -30,8 +30,7 @@ public class AxiomPlacementMixin {
 
     @Inject(
         method = "startPlacement(Lnet/minecraft/util/math/BlockPos;Lcom/moulberry/axiom/render/regions/ChunkedBlockRegion;Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;Ljava/lang/String;)I",
-        at = @At("HEAD"),
-        remap = false
+        at = @At("HEAD")
     )
     private void onStartPlacement(BlockPos target, ChunkedBlockRegion region, Long2ObjectMap<CompressedBlockEntity> entities, String description, CallbackInfoReturnable<Integer> cir) {
         ((IAxiomChunkedBlockRegionMixin) region).setTransform(new IntMatrix(), entities);

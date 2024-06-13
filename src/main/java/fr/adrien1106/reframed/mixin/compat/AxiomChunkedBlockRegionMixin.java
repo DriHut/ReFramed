@@ -98,11 +98,10 @@ public abstract class AxiomChunkedBlockRegionMixin implements IAxiomChunkedBlock
     @Inject(
         method = "getBlockEntity",
         at = @At("HEAD"),
-        remap = false,
         cancellable = true
     )
     private void onGetBlockEntity(BlockPos pos, CallbackInfoReturnable<BlockEntity> cir) {
-        if (inverse_transform == null) return;
+        if (inverse_transform == null || block_entities == null) return;
         long key = BlockPos.asLong(
             inverse_transform.transformX(pos.getX(), pos.getY(), pos.getZ()),
             inverse_transform.transformY(pos.getX(), pos.getY(), pos.getZ()),

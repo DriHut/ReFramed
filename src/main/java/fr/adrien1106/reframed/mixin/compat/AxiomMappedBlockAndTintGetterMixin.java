@@ -21,7 +21,6 @@ public class AxiomMappedBlockAndTintGetterMixin {
         at = @At(
             value = "RETURN"
         ),
-        remap = false,
         cancellable = true
     )
     private void onGetBlockEntity(BlockPos pos, CallbackInfoReturnable<BlockEntity> cir) {
