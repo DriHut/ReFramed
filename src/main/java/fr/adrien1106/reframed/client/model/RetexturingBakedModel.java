@@ -12,11 +12,13 @@ import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.fabricmc.fabric.api.renderer.v1.mesh.*;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
@@ -25,6 +27,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -62,7 +65,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		System.arraycopy(values, 0, DIRECTIONS_AND_NULL, 0, values.length);
 	}
 
-	protected Mesh getBaseMesh(Object key, BlockState state) {
+    protected Mesh getBaseMesh(Object key, BlockState state) {
 		//Convert models to re-texturable Meshes lazily, the first time we encounter each blockstate
 		if (BASE_MESH_CACHE.containsKey(key)) return BASE_MESH_CACHE.getAndMoveToFirst(key);
 		Mesh mesh = convertModel(state);
@@ -70,7 +73,40 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 		return mesh;
 	}
 
-	protected abstract Mesh convertModel(BlockState state);
+    private List<BakedQuad>[] quads = null;
+
+    @Override
+    public List<BakedQuad> getQuads(BlockState state, Direction face, Random rand) {
+        if (quads == null) {
+            quads = ModelHelper.toQuadLists(
+                getRetexturedMesh(
+                    new MeshCacheKey(
+                        hashCode(),
+                        appearance_manager.getDefaultAppearance(theme_index),
+                        0
+                    ),
+                    state
+                )
+            );
+        }
+        return quads[ModelHelper.toFaceIndex(face)];
+    }
+
+    public void setCamo(BlockRenderView world, BlockState state, BlockPos pos) {
+        if (state == null || state.isAir()) {
+            quads = null;
+            return;
+        }
+        CamoAppearance camo = appearance_manager.getCamoAppearance(world, state, pos, theme_index, false);
+        MeshCacheKey key = new MeshCacheKey(
+            hashCode(),
+            camo,
+            0
+        );
+        quads = ModelHelper.toQuadLists(camo.hashCode() == -1 ? transformMesh(key, state) : getRetexturedMesh(key, state));
+    }
+
+    protected abstract Mesh convertModel(BlockState state);
 	
 	@Override
 	public boolean isVanillaAdapter() {
@@ -89,6 +125,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 	@Override
 	public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
 		BlockState theme = (world.getBlockEntity(pos) instanceof ThemeableBlockEntity s) ? s.getTheme(theme_index) : null;
+
 		QuadEmitter quad_emitter = context.getEmitter();
 		if(theme == null || theme.isAir()) {
 			getRetexturedMesh(
@@ -176,7 +213,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 				emitter.copyFrom(quad);
 				i = key.appearance.transformQuad(emitter, i, quad_index.get(), key.model_id, uv_lock);
 			} while (i > 0);
-			// kinda weird to do it like that but other directions don't use the quad_index so it doesn't matter
+			// kinda weird to do it like that but other directions don't use the quad_index, so it doesn't matter
 			if (quad.cullFace() == null) quad_index.getAndIncrement();
 		});
 

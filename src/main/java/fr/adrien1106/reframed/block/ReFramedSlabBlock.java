@@ -42,6 +42,7 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
 
 	@Override
 	public boolean canReplace(BlockState state, ItemPlacementContext context) {
+        if (context.getPlayer() == null) return false;
 		return !(
 			context.getPlayer().isSneaking()
 			|| !(context.getStack().getItem() instanceof BlockItem block_item)

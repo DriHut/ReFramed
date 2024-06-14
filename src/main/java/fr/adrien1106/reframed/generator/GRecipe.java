@@ -40,6 +40,10 @@ public class GRecipe extends FabricRecipeProvider {
         providers.put(ReFramedPaneBlock.class, new Pane());
         providers.put(ReFramedTrapdoorBlock.class, new Trapdoor());
         providers.put(ReFramedDoorBlock.class, new Door());
+        providers.put(ReFramedButtonBlock.class, new Button());
+        providers.put(ReFramedPostBlock.class, new Post());
+        providers.put(ReFramedFenceBlock.class, new Fence());
+        providers.put(ReFramedPostFenceBlock.class, new PostFence());
         providers.put(ReFramedBlueprintItem.class, new Blueprint());
         providers.put(ReFramedHammerItem.class, new Hammer());
         providers.put(ReFramedScrewdriverItem.class, new Screwdriver());

@@ -43,6 +43,7 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock {
 
     @Override
     public boolean canReplace(BlockState state, ItemPlacementContext context) {
+        if (context.getPlayer() == null) return false;
         Corner corner = state.get(CORNER);
         return !(
             context.getPlayer().isSneaking()

@@ -28,16 +28,27 @@ import java.util.stream.Stream;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.LIGHT;
 
 /**
- * TODO Dynamic Ambient Occlusion                                            -> for v1.6
- * TODO add minecraft models like wall fence etc                             -> for v1.6
- * TODO better connected textures                                            -> maybe v1.6 ?
+ * TODO Dynamic Ambient Occlusion                                            -> not scheduled
+ * TODO better connected textures                                            -> not scheduled
  * TODO support continuity overlays                                          -> not scheduled
+ * TODO slopes                                                               -> thinking about it
  */
 public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
-	public static Block CUBE, SMALL_CUBE, SMALL_CUBES_STEP, STAIR, HALF_STAIR, STAIRS_CUBE, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, SLAB, SLABS_CUBE, STEP, STEPS_SLAB, LAYER, PILLAR, PILLARS_WALL, WALL, PANE, TRAPDOOR, DOOR;
+	public static Block
+        CUBE,
+        SMALL_CUBE, SMALL_CUBES_STEP,
+        STAIR, STAIRS_CUBE,
+        HALF_STAIR, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR,
+        SLAB, SLABS_CUBE,
+        STEP, STEPS_SLAB,
+        LAYER,
+        PILLAR, PILLARS_WALL, WALL,
+        PANE, TRAPDOOR, DOOR,
+        BUTTON,
+        POST, POST_FENCE, FENCE;
 
 	public static final ArrayList<Item> ITEMS = new ArrayList<>();
 	public static Item HAMMER, SCREWDRIVER, BLUEPRINT, BLUEPRINT_WRITTEN;
@@ -70,6 +81,10 @@ public class ReFramed implements ModInitializer {
         PANE              = registerBlock("pane"              , new ReFramedPaneBlock(cp(Blocks.OAK_FENCE)));
         TRAPDOOR          = registerBlock("trapdoor"          , new ReFramedTrapdoorBlock(cp(Blocks.OAK_TRAPDOOR)));
         DOOR              = registerBlock("door"              , new ReFramedDoorBlock(cp(Blocks.OAK_DOOR)));
+        BUTTON            = registerBlock("button"            , new ReFramedButtonBlock(cp(Blocks.OAK_BUTTON)));
+        POST              = registerBlock("post"              , new ReFramedPostBlock(cp(Blocks.OAK_FENCE)));
+        FENCE             = registerBlock("fence"             , new ReFramedFenceBlock(cp(Blocks.OAK_FENCE)));
+        POST_FENCE        = registerBlock("post_fence"        , new ReFramedPostFenceBlock(cp(Blocks.OAK_FENCE)));
 
 		HAMMER            = registerItem("hammer"             , new ReFramedHammerItem(new Item.Settings().maxCount(1)));
 		SCREWDRIVER       = registerItem("screwdriver"        , new ReFramedScrewdriverItem(new Item.Settings().maxCount(1)));

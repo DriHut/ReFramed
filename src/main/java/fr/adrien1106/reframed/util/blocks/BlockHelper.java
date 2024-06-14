@@ -188,7 +188,6 @@ public class BlockHelper {
         if(!(world.getBlockEntity(pos) instanceof ReFramedEntity block_entity)) return ActionResult.PASS;
 
         ItemStack held = player.getStackInHand(hand);
-        ReframedInteractible ext = state.getBlock() instanceof ReframedInteractible e ? e : ReframedInteractible.Default.INSTANCE;
 
         // frame will emit light if applied with glowstone
         if(state.contains(LIGHT) && held.getItem() == Items.GLOWSTONE_DUST) {
@@ -199,14 +198,14 @@ public class BlockHelper {
         }
 
         // frame will emit redstone if applied with redstone torch can deactivate redstone block camo emission
-        if(held.getItem() == Items.REDSTONE_TORCH && ext.canAddRedstoneEmission(state, world, pos)) {
+        if(held.getItem() == Items.REDSTONE_TORCH) {
             block_entity.toggleRedstone();
             world.playSound(player, pos, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 1f, 1f);
             return ActionResult.SUCCESS;
         }
 
         // Frame will lose its collision if applied with popped chorus fruit
-        if(held.getItem() == Items.POPPED_CHORUS_FRUIT && ext.canRemoveCollision(state, world, pos)) {
+        if(held.getItem() == Items.POPPED_CHORUS_FRUIT) {
             block_entity.toggleSolidity();
             world.playSound(player, pos, SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.BLOCKS, 1f, 1f);
             return ActionResult.SUCCESS;

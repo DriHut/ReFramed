@@ -84,6 +84,9 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+    maven {
+        url = "https://jitpack.io"
+    }
 	mavenCentral()
 
 	// Add repositories to retrieve artifacts from in here.
@@ -117,6 +120,10 @@ dependencies {
 	// Chipped to test athena implementation
 	modRuntimeOnly "com.teamresourceful.resourcefullib:resourcefullib-fabric-${project.minecraft_version}:2.1.24"
 	modRuntimeOnly "earth.terrarium.chipped:Chipped-fabric-${project.minecraft_version}:3.0.4"
+
+	// Axiom for blueprint support
+	modCompileOnly "maven.modrinth:N6n5dqoA:YxeYxQyz"
+    modCompileOnly "com.github.moulberry:AxiomClientAPI:1.0.5.3"
 
 	// Fabric API.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

@@ -46,6 +46,7 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 
 	@Override
 	public boolean canReplace(BlockState state, ItemPlacementContext context) {
+        if (context.getPlayer() == null) return false;
 		return !(
 			context.getPlayer().isSneaking()
 			|| !(context.getStack().getItem() instanceof BlockItem block_item)
@@ -86,10 +87,10 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	}
 
 	@Override
-	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		super.onStateReplaced(state, world, pos, newState, moved);
+	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
+		super.onStateReplaced(state, world, pos, new_state, moved);
 
-		if(!state.isOf(newState.getBlock())) world.removeBlockEntity(pos);
+		if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
 	}
 
 	@Override

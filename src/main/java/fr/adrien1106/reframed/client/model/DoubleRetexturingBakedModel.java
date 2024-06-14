@@ -5,12 +5,15 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -35,7 +38,17 @@ public class DoubleRetexturingBakedModel extends ForwardingBakedModel implements
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {}
+    public List<BakedQuad> getQuads(BlockState blockState, Direction face, Random rand) {
+        List<BakedQuad> quads = new ArrayList<>(model_1.getQuads(blockState, face, rand));
+        quads.addAll(model_2.getQuads(blockState, face, rand));
+        return quads;
+    }
+
+    @Override
+    public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+        model_1.emitBlockQuads(world, state, pos, randomSupplier, context);
+        model_2.emitBlockQuads(world, state, pos, randomSupplier, context);
+    }
 
     @Override // models are emitted here because no checks are done on items
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {

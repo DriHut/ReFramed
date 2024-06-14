@@ -19,6 +19,8 @@ public class GBlockTag extends BlockTagProvider {
         providers.put(ReFramedPillarsWallBlock.class, new PillarsWall());
         providers.put(ReFramedWallBlock.class, new Wall());
         providers.put(ReFramedPaneBlock.class, new Pane());
+        providers.put(ReFramedFenceBlock.class, new Fence());
+        providers.put(ReFramedPostFenceBlock.class, new PostFence());
     }
 
     public GBlockTag(FabricDataOutput output, CompletableFuture<WrapperLookup> registries) {
