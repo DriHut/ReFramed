@@ -2,6 +2,7 @@ package fr.adrien1106.reframed.util.mixin;
 
 import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -29,12 +30,17 @@ public class ThemedBlockEntity extends BlockEntity implements ThemeableBlockEnti
 
     @Override
     public BlockState getTheme(int i) {
+        if (i > themes.size())
+            return Blocks.AIR.getDefaultState();
         return themes.get(Math.max(0, i-1));
     }
 
     @Override
     public void setTheme(BlockState state, int i) {
-        themes.set(Math.max(0, i-1), state);
+        if (i > themes.size())
+            themes.add(state);
+        else
+            themes.set(Math.max(0, i-1), state);
     }
 
     @Override
