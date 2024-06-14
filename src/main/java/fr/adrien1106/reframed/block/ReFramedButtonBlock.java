@@ -2,12 +2,11 @@ package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.util.VoxelHelper;
 import net.minecraft.block.*;
-import net.minecraft.block.enums.BlockFace;
+import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
@@ -25,11 +24,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.event.GameEvent;
-import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.BiConsumer;
-
+import static net.minecraft.block.WallMountedBlock.FACE;
 import static net.minecraft.state.property.Properties.*;
 
 public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
@@ -40,14 +37,14 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
         super(settings);
         setDefaultState(getDefaultState()
             .with(HORIZONTAL_FACING, Direction.NORTH)
-            .with(BLOCK_FACE, BlockFace.WALL)
+            .with(FACE, WallMountLocation.WALL)
             .with(POWERED, false)
         );
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(HORIZONTAL_FACING, BLOCK_FACE, POWERED));
+        super.appendProperties(builder.add(HORIZONTAL_FACING, FACE, POWERED));
     }
 
     @Override
@@ -69,9 +66,9 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
                 ? ctx.getHorizontalPlayerFacing()
                 : side
             )
-            .with(BLOCK_FACE, side.getAxis() != Direction.Axis.Y
-                ? BlockFace.WALL
-                : side == Direction.UP ? BlockFace.FLOOR : BlockFace.CEILING
+            .with(FACE, side.getAxis() != Direction.Axis.Y
+                ? WallMountLocation.WALL
+                : side == Direction.UP ? WallMountLocation.FLOOR : WallMountLocation.CEILING
             );
     }
 
@@ -95,15 +92,6 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
         return ActionResult.success(world.isClient);
     }
 
-    @Override
-    public void onExploded(BlockState state, World world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
-        if (explosion.getDestructionType() == Explosion.DestructionType.TRIGGER_BLOCK && !world.isClient() && !(Boolean)state.get(POWERED)) {
-            powerOn(state, world, pos);
-        }
-
-        super.onExploded(state, world, pos, explosion, stackMerger);
-    }
-
     public void powerOn(BlockState state, World world, BlockPos pos) {
         world.setBlockState(pos, state.with(POWERED, true), 3);
         updateNeighbors(state, world, pos);
@@ -123,7 +111,7 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return BUTTON_VOXELS[
             (state.get(POWERED) ? 12 : 0) +
-            (4 * state.get(BLOCK_FACE).ordinal()) +
+            (4 * state.get(FACE).ordinal()) +
             state.get(HORIZONTAL_FACING).ordinal() - 2
         ];
     }
@@ -198,7 +186,7 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
     }
 
     protected static Direction getDirection(BlockState state) {
-        return switch (state.get(BLOCK_FACE)) {
+        return switch (state.get(FACE)) {
             case CEILING -> Direction.DOWN;
             case FLOOR -> Direction.UP;
             default -> state.get(HORIZONTAL_FACING);

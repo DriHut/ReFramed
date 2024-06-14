@@ -122,7 +122,7 @@ dependencies {
 	modRuntimeOnly "earth.terrarium.chipped:Chipped-fabric-${project.minecraft_version}:3.0.4"
 
 	// Axiom for blueprint support
-	modCompileOnly "maven.modrinth:N6n5dqoA:YxeYxQyz"
+	modCompileOnly "maven.modrinth:N6n5dqoA:Mq7PFqq2"
     modCompileOnly "com.github.moulberry:AxiomClientAPI:1.0.5.3"
 
 	// Fabric API.
