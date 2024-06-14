@@ -22,8 +22,6 @@ or based on preferences add the person(s) to the project
 ### What Shapes are planed to be added
 Currently, the list of shapes to be added is pretty simple as the mod is still under development:
 - Pressure Plate
-- Carpet (maybe redundant with Layer)
-- Half Slab (maybe redundant with Layer)
 - Slabs Stair (a stair with one end being of a second theme, might be done in multiple blocks)
 
 Any Ideas feel free to make a suggestion [here](https://github.com/DriHut/ReFramed/issues).
