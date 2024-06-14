@@ -6,11 +6,13 @@ import com.moulberry.axiom.utils.IntMatrix;
 import com.moulberry.axiom.world_modification.CompressedBlockEntity;
 import fr.adrien1106.reframed.client.model.MultiRetexturableModel;
 import fr.adrien1106.reframed.client.model.RetexturingBakedModel;
+import fr.adrien1106.reframed.util.DefaultList;
 import fr.adrien1106.reframed.util.mixin.IAxiomChunkedBlockRegionMixin;
 import fr.adrien1106.reframed.util.mixin.IMultipartBakedModelMixin;
 import fr.adrien1106.reframed.util.mixin.ThemedBlockEntity;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
@@ -78,15 +80,19 @@ public abstract class AxiomChunkedBlockRegionMixin implements IAxiomChunkedBlock
         cancellable = true)
     private static void onRenderBlock(BufferBuilder blockBuilder, BlockRenderManager renderer, BlockPos.Mutable pos, Random rand, MatrixStack matrices, BlockRenderView world, Matrix4f currentPoseMatrix, Matrix4f basePoseMatrix, int x, int y, int z, BlockState state, boolean useAmbientOcclusion, CallbackInfo ci, @Local BakedModel model) {
         List<BakedModel> models;
-        if ((models = getModels(model, state)).isEmpty() // not a retexturable model
-            || !(world.getBlockEntity(pos) instanceof ThemedBlockEntity block_entity) // not a themed block entity
-        ) return;
+        if ((models = getModels(model, state)).isEmpty()) return;
 
+        DefaultList<BlockState> themes = new DefaultList<>(
+            Blocks.AIR.getDefaultState(),
+            world.getBlockEntity(pos) instanceof ThemedBlockEntity themed
+                ? themed.getThemes()
+                : List.of()
+        );
         models.stream().flatMap(m -> m instanceof MultiRetexturableModel mm
             ? mm.models().stream()
             : Stream.of((RetexturingBakedModel)m)
         ).forEach(m -> {
-            m.setCamo(world, block_entity.getTheme(m.getThemeIndex()), pos);
+            m.setCamo(world, themes.get(m.getThemeIndex() - 1), pos);
             if (useAmbientOcclusion && state.getLuminance() == 0 && m.useAmbientOcclusion()) renderer.getModelRenderer()
                     .renderSmooth(world, m, state, pos, matrices, blockBuilder, true, rand, state.getRenderingSeed(pos), OverlayTexture.DEFAULT_UV);
             else renderer.getModelRenderer()

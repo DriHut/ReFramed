@@ -1,6 +1,5 @@
 package fr.adrien1106.reframed.mixin.compat;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import fr.adrien1106.reframed.client.util.RenderHelper;
 import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import fr.adrien1106.reframed.util.mixin.IBlockRenderInfoMixin;
@@ -24,7 +23,6 @@ public abstract class IndiumBlockRenderInfoMixin implements IBlockRenderInfoMixi
     @Shadow public BlockPos blockPos;
     @Shadow public BlockRenderView blockView;
     @Shadow public BlockState blockState;
-    @Shadow(remap = false) private int cullResultFlags;
 
     @Unique private int theme_index = 0;
     @Unique private int model_hash = 0;
@@ -32,19 +30,18 @@ public abstract class IndiumBlockRenderInfoMixin implements IBlockRenderInfoMixi
     @Inject(
         method = "shouldDrawFace",
         at = @At(
-            value = "INVOKE",
-            target = "Llink/infra/indium/renderer/render/BlockRenderInfo;shouldDrawFaceInner(Lnet/minecraft/util/math/Direction;)Z"
+            value = "INVOKE_ASSIGN",
+            target = "Lnet/minecraft/util/math/Direction;getId()I",
+            shift = At.Shift.AFTER
         ),
         cancellable = true
     )
-    private void shouldDrawInnerFace(Direction face, CallbackInfoReturnable<Boolean> cir, @Local int mask) {
+    private void shouldDrawInnerFace(Direction face, CallbackInfoReturnable<Boolean> cir) {
         BlockPos other_pos = blockPos.offset(face);
         if (!(blockView.getBlockEntity(blockPos) instanceof ThemeableBlockEntity
             || blockView.getBlockEntity(other_pos) instanceof ThemeableBlockEntity)
         ) return;
-        boolean result = RenderHelper.shouldDrawSide(blockState, blockView, blockPos, face, other_pos, theme_index);
-        if (result) cullResultFlags |= mask;
-        cir.setReturnValue(result);
+        cir.setReturnValue(RenderHelper.shouldDrawSide(blockState, blockView, blockPos, face, other_pos, theme_index));
     }
 
     @Override

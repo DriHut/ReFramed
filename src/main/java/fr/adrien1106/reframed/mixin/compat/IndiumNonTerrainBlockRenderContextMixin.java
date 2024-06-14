@@ -42,7 +42,6 @@ public abstract class IndiumNonTerrainBlockRenderContextMixin extends AbstractBl
             target = "Llink/infra/indium/renderer/render/BlockRenderInfo;prepareForWorld(Lnet/minecraft/world/BlockRenderView;Z)V",
             shift = At.Shift.AFTER
         ),
-        remap = false,
         cancellable = true
     )
     private void renderMultipleModels(BlockRenderView blockView, BakedModel wrapper, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean cull, Random random, long seed, int overlay, CallbackInfo ci) {
