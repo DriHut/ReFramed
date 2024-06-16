@@ -106,6 +106,22 @@ public enum Edge implements StringIdentifiable {
             .findFirst().orElse(Edge.NORTH_DOWN);
     }
 
+    public Direction getDirection(int side) {
+        return side == 1 ? second_direction : first_direction;
+    }
+
+    public int getDirectionIndex(Direction direction) {
+        return direction == first_direction ? 0 : 1;
+    }
+
+    public Edge getOpposite(int index) {
+        return getOpposite(getDirection(index));
+    }
+
+    public Edge getOpposite(Direction direction) {
+        return getByDirections(direction, getOtherDirection(direction).getOpposite());
+    }
+
     public Edge rotate(BlockRotation rotation) {
         return getByDirections(
             rotation.rotate(first_direction),

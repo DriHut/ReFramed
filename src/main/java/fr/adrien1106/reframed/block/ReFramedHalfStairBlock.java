@@ -101,7 +101,7 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return HALF_STAIR_VOXELS[state.get(CORNER_FACE) + state.get(CORNER).getID() * 3];
+        return getHalfStairShape(state.get(CORNER), state.get(CORNER_FACE));
     }
 
     @Override
@@ -129,6 +129,10 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
                     .getDirection() == Direction.AxisDirection.POSITIVE ? 2 : 1
             );
         return super.getThemeMap(state, new_state);
+    }
+
+    public static VoxelShape getHalfStairShape(Corner corner, int face) {
+        return HALF_STAIR_VOXELS[face + corner.getID() * 3];
     }
 
     static {

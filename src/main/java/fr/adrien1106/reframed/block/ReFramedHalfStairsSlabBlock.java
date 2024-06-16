@@ -15,9 +15,9 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.HALF_STAIR_VOXELS;
+import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.getHalfStairShape;
 import static fr.adrien1106.reframed.block.ReFramedSlabBlock.getSlabShape;
-import static fr.adrien1106.reframed.block.ReFramedSmallCubeBlock.SMALL_CUBE_VOXELS;
+import static fr.adrien1106.reframed.block.ReFramedSmallCubeBlock.getSmallCubeShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER_FACE;
 import static fr.adrien1106.reframed.util.blocks.Corner.NORTH_EAST_DOWN;
@@ -45,7 +45,7 @@ public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBloc
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return isGhost(view, pos) ? empty(): getSlabShape(state.get(CORNER).getDirection(state.get(CORNER_FACE)));
+        return isGhost(view, pos) ? empty(): getOutlineShape(state, view, pos, ctx);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBloc
         Corner corner = state.get(CORNER);
         int face = state.get(CORNER_FACE);
         return i == 2
-            ? SMALL_CUBE_VOXELS[corner.getOpposite(face).getID()]
-            : HALF_STAIR_VOXELS[face + corner.getID() * 3];
+            ? getSmallCubeShape(corner.getOpposite(face))
+            : getHalfStairShape(corner, face);
     }
 }

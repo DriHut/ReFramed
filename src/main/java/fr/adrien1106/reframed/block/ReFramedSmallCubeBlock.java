@@ -125,7 +125,7 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return SMALL_CUBE_VOXELS[state.get(CORNER).getID()];
+        return getSmallCubeShape(state.get(CORNER));
     }
 
     @Override
@@ -149,6 +149,10 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock {
                     .getDirection() == Direction.AxisDirection.POSITIVE ? 2 : 1
             );
         return super.getThemeMap(state, new_state);
+    }
+
+    public static VoxelShape getSmallCubeShape(Corner corner) {
+        return SMALL_CUBE_VOXELS[corner.getID()];
     }
 
     static {

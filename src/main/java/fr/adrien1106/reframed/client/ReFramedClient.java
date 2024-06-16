@@ -144,6 +144,9 @@ public class ReFramedClient implements ClientModInitializer {
         // POST FENCE
         HELPER.addReFramedModel("post_fence_inventory"      , HELPER.autoDouble(ReFramed.id("block/post"), ReFramed.id("block/fence/full/inventory")));
         HELPER.addReFramedModel("post_fence_side"           , HELPER.autoDouble(ReFramed.id("block/fence/full/side_core"), ReFramed.id("block/fence/full/side_bars")));
+        // SLABS STAIR
+        HELPER.addReFramedModel("slabs_stair"               , HELPER.autoDouble(ReFramed.id("block/slabs_stair/slab"), ReFramed.id("block/slabs_stair/step")));
+        HELPER.addReFramedModel("slabs_stair_side"          , HELPER.autoDouble(ReFramed.id("block/slabs_stair/side/slab"), ReFramed.id("block/slabs_stair/side/step")));
 
 
 		//item model assignments (in lieu of models/item/___.json)
@@ -170,6 +173,7 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.assignItemModel("post"                  , ReFramed.POST);
         HELPER.assignItemModel("fence_inventory"       , ReFramed.FENCE);
         HELPER.assignItemModel("post_fence_inventory"  , ReFramed.POST_FENCE);
+        HELPER.assignItemModel("slabs_stair"           , ReFramed.SLABS_STAIR);
 	}
 	
 	private void privateInit() {

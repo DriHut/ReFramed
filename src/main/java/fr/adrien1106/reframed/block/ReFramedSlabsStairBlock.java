@@ -1,7 +1,6 @@
 package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
-import fr.adrien1106.reframed.util.blocks.Corner;
 import fr.adrien1106.reframed.util.blocks.Edge;
 import fr.adrien1106.reframed.util.blocks.StairShape;
 import net.minecraft.block.Block;
@@ -17,32 +16,36 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.getHalfStairShape;
+import static fr.adrien1106.reframed.block.ReFramedSlabBlock.getSlabShape;
 import static fr.adrien1106.reframed.block.ReFramedStairBlock.getStairShape;
+import static fr.adrien1106.reframed.block.ReFramedStepBlock.getStepShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
-import static fr.adrien1106.reframed.util.blocks.Edge.*;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE_FACE;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 
-public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlock {
-    public ReFramedHalfStairsStairBlock(Settings settings) {
+public class ReFramedSlabsStairBlock extends WaterloggableReFramedDoubleBlock {
+
+    public ReFramedSlabsStairBlock(Settings settings) {
         super(settings);
-        setDefaultState(getDefaultState().with(EDGE, NORTH_DOWN));
+        setDefaultState(getDefaultState().with(EDGE, Edge.NORTH_DOWN).with(EDGE_FACE, 0));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(EDGE));
+        super.appendProperties(builder.add(EDGE, EDGE_FACE));
     }
 
-    @Nullable
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return super.getPlacementState(ctx).with(EDGE, BlockHelper.getPlacementEdge(ctx));
+    public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
+        Edge edge = BlockHelper.getPlacementEdge(ctx);
+        return super.getPlacementState(ctx)
+            .with(EDGE, edge)
+            .with(EDGE_FACE, edge.getDirectionIndex(ctx.getSide().getOpposite()));
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return isGhost(view, pos) ? empty(): getStairShape(state.get(EDGE), StairShape.STRAIGHT);
+        return isGhost(view, pos) ? empty() : getOutlineShape(state, view, pos, ctx);
     }
 
     @Override
@@ -52,31 +55,24 @@ public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlo
 
     @Override
     public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return state.with(EDGE, state.get(EDGE).rotate(rotation));
+        Edge edge = state.get(EDGE).rotate(rotation);
+        Direction face = state.get(EDGE).getDirection(state.get(EDGE_FACE));
+        return state.with(EDGE, edge).with(EDGE_FACE, edge.getDirectionIndex(rotation.rotate(face)));
     }
 
     @Override
     public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.with(EDGE, state.get(EDGE).mirror(mirror));
+        Edge edge = state.get(EDGE).mirror(mirror);
+        Direction face = state.get(EDGE).getDirection(state.get(EDGE_FACE));
+        return state.with(EDGE, edge).with(EDGE_FACE, edge.getDirectionIndex(mirror.apply(face)));
     }
 
     @Override
     public VoxelShape getShape(BlockState state, int i) {
         Edge edge = state.get(EDGE);
-        Direction side = i == 1
-            ? edge.getRightDirection()
-            : edge.getLeftDirection();
-        Corner corner = Corner.getByDirections(
-            edge.getFirstDirection(),
-            edge.getSecondDirection(),
-            side
-
-        );
-        return getHalfStairShape(corner, corner.getDirectionIndex(side));
-    }
-
-    @Override
-    public int getTopThemeIndex(BlockState state) {
-        return 2;
+        Direction face = edge.getDirection(state.get(EDGE_FACE));
+        return i == 2
+            ? getStepShape(edge.getOpposite(edge.getOtherDirection(face)))
+            : getSlabShape(face);
     }
 }
