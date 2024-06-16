@@ -85,7 +85,7 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
                         appearance_manager.getDefaultAppearance(theme_index),
                         0
                     ),
-                    state
+                    state == null ? item_state : state
                 )
             );
         }
