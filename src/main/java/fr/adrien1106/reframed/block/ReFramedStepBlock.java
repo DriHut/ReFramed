@@ -22,10 +22,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.*;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.STAIR_SHAPE;
 import static net.minecraft.state.property.Properties.*;
-import static net.minecraft.state.property.Properties.WATERLOGGED;
 
 public class ReFramedStepBlock extends WaterloggableReFramedBlock {
 
@@ -43,48 +42,32 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
 
     @Override
     public boolean canReplace(BlockState state, ItemPlacementContext context) {
-        if (context.getPlayer() == null) return false;
-        Edge edge = state.get(EDGE);
-        return !(
-            context.getPlayer().isSneaking()
+        if (context.getPlayer() == null
+            || context.getPlayer().isSneaking()
             || !(context.getStack().getItem() instanceof BlockItem block_item)
-            || (
-                !(
-                    block_item.getBlock() == ReFramed.STAIR
-                    && ((ReFramedStairsCubeBlock) ReFramed.STAIRS_CUBE)
-                        .matchesShape(
-                            context.getHitPos(),
-                            context.getBlockPos(),
-                            ReFramed.STAIRS_CUBE.getDefaultState().with(EDGE, edge.opposite()),
-                            1
-                        )
+        ) return false;
 
-                )
-                && !(
-                    block_item.getBlock() == this
-                    && (
-                        ((ReFramedStepsSlabBlock) ReFramed.STEPS_SLAB)
-                            .matchesShape(
-                                context.getHitPos(),
-                                context.getBlockPos(),
-                                ReFramed.STEPS_SLAB.getDefaultState()
-                                    .with(FACING, edge.getFirstDirection())
-                                    .with(AXIS, edge.getSecondDirection().getAxis()),
-                                edge.getSecondDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
-                            )
-                        || ((ReFramedStepsSlabBlock) ReFramed.STEPS_SLAB)
-                            .matchesShape(
-                                context.getHitPos(),
-                                context.getBlockPos(),
-                                ReFramed.STEPS_SLAB.getDefaultState()
-                                    .with(FACING, edge.getSecondDirection())
-                                    .with(AXIS, edge.getFirstDirection().getAxis()),
-                                edge.getFirstDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
-                            )
-                    )
-                )
-            )
-        );
+        Edge edge = state.get(EDGE);
+        // allow replacing with stair
+        if (block_item.getBlock() == ReFramed.STAIR)
+            return ReFramed.STAIRS_CUBE
+                .matchesShape(
+                    context.getHitPos(),
+                    context.getBlockPos(),
+                    ReFramed.STAIRS_CUBE.getDefaultState().with(EDGE, edge.opposite()),
+                    1
+                );
+
+        if (block_item.getBlock() == this)
+            return ReFramed.STAIR
+                .matchesShape(
+                    context.getHitPos(),
+                    context.getBlockPos(),
+                    ReFramed.STAIR.getDefaultState()
+                        .with(EDGE, edge.opposite())
+                );
+
+        return false;
     }
 
     @Nullable
@@ -101,23 +84,37 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
         if (current_state.isOf(this)) {
             Vec3d hit = ctx.getHitPos();
             Edge edge = current_state.get(EDGE);
-            Direction dir = edge.getFirstDirection();
-            ReFramedStepsSlabBlock block = ((ReFramedStepsSlabBlock) ReFramed.STEPS_SLAB);
-            BlockState state = block.getDefaultState()
-                .with(FACING, dir)
-                .with(AXIS, edge.getOtherDirection(dir).getAxis())
+
+            // Steps Slab
+            if (matchesShape(hit, pos,
+                current_state.with(EDGE, edge.getOpposite(edge.getFirstDirection()))
+            )) return ReFramed.STEPS_SLAB.getDefaultState()
+                .with(FACING, edge.getFirstDirection())
+                .with(AXIS, edge.getSecondDirection().getAxis())
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
-            if (!block.matchesShape(
-                hit, pos,
-                state,
-                edge.getOtherDirection(dir).getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
-            )) {
-                dir = edge.getSecondDirection();
-                state = state
-                    .with(FACING, dir)
-                    .with(AXIS, edge.getOtherDirection(dir).getAxis());
-            }
-            return state;
+
+            else if (matchesShape(hit, pos,
+                current_state.with(EDGE, edge.getOpposite(edge.getSecondDirection()))
+            )) return ReFramed.STEPS_SLAB.getDefaultState()
+                .with(FACING, edge.getFirstDirection())
+                .with(AXIS, edge.getSecondDirection().getAxis())
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
+
+            // Steps Cross
+            return null; // TODO STEP cross
+        } else if (current_state.isOf(ReFramed.SLAB)) {
+            Direction facing = current_state.get(FACING);
+            Edge edge;
+
+            // Slabs Stair
+            if (ctx.getSide() == facing || ctx.getSide() == facing.getOpposite())
+                edge = BlockHelper.getPlacementEdge(ctx);
+            else
+                edge = Edge.getByDirections(facing, ctx.getSide().getOpposite());
+            return ReFramed.SLABS_STAIR.getDefaultState()
+                .with(EDGE, edge)
+                .with(EDGE_FACE, edge.getDirectionIndex(facing));
+
         }
 
         return super.getPlacementState(ctx).with(EDGE, BlockHelper.getPlacementEdge(ctx));

@@ -42,21 +42,23 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
 
 	@Override
 	public boolean canReplace(BlockState state, ItemPlacementContext context) {
-        if (context.getPlayer() == null) return false;
-		return !(
-			context.getPlayer().isSneaking()
-			|| !(context.getStack().getItem() instanceof BlockItem block_item)
-			|| !(
-				block_item.getBlock() == this
-				&& ((ReFramedSlabsCubeBlock) ReFramed.SLABS_CUBE)
-					.matchesShape(
-						context.getHitPos(),
-						context.getBlockPos(),
-						ReFramed.SLABS_CUBE.getDefaultState().with(AXIS, state.get(FACING).getAxis()),
-						state.get(FACING).getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
-					)
-			)
-		);
+        if (context.getPlayer() == null
+            || context.getPlayer().isSneaking()
+            || !(context.getStack().getItem() instanceof BlockItem block_item)
+        ) return false;
+
+        // allow replacing with slab and step
+        if (block_item.getBlock() != this && block_item.getBlock() != ReFramed.STEP)
+            return false;
+
+        // check if the player is clicking on the inner part of the block
+		return ReFramed.SLABS_CUBE
+            .matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.SLABS_CUBE.getDefaultState().with(AXIS, state.get(FACING).getAxis()),
+                state.get(FACING).getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+            );
 	}
 
 	@Nullable

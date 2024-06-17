@@ -49,14 +49,6 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
         return 0;
     }
 
-    public boolean matchesShape(Vec3d hit, BlockPos pos, BlockState state, int i) {
-        Vec3d rel = BlockHelper.getRelativePos(hit, pos);
-        return BlockHelper.cursorMatchesFace(
-            getShape(state, i),
-            rel
-        );
-    }
-
     @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity

@@ -20,6 +20,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -135,6 +136,19 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 		}
 		onPlaced(world, pos, state, placer, stack);
 	}
+
+    public boolean matchesShape(Vec3d hit, BlockPos pos, BlockState state) {
+        return matchesShape(hit, pos, state, 0);
+    }
+
+    public boolean matchesShape(Vec3d hit, BlockPos pos, BlockState state, int i) {
+        Vec3d rel = BlockHelper.getRelativePos(hit, pos);
+        return matchesShape(rel, getShape(state, i));
+    }
+
+    public boolean matchesShape(Vec3d rel_hit, VoxelShape shape) {
+        return BlockHelper.cursorMatchesFace(shape, rel_hit);
+    }
 	
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {

@@ -37,7 +37,7 @@ public class ReFramed implements ModInitializer {
 	public static final String MODID = "reframed";
 
 	public static final ArrayList<Block> BLOCKS = new ArrayList<>();
-	public static Block
+	public static ReFramedBlock
         CUBE,
         SMALL_CUBE, SMALL_CUBES_STEP,
         STAIR, STAIRS_CUBE,
