@@ -102,7 +102,9 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
 
             // Steps Cross
-            return null; // TODO STEP cross
+            return ReFramed.STEPS_CROSS.getDefaultState()
+                .with(EDGE, edge)
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
         } else if (current_state.isOf(ReFramed.SLAB)) {
             Direction facing = current_state.get(FACING);
             Edge edge;
@@ -145,6 +147,7 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
 
     @Override
     public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
+        if (new_state.isOf(ReFramed.STEPS_CROSS)) return Map.of(1, 1);
         if (new_state.isOf(ReFramed.STAIRS_CUBE)) return Map.of(1, 2);
         if (new_state.isOf(ReFramed.STEPS_SLAB))
             return Map.of(

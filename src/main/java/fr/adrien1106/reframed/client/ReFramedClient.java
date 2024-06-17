@@ -153,6 +153,8 @@ public class ReFramedClient implements ClientModInitializer {
         // SLABS OUTER STAIR
         HELPER.addReFramedModel("slabs_inner_stair"         , HELPER.autoDouble(ReFramed.id("block/slabs_stair/inner/slab"), ReFramed.id("block/slabs_stair/inner/half_stair")));
         HELPER.addReFramedModel("slabs_inner_stair_side"    , HELPER.autoDouble(ReFramed.id("block/slabs_stair/inner/side/slab"), ReFramed.id("block/slabs_stair/inner/side/half_stair")));
+        // SLABS OUTER STAIR
+        HELPER.addReFramedModel("steps_cross"               , HELPER.autoDouble(ReFramed.id("block/step/down"), ReFramed.id("block/step/cross")));
 
 
 		//item model assignments (in lieu of models/item/___.json)
@@ -182,6 +184,7 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.assignItemModel("slabs_stair"           , ReFramed.SLABS_STAIR);
         HELPER.assignItemModel("slabs_outer_stair"     , ReFramed.SLABS_OUTER_STAIR);
         HELPER.assignItemModel("slabs_inner_stair"     , ReFramed.SLABS_INNER_STAIR);
+        HELPER.assignItemModel("steps_cross"            , ReFramed.STEPS_CROSS);
 	}
 	
 	private void privateInit() {

@@ -36,17 +36,26 @@ public class Step implements RecipeSetter, BlockStateProvider {
 
     @Override
     public BlockStateSupplier getMultipart(Block block) {
-        Identifier model_id = ReFramed.id("step_special");
+        return getMultipart(block, "step");
+    }
+
+    public static BlockStateSupplier getMultipart(Block block, String model_name) {
+        return getMultipart(block, model_name, model_name);
+    }
+
+    public static BlockStateSupplier getMultipart(Block block, String model_name, String reverse_model_name) {
+        Identifier model_id = ReFramed.id(model_name + "_special");
+        Identifier reverse_model_id = ReFramed.id(reverse_model_name + "_special");
         return MultipartBlockStateSupplier.create(block)
             /* X AXIS */
             .with(GBlockstate.when(EDGE, DOWN_EAST),
                 GBlockstate.variant(model_id, true, R0, R0))
             .with(GBlockstate.when(EDGE, EAST_UP),
-                GBlockstate.variant(model_id, true, R180, R0))
+                GBlockstate.variant(reverse_model_id, true, R180, R0))
             .with(GBlockstate.when(EDGE, UP_WEST),
                 GBlockstate.variant(model_id, true, R180, R180))
             .with(GBlockstate.when(EDGE, WEST_DOWN),
-                GBlockstate.variant(model_id, true, R0, R180))
+                GBlockstate.variant(reverse_model_id, true, R0, R180))
             /* Y AXIS */
             .with(GBlockstate.when(EDGE, EAST_SOUTH),
                 GBlockstate.variant(model_id, true, R90, R0))
@@ -58,11 +67,11 @@ public class Step implements RecipeSetter, BlockStateProvider {
                 GBlockstate.variant(model_id, true, R90, R270))
             /* Z AXIS */
             .with(GBlockstate.when(EDGE, DOWN_SOUTH),
-                GBlockstate.variant(model_id, true, R0, R90))
+                GBlockstate.variant(reverse_model_id, true, R0, R90))
             .with(GBlockstate.when(EDGE, NORTH_DOWN),
                 GBlockstate.variant(model_id, true, R0, R270))
             .with(GBlockstate.when(EDGE, UP_NORTH),
-                GBlockstate.variant(model_id, true, R180, R270))
+                GBlockstate.variant(reverse_model_id, true, R180, R270))
             .with(GBlockstate.when(EDGE, SOUTH_UP),
                 GBlockstate.variant(model_id, true, R180, R90));
     }

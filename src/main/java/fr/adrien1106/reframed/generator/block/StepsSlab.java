@@ -9,7 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.data.client.MultipartBlockStateSupplier;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.RecipeProvider;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.util.Identifier;
@@ -25,9 +25,10 @@ public class StepsSlab implements RecipeSetter, BlockStateProvider {
     @Override
     public void setRecipe(RecipeExporter exporter, ItemConvertible convertible) {
         RecipeProvider.offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, convertible, ReFramed.CUBE, 2);
-        ShapelessRecipeJsonBuilder
+        ShapedRecipeJsonBuilder
             .create(RecipeCategory.BUILDING_BLOCKS, convertible)
-            .input(ReFramed.STEP, 2)
+            .pattern("II")
+            .input('I', ReFramed.STEP)
             .criterion(FabricRecipeProvider.hasItem(ReFramed.CUBE), FabricRecipeProvider.conditionsFromItem(ReFramed.CUBE))
             .criterion(FabricRecipeProvider.hasItem(convertible), FabricRecipeProvider.conditionsFromItem(convertible))
             .offerTo(exporter);

@@ -43,7 +43,7 @@ public class ReFramed implements ModInitializer {
         STAIR, STAIRS_CUBE,
         HALF_STAIR, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR,
         SLAB, SLABS_CUBE, SLABS_STAIR, SLABS_OUTER_STAIR, SLABS_INNER_STAIR,
-        STEP, STEPS_SLAB,
+        STEP, STEPS_SLAB, STEPS_CROSS,
         LAYER,
         PILLAR, PILLARS_WALL, WALL,
         PANE, TRAPDOOR, DOOR,
@@ -78,6 +78,7 @@ public class ReFramed implements ModInitializer {
         SLABS_INNER_STAIR = registerBlock("slabs_inner_stair" , new ReFramedSlabsInnerStairBlock(cp(Blocks.OAK_STAIRS)));
 		STEP              = registerBlock("step"              , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
 		STEPS_SLAB        = registerBlock("steps_slab"        , new ReFramedStepsSlabBlock(cp(Blocks.OAK_SLAB)));
+        STEPS_CROSS       = registerBlock("steps_cross"       , new ReFramedStepsCrossBlock(cp(Blocks.OAK_SLAB)));
 		PILLAR            = registerBlock("pillar"            , new ReFramedPillarBlock(cp(Blocks.OAK_FENCE)));
 		PILLARS_WALL      = registerBlock("pillars_wall"      , new ReFramedPillarsWallBlock(cp(Blocks.OAK_FENCE)));
 		WALL              = registerBlock("wall"              , new ReFramedWallBlock(cp(Blocks.OAK_FENCE)));
