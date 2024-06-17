@@ -25,6 +25,7 @@ import java.util.Map;
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.*;
 import static fr.adrien1106.reframed.util.blocks.Corner.*;
+import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 
 public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
@@ -42,6 +43,7 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean canReplace(BlockState state, ItemPlacementContext context) {
         if (context.getPlayer() == null) return false;
         Direction dir = state.get(CORNER).getDirection(state.get(CORNER_FACE));
@@ -51,7 +53,7 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
                 || (
                     !(
                         block_item.getBlock() == this
-                        && ((ReFramedHalfStairsStairBlock) ReFramed.HALF_STAIRS_STAIR)
+                        && ReFramed.HALF_STAIRS_STAIR
                             .matchesShape(
                                 context.getHitPos(),
                                 context.getBlockPos(),
@@ -92,6 +94,15 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
             return ReFramed.HALF_STAIRS_STAIR.getDefaultState()
                 .with(EDGE, current_state.get(CORNER).getEdge(current_state.get(CORNER).getDirection(current_state.get(CORNER_FACE))))
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
+        else if (current_state.isOf(ReFramed.SLAB)) {
+            Corner corner = BlockHelper.getPlacementCorner(ctx);
+            Direction face = current_state.get(FACING);
+            if (!corner.hasDirection(face)) corner = corner.change(face.getOpposite());
+            return ReFramed.SLABS_INNER_STAIR.getDefaultState()
+                .with(CORNER, corner)
+                .with(CORNER_FACE, corner.getDirectionIndex(face))
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
+        }
 
         Corner corner = BlockHelper.getPlacementCorner(ctx);
         return super.getPlacementState(ctx)
@@ -100,11 +111,13 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getHalfStairShape(state.get(CORNER), state.get(CORNER_FACE));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         Corner corner = state.get(CORNER).rotate(rotation);
         Direction face = state.get(CORNER).getDirection(state.get(CORNER_FACE));
@@ -112,6 +125,7 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         Corner corner = state.get(CORNER).mirror(mirror);
         Direction face = state.get(CORNER).getDirection(state.get(CORNER_FACE));

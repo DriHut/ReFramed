@@ -41,6 +41,7 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean canReplace(BlockState state, ItemPlacementContext context) {
         if (context.getPlayer() == null
             || context.getPlayer().isSneaking()
@@ -96,8 +97,8 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
             else if (matchesShape(hit, pos,
                 current_state.with(EDGE, edge.getOpposite(edge.getSecondDirection()))
             )) return ReFramed.STEPS_SLAB.getDefaultState()
-                .with(FACING, edge.getFirstDirection())
-                .with(AXIS, edge.getSecondDirection().getAxis())
+                .with(FACING, edge.getSecondDirection())
+                .with(AXIS, edge.getFirstDirection().getAxis())
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
 
             // Steps Cross
@@ -121,16 +122,19 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getStepShape(state.get(EDGE));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(EDGE, state.get(EDGE).rotate(rotation));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.with(EDGE, state.get(EDGE).mirror(mirror));
     }

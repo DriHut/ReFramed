@@ -21,7 +21,6 @@ import static fr.adrien1106.reframed.block.ReFramedSlabBlock.getSlabShape;
 import static fr.adrien1106.reframed.block.ReFramedStepBlock.getStepShape;
 import static net.minecraft.state.property.Properties.AXIS;
 import static net.minecraft.state.property.Properties.FACING;
-import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock {
 
@@ -44,16 +43,13 @@ public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return isGhost(view, pos) ? empty() : getSlabShape(state.get(FACING));
-    }
-
-    @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getSlabShape(state.get(FACING));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return state
             .with(AXIS, rotation.rotate(Direction.get(Direction.AxisDirection.POSITIVE, state.get(AXIS))).getAxis())
@@ -61,6 +57,7 @@ public class ReFramedStepsSlabBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         if (state.get(FACING).getAxis() != Axis.Y)
             return state.with(FACING, mirror.apply(state.get(FACING)));

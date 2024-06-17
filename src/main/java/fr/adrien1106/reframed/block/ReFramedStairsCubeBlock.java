@@ -36,6 +36,7 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighbor_state, WorldAccess world, BlockPos pos, BlockPos moved) {
         return super.getStateForNeighborUpdate(state, direction, neighbor_state, world, pos, moved)
             .with(STAIR_SHAPE, BlockHelper.getStairsShape(state.get(EDGE), world, pos));
@@ -52,6 +53,7 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
 
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         Edge prev_edge = state.get(EDGE);
         Edge edge = prev_edge.rotate(rotation);
@@ -68,6 +70,7 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         Edge prev_edge = state.get(EDGE);
         Edge edge = prev_edge.mirror(mirror);

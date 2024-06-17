@@ -116,6 +116,14 @@ public enum Corner implements StringIdentifiable {
         );
     }
 
+    public Edge getEdgeWith(Direction direction) {
+        return Edge.getByDirections(
+            first_direction == direction ? first_direction : second_direction,
+            first_direction == direction ? second_direction : third_direction
+        );
+
+    }
+
     public Direction getOtherDirection(Edge edge) {
         if (edge.getFirstDirection() != second_direction && edge.getSecondDirection() != second_direction) return second_direction;
         if (edge.getFirstDirection() != third_direction && edge.getSecondDirection() != third_direction) return third_direction;
@@ -135,6 +143,15 @@ public enum Corner implements StringIdentifiable {
             mirror.apply(first_direction),
             mirror.apply(second_direction),
             mirror.apply(third_direction)
+        );
+    }
+
+    public Corner change(Direction face) {
+        Direction opposite = face.getOpposite();
+        return getByDirections(
+            first_direction == face ? opposite : first_direction,
+            second_direction == face ? opposite : second_direction,
+            third_direction == face ? opposite : third_direction
         );
     }
 }

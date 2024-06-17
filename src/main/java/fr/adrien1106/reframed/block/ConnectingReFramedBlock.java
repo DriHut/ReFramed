@@ -62,6 +62,7 @@ public abstract class ConnectingReFramedBlock extends WaterloggableReFramedBlock
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
                 s.with(getConnectionProperty(rotation.rotate(dir)), state.get(getConnectionProperty(dir)))
@@ -69,6 +70,7 @@ public abstract class ConnectingReFramedBlock extends WaterloggableReFramedBlock
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
                 s.with(getConnectionProperty(mirror.apply(dir)), state.get(getConnectionProperty(dir)))
@@ -78,6 +80,7 @@ public abstract class ConnectingReFramedBlock extends WaterloggableReFramedBlock
     protected abstract boolean connectsTo(BlockState state, boolean fs, Direction dir);
 
     @Override
+    @SuppressWarnings("deprecation")
     public abstract VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context);
 
     public static BooleanProperty getConnectionProperty(Direction dir) {

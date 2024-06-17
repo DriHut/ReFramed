@@ -45,6 +45,7 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public boolean canReplace(BlockState state, ItemPlacementContext context) {
         if (context.getPlayer() == null) return false;
 		return !(
@@ -94,11 +95,13 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return getStairShape(state.get(EDGE), state.get(STAIR_SHAPE));
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public BlockState rotate(BlockState state, BlockRotation rotation) {
 		Edge prev_edge = state.get(EDGE);
 		Edge edge = prev_edge.rotate(rotation);
@@ -115,6 +118,7 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public BlockState mirror(BlockState state, BlockMirror mirror) {
 		Edge prev_edge = state.get(EDGE);
 		Edge edge = prev_edge.mirror(mirror);

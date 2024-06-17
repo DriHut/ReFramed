@@ -41,15 +41,19 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public boolean canReplace(BlockState state, ItemPlacementContext context) {
         if (context.getPlayer() == null
             || context.getPlayer().isSneaking()
             || !(context.getStack().getItem() instanceof BlockItem block_item)
         ) return false;
 
-        // allow replacing with slab and step
-        if (block_item.getBlock() != this && block_item.getBlock() != ReFramed.STEP)
-            return false;
+        // allow replacing with slab, step, small cube and half stair
+        if (block_item.getBlock() != this
+            && block_item.getBlock() != ReFramed.STEP
+            && block_item.getBlock() != ReFramed.SMALL_CUBE
+            && block_item.getBlock() != ReFramed.HALF_STAIR
+        ) return false;
 
         // check if the player is clicking on the inner part of the block
 		return ReFramed.SLABS_CUBE
@@ -73,16 +77,19 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return getSlabShape(state.get(FACING));
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public BlockState rotate(BlockState state, BlockRotation rotation) {
 		return state.with(FACING, rotation.rotate(state.get(FACING)));
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public BlockState mirror(BlockState state, BlockMirror mirror) {
 		return state.with(FACING, mirror.apply(state.get(FACING)));
 	}
@@ -100,6 +107,10 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
 
 	@Override
 	public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
+        if (new_state.isOf(ReFramed.SLABS_STAIR)
+            || new_state.isOf(ReFramed.SLABS_OUTER_STAIR)
+            || new_state.isOf(ReFramed.SLABS_INNER_STAIR)
+        ) return Map.of(1, 1);
 		if (new_state.isOf(ReFramed.SLABS_CUBE)) return Map.of(1, state.get(FACING).getDirection() == Direction.AxisDirection.POSITIVE ? 2 : 1);
 		return super.getThemeMap(state, new_state);
 	}

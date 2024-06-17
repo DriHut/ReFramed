@@ -19,7 +19,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.util.shape.VoxelShapes.empty;
-import static net.minecraft.util.shape.VoxelShapes.fullCube;
 
 public abstract class ReFramedDoubleBlock extends ReFramedBlock {
     public ReFramedDoubleBlock(Settings settings) {
@@ -61,7 +60,7 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return isGhost(view, pos) ? empty() : fullCube();
+        return isGhost(view, pos) ? empty() : getOutlineShape(state, view, pos, ctx);
     }
 
     @Override

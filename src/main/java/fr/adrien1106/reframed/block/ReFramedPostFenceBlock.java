@@ -74,6 +74,7 @@ public class ReFramedPostFenceBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
                 s.with(getConnectionProperty(rotation.rotate(dir)), state.get(getConnectionProperty(dir)))
@@ -81,6 +82,7 @@ public class ReFramedPostFenceBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
                 s.with(getConnectionProperty(mirror.apply(dir)), state.get(getConnectionProperty(dir)))
@@ -104,6 +106,7 @@ public class ReFramedPostFenceBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         VoxelShape shape = FENCE_VOXELS[0];
         for (Direction dir: Direction.Type.HORIZONTAL) {
@@ -124,6 +127,7 @@ public class ReFramedPostFenceBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getOutlineShape(state, world, pos, context);
     }
@@ -134,6 +138,7 @@ public class ReFramedPostFenceBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         return false;
     }

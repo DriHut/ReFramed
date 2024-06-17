@@ -60,6 +60,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	}
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (!canUse(world, pos, player)) return ActionResult.PASS;
 		ActionResult result = BlockHelper.useUpgrade(state, world, pos, player, hand);
@@ -73,6 +74,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	}
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
 		if(!(new_state.getBlock() instanceof ReFramedBlock) &&
 			world.getBlockEntity(pos) instanceof ReFramedEntity frame_entity &&
@@ -151,6 +153,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
     }
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
 		return isGhost(view, pos)
 			? VoxelShapes.empty()
@@ -158,6 +161,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public VoxelShape getCullingShape(BlockState state, BlockView view, BlockPos pos) {
 		return isGhost(view, pos)
 			? VoxelShapes.empty()
@@ -174,11 +178,13 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	}
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public int getWeakRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
 		return view.getBlockEntity(pos) instanceof ReFramedEntity be && be.emitsRedstone() ? 15 : 0;
 	}
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public int getStrongRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
 		return getWeakRedstonePower(state, view, pos, dir);
 	}

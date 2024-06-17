@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import static fr.adrien1106.reframed.block.ReFramedSmallCubeBlock.SMALL_CUBE_VOXELS;
 import static fr.adrien1106.reframed.block.ReFramedStepBlock.getStepShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
-import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedSmallCubesStepBlock extends WaterloggableReFramedDoubleBlock {
 
@@ -39,21 +38,19 @@ public class ReFramedSmallCubesStepBlock extends WaterloggableReFramedDoubleBloc
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return isGhost(view, pos) ? empty(): getStepShape(state.get(EDGE));
-    }
-
-    @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getStepShape(state.get(EDGE));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(EDGE, state.get(EDGE).rotate(rotation));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.with(EDGE, state.get(EDGE).mirror(mirror));
     }

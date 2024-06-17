@@ -87,6 +87,7 @@ public class ReFramedWallBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         VoxelShape shape = state.get(UP) ? WALL_VOXELS[0]: VoxelShapes.empty();
         for (Direction dir : Direction.Type.HORIZONTAL) {
@@ -109,6 +110,7 @@ public class ReFramedWallBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
                 s.with(getWallShape(rotation.rotate(dir)), state.get(getWallShape(dir)))
@@ -116,6 +118,7 @@ public class ReFramedWallBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
                 s.with(getWallShape(mirror.apply(dir)), state.get(getWallShape(dir)))

@@ -9,8 +9,6 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.state.StateManager;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
@@ -32,6 +30,7 @@ public class ReFramedLayerBlock extends ReFramedSlabBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
         List<ItemStack> drops = super.getDroppedStacks(state, builder);
         drops.forEach((stack) -> {
@@ -66,16 +65,6 @@ public class ReFramedLayerBlock extends ReFramedSlabBlock {
         BlockState previous = ctx.getWorld().getBlockState(ctx.getBlockPos());
         if (!previous.isOf(this)) return super.getPlacementState(ctx);
         return previous.with(LAYERS, previous.get(LAYERS) + 1);
-    }
-
-    @Override
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return state.with(FACING, rotation.rotate(state.get(FACING)));
-    }
-
-    @Override
-    public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.with(FACING, mirror.apply(state.get(FACING)));
     }
 
     static {
