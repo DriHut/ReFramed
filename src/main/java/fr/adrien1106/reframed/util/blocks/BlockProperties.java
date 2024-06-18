@@ -10,5 +10,6 @@ public class BlockProperties {
     public static final IntProperty EDGE_FACE = IntProperty.of("face", 0, 1);
     public static final EnumProperty<Corner> CORNER = EnumProperty.of("corner", Corner.class);
     public static final IntProperty CORNER_FACE = IntProperty.of("face", 0, 2);
+    public static final IntProperty CORNER_FEATURE = IntProperty.of("corner_feature", 0, 1);
     public static final EnumProperty<StairShape> STAIR_SHAPE = EnumProperty.of("shape", StairShape.class);
 }

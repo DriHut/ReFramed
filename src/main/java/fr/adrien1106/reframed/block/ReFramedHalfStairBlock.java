@@ -45,38 +45,35 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
     @Override
     @SuppressWarnings("deprecation")
     public boolean canReplace(BlockState state, ItemPlacementContext context) {
-        if (context.getPlayer() == null) return false;
-        Direction dir = state.get(CORNER).getDirection(state.get(CORNER_FACE));
-        return !(
-            context.getPlayer().isSneaking()
-                || !(context.getStack().getItem() instanceof BlockItem block_item)
-                || (
-                    !(
-                        block_item.getBlock() == this
-                        && ReFramed.HALF_STAIRS_STAIR
-                            .matchesShape(
-                                context.getHitPos(),
-                                context.getBlockPos(),
-                                ReFramed.HALF_STAIRS_STAIR.getDefaultState()
-                                    .with(EDGE, state.get(CORNER).getEdge(dir)),
-                                dir.getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
-                            )
-                    )
-                    && !(
-                        block_item.getBlock() == ReFramed.SMALL_CUBE
-                        && BlockHelper.cursorMatchesFace(
-                            ReFramed.SMALL_CUBE.getOutlineShape(
-                                ReFramed.SMALL_CUBE.getDefaultState()
-                                    .with(CORNER, state.get(CORNER).getOpposite(state.get(CORNER_FACE))),
-                                context.getWorld(),
-                                context.getBlockPos(),
-                                ShapeContext.absent()
-                            ),
-                            BlockHelper.getRelativePos(context.getHitPos(), context.getBlockPos())
-                        )
-                    )
-                )
-        );
+        if (context.getPlayer() == null
+            || context.getPlayer().isSneaking()
+            || !(context.getStack().getItem() instanceof BlockItem block_item)
+        ) return false;
+
+        // allow replacing with slab, step, small cube and half stair
+        Block block = block_item.getBlock();
+        Corner corner = state.get(CORNER);
+        Direction dir = corner.getDirection(state.get(CORNER_FACE));
+        if (block == this || block == ReFramed.STEP)
+            return ReFramed.HALF_STAIRS_STAIR.matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.HALF_STAIRS_STAIR.getDefaultState().with(EDGE, corner.getEdge(dir)),
+                dir.getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+            );
+
+        if (block == ReFramed.SMALL_CUBE)
+            return ReFramed.SMALL_CUBE.matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.SMALL_CUBE.getDefaultState().with(CORNER, corner.change(dir))
+            ) || ReFramed.SMALL_CUBE.matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.SMALL_CUBE.getDefaultState().with(CORNER, corner.getOpposite(dir))
+            );
+
+        return false;
     }
 
     @Override
@@ -94,7 +91,7 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
             return ReFramed.HALF_STAIRS_STAIR.getDefaultState()
                 .with(EDGE, current_state.get(CORNER).getEdge(current_state.get(CORNER).getDirection(current_state.get(CORNER_FACE))))
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
-        else if (current_state.isOf(ReFramed.SLAB)) {
+        if (current_state.isOf(ReFramed.SLAB)) {
             Corner corner = BlockHelper.getPlacementCorner(ctx);
             Direction face = current_state.get(FACING);
             if (!corner.hasDirection(face)) corner = corner.change(face.getOpposite());
@@ -134,7 +131,10 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
 
     @Override
     public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
-        if (new_state.isOf(ReFramed.HALF_STAIRS_SLAB)) return Map.of(1, 1);
+        if (new_state.isOf(ReFramed.HALF_STAIRS_SLAB)
+            || new_state.isOf(ReFramed.HALF_STAIRS_CUBE_STAIR)
+            || new_state.isOf(ReFramed.HALF_STAIRS_STEP_STAIR)
+        ) return Map.of(1, 1);
         if (new_state.isOf(ReFramed.HALF_STAIRS_STAIR))
             return Map.of(
                 1,

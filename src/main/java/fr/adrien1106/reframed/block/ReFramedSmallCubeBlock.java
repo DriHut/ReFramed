@@ -96,12 +96,20 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock {
     public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockPos pos = ctx.getBlockPos();
         BlockState current_state = ctx.getWorld().getBlockState(pos);
-        if (current_state.isOf(ReFramed.HALF_STAIR))
-            return ReFramed.HALF_STAIRS_SLAB.getDefaultState()
+
+        if (current_state.isOf(ReFramed.HALF_STAIR)) {
+            BlockState new_state;
+            Direction face = current_state.get(CORNER).getDirection(current_state.get(CORNER_FACE));
+            if (matchesShape(
+                ctx.getHitPos(), pos,
+                getDefaultState().with(CORNER, current_state.get(CORNER).change(face))
+            )) new_state = ReFramed.HALF_STAIRS_CUBE_STAIR.getDefaultState();
+            else new_state = ReFramed.HALF_STAIRS_SLAB.getDefaultState();
+            return new_state
                 .with(CORNER, current_state.get(CORNER))
                 .with(CORNER_FACE, current_state.get(CORNER_FACE))
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
-
+        }
 
         if (current_state.isOf(this)) {
             Vec3d hit = ctx.getHitPos();
@@ -120,7 +128,9 @@ public class ReFramedSmallCubeBlock extends WaterloggableReFramedBlock {
                 corner.getSecondDirection().getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
             )) return state;
             return state.with(EDGE, corner.getEdge(corner.getThirdDirection()));
-        } else if (current_state.isOf(ReFramed.SLAB)) {
+        }
+
+        if (current_state.isOf(ReFramed.SLAB)) {
             Corner corner = BlockHelper.getPlacementCorner(ctx);
             Direction face = current_state.get(FACING);
             if (!corner.hasDirection(face)) corner = corner.change(face.getOpposite());

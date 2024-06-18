@@ -3,6 +3,7 @@ package fr.adrien1106.reframed.block;
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.util.VoxelHelper;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.Corner;
 import fr.adrien1106.reframed.util.blocks.Edge;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -48,27 +49,17 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
             || !(context.getStack().getItem() instanceof BlockItem block_item)
         ) return false;
 
-        Edge edge = state.get(EDGE);
+        Block block = block_item.getBlock();
         // allow replacing with stair
-        if (block_item.getBlock() == ReFramed.STAIR)
-            return ReFramed.STAIRS_CUBE
-                .matchesShape(
-                    context.getHitPos(),
-                    context.getBlockPos(),
-                    ReFramed.STAIRS_CUBE.getDefaultState().with(EDGE, edge.opposite()),
-                    1
-                );
+        if (block != this && block != ReFramed.STAIR) return false;
 
-        if (block_item.getBlock() == this)
-            return ReFramed.STAIR
-                .matchesShape(
-                    context.getHitPos(),
-                    context.getBlockPos(),
-                    ReFramed.STAIR.getDefaultState()
-                        .with(EDGE, edge.opposite())
-                );
-
-        return false;
+        Edge edge = state.get(EDGE);
+        return ReFramed.STAIR
+            .matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.STAIRS_CUBE.getDefaultState().with(EDGE, edge.opposite())
+            );
     }
 
     @Nullable
@@ -76,6 +67,7 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockPos pos = ctx.getBlockPos();
         BlockState current_state = ctx.getWorld().getBlockState(pos);
+
         if (current_state.isOf(ReFramed.STAIR))
             return ReFramed.STAIRS_CUBE.getDefaultState()
                 .with(EDGE, current_state.get(EDGE))
@@ -105,7 +97,9 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
             return ReFramed.STEPS_CROSS.getDefaultState()
                 .with(EDGE, edge)
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
-        } else if (current_state.isOf(ReFramed.SLAB)) {
+        }
+
+        if (current_state.isOf(ReFramed.SLAB)) {
             Direction facing = current_state.get(FACING);
             Edge edge;
 
@@ -118,6 +112,26 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
                 .with(EDGE, edge)
                 .with(EDGE_FACE, edge.getDirectionIndex(facing));
 
+        }
+
+        if (current_state.isOf(ReFramed.HALF_STAIR)) {
+            Corner corner = current_state.get(CORNER);
+            int face_index = current_state.get(CORNER_FACE), feature_index;
+            Direction face = corner.getDirection(current_state.get(CORNER_FACE));
+            Direction side = ctx.getSide().getOpposite();
+
+            if (side.getAxis() == face.getAxis())
+                side = BlockHelper.getPlacementEdge(ctx).getOtherDirection(face == side ? face : face.getOpposite());
+
+            if (side.getAxis() != face.getAxis() && !corner.hasDirection(side))
+                side = corner.getOtherDirection(Edge.getByDirections(face, side.getOpposite()));
+
+            feature_index = corner.getDirectionIndex(side);
+            return ReFramed.HALF_STAIRS_STEP_STAIR.getDefaultState()
+                .with(CORNER, corner)
+                .with(CORNER_FACE, face_index)
+                .with(CORNER_FEATURE, feature_index > face_index ? feature_index - 1 : feature_index)
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
         }
 
         return super.getPlacementState(ctx).with(EDGE, BlockHelper.getPlacementEdge(ctx));

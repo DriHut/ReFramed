@@ -49,10 +49,11 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
         ) return false;
 
         // allow replacing with slab, step, small cube and half stair
-        if (block_item.getBlock() != this
-            && block_item.getBlock() != ReFramed.STEP
-            && block_item.getBlock() != ReFramed.SMALL_CUBE
-            && block_item.getBlock() != ReFramed.HALF_STAIR
+        Block block = block_item.getBlock();
+        if (block != this
+            && block != ReFramed.STEP
+            && block != ReFramed.SMALL_CUBE
+            && block != ReFramed.HALF_STAIR
         ) return false;
 
         // check if the player is clicking on the inner part of the block
