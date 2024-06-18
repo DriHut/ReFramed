@@ -7,7 +7,6 @@ import fr.adrien1106.reframed.item.ReFramedBlueprintWrittenItem;
 import fr.adrien1106.reframed.item.ReFramedScrewdriverItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -99,7 +98,7 @@ public class ReFramed implements ModInitializer {
 
 
 		REFRAMED_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("camo"),
-			FabricBlockEntityTypeBuilder.create(
+            BlockEntityType.Builder.create(
 				(pos, state) -> new ReFramedEntity(REFRAMED_BLOCK_ENTITY, pos, state),
 				BLOCKS.stream()
 					.filter(block -> !(block instanceof ReFramedDoubleBlock))
@@ -107,7 +106,7 @@ public class ReFramed implements ModInitializer {
 		);
 
 		REFRAMED_DOUBLE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("double_camo"),
-			FabricBlockEntityTypeBuilder.create(
+			BlockEntityType.Builder.create(
 				(pos, state) -> new ReFramedDoubleEntity(REFRAMED_DOUBLE_BLOCK_ENTITY, pos, state),
 				BLOCKS.stream()
 					.filter(block -> block instanceof ReFramedDoubleBlock)
