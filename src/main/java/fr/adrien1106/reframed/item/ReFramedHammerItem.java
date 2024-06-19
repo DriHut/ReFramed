@@ -43,7 +43,7 @@ public class ReFramedHammerItem extends Item {
             world.playSound(player, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1f, 1.1f);
         }
         frame_entity.setTheme(Blocks.AIR.getDefaultState(), theme_index);
-        ReFramed.chunkRerenderProxy.accept(world, pos);
+        if (world.isClient) ReFramed.chunkRerenderProxy.accept(world, pos);
         return ActionResult.SUCCESS;
     }
 }
