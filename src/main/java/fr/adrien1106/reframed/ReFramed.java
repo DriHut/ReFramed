@@ -42,6 +42,7 @@ public class ReFramed implements ModInitializer {
         STAIR, STAIRS_CUBE,
         HALF_STAIR, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, HALF_STAIRS_CUBE_STAIR, HALF_STAIRS_STEP_STAIR,
         SLAB, SLABS_CUBE, SLABS_STAIR, SLABS_OUTER_STAIR, SLABS_INNER_STAIR, SLABS_HALF_LAYER,
+        HALF_SLAB, HALF_SLABS_SLAB,
         STEP, STEPS_SLAB, STEPS_CROSS, STEPS_HALF_LAYER,
         LAYER, HALF_LAYER,
         PILLAR, PILLARS_WALL, WALL,
@@ -79,6 +80,8 @@ public class ReFramed implements ModInitializer {
         SLABS_OUTER_STAIR       = registerBlock("slabs_outer_stair"      , new ReFramedSlabsOuterStairBlock(cp(Blocks.OAK_STAIRS)));
         SLABS_INNER_STAIR       = registerBlock("slabs_inner_stair"      , new ReFramedSlabsInnerStairBlock(cp(Blocks.OAK_STAIRS)));
         SLABS_HALF_LAYER        = registerBlock("slabs_half_layer"       , new ReFramedSlabsHalfLayerBlock(cp(Blocks.OAK_SLAB)));
+        HALF_SLAB               = registerBlock("half_slab"              , new ReFramedHalfSlabBlock(cp(Blocks.OAK_SLAB)));
+        HALF_SLABS_SLAB         = registerBlock("half_slabs_slab"        , new ReFramedHalfSlabsSlabBlock(cp(Blocks.OAK_SLAB)));
 		STEP                    = registerBlock("step"                   , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
 		STEPS_SLAB              = registerBlock("steps_slab"             , new ReFramedStepsSlabBlock(cp(Blocks.OAK_SLAB)));
         STEPS_CROSS             = registerBlock("steps_cross"            , new ReFramedStepsCrossBlock(cp(Blocks.OAK_SLAB)));

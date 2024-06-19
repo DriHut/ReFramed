@@ -34,7 +34,11 @@ public class Slab implements RecipeSetter, BlockStateProvider {
 
     @Override
     public MultipartBlockStateSupplier getMultipart(Block block) {
-        Identifier model_id = ReFramed.id("slab_special");
+        return getMultipart(block, "slab");
+    }
+
+    public static MultipartBlockStateSupplier getMultipart(Block block, String model_name) {
+        Identifier model_id = ReFramed.id(model_name + "_special");
         return MultipartBlockStateSupplier.create(block)
             .with(GBlockstate.when(FACING, Direction.DOWN),
                 GBlockstate.variant(model_id, true, R0, R0))
@@ -49,4 +53,6 @@ public class Slab implements RecipeSetter, BlockStateProvider {
             .with(GBlockstate.when(FACING, Direction.EAST),
                 GBlockstate.variant(model_id, true, R90, R270));
     }
+
+
 }
