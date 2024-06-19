@@ -12,7 +12,6 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,13 +76,6 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
         return state
             .with(STAIR_SHAPE, prev_edge == edge ? state.get(STAIR_SHAPE).mirror() : state.get(STAIR_SHAPE).flip())
             .with(EDGE, edge);
-    }
-
-    @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-        super.onStateReplaced(state, world, pos, new_state, moved);
-
-        if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
     }
 
     @Override

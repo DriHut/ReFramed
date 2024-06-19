@@ -50,13 +50,6 @@ public class ReFramedPostFenceBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-        super.onStateReplaced(state, world, pos, new_state, moved);
-
-        if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
-    }
-
-    @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction dir, BlockState other_state, WorldAccess world, BlockPos pos, BlockPos moved) {
         BlockState new_state = super.getStateForNeighborUpdate(state, dir, other_state, world, pos, moved);
         if (dir == Direction.DOWN) return new_state;

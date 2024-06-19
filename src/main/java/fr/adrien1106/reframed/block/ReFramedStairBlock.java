@@ -19,7 +19,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +52,7 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 			|| !(context.getStack().getItem() instanceof BlockItem block_item)
 			|| !(
 				block_item.getBlock() == ReFramed.STEP
-				&& ((ReFramedStairsCubeBlock) ReFramed.STAIRS_CUBE)
+				&& ReFramed.STAIRS_CUBE
 					.matchesShape(
 						context.getHitPos(),
 						context.getBlockPos(),
@@ -85,13 +84,6 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 		Edge edge = BlockHelper.getPlacementEdge(ctx);
 		StairShape shape = BlockHelper.getStairsShape(edge, ctx.getWorld(), ctx.getBlockPos());
 		return super.getPlacementState(ctx).with(EDGE, edge).with(STAIR_SHAPE, shape);
-	}
-
-	@Override
-	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-		super.onStateReplaced(state, world, pos, new_state, moved);
-
-		if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
 	}
 
 	@Override

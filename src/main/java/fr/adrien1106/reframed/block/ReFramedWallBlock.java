@@ -80,13 +80,6 @@ public class ReFramedWallBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-        super.onStateReplaced(state, world, pos, new_state, moved);
-
-        if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
-    }
-
-    @Override
     @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         VoxelShape shape = state.get(UP) ? WALL_VOXELS[0]: VoxelShapes.empty();

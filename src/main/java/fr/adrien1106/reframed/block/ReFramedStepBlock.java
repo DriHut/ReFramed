@@ -50,10 +50,21 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
         ) return false;
 
         Block block = block_item.getBlock();
+        Edge edge = state.get(EDGE);
+        if (block == ReFramed.HALF_LAYER)
+            return matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                getDefaultState().with(EDGE, edge.getOpposite(edge.getFirstDirection()))
+            ) || matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                getDefaultState().with(EDGE, edge.getOpposite(edge.getSecondDirection()))
+            );
+
         // allow replacing with stair
         if (block != this && block != ReFramed.STAIR) return false;
 
-        Edge edge = state.get(EDGE);
         return ReFramed.STAIR
             .matchesShape(
                 context.getHitPos(),
@@ -134,6 +145,17 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
         }
 
+        if (current_state.isOf(ReFramed.HALF_LAYER)) {
+            Edge edge = current_state.get(EDGE);
+            Direction face = edge.getDirection(current_state.get(EDGE_FACE));
+            edge = edge.getOpposite(face);
+            return ReFramed.STEPS_HALF_LAYER.getDefaultState()
+                .with(EDGE, edge)
+                .with(EDGE_FACE, edge.getDirectionIndex(edge.getOtherDirection(face)))
+                .with(LAYERS, current_state.get(LAYERS))
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
+        }
+
         return super.getPlacementState(ctx).with(EDGE, BlockHelper.getPlacementEdge(ctx));
     }
 
@@ -161,7 +183,9 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
 
     @Override
     public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
-        if (new_state.isOf(ReFramed.STEPS_CROSS)) return Map.of(1, 1);
+        if (new_state.isOf(ReFramed.STEPS_CROSS)
+            || new_state.isOf(ReFramed.STEPS_HALF_LAYER)
+        ) return Map.of(1, 1);
         if (new_state.isOf(ReFramed.STAIRS_CUBE)) return Map.of(1, 2);
         if (new_state.isOf(ReFramed.STEPS_SLAB))
             return Map.of(

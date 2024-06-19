@@ -149,7 +149,6 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
 
         if(!state.isOf(new_state.getBlock())) {
             if (!moved && state.get(POWERED)) updateNeighbors(state, world, pos);
-            world.removeBlockEntity(pos);
         }
     }
 

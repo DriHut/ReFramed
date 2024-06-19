@@ -163,6 +163,47 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.addReFramedModel("half_stairs_step_stair_side_1", HELPER.autoDouble(ReFramed.id("block/half_stair/base_side"), ReFramed.id("block/half_stair/stair/step_side_1")));
         HELPER.addReFramedModel("half_stairs_step_stair_2"     , HELPER.autoDouble(ReFramed.id("block/half_stair/base"), ReFramed.id("block/half_stair/stair/step_2")));
         HELPER.addReFramedModel("half_stairs_step_stair_side_2", HELPER.autoDouble(ReFramed.id("block/half_stair/base_side"), ReFramed.id("block/half_stair/stair/step_side_2")));
+        // HALF LAYER
+        // --------------------- east
+        HELPER.addReFramedModel("half_layer_2"                 , HELPER.auto(ReFramed.id("block/half_layer/east/layer_2")));
+        HELPER.addReFramedModel("half_layer_4"                 , HELPER.auto(ReFramed.id("block/half_layer/east/layer_4")));
+        HELPER.addReFramedModel("half_layer_6"                 , HELPER.auto(ReFramed.id("block/half_layer/east/layer_6")));
+        HELPER.addReFramedModel("half_layer_8"                 , HELPER.auto(ReFramed.id("block/half_layer/east/layer_8")));
+        HELPER.addReFramedModel("half_layer_10"                , HELPER.auto(ReFramed.id("block/half_layer/east/layer_10")));
+        HELPER.addReFramedModel("half_layer_12"                , HELPER.auto(ReFramed.id("block/half_layer/east/layer_12")));
+        HELPER.addReFramedModel("half_layer_14"                , HELPER.auto(ReFramed.id("block/half_layer/east/layer_14")));
+        HELPER.addReFramedModel("half_layer_16"                , HELPER.auto(ReFramed.id("block/half_layer/east/layer_16")));
+        // --------------------- side
+        HELPER.addReFramedModel("half_layer_side_2"            , HELPER.auto(ReFramed.id("block/half_layer/side/layer_2")));
+        HELPER.addReFramedModel("half_layer_side_4"            , HELPER.auto(ReFramed.id("block/half_layer/side/layer_4")));
+        HELPER.addReFramedModel("half_layer_side_6"            , HELPER.auto(ReFramed.id("block/half_layer/side/layer_6")));
+        HELPER.addReFramedModel("half_layer_side_8"            , HELPER.auto(ReFramed.id("block/half_layer/side/layer_8")));
+        HELPER.addReFramedModel("half_layer_side_10"           , HELPER.auto(ReFramed.id("block/half_layer/side/layer_10")));
+        HELPER.addReFramedModel("half_layer_side_12"           , HELPER.auto(ReFramed.id("block/half_layer/side/layer_12")));
+        HELPER.addReFramedModel("half_layer_side_14"           , HELPER.auto(ReFramed.id("block/half_layer/side/layer_14")));
+        HELPER.addReFramedModel("half_layer_side_16"           , HELPER.auto(ReFramed.id("block/half_layer/side/layer_16")));
+        // SLAB HALF LAYER
+        HELPER.addReFramedModel("slabs_half_inventory"         , HELPER.autoDouble(new Identifier("block/slab"), ReFramed.id("block/half_layer/slab/east/layer_4")));
+        // STEP HALF LAYER
+        HELPER.addReFramedModel("steps_half_inventory"         , HELPER.autoDouble(ReFramed.id("block/step/down"), ReFramed.id("block/half_layer/slab/east/layer_4")));
+        // --------------------- east
+        HELPER.addReFramedModel("second_half_layer_2"          , HELPER.auto(ReFramed.id("block/half_layer/slab/east/layer_2")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_4"          , HELPER.auto(ReFramed.id("block/half_layer/slab/east/layer_4")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_6"          , HELPER.auto(ReFramed.id("block/half_layer/slab/east/layer_6")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_8"          , HELPER.auto(ReFramed.id("block/half_layer/slab/east/layer_8")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_10"         , HELPER.auto(ReFramed.id("block/half_layer/slab/east/layer_10")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_12"         , HELPER.auto(ReFramed.id("block/half_layer/slab/east/layer_12")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_14"         , HELPER.auto(ReFramed.id("block/half_layer/slab/east/layer_14")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_16"         , HELPER.auto(ReFramed.id("block/half_layer/slab/east/layer_16")).setThemeIndex(2));
+        // --------------------- side
+        HELPER.addReFramedModel("second_half_layer_side_2"     , HELPER.auto(ReFramed.id("block/half_layer/slab/side/layer_2")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_side_4"     , HELPER.auto(ReFramed.id("block/half_layer/slab/side/layer_4")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_side_6"     , HELPER.auto(ReFramed.id("block/half_layer/slab/side/layer_6")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_side_8"     , HELPER.auto(ReFramed.id("block/half_layer/slab/side/layer_8")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_side_10"    , HELPER.auto(ReFramed.id("block/half_layer/slab/side/layer_10")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_side_12"    , HELPER.auto(ReFramed.id("block/half_layer/slab/side/layer_12")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_side_14"    , HELPER.auto(ReFramed.id("block/half_layer/slab/side/layer_14")).setThemeIndex(2));
+        HELPER.addReFramedModel("second_half_layer_side_16"    , HELPER.auto(ReFramed.id("block/half_layer/slab/side/layer_16")).setThemeIndex(2));
 
 
 		// item model assignments (in lieu of models/item/___.json)
@@ -195,6 +236,9 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.assignItemModel("steps_cross"             , ReFramed.STEPS_CROSS);
         HELPER.assignItemModel("half_stairs_cube_stair"  , ReFramed.HALF_STAIRS_CUBE_STAIR);
         HELPER.assignItemModel("half_stairs_step_stair_1", ReFramed.HALF_STAIRS_STEP_STAIR);
+        HELPER.assignItemModel("half_layer_2"            , ReFramed.HALF_LAYER);
+        HELPER.assignItemModel("slabs_half_inventory"    , ReFramed.SLABS_HALF_LAYER);
+        HELPER.assignItemModel("steps_half_inventory"    , ReFramed.STEPS_HALF_LAYER);
 	}
 	
 	private void privateInit() {

@@ -72,13 +72,6 @@ public class ReFramedPillarsWallBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-        super.onStateReplaced(state, world, pos, new_state, moved);
-
-        if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
-    }
-
-    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
         if (isGhost(view, pos)) return empty();
         VoxelShape shape = WALL_VOXELS[9];

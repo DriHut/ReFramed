@@ -85,13 +85,6 @@ public class ReFramedTrapdoorBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-        super.onStateReplaced(state, world, pos, new_state, moved);
-
-        if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
-    }
-
-    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ActionResult result = super.onUse(state, world, pos, player, hand, hit);
         if (result.isAccepted()) return result;

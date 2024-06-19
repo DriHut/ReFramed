@@ -55,13 +55,6 @@ public abstract class ConnectingReFramedBlock extends WaterloggableReFramedBlock
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-        super.onStateReplaced(state, world, pos, new_state, moved);
-
-        if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
-    }
-
-    @Override
     @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->

@@ -201,5 +201,24 @@ public class VoxelHelper {
             }
             return shapes;
         }
+
+        /**
+         * build a new set of voxels based on the combination of two sets of voxels
+         * @param long_voxels - the first set of voxels
+         * @param short_voxels - the second set of voxels
+         * @param mapping_function - the function to map the index of the first set to the index of the second set
+         * @return the array of added voxels
+         */
+        public static VoxelShape[] buildFrom(VoxelShape[] long_voxels, VoxelShape[] short_voxels, Function<Integer, Integer> mapping_function) {
+            VoxelShape[] shapes = new VoxelShape[long_voxels.length];
+            for (int i = 0; i < shapes.length; i++) {
+                shapes[i] = VoxelShapes.combineAndSimplify(
+                    long_voxels[i],
+                    short_voxels[mapping_function.apply(i)],
+                    BooleanBiFunction.OR
+                );
+            }
+            return shapes;
+        }
     }
 }

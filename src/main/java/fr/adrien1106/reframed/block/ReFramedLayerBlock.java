@@ -4,45 +4,32 @@ import fr.adrien1106.reframed.util.VoxelHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.state.property.Properties.LAYERS;
 
-public class ReFramedLayerBlock extends ReFramedSlabBlock {
+public class ReFramedLayerBlock extends LayeredReFramedBlock {
 
     public static final VoxelShape[] LAYER_VOXELS;
 
     public ReFramedLayerBlock(Settings settings) {
         super(settings);
-        setDefaultState(getDefaultState().with(LAYERS, 1));
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
-        List<ItemStack> drops = super.getDroppedStacks(state, builder);
-        drops.forEach((stack) -> {
-            if (stack.getItem() instanceof BlockItem bi && bi.getBlock() instanceof ReFramedLayerBlock)
-                stack.setCount(state.get(LAYERS));
-        });
-        return drops;
+        setDefaultState(getDefaultState().with(FACING, Direction.DOWN));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(LAYERS));
+        super.appendProperties(builder.add(FACING));
     }
 
     @Override
@@ -51,20 +38,23 @@ public class ReFramedLayerBlock extends ReFramedSlabBlock {
     }
 
     @Override
-    public boolean canReplace(BlockState state, ItemPlacementContext context) {
-        if (context.getPlayer() == null) return false;
-        return !(
-            context.getPlayer().isSneaking()
-            || !(context.getStack().getItem() instanceof BlockItem block_item)
-            || !(block_item.getBlock() == this && state.get(LAYERS) < 8)
-        );
+    public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockState previous = ctx.getWorld().getBlockState(ctx.getBlockPos());
+        BlockState state = super.getPlacementState(ctx);
+        if (previous.isOf(this)) return state;
+        return state.with(FACING, ctx.getSide().getOpposite());
     }
 
     @Override
-    public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockState previous = ctx.getWorld().getBlockState(ctx.getBlockPos());
-        if (!previous.isOf(this)) return super.getPlacementState(ctx);
-        return previous.with(LAYERS, previous.get(LAYERS) + 1);
+    @SuppressWarnings("deprecation")
+    public BlockState rotate(BlockState state, BlockRotation rotation) {
+        return state.with(FACING, rotation.rotate(state.get(FACING)));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState mirror(BlockState state, BlockMirror mirror) {
+        return state.with(FACING, mirror.apply(state.get(FACING)));
     }
 
     static {

@@ -129,13 +129,6 @@ public class ReFramedDoorBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-        super.onStateReplaced(state, world, pos, new_state, moved);
-
-        if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
-    }
-
-    @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState other, WorldAccess world, BlockPos pos, BlockPos moved) {
         if (direction.getAxis() == Direction.Axis.Y
             && other.isOf(this)

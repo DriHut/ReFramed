@@ -76,6 +76,8 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	@Override
     @SuppressWarnings("deprecation")
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
+        if (!new_state.isOf(state.getBlock())) world.removeBlockEntity(pos);
+
 		if(!(new_state.getBlock() instanceof ReFramedBlock) &&
 			world.getBlockEntity(pos) instanceof ReFramedEntity frame_entity &&
 			world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)
@@ -168,6 +170,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 			: super.getCullingShape(state, view, pos);
 	}
 
+    @SuppressWarnings("deprecation")
 	public VoxelShape getShape(BlockState state, int i) {
 		// assuming the shape don't need the world and position
 		return getOutlineShape(state, null, null, null);

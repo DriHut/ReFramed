@@ -25,12 +25,14 @@ public class GBlockstate extends FabricModelProvider {
         providers.put(ReFramedHalfStairsCubeStairBlock.class, new HalfStairsCubeStair());
         providers.put(ReFramedHalfStairsStepStairBlock.class, new HalfStairsStepStair());
         providers.put(ReFramedLayerBlock.class, new Layer());
+        providers.put(ReFramedHalfLayerBlock.class, new HalfLayer());
         providers.put(ReFramedPillarBlock.class, new Pillar());
         providers.put(ReFramedSlabBlock.class, new Slab());
         providers.put(ReFramedSlabsCubeBlock.class, new SlabsCube());
         providers.put(ReFramedSlabsStairBlock.class, new SlabsStair());
         providers.put(ReFramedSlabsOuterStairBlock.class, new SlabsOuterStair());
         providers.put(ReFramedSlabsInnerStairBlock.class, new SlabsInnerStair());
+        providers.put(ReFramedSlabsHalfLayerBlock.class, new SlabsHalfLayer());
         providers.put(ReFramedSmallCubeBlock.class, new SmallCube());
         providers.put(ReFramedSmallCubesStepBlock.class, new SmallCubesStep());
         providers.put(ReFramedStairBlock.class, new Stair());
@@ -38,6 +40,7 @@ public class GBlockstate extends FabricModelProvider {
         providers.put(ReFramedStepBlock.class, new Step());
         providers.put(ReFramedStepsSlabBlock.class, new StepsSlab());
         providers.put(ReFramedStepsCrossBlock.class, new StepsCross());
+        providers.put(ReFramedStepsHalfLayerBlock.class, new StepsHalfLayer());
         providers.put(ReFramedPillarsWallBlock.class, new PillarsWall());
         providers.put(ReFramedWallBlock.class, new Wall());
         providers.put(ReFramedPaneBlock.class, new Pane());

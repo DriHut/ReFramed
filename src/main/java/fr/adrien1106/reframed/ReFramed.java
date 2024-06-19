@@ -41,9 +41,9 @@ public class ReFramed implements ModInitializer {
         SMALL_CUBE, SMALL_CUBES_STEP,
         STAIR, STAIRS_CUBE,
         HALF_STAIR, HALF_STAIRS_SLAB, HALF_STAIRS_STAIR, HALF_STAIRS_CUBE_STAIR, HALF_STAIRS_STEP_STAIR,
-        SLAB, SLABS_CUBE, SLABS_STAIR, SLABS_OUTER_STAIR, SLABS_INNER_STAIR,
-        STEP, STEPS_SLAB, STEPS_CROSS,
-        LAYER,
+        SLAB, SLABS_CUBE, SLABS_STAIR, SLABS_OUTER_STAIR, SLABS_INNER_STAIR, SLABS_HALF_LAYER,
+        STEP, STEPS_SLAB, STEPS_CROSS, STEPS_HALF_LAYER,
+        LAYER, HALF_LAYER,
         PILLAR, PILLARS_WALL, WALL,
         PANE, TRAPDOOR, DOOR,
         BUTTON,
@@ -72,14 +72,17 @@ public class ReFramed implements ModInitializer {
         HALF_STAIRS_CUBE_STAIR  = registerBlock("half_stairs_cube_stair" , new ReFramedHalfStairsCubeStairBlock(cp(Blocks.OAK_STAIRS)));
         HALF_STAIRS_STEP_STAIR  = registerBlock("half_stairs_step_stair" , new ReFramedHalfStairsStepStairBlock(cp(Blocks.OAK_STAIRS)));
 		LAYER                   = registerBlock("layer"                  , new ReFramedLayerBlock(cp(Blocks.OAK_SLAB)));
+        HALF_LAYER              = registerBlock("half_layer"             , new ReFramedHalfLayerBlock(cp(Blocks.OAK_SLAB)));
 		SLAB                    = registerBlock("slab"                   , new ReFramedSlabBlock(cp(Blocks.OAK_SLAB)));
 		SLABS_CUBE              = registerBlock("slabs_cube"             , new ReFramedSlabsCubeBlock(cp(Blocks.OAK_SLAB)));
         SLABS_STAIR             = registerBlock("slabs_stair"            , new ReFramedSlabsStairBlock(cp(Blocks.OAK_STAIRS)));
         SLABS_OUTER_STAIR       = registerBlock("slabs_outer_stair"      , new ReFramedSlabsOuterStairBlock(cp(Blocks.OAK_STAIRS)));
         SLABS_INNER_STAIR       = registerBlock("slabs_inner_stair"      , new ReFramedSlabsInnerStairBlock(cp(Blocks.OAK_STAIRS)));
+        SLABS_HALF_LAYER        = registerBlock("slabs_half_layer"       , new ReFramedSlabsHalfLayerBlock(cp(Blocks.OAK_SLAB)));
 		STEP                    = registerBlock("step"                   , new ReFramedStepBlock(cp(Blocks.OAK_SLAB)));
 		STEPS_SLAB              = registerBlock("steps_slab"             , new ReFramedStepsSlabBlock(cp(Blocks.OAK_SLAB)));
         STEPS_CROSS             = registerBlock("steps_cross"            , new ReFramedStepsCrossBlock(cp(Blocks.OAK_SLAB)));
+        STEPS_HALF_LAYER        = registerBlock("steps_half_layer"       , new ReFramedStepsHalfLayerBlock(cp(Blocks.OAK_SLAB)));
 		PILLAR                  = registerBlock("pillar"                 , new ReFramedPillarBlock(cp(Blocks.OAK_FENCE)));
 		PILLARS_WALL            = registerBlock("pillars_wall"           , new ReFramedPillarsWallBlock(cp(Blocks.OAK_FENCE)));
 		WALL                    = registerBlock("wall"                   , new ReFramedWallBlock(cp(Blocks.OAK_FENCE)));
