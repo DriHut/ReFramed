@@ -60,8 +60,7 @@ public class ReFramedStepsCrossBlock extends WaterloggableReFramedDoubleBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, int i) {
-//        return getStepShape(i == 1 ? state.get(EDGE): state.get(EDGE).opposite());
-        return getOutlineShape(state, null, null, null);
+        return getStepShape(i == 1 ? state.get(EDGE): state.get(EDGE).opposite());
     }
 
     static {
