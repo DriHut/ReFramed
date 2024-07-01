@@ -15,13 +15,12 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.HALF_STAIR_VOXELS;
+import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.getHalfStairShape;
 import static fr.adrien1106.reframed.block.ReFramedSlabBlock.getSlabShape;
-import static fr.adrien1106.reframed.block.ReFramedSmallCubeBlock.SMALL_CUBE_VOXELS;
+import static fr.adrien1106.reframed.block.ReFramedSmallCubeBlock.getSmallCubeShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.CORNER_FACE;
 import static fr.adrien1106.reframed.util.blocks.Corner.NORTH_EAST_DOWN;
-import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBlock {
 
@@ -44,16 +43,13 @@ public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBloc
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return isGhost(view, pos) ? empty(): getSlabShape(state.get(CORNER).getDirection(state.get(CORNER_FACE)));
-    }
-
-    @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getSlabShape(state.get(CORNER).getDirection(state.get(CORNER_FACE)));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         Corner corner = state.get(CORNER).rotate(rotation);
         Direction face = state.get(CORNER).getDirection(state.get(CORNER_FACE));
@@ -61,6 +57,7 @@ public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBloc
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         Corner corner = state.get(CORNER).mirror(mirror);
         Direction face = state.get(CORNER).getDirection(state.get(CORNER_FACE));
@@ -72,7 +69,7 @@ public class ReFramedHalfStairsSlabBlock extends WaterloggableReFramedDoubleBloc
         Corner corner = state.get(CORNER);
         int face = state.get(CORNER_FACE);
         return i == 2
-            ? SMALL_CUBE_VOXELS[corner.getOpposite(face).getID()]
-            : HALF_STAIR_VOXELS[face + corner.getID() * 3];
+            ? getSmallCubeShape(corner.getOpposite(face))
+            : getHalfStairShape(corner, face);
     }
 }

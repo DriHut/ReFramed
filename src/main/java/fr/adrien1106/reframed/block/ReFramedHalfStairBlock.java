@@ -25,6 +25,7 @@ import java.util.Map;
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.*;
 import static fr.adrien1106.reframed.util.blocks.Corner.*;
+import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 
 public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
@@ -42,39 +43,44 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean canReplace(BlockState state, ItemPlacementContext context) {
-        if (context.getPlayer() == null) return false;
-        Direction dir = state.get(CORNER).getDirection(state.get(CORNER_FACE));
-        return !(
-            context.getPlayer().isSneaking()
-                || !(context.getStack().getItem() instanceof BlockItem block_item)
-                || (
-                    !(
-                        block_item.getBlock() == this
-                        && ((ReFramedHalfStairsStairBlock) ReFramed.HALF_STAIRS_STAIR)
-                            .matchesShape(
-                                context.getHitPos(),
-                                context.getBlockPos(),
-                                ReFramed.HALF_STAIRS_STAIR.getDefaultState()
-                                    .with(EDGE, state.get(CORNER).getEdge(dir)),
-                                dir.getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
-                            )
-                    )
-                    && !(
-                        block_item.getBlock() == ReFramed.SMALL_CUBE
-                        && BlockHelper.cursorMatchesFace(
-                            ReFramed.SMALL_CUBE.getOutlineShape(
-                                ReFramed.SMALL_CUBE.getDefaultState()
-                                    .with(CORNER, state.get(CORNER).getOpposite(state.get(CORNER_FACE))),
-                                context.getWorld(),
-                                context.getBlockPos(),
-                                ShapeContext.absent()
-                            ),
-                            BlockHelper.getRelativePos(context.getHitPos(), context.getBlockPos())
-                        )
-                    )
-                )
-        );
+        if (context.getPlayer() == null
+            || context.getPlayer().isSneaking()
+            || !(context.getStack().getItem() instanceof BlockItem block_item)
+        ) return false;
+
+        // allow replacing with slab, step, small cube and half stair
+        Block block = block_item.getBlock();
+        Corner corner = state.get(CORNER);
+        Direction dir = corner.getDirection(state.get(CORNER_FACE));
+        if (block == this || block == ReFramed.STEP)
+            return ReFramed.HALF_STAIRS_STAIR.matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.HALF_STAIRS_STAIR.getDefaultState().with(EDGE, corner.getEdge(dir)),
+                dir.getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
+            );
+
+        if (block == ReFramed.SMALL_CUBE)
+            return ReFramed.SMALL_CUBE.matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.SMALL_CUBE.getDefaultState().with(CORNER, corner.change(dir))
+            ) || ReFramed.SMALL_CUBE.matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.SMALL_CUBE.getDefaultState().with(CORNER, corner.getOpposite(dir))
+            );
+
+        if (block == ReFramed.SLAB)
+            return ReFramed.SLAB.matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.SLAB.getDefaultState().with(FACING, dir.getOpposite())
+            );
+
+        return false;
     }
 
     @Override
@@ -92,6 +98,15 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
             return ReFramed.HALF_STAIRS_STAIR.getDefaultState()
                 .with(EDGE, current_state.get(CORNER).getEdge(current_state.get(CORNER).getDirection(current_state.get(CORNER_FACE))))
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
+        if (current_state.isOf(ReFramed.SLAB)) {
+            Corner corner = BlockHelper.getPlacementCorner(ctx);
+            Direction face = current_state.get(FACING);
+            if (!corner.hasDirection(face)) corner = corner.change(face.getOpposite());
+            return ReFramed.SLABS_INNER_STAIR.getDefaultState()
+                .with(CORNER, corner)
+                .with(CORNER_FACE, corner.getDirectionIndex(face))
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
+        }
 
         Corner corner = BlockHelper.getPlacementCorner(ctx);
         return super.getPlacementState(ctx)
@@ -100,11 +115,13 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return HALF_STAIR_VOXELS[state.get(CORNER_FACE) + state.get(CORNER).getID() * 3];
+        return getHalfStairShape(state.get(CORNER), state.get(CORNER_FACE));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         Corner corner = state.get(CORNER).rotate(rotation);
         Direction face = state.get(CORNER).getDirection(state.get(CORNER_FACE));
@@ -112,6 +129,7 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         Corner corner = state.get(CORNER).mirror(mirror);
         Direction face = state.get(CORNER).getDirection(state.get(CORNER_FACE));
@@ -120,7 +138,11 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
 
     @Override
     public Map<Integer, Integer> getThemeMap(BlockState state, BlockState new_state) {
-        if (new_state.isOf(ReFramed.HALF_STAIRS_SLAB)) return Map.of(1, 1);
+        if (new_state.isOf(ReFramed.HALF_STAIRS_SLAB)
+            || new_state.isOf(ReFramed.HALF_STAIRS_CUBE_STAIR)
+            || new_state.isOf(ReFramed.HALF_STAIRS_STEP_STAIR)
+        ) return Map.of(1, 1);
+        if (new_state.isOf(ReFramed.SLABS_INNER_STAIR)) return Map.of(1, 2);
         if (new_state.isOf(ReFramed.HALF_STAIRS_STAIR))
             return Map.of(
                 1,
@@ -129,6 +151,10 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
                     .getDirection() == Direction.AxisDirection.POSITIVE ? 2 : 1
             );
         return super.getThemeMap(state, new_state);
+    }
+
+    public static VoxelShape getHalfStairShape(Corner corner, int face) {
+        return HALF_STAIR_VOXELS[face + corner.getID() * 3];
     }
 
     static {

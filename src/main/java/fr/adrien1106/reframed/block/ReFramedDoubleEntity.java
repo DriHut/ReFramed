@@ -57,6 +57,6 @@ public class ReFramedDoubleEntity extends ReFramedEntity {
     public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
 
-        if(second_state != Blocks.AIR.getDefaultState()) nbt.put(BLOCKSTATE_KEY + 2, NbtHelper.fromBlockState(second_state));
+        nbt.put(BLOCKSTATE_KEY + 2, NbtHelper.fromBlockState(second_state));
     }
 }

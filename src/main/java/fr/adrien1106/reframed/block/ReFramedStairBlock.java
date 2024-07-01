@@ -19,7 +19,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +44,7 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public boolean canReplace(BlockState state, ItemPlacementContext context) {
         if (context.getPlayer() == null) return false;
 		return !(
@@ -52,7 +52,7 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 			|| !(context.getStack().getItem() instanceof BlockItem block_item)
 			|| !(
 				block_item.getBlock() == ReFramed.STEP
-				&& ((ReFramedStairsCubeBlock) ReFramed.STAIRS_CUBE)
+				&& ReFramed.STAIRS_CUBE
 					.matchesShape(
 						context.getHitPos(),
 						context.getBlockPos(),
@@ -87,18 +87,13 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	}
 
 	@Override
-	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-		super.onStateReplaced(state, world, pos, new_state, moved);
-
-		if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
-	}
-
-	@Override
+    @SuppressWarnings("deprecation")
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return getStairShape(state.get(EDGE), state.get(STAIR_SHAPE));
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public BlockState rotate(BlockState state, BlockRotation rotation) {
 		Edge prev_edge = state.get(EDGE);
 		Edge edge = prev_edge.rotate(rotation);
@@ -115,6 +110,7 @@ public class ReFramedStairBlock extends WaterloggableReFramedBlock {
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public BlockState mirror(BlockState state, BlockMirror mirror) {
 		Edge prev_edge = state.get(EDGE);
 		Edge edge = prev_edge.mirror(mirror);

@@ -19,7 +19,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.util.shape.VoxelShapes.empty;
-import static net.minecraft.util.shape.VoxelShapes.fullCube;
 
 public abstract class ReFramedDoubleBlock extends ReFramedBlock {
     public ReFramedDoubleBlock(Settings settings) {
@@ -49,14 +48,6 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
         return 0;
     }
 
-    public boolean matchesShape(Vec3d hit, BlockPos pos, BlockState state, int i) {
-        Vec3d rel = BlockHelper.getRelativePos(hit, pos);
-        return BlockHelper.cursorMatchesFace(
-            getShape(state, i),
-            rel
-        );
-    }
-
     @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return world.getBlockEntity(pos) instanceof ThemeableBlockEntity framed_entity
@@ -69,7 +60,7 @@ public abstract class ReFramedDoubleBlock extends ReFramedBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return isGhost(view, pos) ? empty() : fullCube();
+        return isGhost(view, pos) ? empty() : getOutlineShape(state, view, pos, ctx);
     }
 
     @Override

@@ -17,11 +17,10 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.HALF_STAIR_VOXELS;
+import static fr.adrien1106.reframed.block.ReFramedHalfStairBlock.getHalfStairShape;
 import static fr.adrien1106.reframed.block.ReFramedStairBlock.getStairShape;
 import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static fr.adrien1106.reframed.util.blocks.Edge.*;
-import static net.minecraft.util.shape.VoxelShapes.empty;
 
 public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlock {
     public ReFramedHalfStairsStairBlock(Settings settings) {
@@ -41,21 +40,19 @@ public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlo
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
-        return isGhost(view, pos) ? empty(): getStairShape(state.get(EDGE), StairShape.STRAIGHT);
-    }
-
-    @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getStairShape(state.get(EDGE), StairShape.STRAIGHT);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(EDGE, state.get(EDGE).rotate(rotation));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.with(EDGE, state.get(EDGE).mirror(mirror));
     }
@@ -72,7 +69,7 @@ public class ReFramedHalfStairsStairBlock extends WaterloggableReFramedDoubleBlo
             side
 
         );
-        return HALF_STAIR_VOXELS[corner.getID() * 3 + corner.getDirectionIndex(side)];
+        return getHalfStairShape(corner, corner.getDirectionIndex(side));
     }
 
     @Override

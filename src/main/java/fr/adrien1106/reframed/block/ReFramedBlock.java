@@ -20,6 +20,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -59,6 +60,7 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	}
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (!canUse(world, pos, player)) return ActionResult.PASS;
 		ActionResult result = BlockHelper.useUpgrade(state, world, pos, player, hand);
@@ -72,7 +74,10 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	}
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
+        if (!new_state.isOf(state.getBlock())) world.removeBlockEntity(pos);
+
 		if(!(new_state.getBlock() instanceof ReFramedBlock) &&
 			world.getBlockEntity(pos) instanceof ReFramedEntity frame_entity &&
 			world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)
@@ -135,8 +140,22 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 		}
 		onPlaced(world, pos, state, placer, stack);
 	}
+
+    public boolean matchesShape(Vec3d hit, BlockPos pos, BlockState state) {
+        return matchesShape(hit, pos, state, 0);
+    }
+
+    public boolean matchesShape(Vec3d hit, BlockPos pos, BlockState state, int i) {
+        Vec3d rel = BlockHelper.getRelativePos(hit, pos);
+        return matchesShape(rel, getShape(state, i));
+    }
+
+    public boolean matchesShape(Vec3d rel_hit, VoxelShape shape) {
+        return BlockHelper.cursorMatchesFace(shape, rel_hit);
+    }
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
 		return isGhost(view, pos)
 			? VoxelShapes.empty()
@@ -144,12 +163,14 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	}
 
 	@Override
+    @SuppressWarnings("deprecation")
 	public VoxelShape getCullingShape(BlockState state, BlockView view, BlockPos pos) {
 		return isGhost(view, pos)
 			? VoxelShapes.empty()
 			: super.getCullingShape(state, view, pos);
 	}
 
+    @SuppressWarnings("deprecation")
 	public VoxelShape getShape(BlockState state, int i) {
 		// assuming the shape don't need the world and position
 		return getOutlineShape(state, null, null, null);
@@ -160,11 +181,13 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 	}
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public int getWeakRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
 		return view.getBlockEntity(pos) instanceof ReFramedEntity be && be.emitsRedstone() ? 15 : 0;
 	}
 	
 	@Override
+    @SuppressWarnings("deprecation")
 	public int getStrongRedstonePower(BlockState state, BlockView view, BlockPos pos, Direction dir) {
 		return getWeakRedstonePower(state, view, pos, dir);
 	}

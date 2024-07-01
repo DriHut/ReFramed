@@ -52,7 +52,7 @@ public class ReFramedScrewdriverItem extends Item {
                 case Z -> Direction.Axis.X;
             }
         ), theme_index);
-        ReFramed.chunkRerenderProxy.accept(world, pos);
+        if (world.isClient) ReFramed.chunkRerenderProxy.accept(world, pos);
         return ActionResult.SUCCESS;
     }
 }

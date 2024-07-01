@@ -12,7 +12,6 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +35,7 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighbor_state, WorldAccess world, BlockPos pos, BlockPos moved) {
         return super.getStateForNeighborUpdate(state, direction, neighbor_state, world, pos, moved)
             .with(STAIR_SHAPE, BlockHelper.getStairsShape(state.get(EDGE), world, pos));
@@ -52,6 +52,7 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
 
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         Edge prev_edge = state.get(EDGE);
         Edge edge = prev_edge.rotate(rotation);
@@ -68,19 +69,13 @@ public class ReFramedStairsCubeBlock extends ReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         Edge prev_edge = state.get(EDGE);
         Edge edge = prev_edge.mirror(mirror);
         return state
             .with(STAIR_SHAPE, prev_edge == edge ? state.get(STAIR_SHAPE).mirror() : state.get(STAIR_SHAPE).flip())
             .with(EDGE, edge);
-    }
-
-    @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-        super.onStateReplaced(state, world, pos, new_state, moved);
-
-        if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
     }
 
     @Override

@@ -11,7 +11,6 @@ import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import static fr.adrien1106.reframed.block.ReFramedSlabBlock.*;
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
 import static net.minecraft.state.property.Properties.AXIS;
 
 public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock {
@@ -33,11 +32,13 @@ public class ReFramedSlabsCubeBlock extends ReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(AXIS, rotation.rotate(Direction.get(Direction.AxisDirection.POSITIVE, state.get(AXIS))).getAxis());
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.with(AXIS, mirror.apply(Direction.get(Direction.AxisDirection.POSITIVE, state.get(AXIS))).getAxis());
     }

@@ -74,7 +74,14 @@ public class ReFramedBlueprintWrittenItem extends Item {
             stacks.stream().map(inventory::getSlotWithStack).forEach(index -> inventory.removeStack(index, 1));
             player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.5f, 0.5f);
         }
-        frame_entity.readNbt(tag);
+        for (int i = 1; tag.contains(BLOCKSTATE_KEY + i); i++) {
+            BlockState state = NbtHelper.toBlockState(
+                Registries.BLOCK.getReadOnlyWrapper(),
+                tag.getCompound(BLOCKSTATE_KEY + i)
+            );
+            frame_entity.setTheme(state, i);
+        }
+        if (world.isClient) ReFramed.chunkRerenderProxy.accept(world, pos);
         world.playSound(player, player.getBlockPos(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.PLAYERS);
 
         return ActionResult.SUCCESS;

@@ -72,13 +72,6 @@ public class ReFramedPillarsWallBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState new_state, boolean moved) {
-        super.onStateReplaced(state, world, pos, new_state, moved);
-
-        if(!state.isOf(new_state.getBlock())) world.removeBlockEntity(pos);
-    }
-
-    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView view, BlockPos pos, ShapeContext ctx) {
         if (isGhost(view, pos)) return empty();
         VoxelShape shape = WALL_VOXELS[9];
@@ -95,6 +88,7 @@ public class ReFramedPillarsWallBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         VoxelShape shape = WALL_VOXELS[0];
         for (Direction dir: Direction.Type.HORIZONTAL) {
@@ -106,6 +100,7 @@ public class ReFramedPillarsWallBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
             s.with(getWallShape(rotation.rotate(dir)), state.get(getWallShape(dir)))
@@ -113,6 +108,7 @@ public class ReFramedPillarsWallBlock extends WaterloggableReFramedDoubleBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return Direction.Type.HORIZONTAL.stream().reduce(state, (s, dir) ->
                 s.with(getWallShape(mirror.apply(dir)), state.get(getWallShape(dir)))

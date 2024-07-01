@@ -52,16 +52,15 @@ public class ReFramedEntity extends BlockEntity implements ThemeableBlockEntity 
 		if (nbt.contains(BITFIELD_KEY)) bit_field = nbt.getByte(BITFIELD_KEY);
 		
 		// Force a chunk remesh on the client if the displayed blockstate has changed
-		if(world != null && world.isClient && !Objects.equals(rendered_state, first_state)) {
+		if(world != null && world.isClient && !Objects.equals(rendered_state, first_state))
 			ReFramed.chunkRerenderProxy.accept(world, pos);
-		}
 	}
 	
 	@Override
 	public void writeNbt(NbtCompound nbt) {
 		super.writeNbt(nbt);
-		
-		if(first_state != Blocks.AIR.getDefaultState()) nbt.put(BLOCKSTATE_KEY + 1, NbtHelper.fromBlockState(first_state));
+
+		nbt.put(BLOCKSTATE_KEY + 1, NbtHelper.fromBlockState(first_state));
 		if(bit_field != SOLIDITY_MASK) nbt.putByte(BITFIELD_KEY, bit_field);
 	}
 
@@ -113,7 +112,7 @@ public class ReFramedEntity extends BlockEntity implements ThemeableBlockEntity 
 	}
 
 	public void setTheme(BlockState new_state, int i) {
-		if(!Objects.equals(first_state, new_state)) {
+		if(!Objects.equals(first_state, new_state) && i == 1) {
 			first_state = new_state;
 			markDirtyAndDispatch();
 		}

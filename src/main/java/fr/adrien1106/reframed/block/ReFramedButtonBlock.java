@@ -108,6 +108,7 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return BUTTON_VOXELS[
             (state.get(POWERED) ? 12 : 0) +
@@ -117,11 +118,13 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(HORIZONTAL_FACING, rotation.rotate(state.get(HORIZONTAL_FACING)));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.with(HORIZONTAL_FACING, mirror.apply(state.get(HORIZONTAL_FACING)));
     }
@@ -132,7 +135,6 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
 
         if(!state.isOf(new_state.getBlock())) {
             if (!moved && state.get(POWERED)) updateNeighbors(state, world, pos);
-            world.removeBlockEntity(pos);
         }
     }
 
@@ -147,16 +149,19 @@ public class ReFramedButtonBlock extends WaterloggableReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean emitsRedstonePower(BlockState state) {
         return true;
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (state.get(POWERED)) tryPowerWithProjectiles(state, world, pos);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         if (!world.isClient && !state.get(POWERED)) tryPowerWithProjectiles(state, world, pos);
     }

@@ -56,6 +56,7 @@ public class ReFramedFenceBlock extends ConnectingReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getOutlineShape(state, world, pos, context);
     }
@@ -66,10 +67,12 @@ public class ReFramedFenceBlock extends ConnectingReFramedBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         return false;
     }
 
+    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ActionResult result = super.onUse(state, world, pos, player, hand, hit);
         if (result.isAccepted()) return result;
