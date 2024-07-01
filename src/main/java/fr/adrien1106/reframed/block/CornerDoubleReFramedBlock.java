@@ -48,8 +48,9 @@ public abstract class CornerDoubleReFramedBlock extends WaterloggableReFramedDou
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         Corner corner = state.get(CORNER);
         Direction face = corner.getDirection(state.get(CORNER_FACE));
+        corner = corner.rotate(rotation);
         return state
-            .with(CORNER, corner.rotate(rotation))
+            .with(CORNER, corner)
             .with(CORNER_FACE, corner.getDirectionIndex(rotation.rotate(face)));
     }
 
@@ -58,8 +59,9 @@ public abstract class CornerDoubleReFramedBlock extends WaterloggableReFramedDou
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         Corner corner = state.get(CORNER);
         Direction face = corner.getDirection(state.get(CORNER_FACE));
+        corner = corner.mirror(mirror);
         return state
-            .with(CORNER, corner.mirror(mirror))
+            .with(CORNER, corner)
             .with(CORNER_FACE, corner.getDirectionIndex(mirror.apply(face)));
     }
 
