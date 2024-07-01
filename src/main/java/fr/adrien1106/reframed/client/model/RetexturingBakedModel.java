@@ -190,9 +190,14 @@ public abstract class RetexturingBakedModel extends ForwardingBakedModel {
 
 	public boolean useAmbientOcclusion(BlockRenderView view, BlockPos pos) {
 		if (!(view.getBlockEntity(pos) instanceof ThemeableBlockEntity frame_entity)) return false;
+        BlockState theme = frame_entity.getTheme(theme_index);
 		CamoAppearance appearance = appearance_manager
-			.getCamoAppearance(view, frame_entity.getTheme(theme_index), pos, theme_index, false);
-		return appearance.getAO(theme_index);
+			.getCamoAppearance(view, theme, pos, theme_index, false);
+
+        long seed = theme.getRenderingSeed(pos);
+        int model_id = 0;
+        if (appearance instanceof WeightedComputedAppearance wca) model_id = wca.getAppearanceIndex(seed);
+		return appearance.getAO(model_id);
 	}
 
 	protected Mesh getRetexturedMesh(MeshCacheKey key, BlockState state) {
