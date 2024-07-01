@@ -33,6 +33,7 @@ public class GBlockstate extends FabricModelProvider {
         providers.put(ReFramedSlabsOuterStairBlock.class, new SlabsOuterStair());
         providers.put(ReFramedSlabsInnerStairBlock.class, new SlabsInnerStair());
         providers.put(ReFramedSlabsHalfLayerBlock.class, new SlabsHalfLayer());
+        providers.put(ReFramedSlabsLayerBlock.class, new SlabsLayer());
         providers.put(ReFramedHalfSlabBlock.class, new HalfSlab());
         providers.put(ReFramedHalfSlabsSlabBlock.class, new HalfSlabsSlab());
         providers.put(ReFramedSmallCubeBlock.class, new SmallCube());

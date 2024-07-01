@@ -208,6 +208,12 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.addReFramedModel("half_slab"                    , HELPER.auto(ReFramed.id("block/half_slab/default")));
         // HALF SLABS SLAB
         HELPER.addReFramedModel("half_slabs_slab"              , HELPER.autoDouble(ReFramed.id("block/half_slab/default"), ReFramed.id("block/half_slab/complement")));
+        // SLABS LAYER
+        HELPER.addReFramedModel("slabs_layer_2"                , HELPER.autoDouble(new Identifier("block/slab"), ReFramed.id("block/layer_top/layer_2")));
+        HELPER.addReFramedModel("slabs_layer_4"                , HELPER.autoDouble(new Identifier("block/slab"), ReFramed.id("block/layer_top/layer_4")));
+        HELPER.addReFramedModel("slabs_layer_6"                , HELPER.autoDouble(new Identifier("block/slab"), ReFramed.id("block/layer_top/layer_6")));
+        HELPER.addReFramedModel("slabs_layer_8"                , HELPER.autoDouble(new Identifier("block/slab"), ReFramed.id("block/layer_top/layer_8")));
+
 
 
 		// item model assignments (in lieu of models/item/___.json)
@@ -245,6 +251,7 @@ public class ReFramedClient implements ClientModInitializer {
         HELPER.assignItemModel("steps_half_inventory"    , ReFramed.STEPS_HALF_LAYER);
         HELPER.assignItemModel("half_slab"               , ReFramed.HALF_SLAB);
         HELPER.assignItemModel("half_slabs_slab"         , ReFramed.HALF_SLABS_SLAB);
+        HELPER.assignItemModel("slabs_layer_2"           , ReFramed.SLABS_LAYER);
 	}
 	
 	private void privateInit() {

@@ -24,7 +24,8 @@ public abstract class HalfLayerDoubleReFramedBlock extends EdgeDoubleReFramedBlo
     @SuppressWarnings("deprecation")
     public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
         List<ItemStack> drops = super.getDroppedStacks(state, builder);
-        drops.add(new ItemStack(ReFramed.HALF_LAYER, state.get(LAYERS)-1));
+        if (state.get(LAYERS) > 1)
+            drops.add(new ItemStack(ReFramed.HALF_LAYER, state.get(LAYERS)-1));
         return drops;
     }
 

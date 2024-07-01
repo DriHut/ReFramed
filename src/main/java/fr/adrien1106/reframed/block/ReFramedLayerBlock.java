@@ -1,5 +1,6 @@
 package fr.adrien1106.reframed.block;
 
+import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.util.VoxelHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -15,8 +16,8 @@ import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
 import static fr.adrien1106.reframed.util.VoxelHelper.VoxelListBuilder;
-import static net.minecraft.state.property.Properties.FACING;
-import static net.minecraft.state.property.Properties.LAYERS;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.HALF_LAYERS;
+import static net.minecraft.state.property.Properties.*;
 
 public class ReFramedLayerBlock extends LayeredReFramedBlock {
 
@@ -34,7 +35,11 @@ public class ReFramedLayerBlock extends LayeredReFramedBlock {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return LAYER_VOXELS[state.get(FACING).getId() * 8 + state.get(LAYERS) - 1];
+        return getLayerShape(state.get(FACING), state.get(LAYERS));
+    }
+
+    public static VoxelShape getLayerShape(Direction facing, int layers) {
+        return LAYER_VOXELS[facing.getId() * 8 + layers - 1];
     }
 
     @Override
@@ -42,6 +47,15 @@ public class ReFramedLayerBlock extends LayeredReFramedBlock {
         BlockState previous = ctx.getWorld().getBlockState(ctx.getBlockPos());
         BlockState state = super.getPlacementState(ctx);
         if (previous.isOf(this)) return state;
+
+        if (previous.isOf(ReFramed.SLAB))
+            return ReFramed.SLABS_LAYER.getDefaultState()
+                .with(FACING, previous.get(FACING))
+                .with(WATERLOGGED, previous.get(WATERLOGGED));
+
+        if (previous.isOf(ReFramed.SLABS_LAYER))
+            return previous.with(HALF_LAYERS, previous.get(HALF_LAYERS) + 1);
+
         return state.with(FACING, ctx.getSide().getOpposite());
     }
 

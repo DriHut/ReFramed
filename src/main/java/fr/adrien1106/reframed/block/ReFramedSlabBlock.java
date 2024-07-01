@@ -58,16 +58,15 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
             && block != ReFramed.SMALL_CUBE
             && block != ReFramed.HALF_STAIR
             && block != ReFramed.HALF_LAYER
+            && block != ReFramed.LAYER
         ) return false;
 
         // check if the player is clicking on the inner part of the block
-		return ReFramed.SLABS_CUBE
-            .matchesShape(
-                context.getHitPos(),
-                context.getBlockPos(),
-                ReFramed.SLABS_CUBE.getDefaultState().with(AXIS, state.get(FACING).getAxis()),
-                state.get(FACING).getDirection() == Direction.AxisDirection.POSITIVE ? 1 : 2
-            );
+		return matchesShape(
+            context.getHitPos(),
+            context.getBlockPos(),
+            state.with(FACING, state.get(FACING).getOpposite())
+        );
 	}
 
 	@Nullable
