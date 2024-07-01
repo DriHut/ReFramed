@@ -73,6 +73,13 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
                 ReFramed.SMALL_CUBE.getDefaultState().with(CORNER, corner.getOpposite(dir))
             );
 
+        if (block == ReFramed.SLAB)
+            return ReFramed.SLAB.matchesShape(
+                context.getHitPos(),
+                context.getBlockPos(),
+                ReFramed.SLAB.getDefaultState().with(FACING, dir.getOpposite())
+            );
+
         return false;
     }
 
@@ -135,6 +142,7 @@ public class ReFramedHalfStairBlock extends WaterloggableReFramedBlock {
             || new_state.isOf(ReFramed.HALF_STAIRS_CUBE_STAIR)
             || new_state.isOf(ReFramed.HALF_STAIRS_STEP_STAIR)
         ) return Map.of(1, 1);
+        if (new_state.isOf(ReFramed.SLABS_INNER_STAIR)) return Map.of(1, 2);
         if (new_state.isOf(ReFramed.HALF_STAIRS_STAIR))
             return Map.of(
                 1,

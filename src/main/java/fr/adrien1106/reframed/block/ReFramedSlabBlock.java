@@ -1,6 +1,8 @@
 package fr.adrien1106.reframed.block;
 
 import fr.adrien1106.reframed.ReFramed;
+import fr.adrien1106.reframed.util.blocks.BlockHelper;
+import fr.adrien1106.reframed.util.blocks.Corner;
 import fr.adrien1106.reframed.util.blocks.Edge;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,8 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE;
-import static fr.adrien1106.reframed.util.blocks.BlockProperties.EDGE_FACE;
+import static fr.adrien1106.reframed.util.blocks.BlockProperties.*;
 import static net.minecraft.state.property.Properties.*;
 
 public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
@@ -86,6 +87,72 @@ public class ReFramedSlabBlock extends WaterloggableReFramedBlock {
                 .with(EDGE, edge)
                 .with(EDGE_FACE, edge.getDirectionIndex(edge.getOtherDirection(face)))
                 .with(LAYERS, current_state.get(LAYERS))
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
+        }
+
+        if (current_state.isOf(ReFramed.HALF_STAIR)) {
+            Corner corner = current_state.get(CORNER);
+            Direction face = corner.getDirection(current_state.get(CORNER_FACE));
+            corner = corner.change(face);
+            return ReFramed.SLABS_INNER_STAIR.getDefaultState()
+                .with(CORNER, corner)
+                .with(CORNER_FACE, corner.getDirectionIndex(face.getOpposite()))
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
+        }
+
+        if (current_state.isOf(ReFramed.STEP)) {
+            Edge edge = current_state.get(EDGE),
+                placed = BlockHelper.getPlacementEdge(ctx),
+                new_edge;
+            Direction face = edge.getFirstDirection(),
+                other = edge.getSecondDirection().getOpposite();
+
+            if (!ReFramed.STEP.matchesShape(
+                    ctx.getHitPos(),
+                    ctx.getBlockPos(),
+                    current_state.with(EDGE, new_edge = edge.getOpposite(face))
+                )
+                && ctx.getSide() != other.getOpposite()
+                && (placed.getAxis() == edge.getAxis()
+                || ctx.getSide() == other
+                || !placed.hasDirection(other))
+            ) {
+                new_edge = edge.getOpposite(edge.getSecondDirection());
+                other = edge.getFirstDirection().getOpposite();
+            }
+
+            return ReFramed.SLABS_STAIR.getDefaultState()
+                .with(EDGE, new_edge)
+                .with(EDGE_FACE, new_edge.getDirectionIndex(other))
+                .with(WATERLOGGED, current_state.get(WATERLOGGED));
+        }
+
+        if (current_state.isOf(ReFramed.SMALL_CUBE)) {
+            Corner corner = current_state.get(CORNER);
+            Edge placed = BlockHelper.getPlacementEdge(ctx);
+            Direction face;
+            Corner new_corner;
+
+            if (!corner.hasDirection(face = ctx.getSide())) {
+                int i = 0;
+                do {
+                    face = corner.getDirection(i);
+                    new_corner = corner.change(face);
+                } while (!ReFramed.SMALL_CUBE.matchesShape(
+                    ctx.getHitPos(),
+                    ctx.getBlockPos(),
+                    current_state.with(CORNER, new_corner)
+                ) && ++i < 3);
+
+                if (i == 3) {
+                    face = placed.getOtherDirection(corner.getMatchingDirection(placed)).getOpposite();
+                    new_corner = corner.change(face);
+                }
+            } else new_corner = corner.change(face);
+
+            return ReFramed.SLABS_OUTER_STAIR.getDefaultState()
+                .with(CORNER, new_corner)
+                .with(CORNER_FACE, new_corner.getDirectionIndex(face.getOpposite()))
                 .with(WATERLOGGED, current_state.get(WATERLOGGED));
         }
 

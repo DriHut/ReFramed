@@ -154,4 +154,8 @@ public enum Corner implements StringIdentifiable {
             third_direction == face ? opposite : third_direction
         );
     }
+
+    public Direction getMatchingDirection(Edge edge) {
+        return hasDirection(edge.getSecondDirection()) ? edge.getSecondDirection() : edge.getFirstDirection();
+    }
 }

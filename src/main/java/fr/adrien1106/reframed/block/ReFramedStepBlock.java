@@ -63,7 +63,10 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
             );
 
         // allow replacing with stair
-        if (block != this && block != ReFramed.STAIR) return false;
+        if (block != this
+            && block != ReFramed.STAIR
+            && block != ReFramed.SLAB
+        ) return false;
 
         return ReFramed.STAIR
             .matchesShape(
@@ -186,7 +189,8 @@ public class ReFramedStepBlock extends WaterloggableReFramedBlock {
         if (new_state.isOf(ReFramed.STEPS_CROSS)
             || new_state.isOf(ReFramed.STEPS_HALF_LAYER)
         ) return Map.of(1, 1);
-        if (new_state.isOf(ReFramed.STAIRS_CUBE)) return Map.of(1, 2);
+        if (new_state.isOf(ReFramed.STAIRS_CUBE)
+            || new_state.isOf(ReFramed.SLABS_STAIR)) return Map.of(1, 2);
         if (new_state.isOf(ReFramed.STEPS_SLAB))
             return Map.of(
                 1,
