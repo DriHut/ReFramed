@@ -13,6 +13,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkSectionPos;
+import fr.adrien1106.reframed.client.model.UnbakedSlopeModel;
 
 public class ReFramedClient implements ClientModInitializer {
 	public static final ReFramedModelProvider PROVIDER = new ReFramedModelProvider();
@@ -45,6 +46,10 @@ public class ReFramedClient implements ClientModInitializer {
 
 		// CUBE
 		HELPER.addReFramedModel("cube"                          , HELPER.auto(Identifier.ofVanilla("block/cube")));
+        // CARPET
+        HELPER.addReFramedModel("carpet"                        , HELPER.auto(ReFramed.id("block/carpet")));
+        // SLOPE_FULL
+        HELPER.addReFramedModel("slope_full"                    , new UnbakedSlopeModel(ReFramed.id("block/slope_full")));
 		// SMALL_CUBE
 		HELPER.addReFramedModel("small_cube"                    , HELPER.auto(ReFramed.id("block/small_cube/base")));
 		// SMALL_CUBES_STEP
@@ -235,7 +240,9 @@ public class ReFramedClient implements ClientModInitializer {
 
 		// item model assignments (in lieu of models/item/___.json)
 		HELPER.assignItemModel("cube"                    , ReFramed.CUBE);
-		HELPER.assignItemModel("small_cube"              , ReFramed.SMALL_CUBE);
+        HELPER.assignItemModel("carpet"                  , ReFramed.CARPET);
+        HELPER.assignItemModel("slope_full"              , ReFramed.SLOPE_FULL);
+        HELPER.assignItemModel("small_cube"              , ReFramed.SMALL_CUBE);
 		HELPER.assignItemModel("small_cubes_step"        , ReFramed.SMALL_CUBES_STEP);
 		HELPER.assignItemModel("slab"                    , ReFramed.SLAB);
 		HELPER.assignItemModel("double_slab"             , ReFramed.SLABS_CUBE);

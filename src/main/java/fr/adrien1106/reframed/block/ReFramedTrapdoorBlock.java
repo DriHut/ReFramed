@@ -10,6 +10,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -32,6 +33,8 @@ public class ReFramedTrapdoorBlock extends WaterloggableReFramedBlock {
 
     public static final VoxelShape[] TRAPDOOR_VOXELS;
 
+    public static final BooleanProperty HAND_OPENABLE = BooleanProperty.of("hand_openable");
+
     public ReFramedTrapdoorBlock(Settings settings) {
         super(settings);
         setDefaultState(getDefaultState()
@@ -39,12 +42,13 @@ public class ReFramedTrapdoorBlock extends WaterloggableReFramedBlock {
             .with(BLOCK_HALF, BlockHalf.BOTTOM)
             .with(OPEN, false)
             .with(POWERED, false)
+            .with(HAND_OPENABLE, true)
         );
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(HORIZONTAL_FACING, BLOCK_HALF, OPEN, POWERED));
+        super.appendProperties(builder.add(HORIZONTAL_FACING, BLOCK_HALF, OPEN, POWERED, HAND_OPENABLE));
     }
 
     @Override
@@ -86,9 +90,17 @@ public class ReFramedTrapdoorBlock extends WaterloggableReFramedBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+
         ActionResult result = super.onUse(state, world, pos, player, hit);
-        if (result.isAccepted()) return result;
+        if (result.isAccepted()) {
+            return result;
+        }
+
+        if (!state.get(HAND_OPENABLE)) {
+            return ActionResult.success(world.isClient);
+        }
+
         flip(state, world, pos, player);
         return ActionResult.success(world.isClient);
     }
