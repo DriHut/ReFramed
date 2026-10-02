@@ -7,7 +7,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.BlockItem;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -16,6 +17,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
@@ -44,8 +46,8 @@ public class ReFramedEntity extends BlockEntity implements ThemeableBlockEntity 
 	}
 	
 	@Override
-	protected void readNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup) {
-		super.readNbt(nbt, registryLookup);
+	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registry_lookup) {
+		super.readNbt(nbt, registry_lookup);
 
 		BlockState rendered_state = first_state; // keep previous state_key to check if rerender is needed
 		first_state = NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), nbt.getCompound(BLOCKSTATE_KEY + 1));
@@ -57,17 +59,16 @@ public class ReFramedEntity extends BlockEntity implements ThemeableBlockEntity 
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup) {
-		super.writeNbt(nbt, registryLookup);
+	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registry_lookup) {
+		super.writeNbt(nbt, registry_lookup);
 		nbt.put(BLOCKSTATE_KEY + 1, NbtHelper.fromBlockState(first_state));
 		if(bit_field != SOLIDITY_MASK) nbt.putByte(BITFIELD_KEY, bit_field);
 	}
 
 	public static @NotNull BlockState readStateFromItem(ItemStack stack, int state) {
-		net.minecraft.component.type.NbtComponent nbtComponent = stack.get(net.minecraft.component.DataComponentTypes.BLOCK_ENTITY_DATA);
-		if(nbtComponent == null) return Blocks.AIR.getDefaultState();
-		NbtCompound nbt = nbtComponent.copyNbt();
-		if(nbt == null) return Blocks.AIR.getDefaultState();
+		NbtComponent component = stack.getOrDefault(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.DEFAULT);
+		if(component.isEmpty()) return Blocks.AIR.getDefaultState();
+		NbtCompound nbt = component.copyNbt();
 
 		//slightly paranoid NBT handling cause you never know what mysteries are afoot with items
 		NbtElement element;
@@ -85,7 +86,7 @@ public class ReFramedEntity extends BlockEntity implements ThemeableBlockEntity 
 	public static @Nullable BlockState getNbtLightLevel(@Nullable BlockState state, ItemStack stack) {
 		if(state == null || stack == null) return state;
 
-		net.minecraft.component.type.NbtComponent nbtComponent = stack.get(net.minecraft.component.DataComponentTypes.BLOCK_ENTITY_DATA);
+		NbtComponent nbtComponent = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
 		if(nbtComponent == null) return state;
 		NbtCompound nbt = nbtComponent.copyNbt();
 		if(nbt == null) return state;

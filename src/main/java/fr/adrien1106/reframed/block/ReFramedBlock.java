@@ -4,9 +4,10 @@ import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.util.blocks.BlockHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -127,9 +128,9 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 			if (old_frame_entity.isSolid() && !frame_entity.isSolid()) frame_entity.toggleSolidity();
 
 			// apply themes from item
-			net.minecraft.component.type.NbtComponent nbtComponent = stack.get(net.minecraft.component.DataComponentTypes.BLOCK_ENTITY_DATA);
-			NbtCompound tag = nbtComponent != null ? nbtComponent.copyNbt() : null;
-			if(tag != null) {
+			NbtComponent component = stack.getOrDefault(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.DEFAULT);
+			if(!component.isEmpty()) {
+				NbtCompound tag = component.copyNbt();
 				// determine a list of themes than can be used
 				Iterator<Integer> free_themes = IntStream
 					.rangeClosed(1, frame_entity.getThemes().size())
@@ -143,9 +144,8 @@ public class ReFramedBlock extends Block implements BlockEntityProvider {
 				}
 			}
 		} else if(world.isClient) { // prevents flashing with default texture before server sends the update
-			net.minecraft.component.type.NbtComponent nbtComponent2 = stack.get(net.minecraft.component.DataComponentTypes.BLOCK_ENTITY_DATA);
-			NbtCompound tag2 = nbtComponent2 != null ? nbtComponent2.copyNbt() : null;
-			if(tag2 != null) frame_entity.read(tag2, world.getRegistryManager());
+			NbtComponent component = stack.getOrDefault(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.DEFAULT);
+			if(!component.isEmpty()) frame_entity.read(component.copyNbt(), world.getRegistryManager());
 		}
 		onPlaced(world, pos, state, placer, stack);
 	}

@@ -7,6 +7,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class ReFramedDoubleEntity extends ReFramedEntity {
     }
 
     @Override
-    protected void readNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup) {
+    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         super.readNbt(nbt, registryLookup);
 
         BlockState rendered_state = second_state;// keep previous state_key to check if rerender is needed
@@ -54,7 +55,7 @@ public class ReFramedDoubleEntity extends ReFramedEntity {
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup) {
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         super.writeNbt(nbt, registryLookup);
 
         nbt.put(BLOCKSTATE_KEY + 2, NbtHelper.fromBlockState(second_state));

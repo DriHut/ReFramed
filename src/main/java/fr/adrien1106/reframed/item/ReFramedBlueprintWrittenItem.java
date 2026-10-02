@@ -6,13 +6,14 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Item.TooltipContext;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
@@ -25,7 +26,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class ReFramedBlueprintWrittenItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
-        if (!player.isSneaking() || !stack.contains(net.minecraft.component.DataComponentTypes.BLOCK_ENTITY_DATA)) return super.use(world, player, hand);
+        if (!player.isSneaking() || !stack.contains(DataComponentTypes.BLOCK_ENTITY_DATA)) return super.use(world, player, hand);
         stack.decrement(1);
         player.giveItemStack(ReFramed.BLUEPRINT.getDefaultStack());
         world.playSound(player, player.getBlockPos(), SoundEvents.ITEM_BOOK_PUT, SoundCategory.PLAYERS);
@@ -55,7 +55,7 @@ public class ReFramedBlueprintWrittenItem extends Item {
         World world = context.getWorld();
         if (!(world.getBlockEntity(pos) instanceof ReFramedEntity frame_entity)
             || frame_entity.getThemes().stream().anyMatch(state -> state.getBlock() != Blocks.AIR)
-            || !context.getStack().contains(net.minecraft.component.DataComponentTypes.BLOCK_ENTITY_DATA)
+            || !context.getStack().contains(DataComponentTypes.BLOCK_ENTITY_DATA)
         ) return ActionResult.PASS;
 
         net.minecraft.component.type.NbtComponent nbtComponent = context.getStack().get(net.minecraft.component.DataComponentTypes.BLOCK_ENTITY_DATA);
@@ -89,10 +89,10 @@ public class ReFramedBlueprintWrittenItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, net.minecraft.item.tooltip.TooltipType type) {
-        net.minecraft.component.type.NbtComponent nbtComponent = stack.get(net.minecraft.component.DataComponentTypes.BLOCK_ENTITY_DATA);
-        NbtCompound tag = nbtComponent != null ? nbtComponent.copyNbt() : null;
-        if(tag == null) return;
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        NbtComponent component = stack.getOrDefault(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.DEFAULT);
+        if(!component.isEmpty()) return;
+        NbtCompound tag = component.getNbt();
 
         Map<Integer, BlockState> states = getBlockStates(tag);
         states.forEach((index, state) -> tooltip.add(
@@ -102,6 +102,7 @@ public class ReFramedBlueprintWrittenItem extends Item {
                         .formatted(Formatting.GRAY)
                 )
         ));
+        super.appendTooltip(stack, context, tooltip, type);
     }
 
     private static Map<Integer, BlockState> getBlockStates(NbtCompound tag) {
