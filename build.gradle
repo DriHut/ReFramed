@@ -4,7 +4,7 @@ import fr.altarik.CreateTag
 
 plugins {
 	id "com.modrinth.minotaur" version "2.+"
-	id 'fabric-loom' version '1.9-SNAPSHOT'
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -40,25 +40,17 @@ sourceSets {
 			exclude '**/mixin/IAxiomChunkedBlockRegionMixin.java'
 		}
 		resources {
-			srcDirs += {
+			srcDirs += [
 				'src/generated'
-			}
+			]
 		}
 	}
 }
 
-loom {
-	runs {
-		// This adds a new gradle task that runs the datagen API: "gradlew runDatagen"
-		datagen {
-			inherit server
-			name "Data Generation"
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated")}"
-			vmArg "-Dfabric-api.datagen.modid=${mod_id}"
-
-			runDir "build/datagen"
-		}
+fabricApi {
+	configureDataGeneration {
+		modId.set(project.mod_id)
+		outputDirectory.set(file("src/generated"))
 	}
 }
 
