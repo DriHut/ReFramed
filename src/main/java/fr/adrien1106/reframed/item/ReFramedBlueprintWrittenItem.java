@@ -10,6 +10,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -29,6 +30,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static fr.adrien1106.reframed.block.ReFramedEntity.BLOCKSTATE_KEY;
@@ -42,8 +44,10 @@ public class ReFramedBlueprintWrittenItem extends Item {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
         if (!player.isSneaking() || !stack.contains(DataComponentTypes.BLOCK_ENTITY_DATA)) return super.use(world, player, hand);
-        stack.decrement(1);
-        player.giveItemStack(ReFramed.BLUEPRINT.getDefaultStack());
+
+        boolean replace = !player.getInventory().contains(ReFramed.BLUEPRINT.getDefaultStack());
+        player.setStackInHand(hand, replace ? ReFramed.BLUEPRINT.getDefaultStack() : ItemStack.EMPTY);
+        if (!replace) player.giveItemStack(ReFramed.BLUEPRINT.getDefaultStack());
         world.playSound(player, player.getBlockPos(), SoundEvents.ITEM_BOOK_PUT, SoundCategory.PLAYERS);
 
         return TypedActionResult.success(stack);
@@ -65,14 +69,21 @@ public class ReFramedBlueprintWrittenItem extends Item {
         PlayerEntity player = context.getPlayer();
         if (!player.isCreative()) { // verify player has blocks and remove them
             PlayerInventory inventory = player.getInventory();
-            List<ItemStack> stacks = getBlockStates(tag).values().stream()
+            Set<Map.Entry<Item, Long>> stacks = getBlockStates(tag).values().stream()
                 .map(AbstractBlock.AbstractBlockState::getBlock)
+                .filter(block -> !block.equals(Blocks.AIR))
                 .map(Block::asItem)
-                .map(Item::getDefaultStack)
-                .toList();
-            if (stacks.stream().anyMatch(stack -> !inventory.contains(stack)))
+                .collect(Collectors.groupingBy(i -> i, Collectors.counting()))
+                .entrySet();
+
+            if (stacks.stream().anyMatch((entry) -> inventory.count(entry.getKey()) < entry.getValue()))
                 return ActionResult.FAIL;
-            stacks.stream().map(inventory::getSlotWithStack).forEach(index -> inventory.removeStack(index, 1));
+
+            stacks.forEach((entry) -> Inventories.remove(
+                inventory,
+                s -> s.isOf(entry.getKey()),
+                Math.toIntExact(entry.getValue()), false)
+            );
             player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.5f, 0.5f);
         }
         for (int i = 1; tag.contains(BLOCKSTATE_KEY + i); i++) {
