@@ -3,6 +3,7 @@ package fr.adrien1106.reframed.item;
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.block.ReFramedEntity;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -21,6 +22,7 @@ public class ReFramedBlueprintItem extends Item {
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockPos pos = context.getBlockPos();
         World world = context.getWorld();
+        PlayerEntity player = context.getPlayer();
         if (!(world.getBlockEntity(pos) instanceof ReFramedEntity frame_entity)
             || frame_entity.getThemes().stream().noneMatch(state -> state.getBlock() != Blocks.AIR)
         ) return ActionResult.PASS;
@@ -28,9 +30,16 @@ public class ReFramedBlueprintItem extends Item {
         context.getStack().decrement(1);
         ItemStack stack = ReFramed.BLUEPRINT_WRITTEN.getDefaultStack();
         frame_entity.setStackNbt(stack, world.getRegistryManager());
-        context.getPlayer().giveItemStack(stack);
-        world.playSound(context.getPlayer(), context.getPlayer().getBlockPos(), SoundEvents.ITEM_BOOK_PUT, SoundCategory.PLAYERS);
 
+        if (player == null) {
+            world.playSound(null, context.getBlockPos(), SoundEvents.ITEM_BOOK_PUT, SoundCategory.PLAYERS);
+            return ActionResult.SUCCESS;
+        }
+
+        if (context.getStack().getCount() >= 1) player.giveItemStack(stack);
+        else player.setStackInHand(context.getHand(), stack);
+
+        world.playSound(null, context.getPlayer().getBlockPos(), SoundEvents.ITEM_BOOK_PUT, SoundCategory.PLAYERS);
         return ActionResult.SUCCESS;
     }
 }

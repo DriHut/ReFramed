@@ -103,7 +103,7 @@ public class ReFramedBlueprintWrittenItem extends Item {
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         NbtComponent component = stack.getOrDefault(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.DEFAULT);
         if(!component.isEmpty()) return;
-        NbtCompound tag = component.getNbt();
+        NbtCompound tag = component.copyNbt();
 
         Map<Integer, BlockState> states = getBlockStates(tag);
         states.forEach((index, state) -> tooltip.add(
