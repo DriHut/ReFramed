@@ -2,6 +2,7 @@ package fr.adrien1106.reframed.item;
 
 import fr.adrien1106.reframed.ReFramed;
 import fr.adrien1106.reframed.block.ReFramedDoubleBlock;
+import fr.adrien1106.reframed.block.ReFramedTrapdoorBlock;
 import fr.adrien1106.reframed.util.blocks.ThemeableBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,6 +15,9 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import fr.adrien1106.reframed.block.ReFramedDoorBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.enums.DoubleBlockHalf;
 
 public class ReFramedScrewdriverItem extends Item {
 
@@ -25,22 +29,52 @@ public class ReFramedScrewdriverItem extends Item {
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
         BlockPos pos = context.getBlockPos();
+        PlayerEntity player = context.getPlayer();
+        BlockState state = world.getBlockState(pos);
 
-        if (!(world.getBlockEntity(pos) instanceof ThemeableBlockEntity frame_entity)) {
+        if (state.getBlock() instanceof ReFramedDoorBlock door) {
+            if (!world.isClient && player != null) {
+
+                BlockPos otherPos = state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
+                BlockState otherState = world.getBlockState(otherPos);
+
+                boolean newValue = !state.get(ReFramedDoorBlock.HAND_OPENABLE);
+                world.setBlockState(pos, state.with(ReFramedDoorBlock.HAND_OPENABLE, newValue), 3);
+                if (otherState.isOf(door)) {
+                    world.setBlockState(otherPos, otherState.with(ReFramedDoorBlock.HAND_OPENABLE, newValue), 3);
+                }
+
+                BlockSoundGroup group = state.getSoundGroup();
+                world.playSound(player, pos, group.getPlaceSound(), SoundCategory.BLOCKS, group.getVolume(), group.getPitch());
+            }
+            return ActionResult.success(world.isClient);
+        }
+
+        if (state.getBlock() instanceof ReFramedTrapdoorBlock) {
+            if (!world.isClient && player != null) {
+
+                boolean newValue = !state.get(ReFramedTrapdoorBlock.HAND_OPENABLE);
+                world.setBlockState(pos, state.with(ReFramedTrapdoorBlock.HAND_OPENABLE, newValue), 3);
+
+                BlockSoundGroup group = state.getSoundGroup();
+                world.playSound(player, pos, group.getPlaceSound(), SoundCategory.BLOCKS, group.getVolume(), group.getPitch());
+            }
+            return ActionResult.success(world.isClient);
+        }
+
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (!(blockEntity instanceof ThemeableBlockEntity frame_entity)) {
             return ActionResult.PASS;
         }
 
-        BlockState state = world.getBlockState(pos);
-
-        PlayerEntity player = context.getPlayer();
         int theme_index = state.getBlock() instanceof ReFramedDoubleBlock b
-            ? b.getHitShape(
+                ? b.getHitShape(
                 state,
                 context.getHitPos(),
                 context.getBlockPos(),
                 context.getSide()
-            )
-            : 1;
+        )
+                : 1;
 
         BlockState theme = frame_entity.getTheme(theme_index);
 
@@ -50,14 +84,16 @@ public class ReFramedScrewdriverItem extends Item {
         BlockSoundGroup group = theme.getSoundGroup();
         world.playSound(player, pos, group.getPlaceSound(), SoundCategory.BLOCKS, group.getVolume(), group.getPitch());
         frame_entity.setTheme(theme.with(
-            Properties.AXIS,
-            switch (axis) {
-                case X -> Direction.Axis.Y;
-                case Y -> Direction.Axis.Z;
-                case Z -> Direction.Axis.X;
-            }
+                Properties.AXIS,
+                switch (axis) {
+                    case X -> Direction.Axis.Y;
+                    case Y -> Direction.Axis.Z;
+                    case Z -> Direction.Axis.X;
+                }
         ), theme_index);
+
         if (world.isClient) ReFramed.chunkRerenderProxy.accept(world, pos);
+
         return ActionResult.SUCCESS;
     }
 }
